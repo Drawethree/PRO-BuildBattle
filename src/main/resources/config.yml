@@ -1,0 +1,73 @@
+prefix: "&8[&eBuildBattlePro&8]&r"
+stats:
+  type: FLATFILE
+  async_save_player_data: false
+mysql:
+  host: dbHost
+  port: 3306
+  username: dbUser
+  database: dbName
+  password: dbPass
+bungeecord:
+ use_bungee: false
+ fallback_servers:
+ - lobby1
+ auto_join_players: true
+ change_motd: false
+parties:
+  enabled: true
+  max_players: 5
+rewards:
+  PointsAPI:
+    enabled: false
+    first_place: 50
+    second_place: 25
+    third_place: 10
+  Vault:
+    enabled: false
+    first_place: 50
+    second_place: 25
+    third_place: 10
+arena:
+  lobbyTime: 30
+  gameTime: 300
+  votingTime: 13
+  voting_for_themes:
+    enabled: true
+    themeVotingTime: 15
+    themesToVote: 5
+  endTime: 10
+  default_floor: '5:2'
+  show_scoreboard: true
+  enable_reports: false
+  show_vote_in_subtitle: true
+  automatic_grow: true
+  restrict_player_movement: true
+  remove_players_after_game: true
+  end_command: "eco give %winner% 100"
+  particles:
+    max_particles_per_player: 20
+    offset: 0.5
+    amount_to_spawn: 1
+    refresh_time: 0.5
+  win_fireworks:
+    firework_waves: 3
+    amount_per_corner: 5
+  allowed_commands:
+   - bb
+   - buildbattle
+  restriced_blocks:
+    - 7
+    - 10
+    - 11
+  themes:
+    - TV
+    - Car
+    - Winter
+    - School
+    - House
+    - Mobile
+    - Beach
+change_floor_npc:
+  name: "BuildBattle - Change Floor"
+  type: VILLAGER

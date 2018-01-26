@@ -1,0 +1,78 @@
+name: BuildBattlePro
+version: 3.6
+main: me.drawe.buildbattle.BuildBattle
+load: POSTWORLD
+website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
+softdepend: [WorldEdit, Vault, Multiverse-Core, PointsAPI, Vault, PlaceholderAPI, HolographicDisplays, Citizens]
+author: TheRealDrawe
+description: BuildBattlePro plugin
+commands:
+ buildbattle:
+  aliases: [bb]
+ settheme:
+permissions:
+  buildbattlepro.*:
+    description: Gives access to all BuildBattle commands
+    children:
+     buildbattlepro.admin: true
+  buildbattlepro.start:
+    description: Allows you to start BuildBattle game
+    default: op
+  buildbattlepro.stop:
+    description: Allows you to stop BuildBattle game
+    default: op
+  buildbattlepro.create:
+    description: Allows you to create BuildBattle arena and staff around it
+    default: op
+  buildbattlepro.admin:
+    description: Allows you to reload plugin
+    default: op
+    children:
+      buildbattlepro.start: true
+      buildbattlepro.stop: true
+      buildbattlepro.create: true
+      buildbattlepro.bypass: true
+      buildbattlepro.party: true
+  buildbattlepro.join:
+    description: Join arena permission
+    default: true
+  buildbattlepro.party:
+    description: Create party permission
+    default: op
+  buildbattlepro.leave:
+    description: Leave arena permission
+    default: true
+  buildbattlepro.settheme:
+    description: Allow settheme command
+    default: op
+  buildbattlepro.bypass:
+    description: Bypass commands while in arena
+    default: op
+  buildbattlepro.player:
+    description: Player permissions
+    default: true
+    children:
+      buildbattlepro.join: true
+      buildbattlepro.leave: true
+      buildbattlepro.changefloor: true
+      buildbattlepro.changeweather: true
+      buildbattlepro.changetime: true
+      buildbattlepro.changebiome: true
+      buildbattlepro.party: false
+  buildbattlepro.changebiome:
+    description: Change Biome permission
+    default: true
+  buildbattlepro.changefloor:
+    description: Change Floor permission
+    default: true
+  buildbattlepro.changeweather:
+    description: Change Weather permission
+    default: true
+  buildbattlepro.changetime:
+    description: Change Time permission
+    default: true
+
+
+
+
+

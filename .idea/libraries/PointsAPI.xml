@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PointsAPI">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Stiahnutia/PointsAPI.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

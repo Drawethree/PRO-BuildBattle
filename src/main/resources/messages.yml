@@ -1,0 +1,308 @@
+messages:
+  not_enough_players: "&cThere are not enough players to start game !"
+  no_players: "&cThere must be at least 1 player to start the game !"
+  game_starts_in: "&cGame starts in %time%"
+  game_ends_in: "&c%time% left"
+  times_up: "&cTimes up !"
+  theme: "&eTheme:"
+  voting: "&e&lVoting"
+  prepare_vote: "&7Prepare to start voting"
+  player_joined: "&aPlayer &e%player% &ahas joined. %players%"
+  player_left: "&cPlayer &e%player% &chas left. %players%"
+  arena_exists: "&cArena with that name already exists !"
+  arena_not_exists: "&cThat arena does not exists !"
+  no_permission: "&cYou dont have permission !"
+  no_selection: "&cPlease make selection first !"
+  not_in_plot: "&cYou are not in plot !"
+  plot_removed: "&aPlot successfully removed!"
+  not_in_arena: "&cYou are not in arena !"
+  already_in_arena: "&cYou are already in arena !"
+  arena_removed: "&aArena removed !"
+  arena_already_started: "&cThis arena already started !"
+  arena_full: "&cThis arena is full !"
+  floor_changed: "&aFloor successfully changed !"
+  weather_changed: "&aWeather changed to &e%weather%"
+  floor_deny_change: "&cFloor cannot be changed to this !"
+  not_played: "&cYou have not played BuildBattle yet ! Play some !"
+  voted: "&aYou rated this build as %vote% &a!"
+  vote_changed: "&aYou have changed your vote to %vote% &a!"
+  arena_ended: "&aGame has ended ! Thanks for playing !"
+  cant_build: "&cYou cant build outside of your plot !"
+  cant_leave_plot: "&cYou cant go outside of your plot !"
+  commands_not_allowed: "&cYou cant execute command while in arena ! Only BuildBattle commands !"
+  no_empty_arena: "&cThere is no empty arena ! Please wait"
+  you_placed: "&8You placed &e%position% &8with &e%points% &8Points."
+  server_reload: "&cServer is reloading ! Stopping BuildBattle..."
+  force_stop: "&aGame has been force stopped by &e%operator%&a!"
+  arena_not_running: "&cThat arena is not running !"
+  all_arenas: "&aAll arenas:"
+  cant_vote_for_your_plot: "&cYou cant vote for your plot !"
+  cant_wear_equipment: "&cHey! You can't wear armor there!"
+  voting_ends: "&aVoting for this plot ends in &e%time%"
+  max_particles: "&cYou can have maximally %amount% particles !"
+  particle_removed: "&aParticle successfully removed !"
+  cant_place_particle: "&cYou cant place particle outside of your plot !"
+  most_points_announce: "&aNEW MOST POINTS !"
+  old_most_points: "&7Old most points: &f%old_value%"
+  new_most_points: "&eNew most points: &f%new_value%"
+  time_changed: "&aTime was changed to &e%time%"
+  plot_cleared: "&aPlot successfully cleared!"
+  your_position: "&e&lYour Position"
+  thanks_for_playing: "&6&oThanks for playing !"
+  biome_changed: "&aPlot biome was changed to &e%biome%"
+  cannot_set_theme: "&cCannot set theme when arena is started !"
+  report_success: "&aYou have successfully reported player &e%player% &a! Buy a cake ^^"
+  already_reported: "&cYou have already reported this player in past ! Don't worry, we will check him ;)"
+  report_failed: "&cUnfortunately you cannot report this player at this time."
+  cant_report_yourself: "&cYou can't report yourself!"
+  you_joined_team: "&aYou joined &eTeam %team% !"
+  you_left_team: "&cYou left &eTeam %team% !"
+  your_teammate: "&aPlayers in team: &e%players%"
+  team_is_full: "&cThis team is full !"
+  already_in_that_team: "&cYou are already in that team !"
+  start_message:
+  - " "
+  - "&f&lBuildBattlePro"
+  - " "
+  - "&e&lTheme: &f&l%theme%"
+  - "&e&lWhen build time is over,"
+  - "&e&lyou will be able to vote for each plot !"
+  - " "
+  end_message:
+  - "&a&l----------------------------------------------------------------"
+  - " "
+  - "&f&lBuildBattlePro"
+  - "&e&l%position%&8- &6 %points%"
+  - " "
+  - "&e&lYour Position"
+  - "&7%player_position% &8- &6%player_points%"
+  - " "
+  - "&6&oThanks for playing !"
+  - " "
+  - "&a&l----------------------------------------------------------------"
+  line_spacer: "&a&l----------------------------------------------------------------"
+  party_join: "&7You have joined &e%creator%'s &7party!"
+  party_leave: "&7You have left &e%creator%'s &7party!"
+  party_invite: "&7You have invited player &e%player% &7to join your party!"
+  party_already_invited: "&e%player% &chas already pending invite!"
+  party_invite_expired: "&7Your invitation to join &e%creator%'s party &7has expired!"
+  party_created: "&7Your party has been created !"
+  party_disband: "&cYour party has been disbanded."
+  party_already_in_party: "&cPlayer &e%player% &cis already in party !"
+  party_create_failed: "&cTo create new party, please leave your current!"
+  party_no_pending_invites: "&cYou have no pending invites to join someones party !"
+  party_invite_decline: "&7You have declined invite for &e%creator%'s &7party."
+  party_not_in_party: "&cYou are not in party !"
+  party_invalid_usage: "&cInvalid usage ! Use /bb party invite <player>"
+  party_player_not_online: "&cThat player is not online !"
+  party_not_allowed_to_invite: "&cOnly leader of party can invite members !"
+  party_player_joined: "&7Player &e%player% &7has joined your party."
+  party_player_left: "&7Player &e%player% &7has left your party."
+  party_arena_full: "&7There is no space for your party in that arena !"
+  party_you_have_been_invited: "&7You have been invited to join &e%creator%'s &7party !"
+  party_accept_info: "&7>> &e/bb party accept - &aTo accept invite &7<<"
+  party_decline_info: "&7>> &e/bb party decline - &cTo decline invite &7<<"
+  party_not_allowed: "&cParties are not allowed on this server!"
+  party_full: "&cYour party is full !"
+leaderboards:
+  wins:
+    title: "&bLifetime Wins"
+    format: "&e%position% &7%player% - &e%wins%"
+  played:
+    title: "&bLifetime Played"
+    format: "&e%position% &7%player% - &e%played%"
+  blocks_placed:
+    title: "&bLifetime Blocks Placed"
+    format: "&e%position% &7%player% - &e%blocks_placed%"
+  particles_placed:
+    title: "&bLifetime Particles Placed"
+    format: "&e%position% &7%player% - &e%particles_placed%"
+scoreboard:
+  title: "&e&lBuildBattlePro"
+  players: "&fPlayers:"
+  min_players: "&fMin Players"
+  starting_in: "&fStarting in: &a%time%"
+  time_left: "&fTime Left"
+  theme: "&fTheme"
+  builder: "&fBuilder"
+  builders: "&fBuilders"
+  teammate: "&fTeammate:"
+  teams: "&fTeams:"
+  team_mode: "&7Teams Mode"
+  solo_mode: "&7Solo Mode"
+  your_vote: "&fYour vote"
+  waiting: "&aWaiting..."
+  server: "&eyour-server.net"
+stats:
+  title: "&e&lBuildBattlePro Stats"
+  played: "&aPlayed: &e%played%"
+  wins: "&aWins: &e%wins%"
+  most_points: "&aMost Points: &e%most_points%"
+  blocks_placed: "&aBlocks Placed: &e%blocks%"
+  particles_placed: "&aParticles Placed: &e%particles%"
+voting:
+  none: "&fNONE"
+  very_bad: "&4VERY BAD"
+  bad: "&cBAD"
+  ok: "&eOK"
+  nice: "&aNICE"
+  epic: "&5EPIC"
+  legendary: "&6LEGENDARY"
+  builder: "&eBuilder:"
+  builders: "&eBuilders:"
+motd:
+ lobby: "&e&lBuildBattle - &aLOBBY"
+ ingame: "&e&lBuildBattle - &cIN-GAME"
+ voting: "&e&lBuildBattle - &cVOTING"
+ ending: "&e&lBuildBattle - &4ENDING"
+gamestate:
+  lobby: "&aLobby"
+  theme_voting: "&eTheme-Voting"
+  ingame: "&eIn-Game"
+  voting: "&eVoting"
+  ending: "&cEnding"
+signs:
+  first_line: "&7[&bBuildBattle&7]"
+  second_line: "%arena%"
+  third_line: "%gamestate%"
+  fourth_line: "%players%"
+time:
+  seconds: "Seconds"
+  minutes: "Minutes"
+  hours: "Hours"
+  days: "Days"
+  years: "Years"
+  second: "Second"
+  minute: "Minute"
+  hour: "Hour"
+  day: "Day"
+  year: "Year"
+gui:
+  arena_list:
+    title: "BuildBattle - All Arenas"
+    status: "&eStatus: %status%"
+    mode: "&eMode: %mode%"
+    players: "&ePlayers: %total_players%"
+    join: "&a&oClick to join !"
+  theme_voting:
+    title: "Poll: What Theme?"
+    themes:
+      displayname: "&6What Theme?"
+      lore:
+      - "&7Question: What Theme?"
+      - "&7Answer: &b%theme%"
+      - ""
+      - "&7Current Votes: &e%theme_percentage%%"
+  options:
+    title: "BuildBattle - Plot Options"
+    items:
+      heads_item:
+        displayname: "&aHeads"
+        lore:
+        - "&7Improve design of your build"
+        - "&7by fancy heads!"
+      change_floor_item:
+        displayname: "&aChange Floor"
+        lore:
+        - "&7Drag and drop item here to change floor."
+      time_item:
+        displayname: "&aTime"
+        lore:
+        - "&7Click to setup time of your plot !"
+      change_weather_item:
+        displayname: "&aChange Weather"
+        lore:
+        - "&7Click to change weather."
+        - "&eCurrent: %weather%"
+      particles_item:
+        displayname: "&aParticles"
+        lore:
+        - "&7Click to select from fancy particles !"
+      particle_list_item:
+        displayname: "&aParticle List"
+        lore:
+        - "&7Remove particles from your plot"
+      clear_plot_item:
+        displayname: "&c&lClear Plot"
+        lore:
+        - "&4Warning!"
+        - "&eBy clicking on this item,"
+        - "&eyour plot instantly resets!"
+  particles:
+    title: "BuildBattle - Particles"
+  particle_list:
+    title: "BuildBattle - Active Particles"
+    items:
+      location: "&eLocation:"
+      click_to_remove: "&eClick to remove!"
+  time:
+    title: "BuildBattle - Time"
+    items:
+      morning:
+        displayname: "&a06:00 AM"
+        lore:
+        - "&7Click to set time to 06:00 AM"
+      mid_morning:
+        displayname: "&a09:00 AM"
+        lore:
+        - "&7Click to set time to 09:00 AM"
+      noon:
+        displayname: "&a12:00 AM"
+        lore:
+        - "&7Click to set time to 12:00 AM"
+      afternoon:
+        displayname: "&a03:00 PM"
+        lore:
+        - "&7Click to set time to 06:00 PM"
+      evening:
+        displayname: "&a06:00 PM"
+        lore:
+        - "&7Click to set time to 06:00 PM"
+      night:
+        displayname: "&a09:00 PM"
+        lore:
+        - "&7Click to set time to 09:00 PM"
+      midnight:
+        displayname: "&a12:00 PM"
+        lore:
+        - "&7Click to set time to 12:00 PM"
+      after_midnight:
+        displayname: "&a03:00 AM"
+        lore:
+        - "&7Click to set time to 03:00 AM"
+  heads:
+    title: "BuildBattle - Heads"
+    items:
+      previous_page: "Previous Page"
+      next_page: "Next Page"
+      main_page: "Back to Main Page"
+  teams:
+    title: "Select your team!"
+    items:
+      displayname: "Team %id%"
+      nobody: "&7&oNobody"
+items:
+  leave_item:
+    displayname: "&cLeave BuildBattle"
+    lore:
+    - "&7Right-Click to leave BuildBattle."
+  report_item:
+    displayname: "&c&lReport this build"
+    lore:
+    - "&7Click to report this build"
+    - ""
+    - "&4Warning!"
+    - "&7Abuse of reports may lead to punishment!"
+  options_item:
+    displayname: "&aOptions &8(Right Click)"
+    lore:
+    - "&7Click to show build options"
+  teams_item:
+    displayname: "&aTeam Selector &8(Right Click)"
+    lore:
+    - "&7Click to select your team !"
+gamemode:
+  solo: "SOLO"
+  team: "TEAM"
+
+

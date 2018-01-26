@@ -1,0 +1,293 @@
+categories:
+  mobhead:
+    icon:
+      material: BONE
+      data: 0
+    description: Mob Heads
+    heads:
+      MHF_Blaze:
+        description: Blaze Head
+      MHF_Chicken:
+        description: Chicken Head
+      MHF_Cow:
+        description: Cow Head
+      MHF_Enderman:
+        description: Enderman Head
+      MHF_Ghast:
+        description: Ghast Head
+      MHF_Herobrine:
+        description: Herobrine Head
+      MHF_LavaSlime:
+        description: Magmacube Head
+      MHF_MushroomCow:
+        description: Mooshroom Head
+      MHF_PigZombie:
+        description: Pigzombie Head
+      MHF_Sheep:
+        description: Sheep Head
+      MHF_Slime:
+        description: Slime Head
+      MHF_Spider:
+        description: Spider Head
+      MHF_CaveSpider:
+        description: Cave Spider Head
+      MHF_Squid:
+        description: Squid Head
+      MHF_Villager:
+        description: Villager Head
+      MHF_Golem:
+        description: Golem Head
+      MHF_Ocelot:
+        description: Ocelot Head
+      MHF_Pig:
+        description: Pig Head
+      MHF_Enderman:
+        description: Enderman Head
+      MHF_Wither:
+        description: Wither Head
+      AverageWalrus:
+        description: Walrus Head
+      Snowman_7:
+        description: Snowman Head
+      Ximonic:
+        description: Eagle Head
+      superDAIU:
+        description: Skull Head
+      zsoccer23:
+        description: Golden Head
+      Bear:
+        description: Bear Head
+      WalkinEggs:
+        description: Decapitated Villager
+      Barnyard_Owl:
+        description: Owl Head
+      wallabee:
+        description: Moldy Head
+      tubbydontdiet:
+        description: Decapitated Steve
+      penguin1737:
+        description: Penguin Head
+      Guardian:
+        description: Guardian Head
+      hojp:
+        description: Magicarp Head
+      Game4Aaron:
+        description: Tiger Head
+  food:
+    icon:
+      material: APPLE
+      data: 0
+    description: Food
+    heads:
+      MHF_Melon:
+        description: Melon
+      Squattamelon:
+        description: Watermelon
+      MHF_Pumpkin:
+        description: Pumpkin
+      MHF_Apple:
+        description: Apple
+      MHF_Cake:
+        description: Cake
+      glorycraft:
+        description: Burger
+      simbasbestbud:
+        description: Burger
+      FluffyPancakes:
+        description: Pancakes
+      RuthlessTomato:
+        description: Tomato
+      Thanauser:
+        description: Beer
+      Abolish_exe:
+        description: Beer
+      CocaCola1:
+        description: Coke Can
+      Pandasaurus_R:
+        description: Eggplant
+      ZachWarnerHD:
+        description: Popcorn
+      KylexDavis:
+        description: Cherry
+      MHF_CoconutB:
+        description: Coconut
+      MHF_CoconutG:
+        description: Coconut
+      _Grime:
+        description: Bread
+  symbol:
+    icon:
+      material: SIGN
+      data: 0
+    description: Symbols
+    heads:
+      MHF_ArrowDown:
+        description: Arrow Down
+      MHF_ArrowUp:
+        description: Arrow Up
+      MHF_ArrowLeft:
+        description: Arrow Left
+      MHF_ArrowRight:
+        description: Arrow Right
+      MHF_Exclamation:
+        description: Exclamation
+      MHF_Question:
+        description: Question
+  block:
+    icon:
+      material: GRASS
+      data: 0
+    description: Blocks
+    heads:
+      MHF_Chest:
+        description: Chest
+      MHF_Cactus:
+        description: Cactus
+      MHF_OakLog:
+        description: Oak Log
+      MHF_TNT:
+        description: TNT
+      MHF_TNT2:
+        description: TNT
+      KiberKover:
+        description: Spruce Log
+      Bendablob:
+        description: Hay Bale
+      Cardiff:
+        description: 4-sided Bookshelf
+      Jellyfish:
+        description: Lit Redstone Lamp
+      C418:
+        description: Jukebox
+      scemm:
+        description: Dispenser
+      lego:
+        description: Dropper
+      Moulatime:
+        description: Grass
+      ChazOfftopic:
+        description: Dirt
+      Cobble:
+        description: Cobblestone
+      Robbydeezle:
+        description: Stone
+      Cakers:
+        description: Stone Bricks
+      emack0714:
+        description: Water
+      Icytouch:
+        description: Ice
+      BrickInTheHead:
+        description: Bricks
+      pomi44:
+        description: Sponge
+      GracefulNarwhal:
+        description: Mycelium
+      akaBruce:
+        description: Diamond Ore
+      Tereneckla:
+        description: Emerald Ore
+      teachdaire:
+        description: Gold Block
+      metalhedd:
+        description: Iron Block
+      Numba_one_Stunna:
+        description: Netherrack
+      ingo897:
+        description: Netherbrick
+      spe:
+        description: Lava
+      loiwiol:
+        description: Obsidian
+      JL2579:
+        description: Piston
+      RedstoneLab:
+        description: Commandblock
+      alexthecoolmac:
+        description: Green Wool
+      MightyMega:
+        description: 4-sided Oak
+      Thypthon:
+        description: 4-sided Jungle
+      kc33:
+        description: Birch Leaves
+      AlphaPieter1:
+        description: Oak Leaves
+      luke4891:
+        description: Slime
+      Trish13:
+        description: 6-sided Jungle
+      15Redstones:
+        description: Redstone Lamp
+  decoration:
+    icon:
+      material: BOOKSHELF
+      data: 0
+    description: Decoration
+    heads:
+      uioz:
+        description: Radio
+      conorf1807:
+        description: 1-sided Bookshelf
+      MHF_Present1:
+        description: Gift
+      MHF_Present2:
+        description: Gift
+      Hannah4848:
+        description: Gift
+      CruXXx:
+        description: Gift
+      SeerPotion:
+        description: Gift
+      zEl3M3ntZ:
+        description: Golden Toaster
+      SecurityCamera:
+        description: Security Camera
+      Richard1230:
+        description: Rubic's Cube
+      Alistor:
+        description: Monitor
+      gocodygo:
+        description: Old Camera
+      Spinken5840:
+        description: Milk Bucket
+      ThePearlyBum:
+        description: Potted Plant
+      GameNilo:
+        description: TV
+      Asiankid2004:
+        description: Water Tank
+      3i5g00d:
+        description: Old Camera
+      olaf_C:
+        description: Clock
+      zaclaw:
+        description: Clock
+      Johnsquawk:
+        description: Clock
+      Mercury777:
+        description: Companion Cube
+      CraftingGalaxy2:
+        description: Crafting Table
+  color:
+    icon:
+      material: INK_SACK
+      data: 1
+    description: Colors
+    heads:
+      cy1337:
+        description: White
+      wulfric17:
+        description: Orange
+      diablo3pk:
+        description: Pink
+      SkidzGaming:
+        description: Red Redstone
+      SkidzInc:
+        description: Purple Redstone
+      TheSkidz:
+        description: Gray Redstone
+      Trajan:
+        description: Green Redstone
+      Mikano:
+        description: Yellow Redstone
