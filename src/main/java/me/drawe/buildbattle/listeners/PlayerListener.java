@@ -422,14 +422,21 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        if(GameManager.isRestrictPlayerMovement()) {
+        if (GameManager.isRestrictPlayerMovement()) {
             Player p = e.getPlayer();
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
-                BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
-                if (arena.getBBArenaState() == BBArenaState.THEME_VOTING || arena.getBBArenaState() == BBArenaState.INGAME) {
+                if(arena.getBBArenaState() == BBArenaState.VOTING) {
+                    BBPlot votePlot = arena.getCurrentVotingPlot();
+                    if(votePlot != null) {
+                        if (!votePlot.isLocationInPlot(e.getTo())) {
+                            e.setTo(e.getFrom());
+                            p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                        }
+                    }
+                } else {
+                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null) {
-                        //int maxY = Math.max(plot.getMinPoint().getBlockY(), plot.getMaxPoint().getBlockY());
                         if (!plot.isLocationInPlot(e.getTo())) {
                             e.setTo(e.getFrom());
                             p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());

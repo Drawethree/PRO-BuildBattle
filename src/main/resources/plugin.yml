@@ -1,5 +1,5 @@
 name: BuildBattlePro
-version: 3.6.1
+version: 3.6.2
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
