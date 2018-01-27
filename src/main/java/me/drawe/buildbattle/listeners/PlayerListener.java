@@ -10,9 +10,6 @@ import me.drawe.buildbattle.particles.BBParticle;
 import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
-import net.citizensnpcs.api.event.NPCLeftClickEvent;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -412,47 +409,11 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onNPCLClick(NPCLeftClickEvent e) {
-        Player p = e.getClicker();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
-            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-            if(plot != null) {
-                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != Material.AIR)) {
-                    if (p.hasPermission("buildbattlepro.changefloor")) {
-                        plot.getOptions().setCurrentFloorItem(p.getItemInHand());
-                    } else {
-                        p.sendMessage(Message.NO_PERMISSION.getChatMessage());
-                    }
-                }
-            }
-        }
-    }
-
-    @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
         for (BBArena a : GameManager.getArenas()) {
             if (a.getLobbyLocation() != null) {
                 if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
                     e.setCancelled(true);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onNPCRClick(NPCRightClickEvent e) {
-        Player p = e.getClicker();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
-            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-            if(plot != null) {
-                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != Material.AIR)) {
-                    if (p.hasPermission("buildbattlepro.changefloor")) {
-                        plot.getOptions().setCurrentFloorItem(p.getItemInHand());
-                    } else {
-                        p.sendMessage(Message.NO_PERMISSION.getChatMessage());
-                    }
                 }
             }
         }

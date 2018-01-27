@@ -7,6 +7,7 @@ import me.drawe.buildbattle.api.BuildBattleProPlaceholders;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
 import me.drawe.buildbattle.leaderboards.Leaderboard;
+import me.drawe.buildbattle.listeners.NPCListener;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
 import me.drawe.buildbattle.managers.*;
@@ -42,6 +43,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private boolean useBungeecord = false;
     private boolean autoJoinPlayers = false;
     private boolean useHolographicDisplays = false;
+    private boolean useCitizens = false;
     private static Economy econ = null;
 
     public static BuildBattle getInstance() {
@@ -71,6 +73,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadArenaPreferences();
         setupConfigPreferences();
         loadWorldEdit();
+        useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
         useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 
         getCommand("buildbattle").setExecutor(new BBCommand());
@@ -82,6 +85,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadDefaultFloorMaterial();
         GameManager.getInstance().loadRestrictedBlocks();
         GameManager.getInstance().loadArenas();
+        if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), this);
         if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -241,6 +245,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     public boolean isUseHolographicDisplays() {
         return useHolographicDisplays;
+    }
+
+    public boolean isUseCitizens() {
+        return useCitizens;
     }
 }
 

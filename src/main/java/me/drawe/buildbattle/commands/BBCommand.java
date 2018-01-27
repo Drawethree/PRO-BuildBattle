@@ -135,7 +135,7 @@ public class BBCommand implements CommandExecutor {
     }
 
     private void addFloorNPC(CommandSender sender, String[] args) {
-        if(Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
+        if(BuildBattle.getInstance().isUseCitizens()) {
             if (sender.hasPermission("buildbattlepro.setup")) {
                 if (args.length == 1) {
                     if (sender instanceof Player) {

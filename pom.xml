@@ -5,13 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.drawe</groupId>
-    <artifactId>BuildBattle</artifactId>
-    <version>1.0</version>
+    <artifactId>BuildBattlePro</artifactId>
+    <version>3.6</version>
     <packaging>jar</packaging>
-
-    <name>BuildBattle</name>
-
-    <description>A Build Battle plugin</description>
+    <name>BuildBattlePro</name>
+    <description>Build</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -71,8 +69,18 @@
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
-            <id>everything</id>
-            <url>http://repo.citizensnpcs.co</url>
+            <id>sk89q-snapshots</id>
+            <url>http://maven.sk89q.com/artifactory/repo</url>
+            <releases>
+                <enabled>true</enabled> <!-- releases enabled: this specific repository also hosts release versions -->
+            </releases>
+            <snapshots>
+                <enabled>true</enabled> <!-- snapshots enabled: we declare a SNAPSHOT repository because we need to download a SNAPSHOT dependency -->
+            </snapshots>
+        </repository>
+        <repository>
+            <id>filoghost-repo</id>
+            <url>http://novaguilds.pl/repo/</url>
         </repository>
     </repositories>
 
@@ -90,16 +98,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizensapi</artifactId>
+            <version>2.0.21</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.8.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizensapi</artifactId>
-            <version>LATEST</version>
-            <scope>provided</scope>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
