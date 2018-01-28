@@ -733,10 +733,14 @@ public class BBArena {
                     if (times >= GameManager.getFireworkWaves()) {
                         cancel();
                     } else {
-                        for (Location l : LocationUtil.getAllCornersOfPlot(getWinner())) {
-                            for (int i = 0; i < GameManager.getFireworkAmount(); i++) {
-                                FireworkUtil.spawnRandomFirework(LocationUtil.getCenter(l));
+                        try {
+                            for (Location l : LocationUtil.getAllCornersOfPlot(getWinner())) {
+                                for (int i = 0; i < GameManager.getFireworkAmount(); i++) {
+                                    FireworkUtil.spawnRandomFirework(LocationUtil.getCenter(l));
+                                }
                             }
+                        } catch (Exception e) {
+                            cancel();
                         }
                     }
                     times++;

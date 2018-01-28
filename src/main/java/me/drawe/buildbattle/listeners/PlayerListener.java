@@ -430,21 +430,11 @@ public class PlayerListener implements Listener {
             Player p = e.getPlayer();
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
-                if(arena.getBBArenaState() == BBArenaState.VOTING) {
-                    BBPlot votePlot = arena.getCurrentVotingPlot();
-                    if(votePlot != null) {
-                        if (!votePlot.isLocationInPlot(e.getTo())) {
-                            e.setTo(e.getFrom());
-                            p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
-                        }
-                    }
-                } else {
-                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
-                    if (plot != null) {
-                        if (!plot.isLocationInPlot(e.getTo())) {
-                            e.setTo(e.getFrom());
-                            p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
-                        }
+                BBPlot plot = ArenaManager.getInstance().getPlotPlayerIsIn(arena,p);
+                if (plot != null) {
+                    if (!plot.isLocationInPlot(e.getTo())) {
+                        e.setTo(e.getFrom());
+                        p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                     }
                 }
             }
