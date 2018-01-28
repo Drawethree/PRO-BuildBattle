@@ -85,7 +85,6 @@ public class BBTeam {
                 previousTeam.leaveTeam(p);
             }
             getPlayers().add(p);
-            p.sendMessage(Message.YOU_JOINED_TEAM.getChatMessage().replaceAll("%team%", String.valueOf(getID())));
             if (getPlayers().size() > 1) {
                 p.sendMessage(Message.YOUR_TEAMMATE.getChatMessage().replaceAll("%players%", getPlayersInCommaSeparatedString()));
             }
@@ -97,7 +96,6 @@ public class BBTeam {
 
     public void leaveTeam(Player p) {
         getPlayers().remove(p);
-        p.sendMessage(Message.YOU_LEFT_TEAM.getChatMessage().replaceAll("%team%", String.valueOf(getID())));
         updateStatusItemStack();
     }
 

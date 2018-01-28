@@ -22,7 +22,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="PointsAPI" level="project" />
-    <orderEntry type="library" name="Citizens (2)" level="project" />
     <orderEntry type="library" name="HolographicDisplays" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
@@ -37,7 +36,6 @@
     <orderEntry type="library" name="Maven: org.bukkit:bukkit:1.9-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.avaje:ebean:2.8.1" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
-    <orderEntry type="library" name="Maven: net.citizensnpcs:citizensapi:2.0.21" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.8.2" level="project" />
     <orderEntry type="library" name="Maven: com.sk89q.worldedit:worldedit-bukkit:6.1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.sk89q:dummypermscompat:1.8" level="project" />
@@ -49,5 +47,6 @@
     <orderEntry type="library" name="Maven: com.sk89q.lib:jlibnoise:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.sk89q:jchronic:0.2.4a" level="project" />
     <orderEntry type="library" name="Maven: org.sk89q.bukkit:bukkit-classloader-check:1.7.9-R0.2" level="project" />
+    <orderEntry type="library" name="Citizens" level="project" />
   </component>
 </module>

@@ -6,7 +6,6 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.drawe.buildbattle.api.BuildBattleProPlaceholders;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
-import me.drawe.buildbattle.leaderboards.Leaderboard;
 import me.drawe.buildbattle.listeners.NPCListener;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
@@ -17,21 +16,14 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.MetricsLite;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
 

@@ -160,7 +160,6 @@ public class Leaderboard {
     public void setLocation(Location location) {
         this.location = location;
     }
-
     public BukkitTask getUpdateTask() {
         return updateTask;
     }

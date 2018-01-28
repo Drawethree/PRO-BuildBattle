@@ -85,7 +85,10 @@ public class BBCommand implements CommandExecutor {
                         break;
                 }
             } else {
-                commandUsage(sender);
+                if(sender instanceof Player) {
+                    Player p = (Player) sender;
+                    p.openInventory(OptionsManager.getAllArenasInventory());
+                }
             }
 
         }

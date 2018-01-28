@@ -287,6 +287,10 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
+            if((e.getItem() != null) && (e.getItem().getType() == Material.COMPASS)) {
+                e.setCancelled(true);
+                return;
+            }
             if (arena.getBBArenaState() == BBArenaState.VOTING) {
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
@@ -676,12 +680,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onChatIngame(AsyncPlayerChatEvent e) {
-        Player p = e.getPlayer();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null) {
-            e.getRecipients().clear();
-            for(Player p1 : a.getPlayers()) {
-                e.getRecipients().add(p1);
+        if (GameManager.isArenaChat()) {
+            Player p = e.getPlayer();
+            BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+            if (a != null) {
+                e.getRecipients().clear();
+                for (Player p1 : a.getPlayers()) {
+                    e.getRecipients().add(p1);
+                }
             }
         }
     }

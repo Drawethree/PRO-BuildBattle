@@ -38,6 +38,7 @@ arena:
     themesToVote: 5
   endTime: 10
   default_floor: '5:2'
+  arena_chat: true
   show_scoreboard: true
   enable_reports: false
   show_vote_in_subtitle: true

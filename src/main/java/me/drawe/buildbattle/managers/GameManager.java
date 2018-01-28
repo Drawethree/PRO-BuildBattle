@@ -60,9 +60,11 @@ public class GameManager {
     private static boolean changeMOTD = false;
     private static boolean pointsApiRewards = false;
     private static boolean vaultRewards = false;
+    private static boolean arenaChat = true;
     private static boolean automaticGrow = true;
     private static boolean showVoteInSubtitle = true;
     private static boolean restrictPlayerMovement = true;
+    private static boolean lockServerOnGameStart = false;
     private static String endCommand = "NONE";
     private static EntityType floorChangeNPCtype = EntityType.VILLAGER;
 
@@ -471,6 +473,22 @@ public class GameManager {
         GameManager.automaticGrow = automaticGrow;
     }
 
+    public static boolean isLockServerOnGameStart() {
+        return lockServerOnGameStart;
+    }
+
+    public static void setLockServerOnGameStart(boolean lockServerOnGameStart) {
+        GameManager.lockServerOnGameStart = lockServerOnGameStart;
+    }
+
+    public static boolean isArenaChat() {
+        return arenaChat;
+    }
+
+    public static void setArenaChat(boolean arenaChat) {
+        GameManager.arenaChat = arenaChat;
+    }
+
 
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
@@ -602,6 +620,7 @@ public class GameManager {
             setVotingForThemes(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.enabled"));
             setPrefix(BuildBattle.getFileManager().getConfig("config.yml").get().getString("prefix"));
             setEndCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.end_command"));
+            setArenaChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
             setRestrictPlayerMovement(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_player_movement"));
             setMaxParticlesPerPlayer(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.max_particles_per_player"));
             setParticleOffset(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.offset"));
@@ -609,6 +628,7 @@ public class GameManager {
             setFireworkWaves(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.firework_waves"));
             setAmountParticleToSpawn(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.amount_to_spawn"));
             setPartyMaxPlayers(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("parties.max_players"));
+            //setLockServerOnGameStart(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.lock_server_on_game_start"));
             setPartiesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
             setParticleRefreshTime(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));
             setStartMessage(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("messages.start_message"));
