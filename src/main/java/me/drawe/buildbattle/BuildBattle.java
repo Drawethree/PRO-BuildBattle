@@ -6,6 +6,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.drawe.buildbattle.api.BuildBattleProPlaceholders;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
+import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.listeners.NPCListener;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
@@ -76,7 +77,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadThemes();
         GameManager.getInstance().loadDefaultFloorMaterial();
         GameManager.getInstance().loadRestrictedBlocks();
-        GameManager.getInstance().loadArenas();
+        ArenaManager.getInstance().loadArenas();
         if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), this);
         if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
 
@@ -84,6 +85,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             new BuildBattleProPlaceholders(this).hook();
         }
         MetricsLite metrics = new MetricsLite(this);
+        HeadInventory.loadHeads();
     }
 
 
@@ -100,7 +102,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         } else {
             PlayerManager.getInstance().saveAllPlayerStatsToStatsYML();
         }
-        for (BBArena a : GameManager.getArenas()) {
+        for (BBArena a : ArenaManager.getArenas()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
         }
         //ENABLING
@@ -113,7 +115,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadThemes();
         GameManager.getInstance().loadDefaultFloorMaterial();
         GameManager.getInstance().loadRestrictedBlocks();
-        GameManager.getInstance().loadArenas();
+        ArenaManager.getInstance().loadArenas();
         if(isUseHolographicDisplays()) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
                 h.delete();
@@ -165,7 +167,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         } else {
             PlayerManager.getInstance().saveAllPlayerStatsToStatsYML();
         }
-        for (BBArena a : GameManager.getArenas()) {
+        for (BBArena a : ArenaManager.getArenas()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
         }
     }

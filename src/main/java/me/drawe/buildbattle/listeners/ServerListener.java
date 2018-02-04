@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.listeners;
 
+import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.Message;
@@ -12,7 +13,7 @@ public class ServerListener implements Listener {
     @EventHandler
     public void onMOTDChange(ServerListPingEvent e) {
         if(GameManager.isChangeMOTD()) {
-            BBArena mainArena = GameManager.getArenas().get(0);
+            BBArena mainArena = ArenaManager.getArenas().get(0);
             if(mainArena != null) {
                 switch(mainArena.getBBArenaState()) {
                     case LOBBY:

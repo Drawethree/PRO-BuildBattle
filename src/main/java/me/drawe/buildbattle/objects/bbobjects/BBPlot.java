@@ -7,6 +7,7 @@ import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -38,6 +39,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.votedPlayers = new HashMap<>();
         this.particles = new ArrayList<>();
         this.team = null;
+        //setBlocksInPlot();
     }
 
     @Override
@@ -77,14 +79,6 @@ public class BBPlot implements Comparable<BBPlot> {
         changeFloor(item.getType(), item.getData().getData());
         setOptions(new BBPlotOptions(this));
     }
-
-    /*
-    private void restoreBiome() {
-        for(Location l : getBlocksInPlot()) {
-            l.getBlock().setBiome(Biome.PLAINS);
-        }
-    }
-    */
 
     private void removeAllBlocks() {
         int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
@@ -358,12 +352,26 @@ public class BBPlot implements Comparable<BBPlot> {
         getTeam().getCaptain().sendMessage(Message.PLOT_CLEARED.getChatMessage());
     }
 
+    public void setBlocksInPlot() {
+        List<Location> locations = new ArrayList<>();
+        int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int maxX = Math.max(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int minZ = Math.min(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int maxZ = Math.max(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int minY = Math.min(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
+        int maxY = Math.max(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
+        for (int x = minX; x <= maxX; x += 1) {
+            for (int y = minY; y <= maxY; y += 1) {
+                for (int z = minZ; z <= maxZ; z += 1) {
+                    Location loc = new Location(getWorld(), x, y, z);
+                    locations.add(loc);
+                }
+            }
+        }
+        blocksInPlot = locations;
+    }
     public List<Location> getBlocksInPlot() {
         return blocksInPlot;
-    }
-
-    public void setBlocksInPlot(List<Location> blocksInPlot) {
-        this.blocksInPlot = blocksInPlot;
     }
 
     public BBTeam getTeam() {

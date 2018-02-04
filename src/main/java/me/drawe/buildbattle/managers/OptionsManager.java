@@ -28,11 +28,12 @@ public class OptionsManager {
     private OptionsManager() {
     }
 
+    private static ItemStack backItem = ItemCreator.create(Material.ARROW, 1, (byte) 0, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.back_item.lore")), null,null);
     private static ItemStack reportItem = ItemCreator.create(Material.ENCHANTED_BOOK, 1, (byte) 0, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.report_item.lore")), null,null);
     private static ItemStack clearPlotItem = ItemCreator.create(Material.BARRIER, 1, (byte) 0, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null,null);
     private static ItemStack removeParticlesItem = ItemCreator.create(Material.CHEST, 1, (byte) 0, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null,null);
     private static ItemStack particlesItem = ItemCreator.create(Material.BLAZE_POWDER, 1, (byte) 0, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particles_item.lore")), null,null);
-    //private static ItemStack biomesItem = ItemCreator.create(Material.EMPTY_MAP, 1, (byte) 0, "&aPlot Biome", ItemCreator.makeLore("&7Click to adjust biome of your plot"), null,null);
+    private static ItemStack biomesItem = ItemCreator.create(Material.EMPTY_MAP, 1, (byte) 0, "&aPlot Biome", ItemCreator.makeLore("&7Click to adjust biome of your plot"), null,null);
     private static ItemStack headsItem = ItemCreator.create(Material.SKULL_ITEM, 1, (byte) 3, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.heads_item.lore")), null,null);
     private static ItemStack leaveItem = ItemCreator.create(Material.BED, 1, (byte) 0, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.leave_item.lore")), null,null);
     private static ItemStack optionsItem = ItemCreator.create(Material.NETHER_STAR,1,(byte) 0,Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.options_item.lore")),null,null);
@@ -41,7 +42,7 @@ public class OptionsManager {
     private static Inventory particlesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PARTICLES_TITLE.getMessage());
     private static Inventory timeInventory = Bukkit.createInventory(null, 6*9, Message.GUI_TIME_TITLE.getMessage());
     private static Inventory allArenasInventory = Bukkit.createInventory(null, ArenaManager.getInstance().getArenaListSize(), Message.GUI_ARENA_LIST_TITLE.getMessage());
-    //private static Inventory biomesInventory = Bukkit.createInventory(null, 9, "BuildBattle - Plot Biome");
+    private static Inventory biomesInventory = Bukkit.createInventory(null, 9, "BuildBattle - Plot Biome");
 
     public static ItemStack getOptionsItem() {
         return optionsItem;
@@ -87,6 +88,18 @@ public class OptionsManager {
         return teamsItem;
     }
 
+    public static ItemStack getBackItem() {
+        return backItem;
+    }
+
+    public static ItemStack getBiomesItem() {
+        return biomesItem;
+    }
+
+    public static Inventory getBiomesInventory() {
+        return biomesInventory;
+    }
+
 
     public void openOptionsInventory(Player p, BBPlot plot) {
         Inventory optionsInv = Bukkit.createInventory(null, 9, Message.GUI_OPTIONS_TITLE.getMessage());
@@ -96,12 +109,13 @@ public class OptionsManager {
         optionsInv.setItem(4, getParticlesItem());
         optionsInv.setItem(5, getWeatherItemStack(plot));
         optionsInv.setItem(6, getClearPlotItem());
+        //optionsInv.setItem(7, getBiomesItem());
         p.openInventory(optionsInv);
     }
 
     public void refreshAllArenasInventory() {
         getAllArenasInventory().clear();
-        for(BBArena a : GameManager.getArenas()) {
+        for(BBArena a : ArenaManager.getArenas()) {
             getAllArenasInventory().addItem(getArenaStatusItem(a));
         }
     }
@@ -118,12 +132,9 @@ public class OptionsManager {
             }
         }
     }
-    public void refreshTeamItem(BBTeam t) {
-
-    }
 
     public void openTimeInventory(Player p, BBPlot plot) {
-        Inventory timeInv = Bukkit.createInventory(null, 9, Message.GUI_TIME_TITLE.getMessage());
+        Inventory timeInv = Bukkit.createInventory(null, 18, Message.GUI_TIME_TITLE.getMessage());
         for (BBPlotTime time : BBPlotTime.values()) {
             ItemStack item = time.getItem().clone();
             if (time == plot.getOptions().getCurrentTime()) {
@@ -131,6 +142,7 @@ public class OptionsManager {
             }
             timeInv.setItem(time.getSlot(), item);
         }
+        timeInv.setItem(13, getBackItem());
         p.openInventory(timeInv);
     }
 
@@ -138,9 +150,13 @@ public class OptionsManager {
         for(BBParticle particle : BBParticle.values()) {
             particlesInventory.setItem(particle.getSlot(),particle.getItemStack());
         }
+        particlesInventory.setItem(45, getBackItem());
         particlesInventory.setItem(49, getRemoveParticlesItem());
-        for(BBArena a : GameManager.getArenas()) {
+        for(BBArena a : ArenaManager.getArenas()) {
             getAllArenasInventory().addItem(getArenaStatusItem(a));
+        }
+        for(PlotBiome biome : PlotBiome.values()) {
+            biomesInventory.setItem(biome.getSlot(), biome.getItem());
         }
     }
 

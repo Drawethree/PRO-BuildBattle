@@ -122,7 +122,7 @@ public class Time {
                         break;
                 }
             }
-            builder.append(", ").append(timeInUnits).append(' ').append(timeMsg.getMessage());
+            builder.append(" ").append(timeInUnits).append(' ').append(timeMsg.getMessage());
         }
 
         return time - timeInUnits * unitInMS;

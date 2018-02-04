@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.api;
 
+import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
@@ -12,7 +13,7 @@ import java.util.List;
 public class BuildBattleProAPI {
 
     public static List<BBArena> getArenas() {
-        return GameManager.getArenas();
+        return ArenaManager.getArenas();
     }
 
     public static BBArena getPlayerArena(Player p) {

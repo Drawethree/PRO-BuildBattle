@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +42,7 @@ public class HeadInventory {
                 MAIN_PAGE.setItem(i, category.getIcon());
                 i++;
                 }
+            MAIN_PAGE.setItem(8, OptionsManager.getBackItem());
         } catch (Exception e) {
             BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
         }
@@ -59,6 +61,10 @@ public class HeadInventory {
             instance = new HeadInventory();
         }
         return instance;
+    }
+
+    public static void loadHeads() {
+        instance = new HeadInventory();
     }
 
     /**

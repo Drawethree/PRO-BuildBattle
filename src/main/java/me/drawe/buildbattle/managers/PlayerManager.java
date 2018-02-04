@@ -96,7 +96,7 @@ public class PlayerManager {
     }
 
     public BBArena getPlayerArena(Player p) {
-        for(BBArena arena : GameManager.getArenas()) {
+        for(BBArena arena : ArenaManager.getArenas()) {
             if(arena.getPlayers().contains(p)) {
                 return arena;
             }
@@ -104,7 +104,7 @@ public class PlayerManager {
         return null;
     }
     public boolean isPlayerInGame(Player p) {
-        for(BBArena a : GameManager.getArenas()) {
+        for(BBArena a : ArenaManager.getArenas()) {
             if(a.getPlayers().contains(p)) {
                 return true;
             }
@@ -162,7 +162,7 @@ public class PlayerManager {
 
     public void playSoundToAllPlayers(BBArena arenaInstance, Sound sound) {
         for(Player p : arenaInstance.getPlayers()) {
-            p.playSound(p.getLocation(),sound,10.0F,1.0F);
+            p.playSound(p.getLocation(),sound,1.0F,1.0F);
         }
     }
 
@@ -310,7 +310,9 @@ public class PlayerManager {
                     int oldPoints = stats.getMostPoints();
                     if (plot.getVotePoints() > stats.getMostPoints()) {
                         stats.setMostPoints(plot.getVotePoints());
-                        sendMostPointsAnnounce(p, oldPoints, stats.getMostPoints());
+                        if(GameManager.isAnnounceNewMostPoints()) {
+                            sendMostPointsAnnounce(p, oldPoints, stats.getMostPoints());
+                        }
                     }
                 }
             }

@@ -70,7 +70,7 @@ public class BBBoard {
                     add(getArena().getArenaModeInString(), 11);
                     add("&a", 10);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
-                    add("&a" + TimeUtil.formatTimeMMSS(timeLeft), 8);
+                    add(TimeUtil.formatTimeMMSS(timeLeft), 8);
                     add("", 7);
                     add(Message.SCOREBOARD_THEME.getMessage(), 6);
                     add("&a" + getArena().getTheme(), 5);
@@ -374,6 +374,11 @@ public class BBBoard {
         for(Player p : players) {
             p.setScoreboard(scoreboard);
         }
+    }
+
+    public void removeBoard() {
+        getArena().getPlayerBoards().remove(this);
+        getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
     }
 
     public BBArena getArena() {

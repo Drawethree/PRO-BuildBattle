@@ -282,6 +282,10 @@ gui:
       displayname: "Team %id%"
       nobody: "&7&oNobody"
 items:
+  back_item:
+    displayname: "&cBack"
+    lore:
+    - "&7Back to options"
   leave_item:
     displayname: "&cLeave BuildBattle"
     lore:

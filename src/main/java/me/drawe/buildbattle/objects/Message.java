@@ -3,6 +3,7 @@ package me.drawe.buildbattle.objects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import net.md_5.bungee.api.ChatColor;
+import sun.awt.image.BufferedImageDevice;
 
 import java.sql.BatchUpdateException;
 
@@ -198,7 +199,8 @@ public enum Message {
     ALREADY_IN_THAT_TEAM(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.already_in_that_team")),
     GUI_TEAMS_ITEMS_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.teams.items.displayname")),
     GUI_TEAM_ITEMS_NOBODY(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.teams.items.nobody")),
-    ARENA_LIST_MODE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.mode"));
+    ARENA_LIST_MODE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.mode")),
+    ITEMS_BACK_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.back_item.displayname"));
 
     private String message;
     Message(String message) {

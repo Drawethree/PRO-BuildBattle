@@ -3,8 +3,8 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemCreator;
-import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
@@ -16,6 +16,7 @@ public class BBPlotOptions {
     private ItemStack currentFloorItem;
     private WeatherType currentWeather;
     private BBPlotTime currentTime;
+    private PlotBiome currentBiome;
 
 
     public BBPlotOptions(BBPlot plot) {
@@ -24,6 +25,7 @@ public class BBPlotOptions {
         this.currentFloorItem = ItemCreator.create(item.getType(), 1, item.getData().getData(), Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
+        this.currentBiome = PlotBiome.FOREST;
     }
 
     public BBPlot getPlot() {
@@ -99,16 +101,26 @@ public class BBPlotOptions {
         }
     }
 
-    /*
-    public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
+
+   /* public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
         this.currentBiome = currentBiome;
         if(broadcast) {
-            getPlot().getPlayer().sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
+            for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
         }
         for(Location l : getPlot().getBlocksInPlot()) {
             l.getBlock().setBiome(currentBiome.getBiome());
-            l.getBlock().setType(l.getBlock().getType());
+            for(Player p : getPlot().getTeam().getPlayers()) {
+                try {
+                    sendPacket(p,getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), int.class).newInstance(l.getChunk().getClass().getMethod("getHandle").invoke(l.getChunk()), true, 65535));
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
     */
+
+    public PlotBiome getCurrentBiome() {
+        return currentBiome;
+    }
 }

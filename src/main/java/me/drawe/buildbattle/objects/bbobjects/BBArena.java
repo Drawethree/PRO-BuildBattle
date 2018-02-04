@@ -131,7 +131,7 @@ public class BBArena {
                         }
                     }
                 }
-                PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getName()).replaceAll("%players%", getTotalPlayers()));
+                PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
                 OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
                 updateAllSigns();
                 if (getPlayers().size() == getMinPlayers()) {
@@ -156,7 +156,7 @@ public class BBArena {
     }
     public void removePlayer(Player p) {
         getPlayers().remove(p);
-        removePlayerBoard(p);
+        getPlayerBoard(p).removeBoard();
         BBTeam team = PlayerManager.getInstance().getPlayerTeam(this,p);
         if(team != null) {
             team.leaveTeam(p);
@@ -169,8 +169,11 @@ public class BBArena {
         }
         if (BuildBattle.getInstance().isUseBungeecord()) {
             BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
+            if(p.isOnline()) {
+                p.kickPlayer("");
+            }
         }
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getName()).replaceAll("%players%", getTotalPlayers()));
+        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
         if ((getPlayers().size() < getMinPlayers()) && ((getBBArenaState() != BBArenaState.LOBBY) && (getBBArenaState() != BBArenaState.ENDING))) {
             stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
         }
@@ -248,14 +251,14 @@ public class BBArena {
     }
 
     public void startGame() {
-        PlayerManager.getInstance().closeInventoryAllPlayersInArena(getArenaInstance());
         setBBArenaState(BBArenaState.INGAME);
         updateAllSigns();
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         setTheme(getThemeVoting().getWinner().getName());
         setVotingPlots();
-        setGamemodeToAllPlayers(GameMode.CREATIVE);
+        PlayerManager.getInstance().closeInventoryAllPlayersInArena(getArenaInstance());
         PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
+        setGamemodeToAllPlayers(GameMode.CREATIVE);
         PlayerManager.getInstance().addPlayedToAllPlayers(getArenaInstance());
         OptionsManager.getInstance().giveAllPlayersItem(getArenaInstance(), OptionsManager.getOptionsItem());
         PlayerManager.getInstance().sendStartMessageToAllPlayers(getArenaInstance());
@@ -560,7 +563,7 @@ public class BBArena {
         while (it.hasNext()) {
             Player p = (Player) it.next();
             if (GameManager.isScoreboardEnabled()) {
-                PlayerManager.getInstance().removeScoreboard(p);
+                getPlayerBoard(p).removeBoard();
             }
             PlayerManager.getInstance().restorePlayerData(p);
             if (BuildBattle.getInstance().isUseBungeecord()) {
@@ -596,16 +599,6 @@ public class BBArena {
         }
     }
 
-    public void removePlayerBoard(Player p) {
-        Iterator it = getPlayerBoards().iterator();
-        while(it.hasNext()) {
-            BBBoard board = (BBBoard) it.next();
-            if(board.getPlayer().equals(p)) {
-                it.remove();
-                return;
-            }
-        }
-    }
     public void setTheme(String theme) {
         this.theme = theme;
     }
@@ -658,8 +651,8 @@ public class BBArena {
     }
 
     public void addIntoAllArenas() {
-        if(!GameManager.getArenas().contains(this)) {
-            GameManager.getArenas().add(this);
+        if(!ArenaManager.getArenas().contains(this)) {
+            ArenaManager.getArenas().add(this);
         }
     }
 
@@ -667,7 +660,7 @@ public class BBArena {
         stopArena(Message.ARENA_REMOVED.getChatMessage(), true);
         BuildBattle.getFileManager().getConfig("arenas.yml").get().set(getName(), null);
         BuildBattle.getFileManager().getConfig("arenas.yml").save();
-        GameManager.getArenas().remove(this);
+        ArenaManager.getArenas().remove(this);
         OptionsManager.getInstance().refreshAllArenasInventory();
         sender.sendMessage(Message.ARENA_REMOVED.getChatMessage());
     }
@@ -887,6 +880,14 @@ public class BBArena {
         return null;
     }
 
+    public BBBoard getPlayerBoard(Player p) {
+        for(BBBoard board : getPlayerBoards()) {
+            if(board.getPlayer().equals(p)) {
+                return board;
+            }
+        }
+        return null;
+    }
     public List<BBBoard> getPlayerBoards() {
         return playerBoards;
     }

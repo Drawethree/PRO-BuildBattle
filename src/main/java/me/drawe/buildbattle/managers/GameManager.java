@@ -29,10 +29,8 @@ public class GameManager {
     private static List<String> restricedBlocks = new ArrayList<>();
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
-    private static List<BBArena> arenas = new ArrayList<>();
     private static String defaultFloorMaterial = "2:0";
     private static String prefix = "&8[&eBuildBattlePro&8]&r";
-
     private static int lobbyTime = 30;
     private static int gameTime = 300;
     private static int themeVotingTime = 15;
@@ -61,6 +59,7 @@ public class GameManager {
     private static boolean pointsApiRewards = false;
     private static boolean vaultRewards = false;
     private static boolean arenaChat = true;
+    private static boolean announceNewMostPoints = true;
     private static boolean automaticGrow = true;
     private static boolean showVoteInSubtitle = true;
     private static boolean restrictPlayerMovement = true;
@@ -134,10 +133,6 @@ public class GameManager {
         } else {
             Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cVariable endTime must be higher than 0 ! Setting it to default (" + getEndTime() + ")");
         }
-    }
-
-    public static List<BBArena> getArenas() {
-        return arenas;
     }
 
     public static List<String> getRestricedBlocks() {
@@ -489,74 +484,17 @@ public class GameManager {
         GameManager.arenaChat = arenaChat;
     }
 
+    public static boolean isAnnounceNewMostPoints() {
+        return announceNewMostPoints;
+    }
+
+    public static void setAnnounceNewMostPoints(boolean announceNewMostPoints) {
+        GameManager.announceNewMostPoints = announceNewMostPoints;
+    }
+
 
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
-    }
-    public void loadBBPlots(BBArena a) {
-        try {
-            for (String plot : BuildBattle.getFileManager().getConfig("arenas.yml").get().getConfigurationSection(a.getName() + ".plots").getKeys(false)) {
-                Location minPoint = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(a.getName() + ".plots." + plot + ".min"));
-                Location maxPoint = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(a.getName() + ".plots." + plot + ".max"));
-                BBPlot bbPlot = new BBPlot(a,minPoint,maxPoint);
-                bbPlot.addIntoArenaPlots();
-                bbPlot.restoreBBPlot();
-                Bukkit.getConsoleSender().sendMessage(getPrefix() + " §aPlot §e" + plot + " §afor arena §e" + a.getName() + " §aloaded !");
-            }
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cLooks like arena §e" + a.getName() + " §c have no plots ! Please set them.");
-        }
-    }
-
-    public void loadArenas() {
-        try {
-            arenas = new ArrayList<>();
-            for (String arena : BuildBattle.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
-                String name = arena;
-                int minPlayers = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".min_players");
-                if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".mode")) {
-                    BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".mode", BBGameMode.SOLO.name());
-                    BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    Bukkit.getConsoleSender().sendMessage(getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set mode ! Automatically set to SOLO");
-                }
-                BBGameMode gameMode = BBGameMode.valueOf(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(arena + ".mode"));
-                if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".teamSize")) {
-                    BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".teamSize", gameMode.getDefaultTeamSize());
-                    BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    Bukkit.getConsoleSender().sendMessage(getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set teamSize ! Automatically set to " + gameMode.getDefaultTeamSize());
-                }
-                int teamSize = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".teamSize");
-                Location lobbyLoc = LocationUtil.getLocationFromConfig("arenas.yml", arena + ".lobbyLocation");
-                if(lobbyLoc == null) {
-                    Bukkit.getConsoleSender().sendMessage(getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set lobby location !");
-                }
-                BBArena bbArena = new BBArena(name, minPlayers, gameMode, teamSize, lobbyLoc, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-                loadBBPlots(bbArena);
-                loadBBSigns(bbArena);
-                bbArena.setupTeams();
-                bbArena.setupTeamInventory();
-                Bukkit.getConsoleSender().sendMessage(getPrefix() + " §aArena §e" + arena + " §aloaded !");
-            }
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cAn exception occurred while trying loading arenas !");
-            e.printStackTrace();
-        }
-
-    }
-
-    private void loadBBSigns(BBArena a) {
-        try {
-            if (BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(a.getName()) != null) {
-                for (String sign : BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(a.getName()).getKeys(false)) {
-                    Location signLoc = LocationUtil.getLocationFromString(sign);
-                    //BBSign constructor already adds this sign into BBArena signs and update it.
-                    BBSign bbSign = new BBSign(a, signLoc);
-                }
-            }
-        } catch(Exception e){
-            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cAn exception occurred while trying loading signs for arena §e" + a.getName() + "§c!");
-            e.printStackTrace();
-        }
     }
 
     public void loadThemes() {
@@ -628,6 +566,7 @@ public class GameManager {
             setFireworkWaves(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.firework_waves"));
             setAmountParticleToSpawn(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.amount_to_spawn"));
             setPartyMaxPlayers(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("parties.max_players"));
+            setAnnounceNewMostPoints(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.announce_new_most_points"));
             //setLockServerOnGameStart(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.lock_server_on_game_start"));
             setPartiesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
             setParticleRefreshTime(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));

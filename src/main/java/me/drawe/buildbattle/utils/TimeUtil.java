@@ -1,5 +1,7 @@
 package me.drawe.buildbattle.utils;
 
+import me.drawe.buildbattle.managers.GameManager;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +13,13 @@ public class TimeUtil {
 
         String timeString = String.format("%02d:%02d", minutes, seconds);
 
-        return timeString;
+        if(secs > GameManager.getGameTime() / 2) {
+            return "§a" + timeString;
+        } else if(secs > GameManager.getGameTime() / 10) {
+            return "§e" + timeString;
+        } else {
+            return "§c" + timeString;
+        }
     }
 
     public static String ordinal(int i) {

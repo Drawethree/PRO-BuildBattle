@@ -86,12 +86,38 @@ public class PlayerListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         Inventory inv = e.getClickedInventory();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        if (inv != null) {
+            if (inv.getTitle().equalsIgnoreCase(OptionsManager.getAllArenasInventory().getTitle())) {
+                e.setCancelled(true);
+                if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
+                    BBArena clickedArena = ArenaManager.getInstance().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
+                    if(a == null) {
+                        if (clickedArena != null) {
+                            clickedArena.addPlayer(p);
+                        }
+                    } else {
+                        p.sendMessage(Message.ALREADY_IN_ARENA.getMessage());
+                    }
+                }
+                return;
+            }
+        }
         if (a != null) {
             if (inv != null) {
                 if (e.getSlotType() == InventoryType.SlotType.ARMOR && e.getCursor() != null) {
                     e.setCancelled(true);
                     p.sendMessage(Message.CANNOT_WEAR_ARMOR.getChatMessage());
                     return;
+                }
+                if(e.getCurrentItem() != null) {
+                    if(e.getCurrentItem().isSimilar(OptionsManager.getBackItem())) {
+                        e.setCancelled(true);
+                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
+                        if(plot != null) {
+                            OptionsManager.getInstance().openOptionsInventory(p,plot);
+                        }
+                        return;
+                    }
                 }
                 if (a.getBBArenaState() != BBArenaState.INGAME) {
                     e.setCancelled(true);
@@ -148,6 +174,8 @@ public class PlayerListener implements Listener {
                                 }
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getHeadsItem())) {
                                 p.openInventory(HeadInventory.getInstance().getMainPage());
+                            } else if(e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
+                                p.openInventory(OptionsManager.getBiomesInventory());
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getInstance().getWeatherItemStack(plot))) {
                                 if (p.hasPermission("buildbattlepro.changeweather")) {
                                     if (plot.getOptions().getCurrentWeather() == WeatherType.CLEAR) {
@@ -187,7 +215,22 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
+                    } /*else if(inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
+                        e.setCancelled(true);
+                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
+                        if(plot != null) {
+                            if(e.getCurrentItem() != null) {
+                                PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem(), e.getSlot());
+                                if(selectedBiome != null) {
+                                    if(p.hasPermission("buildbattlepro.changebiome")) {
+                                        plot.getOptions().setCurrentBiome(selectedBiome, true);
+                                    } else {
+                                        p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+                                    }
+                                }
+                            }
+                        }*/
+                    else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -264,19 +307,6 @@ public class PlayerListener implements Listener {
                             }
                         }
                     }
-                }
-            }
-        } else {
-            if (inv != null) {
-                if (inv.getTitle().equalsIgnoreCase(OptionsManager.getAllArenasInventory().getTitle())) {
-                    e.setCancelled(true);
-                    if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
-                        BBArena clickedArena = ArenaManager.getInstance().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
-                        if (clickedArena != null) {
-                            clickedArena.addPlayer(p);
-                        }
-                    }
-                    return;
                 }
             }
         }
@@ -414,7 +444,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
-        for (BBArena a : GameManager.getArenas()) {
+        for (BBArena a : ArenaManager.getArenas()) {
             if (a.getLobbyLocation() != null) {
                 if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
                     e.setCancelled(true);
@@ -446,7 +476,7 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         if(a != null) {
-            if(e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL || e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+            if((e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)) {
                 e.setCancelled(true);
             }
         }
