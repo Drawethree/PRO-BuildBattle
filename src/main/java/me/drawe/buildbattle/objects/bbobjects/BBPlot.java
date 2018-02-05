@@ -3,11 +3,11 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,6 +29,7 @@ public class BBPlot implements Comparable<BBPlot> {
     private HashMap<Player, Integer> votedPlayers;
     private List<PlotParticle> particles;
     private List<Location> blocksInPlot;
+    private List<Chunk> chunksInPlot;
 
     public BBPlot(BBArena arena, Location minPoint, Location maxPoint) {
         this.arena = arena;
@@ -39,7 +40,8 @@ public class BBPlot implements Comparable<BBPlot> {
         this.votedPlayers = new HashMap<>();
         this.particles = new ArrayList<>();
         this.team = null;
-        //setBlocksInPlot();
+        setBlocksInPlot();
+        setChunksInPlot();
     }
 
     @Override
@@ -78,6 +80,7 @@ public class BBPlot implements Comparable<BBPlot> {
         ItemStack item = ItemCreator.getItemStack(GameManager.getDefaultFloorMaterial());
         changeFloor(item.getType(), item.getData().getData());
         setOptions(new BBPlotOptions(this));
+        getOptions().setCurrentBiome(PlotBiome.PLAINS, false);
     }
 
     private void removeAllBlocks() {
@@ -117,9 +120,9 @@ public class BBPlot implements Comparable<BBPlot> {
         int maxY = Math.max(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
 
         if (location.getWorld().equals(getMinPoint().getWorld())) {
-            if (location.getBlockX() >= minX && location.getBlockX() <= maxX) {
-                if (location.getBlockY() >= minY && location.getBlockY() <= maxY) {
-                    if (location.getBlockZ() >= minZ && location.getBlockZ() <= maxZ) {
+            if ((location.getBlockX() >= minX) && (location.getBlockX() <= maxX)) {
+                if ((location.getBlockY() >= minY) && (location.getBlockY() <= maxY)) {
+                    if ((location.getBlockZ() >= minZ) && (location.getBlockZ() <= maxZ)) {
                         trueOrNot = true;
                     }
                 }
@@ -349,6 +352,7 @@ public class BBPlot implements Comparable<BBPlot> {
         getOptions().setCurrentFloorItem(item);
         getOptions().setCurrentWeather(WeatherType.CLEAR, false);
         getOptions().setCurrentTime(BBPlotTime.NOON, false);
+        getOptions().setCurrentBiome(PlotBiome.PLAINS, false);
         getTeam().getCaptain().sendMessage(Message.PLOT_CLEARED.getChatMessage());
     }
 
@@ -368,7 +372,7 @@ public class BBPlot implements Comparable<BBPlot> {
                 }
             }
         }
-        blocksInPlot = locations;
+        this.blocksInPlot = locations;
     }
     public List<Location> getBlocksInPlot() {
         return blocksInPlot;
@@ -385,5 +389,20 @@ public class BBPlot implements Comparable<BBPlot> {
         for(Player p : team.getPlayers()) {
             p.teleport(getTeleportExactCenterLocation());
         }
+    }
+
+    public List<Chunk> getChunksInPlot() {
+        return chunksInPlot;
+    }
+
+    public void setChunksInPlot() {
+        List<Chunk> chunks = new ArrayList<>();
+        for(Location l : getBlocksInPlot()) {
+            Chunk c = l.getChunk();
+            if(!chunks.contains(c)) {
+                chunks.add(c);
+            }
+        }
+        this.chunksInPlot = chunks;
     }
 }

@@ -340,6 +340,31 @@ public final class ReflectionUtils {
         setValue(instance, instance.getClass(), declared, fieldName, value);
     }
 
+    public static void sendPacket(Player player, Object packet) {
+        try {
+            Object handle = player.getClass().getMethod("getHandle").invoke(player);
+            Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+            playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    }
+    public static Class<?> getNMSClass(String name) {
+        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        try {
+            return Class.forName("net.minecraft.server." + version + "." + name);
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * Represents an enumeration of dynamic packages of NMS and CraftBukkit
      * <p>
@@ -598,30 +623,6 @@ public final class ReflectionUtils {
                 return false;
             }
             return true;
-        }
-
-        public static void sendPacket(Player player, Object packet) {
-            try {
-                Object handle = player.getClass().getMethod("getHandle").invoke(player);
-                Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
-                playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
-            }
-
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public static Class<?> getNMSClass(String name) {
-            String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-            try {
-                return Class.forName("net.minecraft.server." + version + "." + name);
-            }
-
-            catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
     }
 }

@@ -200,7 +200,15 @@ public enum Message {
     GUI_TEAMS_ITEMS_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.teams.items.displayname")),
     GUI_TEAM_ITEMS_NOBODY(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.teams.items.nobody")),
     ARENA_LIST_MODE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.mode")),
-    ITEMS_BACK_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.back_item.displayname"));
+    ITEMS_BACK_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.back_item.displayname")),
+    GUI_BIOMES_PLAINS_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.plains.displayname")),
+    GUI_BIOMES_MESA_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.mesa.displayname")),
+    GUI_BIOMES_OCEAN_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.ocean.displayname")),
+    GUI_BIOMES_DESERT_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.desert.displayname")),
+    GUI_BIOMES_FOREST_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.forest.displayname")),
+    GUI_BIOMES_JUNGLE_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.jungle.displayname")),
+    GUI_BIOMES_SWAMP_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.swamp.displayname")),
+    GUI_BIOMES_SAVANNA_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.savanna.displayname"));
 
     private String message;
     Message(String message) {

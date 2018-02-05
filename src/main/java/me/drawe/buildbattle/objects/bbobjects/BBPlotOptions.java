@@ -5,10 +5,18 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemCreator;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.InvocationTargetException;
+
+import static me.drawe.buildbattle.utils.ReflectionUtils.getNMSClass;
+import static me.drawe.buildbattle.utils.ReflectionUtils.sendPacket;
+
 
 public class BBPlotOptions {
 
@@ -102,23 +110,29 @@ public class BBPlotOptions {
     }
 
 
-   /* public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
+   public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
         this.currentBiome = currentBiome;
         if(broadcast) {
             for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
         }
         for(Location l : getPlot().getBlocksInPlot()) {
             l.getBlock().setBiome(currentBiome.getBiome());
-            for(Player p : getPlot().getTeam().getPlayers()) {
+        }
+        for(Chunk c : getPlot().getChunksInPlot()) {
+            for (Player p : getPlot().getArena().getPlayers()) {
                 try {
-                    sendPacket(p,getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), int.class).newInstance(l.getChunk().getClass().getMethod("getHandle").invoke(l.getChunk()), true, 65535));
+                    sendPacket(p, getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), boolean.class, int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), true, 65535));
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                    e.printStackTrace();
+                    try {
+                        sendPacket(p, getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), 65535));
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
     }
-    */
+
 
     public PlotBiome getCurrentBiome() {
         return currentBiome;

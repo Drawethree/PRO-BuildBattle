@@ -196,6 +196,7 @@ public class ArenaManager {
                 Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aPlot §e" + plot + " §afor arena §e" + a.getName() + " §aloaded !");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cLooks like arena §e" + a.getName() + " §c have no plots ! Please set them.");
         }
     }

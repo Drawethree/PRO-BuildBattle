@@ -194,10 +194,8 @@ public class PlayerListener implements Listener {
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getClearPlotItem())) {
                                 plot.resetPlotFromGame();
                                 p.closeInventory();
-                            /*} else if (e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
+                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
                                 p.openInventory(OptionsManager.getBiomesInventory());
-                            }
-                            */
                             }
                         }
                     } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLES_TITLE.getMessage())) {
@@ -215,22 +213,22 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } /*else if(inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
+                    } else if(inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-                        if(plot != null) {
-                            if(e.getCurrentItem() != null) {
+                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        if (plot != null) {
+                            if (e.getCurrentItem() != null) {
                                 PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem(), e.getSlot());
-                                if(selectedBiome != null) {
-                                    if(p.hasPermission("buildbattlepro.changebiome")) {
+                                if (selectedBiome != null) {
+                                    if (p.hasPermission("buildbattlepro.changebiome")) {
                                         plot.getOptions().setCurrentBiome(selectedBiome, true);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                     }
                                 }
                             }
-                        }*/
-                    else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
+                        }
+                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -460,12 +458,47 @@ public class PlayerListener implements Listener {
             Player p = e.getPlayer();
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
-                BBPlot plot = ArenaManager.getInstance().getPlotPlayerIsIn(arena,p);
-                if (plot != null) {
-                    if (!plot.isLocationInPlot(e.getTo())) {
-                        e.setTo(e.getFrom());
-                        p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
-                    }
+                BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+                switch (arena.getBBArenaState()) {
+                    case INGAME:
+                        if (plot != null) {
+                            if (!plot.isLocationInPlot(e.getTo())) {
+                                e.setTo(e.getFrom());
+                                p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                            }
+                        }
+                        break;
+                    case VOTING:
+                        BBPlot currentlyVoted = arena.getCurrentVotingPlot();
+                        if (currentlyVoted != null) {
+                            if (!currentlyVoted.isLocationInPlot(e.getTo())) {
+                                e.setTo(e.getFrom());
+                                p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                            }
+                        } else if (plot != null) {
+                            if (!plot.isLocationInPlot(e.getTo())) {
+                                e.setTo(e.getFrom());
+                                p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                            }
+                        }
+                        break;
+                    case THEME_VOTING:
+                        if (plot != null) {
+                            if (!plot.isLocationInPlot(e.getTo())) {
+                                e.setTo(e.getFrom());
+                                p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                            }
+                        }
+                        break;
+                    case ENDING:
+                        BBPlot winnerPlot = arena.getWinner();
+                        if (winnerPlot != null) {
+                            if (!winnerPlot.isLocationInPlot(e.getTo())) {
+                                e.setTo(e.getFrom());
+                                p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
+                            }
+                        }
+                        break;
                 }
             }
         }

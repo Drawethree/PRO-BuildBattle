@@ -235,6 +235,41 @@ gui:
     items:
       location: "&eLocation:"
       click_to_remove: "&eClick to remove!"
+  biomes:
+    title: "BuildBattle - Biomes"
+    items:
+      plains:
+        displayname: "&aPlains"
+        lore:
+        - "&7Click to set biome to Plains"
+      mesa:
+        displayname: "&aMesa"
+        lore:
+        - "&7Click to set biome to Mesa"
+      ocean:
+        displayname: "&aOcean"
+        lore:
+        - "&7Click to set biome to Ocean"
+      desert:
+        displayname: "&aDesert"
+        lore:
+        - "&7Click to set biome to Desert"
+      forest:
+        displayname: "&aForest"
+        lore:
+        - "&7Click to set biome to Forest"
+      jungle:
+        displayname: "&aJungle"
+        lore:
+        - "&7Click to set biome to Jungle"
+      swamp:
+        displayname: "&aSwamp"
+        lore:
+        - "&7Click to set biome to Swamp"
+      savanna:
+        displayname: "&aSavanna"
+        lore:
+        - "&7Click to set biome to Savanna"
   time:
     title: "BuildBattle - Time"
     items:

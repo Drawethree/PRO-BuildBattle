@@ -108,8 +108,8 @@ public class OptionsManager {
         optionsInv.setItem(3, getTimeItem());
         optionsInv.setItem(4, getParticlesItem());
         optionsInv.setItem(5, getWeatherItemStack(plot));
-        optionsInv.setItem(6, getClearPlotItem());
-        //optionsInv.setItem(7, getBiomesItem());
+        optionsInv.setItem(6, getBiomesItem());
+        optionsInv.setItem(7, getClearPlotItem());
         p.openInventory(optionsInv);
     }
 
@@ -158,6 +158,7 @@ public class OptionsManager {
         for(PlotBiome biome : PlotBiome.values()) {
             biomesInventory.setItem(biome.getSlot(), biome.getItem());
         }
+        biomesInventory.setItem(8, getBackItem());
     }
 
     private static ItemStack getArenaStatusItem(BBArena a) {
