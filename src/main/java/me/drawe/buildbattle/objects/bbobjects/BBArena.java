@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class BBArena {
     private String name;
     private int min_players;
+    private int gameTime;
     private Location lobbyLocation;
     private List<Player> players;
     private List<BBTeam> teams;
@@ -43,9 +44,10 @@ public class BBArena {
     private Inventory teamsInventory;
 
     //LOADING
-    public BBArena(String name, int min_players, BBGameMode gameMode, int teamSize, Location lobbyLocation, List<Player> players, List<BBPlot> buildPlots, List<BBSign> signs) {
+    public BBArena(String name, int min_players, int playTime, BBGameMode gameMode, int teamSize, Location lobbyLocation, List<Player> players, List<BBPlot> buildPlots, List<BBSign> signs) {
         this.name = name;
         this.min_players = min_players;
+        this.gameTime = playTime;
         this.gameMode = gameMode;
         this.teamSize = teamSize;
         this.lobbyLocation = lobbyLocation;
@@ -66,6 +68,7 @@ public class BBArena {
     public BBArena(String name, BBGameMode gameMode) {
         this.name = name;
         this.min_players = 2;
+        this.gameTime = GameManager.getDefaultGameTime();
         this.gameMode = gameMode;
         this.players = new ArrayList<>();
         this.buildPlots = new ArrayList<>();
@@ -82,6 +85,7 @@ public class BBArena {
         addIntoAllArenas();
         OptionsManager.getInstance().refreshAllArenasInventory();
         saveIntoConfig();
+        ArenaManager.getInstance().loadArenaEditors();
     }
 
     public List<BBPlot> getBuildPlots() {
@@ -174,9 +178,18 @@ public class BBArena {
             }
         }
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
-        if ((getPlayers().size() < getMinPlayers()) && ((getBBArenaState() != BBArenaState.LOBBY) && (getBBArenaState() != BBArenaState.ENDING))) {
-            stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
+        if(getBBArenaState() == BBArenaState.LOBBY) {
+            if(getPlayers().size() < getMinPlayers()) {
+                stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
+            }
+        } else {
+            if(getPlayers().size() <= getTeamSize()) {
+                stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
+            }
         }
+        /*if ((getPlayers().size() < getMinPlayers()) && ((getBBArenaState() != BBArenaState.LOBBY) && (getBBArenaState() != BBArenaState.ENDING))) {
+            stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
+        }*/
     }
 
     public void startLobby() {
@@ -264,7 +277,7 @@ public class BBArena {
         PlayerManager.getInstance().sendStartMessageToAllPlayers(getArenaInstance());
 
         gameCountdown = new BukkitRunnable() {
-            int countdown = GameManager.getGameTime();
+            int countdown = getGameTime();
 
             @Override
             public void run() {
@@ -275,7 +288,7 @@ public class BBArena {
                     startVotingCountdown();
                     cancel();
                     return;
-                } else if (countdown % 60 == 0 && countdown >= 60 && countdown != GameManager.getGameTime()) {
+                } else if (countdown % 60 == 0 && countdown >= 60 && countdown != getGameTime()) {
                     PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown % 30 == 0 && countdown < 60) {
@@ -316,7 +329,7 @@ public class BBArena {
         PlayerManager.getInstance().sendStartMessageToAllPlayers(getArenaInstance());
 
         gameCountdown = new BukkitRunnable() {
-            int countdown = GameManager.getGameTime();
+            int countdown = getGameTime();
 
             @Override
             public void run() {
@@ -327,7 +340,7 @@ public class BBArena {
                     startVotingCountdown();
                     cancel();
                     return;
-                } else if (countdown % 60 == 0 && countdown >= 60 && countdown != GameManager.getGameTime()) {
+                } else if (countdown % 60 == 0 && countdown >= 60 && countdown != getGameTime()) {
                     PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown % 30 == 0 && countdown < 60) {
@@ -367,6 +380,7 @@ public class BBArena {
             }
         }
         RewardManager.getInstance().giveRewards(this);
+        ArenaManager.setTotalPlayedGames(ArenaManager.getTotalPlayedGames() + 1);
         endCountdown = new BukkitRunnable() {
 
             @Override
@@ -451,10 +465,12 @@ public class BBArena {
     }
 
     public void stopArena(String message, boolean forced) {
+        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), message);
         switch (getBBArenaState()) {
             case LOBBY:
                 if (lobbyCountdown != null) {
                     lobbyCountdown.cancel();
+                    updateAllScoreboards(0);
                     return;
                 }
                 break;
@@ -484,7 +500,6 @@ public class BBArena {
             getThemeVoting().resetInventory();
         }
         ArenaManager.getInstance().resetAllPlots(getArenaInstance());
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), message);
         resetAllTeams();
         setBBArenaState(BBArenaState.LOBBY);
         if (forced || GameManager.isRemovePlayersAfterGame()) {
@@ -581,8 +596,10 @@ public class BBArena {
 
     public void saveIntoConfig() {
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".lobbyLocation", LocationUtil.getStringFromLocation(getLobbyLocation()));
+        BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".gameTime", getGameTime());
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".min_players", getMinPlayers());
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".mode", getGameType().name());
+        BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".teamSize", getTeamSize());
         for(BBPlot plot : getBuildPlots()) {
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
@@ -662,6 +679,7 @@ public class BBArena {
         BuildBattle.getFileManager().getConfig("arenas.yml").save();
         ArenaManager.getArenas().remove(this);
         OptionsManager.getInstance().refreshAllArenasInventory();
+        ArenaManager.getInstance().loadArenaEditors();
         sender.sendMessage(Message.ARENA_REMOVED.getChatMessage());
     }
 
@@ -920,5 +938,17 @@ public class BBArena {
 
     public int getTeamSize() {
         return teamSize;
+    }
+
+    public int getGameTime() {
+        return gameTime;
+    }
+
+    public void setTeamSize(int teamSize) {
+        this.teamSize = teamSize;
+    }
+
+    public void setGameTime(int gameTime) {
+        this.gameTime = gameTime;
     }
 }

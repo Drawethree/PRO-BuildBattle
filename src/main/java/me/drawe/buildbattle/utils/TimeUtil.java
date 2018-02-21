@@ -13,9 +13,9 @@ public class TimeUtil {
 
         String timeString = String.format("%02d:%02d", minutes, seconds);
 
-        if(secs > GameManager.getGameTime() / 2) {
+        if(secs > GameManager.getDefaultGameTime() / 2) {
             return "§a" + timeString;
-        } else if(secs > GameManager.getGameTime() / 10) {
+        } else if(secs > GameManager.getDefaultGameTime() / 10) {
             return "§e" + timeString;
         } else {
             return "§c" + timeString;

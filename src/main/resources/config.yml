@@ -28,9 +28,13 @@ rewards:
     first_place: 50
     second_place: 25
     third_place: 10
+auto-restart:
+  enabled: false
+  games-needed: 10
+  restart-command: "stop"
 arena:
   lobbyTime: 30
-  gameTime: 300
+  defaultGameTime: 300
   votingTime: 13
   voting_for_themes:
     enabled: true
@@ -40,6 +44,7 @@ arena:
   default_floor: '5:2'
   arena_chat: true
   announce_new_most_points: true
+  replace_block_behind_signs: true
   show_scoreboard: true
   enable_reports: false
   show_vote_in_subtitle: true

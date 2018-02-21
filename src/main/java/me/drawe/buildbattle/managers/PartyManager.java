@@ -32,7 +32,7 @@ public class PartyManager {
         if(creator.hasPermission("buildbattlepro.party")) {
             if (getPlayerParty(creator) == null) {
                 BBParty party = new BBParty(creator);
-                getParties().add(party);
+                parties.add(party);
             } else {
                 creator.sendMessage(Message.PARTY_CREATE_FAILED.getChatMessage());
             }
@@ -56,7 +56,7 @@ public class PartyManager {
     }
     public void invitePlayer(Player whoInvited, Player p, BBParty party) {
         if(p != null) {
-            if(party == null) {
+            if(party != null) {
                 if(party.isCreator(whoInvited)) {
                     if(!party.isFull()) {
                         if (!getInvitedPlayers().containsKey(p)) {

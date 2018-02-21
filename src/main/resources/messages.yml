@@ -162,10 +162,16 @@ gamestate:
   voting: "&eVoting"
   ending: "&cEnding"
 signs:
-  first_line: "&7[&bBuildBattle&7]"
-  second_line: "%arena%"
-  third_line: "%gamestate%"
-  fourth_line: "%players%"
+  join:
+    first_line: "&7[&bBuildBattle&7]"
+    second_line: "%arena%"
+    third_line: "%gamestate%"
+    fourth_line: "%players%"
+  auto-join:
+    first_line: "&7[&bBuildBattle&7]"
+    second_line: "&7Right-Click to"
+    third_line: "&aAUTO-JOIN"
+    fourth_line: ""
 time:
   seconds: "Seconds"
   minutes: "Minutes"
@@ -178,6 +184,12 @@ time:
   day: "Day"
   year: "Year"
 gui:
+  banner_creator:
+    items:
+      final_banner:
+        displayname: "&aFinal Banner"
+        lore:
+        - "&7Click here to take this banner !"
   arena_list:
     title: "BuildBattle - All Arenas"
     status: "&eStatus: %status%"
@@ -228,6 +240,18 @@ gui:
         - "&4Warning!"
         - "&eBy clicking on this item,"
         - "&eyour plot instantly resets!"
+      change_biome_item:
+        displayname: "&aChange biome"
+        lore:
+        - "&7Click to adjust biome of your plot"
+      banner_creator_item:
+        displayname: "&aBanner Creator"
+        lore:
+        - "&7Create a custom banner !"
+  colors:
+    title: "&8Banner Builder"
+  patterns:
+    title: "&8Add layer"
   particles:
     title: "BuildBattle - Particles"
   particle_list:
@@ -340,6 +364,7 @@ items:
     displayname: "&aTeam Selector &8(Right Click)"
     lore:
     - "&7Click to select your team !"
+
 gamemode:
   solo: "SOLO"
   team: "TEAM"

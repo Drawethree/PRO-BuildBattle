@@ -78,6 +78,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadDefaultFloorMaterial();
         GameManager.getInstance().loadRestrictedBlocks();
         ArenaManager.getInstance().loadArenas();
+        ArenaManager.getInstance().loadArenaEditors();
         if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), this);
         if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
 
@@ -116,6 +117,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadDefaultFloorMaterial();
         GameManager.getInstance().loadRestrictedBlocks();
         ArenaManager.getInstance().loadArenas();
+        ArenaManager.getInstance().loadArenaEditors();
         if(isUseHolographicDisplays()) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
                 h.delete();

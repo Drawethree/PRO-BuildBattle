@@ -9,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.List;
 public class ArenaManager {
     private static ArenaManager ourInstance = new ArenaManager();
     private static List<BBArena> arenas = new ArrayList<>();
+    private static List<BBArenaEdit> arenaEditors = new ArrayList<>();
+    private static int totalPlayedGames = 0;
+    private Inventory editArenasInventory;
 
     public static ArenaManager getInstance() {
         return ourInstance;
@@ -25,6 +30,28 @@ public class ArenaManager {
 
     }
 
+    public static int getTotalPlayedGames() {
+        return totalPlayedGames;
+    }
+
+    public static void setTotalPlayedGames(int totalPlayedGames) {
+        ArenaManager.totalPlayedGames = totalPlayedGames;
+        if(GameManager.isAutoRestarting()) {
+            if(getTotalPlayedGames() == GameManager.getAutoRestartGamesRequired()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), GameManager.getAutoRestartCommand());
+                    }
+                }, GameManager.getEndTime()* 20L);
+            }
+        }
+    }
+
+    public static List<BBArenaEdit> getArenaEditors() {
+        return arenaEditors;
+    }
+
     public int getArenaListSize() {
         int arenasSize = getArenas().size();
         int baseSize = 9;
@@ -32,6 +59,10 @@ public class ArenaManager {
             baseSize += 9;
         }
         return baseSize;
+    }
+
+    public Inventory getEditArenasInventory() {
+        return editArenasInventory;
     }
 
     public void createArena(CommandSender sender, String name, String gamemode) {
@@ -134,6 +165,15 @@ public class ArenaManager {
         }
     }
 
+    public BBArenaEdit getArenaEdit(Inventory inv) {
+        for(BBArenaEdit edit : getArenaEditors()) {
+            if(edit.getEditInventory().equals(inv)) {
+                return edit;
+            }
+        }
+        return null;
+    }
+
     public BBArena getArenaToAutoJoin() {
         for(BBArena a : getArenas()) {
             if((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
@@ -156,6 +196,12 @@ public class ArenaManager {
             for (String arena : BuildBattle.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
                 String name = arena;
                 int minPlayers = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".min_players");
+                if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".gameTime")) {
+                    BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".gameTime", GameManager.getDefaultGameTime());
+                    BuildBattle.getFileManager().getConfig("arenas.yml").save();
+                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set gameTime ! Automatically set to default (" + GameManager.getDefaultGameTime() + ")");
+                }
+                int gameTime = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".gameTime");
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".mode")) {
                     BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".mode", BBGameMode.SOLO.name());
                     BuildBattle.getFileManager().getConfig("arenas.yml").save();
@@ -172,7 +218,7 @@ public class ArenaManager {
                 if(lobbyLoc == null) {
                     Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set lobby location !");
                 }
-                BBArena bbArena = new BBArena(name, minPlayers, gameMode, teamSize, lobbyLoc, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                BBArena bbArena = new BBArena(name, minPlayers, gameTime, gameMode, teamSize, lobbyLoc, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                 loadBBPlots(bbArena);
                 loadBBSigns(bbArena);
                 bbArena.setupTeams();
@@ -201,6 +247,15 @@ public class ArenaManager {
         }
     }
 
+    public void loadArenaEditors() {
+        editArenasInventory = Bukkit.createInventory(null, getArenaListSize(), "Arena Editor");
+        for(BBArena a : getArenas()) {
+            BBArenaEdit edit = new BBArenaEdit(a);
+            arenaEditors.add(edit);
+            editArenasInventory.addItem(edit.getArenaEditItemStack());
+        }
+    }
+
     private void loadBBSigns(BBArena a) {
         try {
             if (BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(a.getName()) != null) {
@@ -214,5 +269,14 @@ public class ArenaManager {
             Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cAn exception occurred while trying loading signs for arena §e" + a.getName() + "§c!");
             e.printStackTrace();
         }
+    }
+
+    public BBArenaEdit getArenaEdit(ItemStack currentItem) {
+        for(BBArenaEdit edit: getArenaEditors()) {
+            if(edit.getArenaEditItemStack().equals(currentItem)) {
+                return edit;
+            }
+        }
+        return null;
     }
 }

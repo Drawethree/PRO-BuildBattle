@@ -5,6 +5,7 @@ import me.drawe.buildbattle.managers.GameManager;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
+import java.util.Properties;
 
 
 public class MySQL {

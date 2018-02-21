@@ -1,7 +1,6 @@
 package me.drawe.buildbattle.api;
 
 import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;

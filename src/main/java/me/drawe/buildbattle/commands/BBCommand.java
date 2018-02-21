@@ -10,6 +10,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
+import me.drawe.buildbattle.utils.Sounds;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -83,6 +84,9 @@ public class BBCommand implements CommandExecutor {
                     case "party":
                         partySubCommand(sender,args);
                         break;
+                    case "editor":
+                        openEditor(sender);
+                        break;
                 }
             } else {
                 if(sender instanceof Player) {
@@ -93,6 +97,18 @@ public class BBCommand implements CommandExecutor {
 
         }
         return true;
+    }
+
+    private void openEditor(CommandSender sender) {
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if(p.hasPermission("buildbattlepro.create")) {
+                p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                p.playSound(p.getLocation(), Sounds.NOTE_PLING.getSound(), 1.0F,1.0F);
+            } else {
+                p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            }
+        }
     }
 
     private void partySubCommand(CommandSender sender, String[] args) {
@@ -517,6 +533,7 @@ public class BBCommand implements CommandExecutor {
             p.sendMessage("§e/bb stop " + "§8» " + "§7Force stop Arena you are currently in");
             p.sendMessage("§e/bb stop <arena> " + "§8» " + "§7Force stop Arena");
             p.sendMessage("§e/bb reload " + "§8» " + "§7Reload plugin");
+            p.sendMessage("§e/bb editor " + "§8» " + "§7Open arena editor");
             p.sendMessage("§e/bb lb create <type> " + "§8» " + "§7Create leaderboard with specified type");
             p.sendMessage("§e/bb lb select " + "§8» " + "§7Select leaderboard closest to you");
             p.sendMessage("§e/bb lb delete " + "§8» " +  "§7Deletes selected leaderboard");

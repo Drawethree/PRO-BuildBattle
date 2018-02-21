@@ -1,12 +1,7 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
-import me.drawe.buildbattle.objects.bbobjects.BBSign;
 import me.drawe.buildbattle.objects.StatsType;
-import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 
@@ -32,7 +27,7 @@ public class GameManager {
     private static String defaultFloorMaterial = "2:0";
     private static String prefix = "&8[&eBuildBattlePro&8]&r";
     private static int lobbyTime = 30;
-    private static int gameTime = 300;
+    private static int defaultGameTime = 300;
     private static int themeVotingTime = 15;
     private static int votingTime = 13;
     private static int endTime = 10;
@@ -48,6 +43,7 @@ public class GameManager {
     private static List<String> endMessage = new ArrayList<>();
     private static List<String> themeVotingLore = new ArrayList<>();
     private static List<String> weatherLore = new ArrayList<>();
+    private static List<String> finalBannerLore = new ArrayList<>();
     private static boolean asyncSavePlayerData = false;
     private static StatsType statsType = StatsType.FLATFILE;
     private static boolean scoreboardEnabled = true;
@@ -64,6 +60,10 @@ public class GameManager {
     private static boolean showVoteInSubtitle = true;
     private static boolean restrictPlayerMovement = true;
     private static boolean lockServerOnGameStart = false;
+    private static boolean replaceBlockBehindSigns = true;
+    private static boolean autoRestarting = false;
+    private static int autoRestartGamesRequired = -1;
+    private static String autoRestartCommand = "NONE";
     private static String endCommand = "NONE";
     private static EntityType floorChangeNPCtype = EntityType.VILLAGER;
 
@@ -91,8 +91,8 @@ public class GameManager {
         return lobbyTime;
     }
 
-    public static int getGameTime() {
-        return gameTime;
+    public static int getDefaultGameTime() {
+        return defaultGameTime;
     }
 
     public static void setDefaultFloorMaterial(String defaultFloorMaterial) {
@@ -103,11 +103,11 @@ public class GameManager {
         }
     }
 
-    public static void setGameTime(int gameTime) {
-        if(gameTime > 0) {
-            GameManager.gameTime = gameTime;
+    public static void setDefaultGameTime(int defaultGameTime) {
+        if(defaultGameTime > 0) {
+            GameManager.defaultGameTime = defaultGameTime;
         } else {
-            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cVariable gameTime must be higher than 0 ! Setting it to default (" + getGameTime() + ")");
+            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cVariable defaultGameTime must be higher than 0 ! Setting it to default (" + getDefaultGameTime() + ")");
         }
     }
 
@@ -492,6 +492,59 @@ public class GameManager {
         GameManager.announceNewMostPoints = announceNewMostPoints;
     }
 
+    public static boolean isReplaceBlockBehindSigns() {
+        return replaceBlockBehindSigns;
+    }
+
+    public static void setReplaceBlockBehindSigns(boolean replaceBlockBehindSigns) {
+        GameManager.replaceBlockBehindSigns = replaceBlockBehindSigns;
+    }
+
+    public static boolean isAutoRestarting() {
+        return autoRestarting;
+    }
+
+    public static void setAutoRestarting(boolean autoRestarting) {
+        GameManager.autoRestarting = autoRestarting;
+        if(autoRestarting) {
+            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aAuto-Restarting >> §eEnabled !");
+        }
+    }
+
+    public static int getAutoRestartGamesRequired() {
+        return autoRestartGamesRequired;
+    }
+
+    public static void setAutoRestartGamesRequired(int autoRestartGamesRequired) {
+        if(autoRestartGamesRequired > 0) {
+            GameManager.autoRestartGamesRequired = autoRestartGamesRequired;
+            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aAuto-Restarting >> Games Needed to restart : §e" + autoRestartGamesRequired);
+        } else {
+            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cVariable auto-restart.games-needed must be higher than 0 ! Setting it to default (" + getAutoRestartGamesRequired() + ")");
+        }
+    }
+
+    public static String getAutoRestartCommand() {
+        return autoRestartCommand;
+    }
+
+    public static void setAutoRestartCommand(String autoRestartCommand) {
+        if(autoRestartCommand!= null) {
+            GameManager.autoRestartCommand = autoRestartCommand;
+            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aAuto-Restarting >> Restart command : §e" + autoRestartCommand);
+        } else {
+            Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cVariable auto-restart.restart-command in config.yml is not set ! Setting it to default (" + getAutoRestartCommand() + ")");
+        }
+    }
+
+    public static List<String> getFinalBannerLore() {
+        return finalBannerLore;
+    }
+
+    public static void setFinalBannerLore(List<String> finalBannerLore) {
+        GameManager.finalBannerLore = finalBannerLore;
+    }
+
 
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
@@ -549,7 +602,7 @@ public class GameManager {
     public void loadArenaPreferences() {
         try {
             setLobbyTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.lobbyTime"));
-            setGameTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.gameTime"));
+            setDefaultGameTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.defaultGameTime"));
             setVotingTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.votingTime"));
             setThemeVotingTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themeVotingTime"));
             setEndTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.endTime"));
@@ -575,6 +628,7 @@ public class GameManager {
             setRemovePlayersAfterGame(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.remove_players_after_game"));
             setEndMessage(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("messages.end_message"));
             setThemeVotingLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.theme_voting.themes.lore"));
+            setFinalBannerLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
             setWeatherLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
             setPointsApiRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.PointsAPI.enabled"));
             setVaultRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Vault.enabled"));
@@ -585,6 +639,12 @@ public class GameManager {
             setFloorChangeNPCtype(EntityType.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("change_floor_npc.type")));
             setScoreboardEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_scoreboard"));
             setChangeMOTD(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
+            setReplaceBlockBehindSigns(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
+            setAutoRestarting(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
+            if(isAutoRestarting()) {
+                setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));
+                setAutoRestartCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("auto-restart.restart-command"));
+            }
         } catch (NullPointerException e) {
             Bukkit.getConsoleSender().sendMessage(getPrefix() + " §cAn exception occurred while loading arena preferences ! Check your config.yml");
             e.printStackTrace();

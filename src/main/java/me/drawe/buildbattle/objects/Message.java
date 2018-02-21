@@ -107,10 +107,14 @@ public enum Message {
     REPORT_FAILED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.report_failed")),
     CANNOT_REPORT_YOURSELF(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.cant_report_yourself")),
     VOTING_BUILDER(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("voting.builder")),
-    SIGN_FIRST_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.first_line")),
-    SIGN_SECOND_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.second_line")),
-    SIGN_THIRD_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.third_line")),
-    SIGN_FOURTH_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.fourth_line")),
+    SIGN_JOIN_FIRST_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.join.first_line")),
+    SIGN_JOIN_SECOND_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.join.second_line")),
+    SIGN_JOIN_THIRD_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.join.third_line")),
+    SIGN_JOIN_FOURTH_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.join.fourth_line")),
+    SIGN_AUTO_JOIN_FIRST_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.auto-join.first_line")),
+    SIGN_AUTO_JOIN_SECOND_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.auto-join.second_line")),
+    SIGN_AUTO_JOIN_THIRD_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.auto-join.third_line")),
+    SIGN_AUTO_JOIN_FOURTH_LINE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("signs.auto-join.fourth_line")),
     ITEMS_LEAVE_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.leave_item.displayname")),
     ITEMS_REPORT_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.report_item.displayname")),
     ITEMS_OPTIONS_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("items.options_item.displayname")),
@@ -208,7 +212,13 @@ public enum Message {
     GUI_BIOMES_FOREST_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.forest.displayname")),
     GUI_BIOMES_JUNGLE_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.jungle.displayname")),
     GUI_BIOMES_SWAMP_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.swamp.displayname")),
-    GUI_BIOMES_SAVANNA_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.savanna.displayname"));
+    GUI_BIOMES_SAVANNA_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.items.savanna.displayname")),
+    GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.options.items.change_biome_item.displayname")),
+    GUI_BIOMES_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.biomes.title")),
+    ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.options.items.banner_creator_item.displayname")),
+    GUI_COLORS_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.colors.title")),
+    GUI_PATTERNS_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.patterns.title")),
+    FINAL_BANNER_ITEM_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.banner_creator.items.final_banner.displayname"));
 
     private String message;
     Message(String message) {

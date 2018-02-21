@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -45,12 +44,14 @@ public class BBSign {
     public void update() {
         if(Bukkit.getPluginManager().isPluginEnabled(BuildBattle.getInstance())) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-                getSign().setLine(0, Message.SIGN_FIRST_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()).replaceAll("%mode%", getArena().getGameType().getName()));
-                getSign().setLine(1, Message.SIGN_SECOND_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
-                getSign().setLine(2, Message.SIGN_THIRD_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
-                getSign().setLine(3, Message.SIGN_FOURTH_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
+                getSign().setLine(0, Message.SIGN_JOIN_FIRST_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()).replaceAll("%mode%", getArena().getGameType().getName()));
+                getSign().setLine(1, Message.SIGN_JOIN_SECOND_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
+                getSign().setLine(2, Message.SIGN_JOIN_THIRD_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
+                getSign().setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
                 getSign().update(true);
-                getBlockBehind().setData(getArena().getBBArenaState().getDataValue());
+                if(GameManager.isReplaceBlockBehindSigns()) {
+                    getBlockBehind().setData(getArena().getBBArenaState().getDataValue());
+                }
             }, 20L);
         }
     }
