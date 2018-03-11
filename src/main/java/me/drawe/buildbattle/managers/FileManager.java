@@ -15,6 +15,11 @@ import org.bukkit.plugin.Plugin;
 public class FileManager {
 
     public static Plugin plugin;
+
+    public static HashMap<String, Config> getConfigs() {
+        return configs;
+    }
+
     public static HashMap<String, Config> configs = new HashMap<String, Config>();
 
     public FileManager(Plugin plugin)

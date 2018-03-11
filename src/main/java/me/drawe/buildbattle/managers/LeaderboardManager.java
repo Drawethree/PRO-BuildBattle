@@ -40,11 +40,11 @@ public class LeaderboardManager {
                 int playersToDisplay = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getInt("leaderboards." + location + ".player-amount");
                 double refreshTime = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getDouble("leaderboards." + location + ".refresh-time");
                 if (refreshTime < 10) {
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cRefresh-Time cannot be lower than 10 minutes ! Setting it to 10 minutes");
+                    BuildBattle.warning("§cRefresh-Time cannot be lower than 10 minutes ! Setting it to 10 minutes");
                     refreshTime = 10;
                 }
                 Leaderboard leaderboard = new Leaderboard(loc, type, playersToDisplay, refreshTime);
-                Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aLeaderboard at location §e" + LocationUtil.getStringFromLocation(leaderboard.getLocation()) + " §aloaded!");
+                BuildBattle.info("§aLeaderboard at location §e" + LocationUtil.getStringFromLocation(leaderboard.getLocation()) + " §aloaded!");
                 activeLeaderboards.add(leaderboard);
             }
         }

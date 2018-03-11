@@ -3,9 +3,7 @@ package me.drawe.buildbattle.managers;
 import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.*;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
-import me.drawe.buildbattle.objects.bbobjects.BBTeam;
+import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -13,9 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +45,23 @@ public class PlayerManager {
             }
         }
         return null;
+    }
+
+    public void setMainLobbyScoreboard(Player... players) {
+        BBMainLobbyBoard sb;
+        for(Player p : players) {
+            sb = new BBMainLobbyBoard(p, getPlayerStats(p));
+            sb.send(p);
+        }
+    }
+
+    public void teleportToMainLobby(Player... players) {
+        for(Player p : players) {
+            p.teleport(GameManager.getMainLobbyLocation());
+        }
+        if(GameManager.isMainLobbyScoreboardEnabled()) {
+            setMainLobbyScoreboard(players);
+        }
     }
 
     public void loadAllPlayerStats() {
@@ -263,7 +278,7 @@ public class PlayerManager {
                         break;
                 }
             }
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aPlayer stats for player §e" + p.getName() + " §acreated !");
+            BuildBattle.info("§aPlayer stats for player §e" + p.getName() + " §acreated !");
         }
     }
 

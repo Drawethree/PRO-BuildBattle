@@ -45,7 +45,8 @@ arena:
   arena_chat: true
   announce_new_most_points: true
   replace_block_behind_signs: true
-  show_scoreboard: true
+  show_game_scoreboard: true
+  show_main_lobby_scoreboard: true
   enable_reports: false
   show_vote_in_subtitle: true
   automatic_grow: true
@@ -67,14 +68,10 @@ arena:
     - 7
     - 10
     - 11
-  themes:
-    - TV
-    - Car
-    - Winter
-    - School
-    - House
-    - Mobile
-    - Beach
 change_floor_npc:
   name: "BuildBattle - Change Floor"
   type: VILLAGER
+main_lobby:
+plugin_loading:
+  load_plugin_later: false
+  load_after: 10

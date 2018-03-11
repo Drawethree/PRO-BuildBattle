@@ -21,10 +21,15 @@ public class MySQL {
     }
 
     private static Connection connection;
-    private String host, database, username, password;
-    private int port;
+    private static String host, database, username, password;
+    private static int port;
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws Exception {
+        if(connection == null || connection.isClosed()) {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = (Connection) DriverManager.getConnection(
+                    "jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+        }
         return connection;
     }
 
@@ -37,17 +42,17 @@ public class MySQL {
             username = BuildBattle.getInstance().getConfig().getString("mysql.username");
             password = BuildBattle.getInstance().getConfig().getString("mysql.password");
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aMySQL §e>> §cCould not connect ! Check your config.yml !");
+            BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
             e.printStackTrace();
             return;
         }
         try {
             openConnection();
             createTables();
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aMYSQL §e>> §2Connected !");
+            BuildBattle.info("§aMySQL Connected !");
             BuildBattle.getInstance().setMysqlEnabled(true);
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aMySQL §e>> §cCould not connect ! Check your config.yml!");
+            BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
             e.printStackTrace();
         }
     }
@@ -70,7 +75,7 @@ public class MySQL {
     public static ResultSet getResult(String sql) {
         try {
             return getConnection().prepareStatement(sql).executeQuery();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -84,7 +89,7 @@ public class MySQL {
     public static void update(String sql) {
         try {
             getConnection().prepareStatement(sql).execute();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -92,7 +97,7 @@ public class MySQL {
     public static void insert(String sql) {
         try {
             getConnection().prepareStatement(sql).execute();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

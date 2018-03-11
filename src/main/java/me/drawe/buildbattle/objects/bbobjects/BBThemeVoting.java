@@ -48,10 +48,18 @@ public class BBThemeVoting {
 
     public List<BBTheme> getRandomThemesToVote() {
         List<BBTheme> returnList = new ArrayList<>();
-        List<String> themes = new ArrayList<>(GameManager.getThemes());
-        Random ran = new Random();
+        List<String> themes = null;
+        switch (arena.getGameType()) {
+            case SOLO:
+                themes = new ArrayList<>(GameManager.getSoloThemes());
+                break;
+            case TEAM:
+                themes = new ArrayList<>(GameManager.getTeamThemes());
+                break;
+        }
         int slot = 0;
         while(returnList.size() != GameManager.getThemesToVote()) {
+            Random ran = new Random();
             String theme = themes.get(ran.nextInt(themes.size()));
             BBTheme bbTheme = new BBTheme(theme,0,slot);
             returnList.add(bbTheme);

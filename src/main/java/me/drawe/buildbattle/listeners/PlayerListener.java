@@ -34,6 +34,7 @@ import org.bukkit.inventory.Inventory;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
@@ -42,7 +43,7 @@ public class PlayerListener implements Listener {
     public void onPreJoin(AsyncPlayerPreLoginEvent e) {
         //TODO: UPDATE LOGIC
         if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
-            BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin();
+            BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
             if (arena == null) {
                 e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
                 e.setKickMessage(Message.NO_EMPTY_ARENA.getChatMessage());
@@ -55,13 +56,17 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-                BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin();
+                BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
                 if (arena != null) {
                     arena.addPlayer(p);
                 } else {
                     p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                     BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
                 }
+            }, 1L);
+        } else if(GameManager.getMainLobbyLocation() != null) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
+                PlayerManager.getInstance().teleportToMainLobby(p);
             }, 1L);
         }
     }
@@ -484,7 +489,7 @@ public class PlayerListener implements Listener {
                         if (arenaSign != null) {
                             arenaSign.getArena().addPlayer(p);
                         } else if(s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
-                            BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin();
+                            BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(null);
                             if (arenaToAutoJoin != null) {
                                 arenaToAutoJoin.addPlayer(p);
                             } else {
@@ -801,19 +806,17 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
-            if (e.getEntity() instanceof ArmorStand) {
-                Player p = (Player) e.getDamager();
-                BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-                if (a != null) {
-                    if (a.getBBArenaState() == BBArenaState.VOTING) {
-                        e.setCancelled(true);
-                    }
+            Player p = (Player) e.getDamager();
+            BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+            if (a != null) {
+                if (a.getBBArenaState() == BBArenaState.VOTING) {
+                    e.setCancelled(true);
                 }
             }
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void LeaveDecay(LeavesDecayEvent e) {
         BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
@@ -822,6 +825,7 @@ public class PlayerListener implements Listener {
             }
         }
     }
+    */
 
 
     @EventHandler
@@ -917,6 +921,15 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onConsume(PlayerItemConsumeEvent e) {
+        Player p = e.getPlayer();
+        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        if(a != null) {
+            e.setCancelled(true);
         }
     }
 }

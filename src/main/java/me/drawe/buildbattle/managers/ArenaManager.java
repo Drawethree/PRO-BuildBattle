@@ -174,10 +174,20 @@ public class ArenaManager {
         return null;
     }
 
-    public BBArena getArenaToAutoJoin() {
-        for(BBArena a : getArenas()) {
-            if((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
-                return a;
+    public BBArena getArenaToAutoJoin(BBGameMode gamemode) {
+        if(gamemode == null) {
+            for (BBArena a : getArenas()) {
+                if ((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
+                    return a;
+                }
+            }
+        } else {
+            for(BBArena a : getArenas()) {
+                if(a.getGameType() == gamemode) {
+                    if ((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
+                        return a;
+                    }
+                }
             }
         }
         return null;
@@ -199,34 +209,34 @@ public class ArenaManager {
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".gameTime")) {
                     BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".gameTime", GameManager.getDefaultGameTime());
                     BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set gameTime ! Automatically set to default (" + GameManager.getDefaultGameTime() + ")");
+                    BuildBattle.warning(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set gameTime ! Automatically set to default (" + GameManager.getDefaultGameTime() + ")");
                 }
                 int gameTime = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".gameTime");
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".mode")) {
                     BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".mode", BBGameMode.SOLO.name());
                     BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set mode ! Automatically set to SOLO");
+                    BuildBattle.warning("§cArena §e" + arena + " §chave not set mode ! Automatically set to SOLO");
                 }
                 BBGameMode gameMode = BBGameMode.valueOf(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(arena + ".mode"));
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".teamSize")) {
                     BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".teamSize", gameMode.getDefaultTeamSize());
                     BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set teamSize ! Automatically set to " + gameMode.getDefaultTeamSize());
+                    BuildBattle.warning("§cArena §e" + arena + " §chave not set teamSize ! Automatically set to " + gameMode.getDefaultTeamSize());
                 }
                 int teamSize = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".teamSize");
                 Location lobbyLoc = LocationUtil.getLocationFromConfig("arenas.yml", arena + ".lobbyLocation");
                 if(lobbyLoc == null) {
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set lobby location !");
+                    BuildBattle.warning("§cArena §e" + arena + " §chave not set lobby location !");
                 }
                 BBArena bbArena = new BBArena(name, minPlayers, gameTime, gameMode, teamSize, lobbyLoc, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                 loadBBPlots(bbArena);
                 loadBBSigns(bbArena);
                 bbArena.setupTeams();
                 bbArena.setupTeamInventory();
-                Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aArena §e" + arena + " §aloaded !");
+                BuildBattle.info("§aArena §e" + arena + " §aloaded !");
             }
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cAn exception occurred while trying loading arenas !");
+            BuildBattle.severe("§cAn exception occurred while trying loading arenas !");
             e.printStackTrace();
         }
     }
@@ -239,11 +249,11 @@ public class ArenaManager {
                 BBPlot bbPlot = new BBPlot(a,minPoint,maxPoint);
                 bbPlot.addIntoArenaPlots();
                 bbPlot.restoreBBPlot();
-                Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aPlot §e" + plot + " §afor arena §e" + a.getName() + " §aloaded !");
+                BuildBattle.info("§aPlot §e" + plot + " §afor arena §e" + a.getName() + " §aloaded !");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cLooks like arena §e" + a.getName() + " §c have no plots ! Please set them.");
+            BuildBattle.warning("§cLooks like arena §e" + a.getName() + " §c have no plots ! Please set them.");
         }
     }
 
@@ -266,7 +276,7 @@ public class ArenaManager {
                 }
             }
         } catch(Exception e){
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cAn exception occurred while trying loading signs for arena §e" + a.getName() + "§c!");
+            BuildBattle.severe("§cAn exception occurred while trying loading signs for arena §e" + a.getName() + "§c!");
             e.printStackTrace();
         }
     }

@@ -23,26 +23,45 @@ public class LocationUtil {
             String locString = BuildBattle.getFileManager().getConfig(configName).get().getString(path);
             return getLocationFromString(locString);
         } catch(Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§cAn exception occurred while trying to get §e" + path + " §cfrom §e" + configName + "§c!");
+            BuildBattle.severe("§cAn exception occurred while trying to get §e" + path + " §cfrom §e" + configName + "§c!");
             e.printStackTrace();
         }
         return null;
     }
     public static String getStringFromLocation(Location l) {
         if(l != null) {
-            return l.getWorld().getName() + "//" + l.getBlockX() + "//" + l.getBlockY() + "//" + l.getBlockZ();
+            return l.getWorld().getName() + "//" + l.getBlockX() + "//" + l.getBlockY() + "//" + l.getBlockZ() + "//" + l.getYaw() + "//" + l.getPitch();
         } else {
             return null;
         }
     }
 
     public static Location getLocationFromString(String s) {
-        String[] s1 = s.split("//");
-        World w = Bukkit.getWorld(s1[0]);
-        int x = Integer.parseInt(s1[1]);
-        int y = Integer.parseInt(s1[2]);
-        int z = Integer.parseInt(s1[3]);
-        return new Location(w,x,y,z);
+        if(s != null) {
+            try {
+                String[] s1 = s.split("//");
+                World w = Bukkit.getWorld(s1[0]);
+                int x = Integer.parseInt(s1[1]);
+                int y = Integer.parseInt(s1[2]);
+                int z = Integer.parseInt(s1[3]);
+                float yaw = Float.parseFloat(s1[4]);
+                float pitch = Float.parseFloat(s1[5]);
+                return new Location(w, x, y, z, yaw, pitch);
+            } catch (Exception e1) {
+                try {
+                    String[] s1 = s.split("//");
+                    World w = Bukkit.getWorld(s1[0]);
+                    int x = Integer.parseInt(s1[1]);
+                    int y = Integer.parseInt(s1[2]);
+                    int z = Integer.parseInt(s1[3]);
+                    return new Location(w, x, y, z);
+                } catch (Exception e2) {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
     }
 
     public static boolean isLocationSafe(Location l, int radius) {
@@ -76,7 +95,7 @@ public class LocationUtil {
                 }
             }
         } else {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + "§cCould not get all blocks between locations because they are not in same world !");
+            BuildBattle.warning("§cCould not get all blocks between locations because they are not in same world !");
         }
         return result;
     }

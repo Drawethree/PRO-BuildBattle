@@ -28,7 +28,7 @@ public class BBSign {
             addIntoArenaSigns();
             update();
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocation(location) + " §c! Removing from signs.yml...");
+            BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocation(location) + " §c! Removing from signs.yml...");
             removeSign(null);
         }
     }

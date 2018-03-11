@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 
@@ -31,12 +32,14 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private static BuildBattle instance;
     private static FileManager fileManager;
     private static WorldEditPlugin worldEdit;
-
+    private static boolean debug = false;
     private boolean mysqlEnabled = false;
     private boolean useBungeecord = false;
     private boolean autoJoinPlayers = false;
     private boolean useHolographicDisplays = false;
     private boolean useCitizens = false;
+    protected boolean loadPluginLater = false;
+    protected int loadAfter = 0;
     private static Economy econ = null;
 
     public static BuildBattle getInstance() {
@@ -59,34 +62,51 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     public void onEnable() {
         instance = this;
         fileManager = new FileManager(this);
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
-        Bukkit.getConsoleSender().sendMessage("");
         loadAllConfigs();
-        GameManager.getInstance().loadArenaPreferences();
-        setupConfigPreferences();
-        loadWorldEdit();
-        useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
-        useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
-
-        getCommand("buildbattle").setExecutor(new BBCommand());
-        getCommand("settheme").setExecutor(new SetThemeCommand());
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new ServerListener(), this);
-
-        GameManager.getInstance().loadThemes();
-        GameManager.getInstance().loadDefaultFloorMaterial();
-        GameManager.getInstance().loadRestrictedBlocks();
-        ArenaManager.getInstance().loadArenas();
-        ArenaManager.getInstance().loadArenaEditors();
-        if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), this);
-        if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
-
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new BuildBattleProPlaceholders(this).hook();
+        if(setPluginLoading()) {
+            warning("§cPlugin will be loaded after §e" + getLoadAfter() + "s !");
         }
-        MetricsLite metrics = new MetricsLite(this);
-        HeadInventory.loadHeads();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                Bukkit.getConsoleSender().sendMessage("");
+                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+                Bukkit.getConsoleSender().sendMessage("");
+                GameManager.getInstance().loadArenaPreferences();
+                setupConfigPreferences();
+                loadWorldEdit();
+                useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
+                useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
+
+                getCommand("buildbattle").setExecutor(new BBCommand());
+                getCommand("settheme").setExecutor(new SetThemeCommand());
+                getServer().getPluginManager().registerEvents(new PlayerListener(), getInstance());
+                getServer().getPluginManager().registerEvents(new ServerListener(), getInstance());
+
+                GameManager.getInstance().loadThemes();
+                GameManager.getInstance().loadDefaultFloorMaterial();
+                GameManager.getInstance().loadRestrictedBlocks();
+                ArenaManager.getInstance().loadArenas();
+                ArenaManager.getInstance().loadArenaEditors();
+                if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
+                if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
+
+                if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                    new BuildBattleProPlaceholders(getInstance()).hook();
+                }
+                MetricsLite metrics = new MetricsLite(getInstance());
+                HeadInventory.loadHeads();
+            }
+        }.runTaskLater(this, 20*getLoadAfter());
+    }
+
+    private boolean setPluginLoading() {
+        setLoadPluginLater(fileManager.getConfig("config.yml").get().getBoolean("plugin_loading.load_plugin_later"));
+        if(loadPluginLater) {
+            setLoadAfter(fileManager.getConfig("config.yml").get().getInt("plugin_loading.load_after"));
+        }
+        return loadPluginLater;
     }
 
 
@@ -96,8 +116,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             try {
                 MySQLManager.getInstance().saveAllPlayerStats();
                 MySQL.getConnection().close();
-            } catch (SQLException e) {
-                Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cAn exception occurred while trying to close MySQL connection !");
+            } catch (Exception e) {
+                BuildBattle.severe("§cAn exception occurred while trying to close MySQL connection !");
                 e.printStackTrace();
             }
         } else {
@@ -127,33 +147,28 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public void loadAllConfigs() {
-        getFileManager().getConfig("config.yml").copyDefaults(true).save();
-        getFileManager().getConfig("messages.yml").copyDefaults(true).save();
-        getFileManager().getConfig("arenas.yml").copyDefaults(true).save();
-        getFileManager().getConfig("stats.yml").copyDefaults(true).save();
-        getFileManager().getConfig("heads.yml").copyDefaults(true).save();
-        getFileManager().getConfig("signs.yml").copyDefaults(true).save();
-        getFileManager().getConfig("leaderboards.yml").copyDefaults(true).save();
+        fileManager.getConfig("config.yml").copyDefaults(true).save();
+        fileManager.getConfig("arenas.yml").copyDefaults(true).save();
+        fileManager.getConfig("heads.yml").copyDefaults(true).save();
+        fileManager.getConfig("leaderboards.yml").copyDefaults(true).save();
+        fileManager.getConfig("messages.yml").copyDefaults(true).save();
+        fileManager.getConfig("signs.yml").copyDefaults(true).save();
+        fileManager.getConfig("stats.yml").copyDefaults(true).save();
+        fileManager.getConfig("themes.yml").copyDefaults(true).save();
+        removeUnusedPathsFromConfigs();
     }
 
     public void saveAllConfigs() {
-        getFileManager().getConfig("config.yml").save();
-        getFileManager().getConfig("messages.yml").save();
-        getFileManager().getConfig("arenas.yml").save();
-        getFileManager().getConfig("stats.yml").save();
-        getFileManager().getConfig("heads.yml").save();
-        getFileManager().getConfig("signs.yml").save();
-        getFileManager().getConfig("leaderboards.yml").save();
+        fileManager.getConfigs().values().forEach(c-> c.save());
     }
 
     public void reloadAllConfigs() {
-        getFileManager().getConfig("config.yml").reload();
-        getFileManager().getConfig("messages.yml").reload();
-        getFileManager().getConfig("arenas.yml").reload();
-        getFileManager().getConfig("stats.yml").reload();
-        getFileManager().getConfig("heads.yml").reload();
-        getFileManager().getConfig("signs.yml").reload();
-        getFileManager().getConfig("leaderboards.yml").reload();
+        fileManager.getConfigs().values().forEach(c-> c.reload());
+    }
+
+    protected void removeUnusedPathsFromConfigs() {
+        fileManager.getConfig("config.yml").set("themes", null).set("blacklisted_themes", null);
+        saveAllConfigs();
     }
 
     @Override
@@ -162,8 +177,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             try {
                 MySQLManager.getInstance().saveAllPlayerStats();
                 MySQL.getConnection().close();
-            } catch (SQLException e) {
-                Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cAn exception occurred while trying to close MySQL connection !");
+            } catch (Exception e) {
+                BuildBattle.severe("§cAn exception occurred while trying to close MySQL connection !");
                 e.printStackTrace();
             }
         } else {
@@ -175,7 +190,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void setupConfigPreferences() {
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aPlayer Data >> §e" + GameManager.getStatsType() + " §a>> §e" + GameManager.getStatsType().getInfo());
+        BuildBattle.info("§aPlayer Data >> §e" + GameManager.getStatsType() + " §a>> §e" + GameManager.getStatsType().getInfo());
         if (GameManager.getStatsType() == StatsType.MYSQL) {
             MySQL.getInstance().connect();
             MySQLManager.getInstance().loadAllPlayerStats();
@@ -184,7 +199,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             setMysqlEnabled(false);
         }
         if (getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.use_bungee")) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aBungeeCord system for BuildBattlePro loaded !");
+            BuildBattle.info("§aBungeeCord system for BuildBattlePro loaded !");
             setUseBungeecord(true);
             getServer().getMessenger().unregisterIncomingPluginChannel(this);
             getServer().getMessenger().unregisterOutgoingPluginChannel(this);
@@ -206,7 +221,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private void loadWorldEdit() {
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (worldEdit == null) {
-            Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cWorldEdit dependency not found ! Many features may not work !");
+            BuildBattle.warning("§cWorldEdit dependency not found ! Many features may not work !");
         }
     }
 
@@ -245,6 +260,35 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     public boolean isUseCitizens() {
         return useCitizens;
+    }
+
+    public static void info(String message) {
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " " + message);
+    }
+    public static void debug(String message) {
+        if(debug) instance.getLogger().info("[DEBUG] " + message);
+    }
+    public static void severe(String message) {
+        instance.getLogger().severe(message);
+    }
+    public static void warning(String message) {
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §r" + message);
+    }
+
+    public boolean isLoadPluginLater() {
+        return loadPluginLater;
+    }
+
+    public void setLoadPluginLater(boolean loadPluginLater) {
+        this.loadPluginLater = loadPluginLater;
+    }
+
+    public int getLoadAfter() {
+        return loadAfter;
+    }
+
+    public void setLoadAfter(int loadAfter) {
+        this.loadAfter = loadAfter;
     }
 }
 

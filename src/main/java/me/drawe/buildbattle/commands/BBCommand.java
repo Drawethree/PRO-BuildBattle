@@ -48,6 +48,9 @@ public class BBCommand implements CommandExecutor {
                     case "setlobby":
                         setLobbySubCommand(sender, args);
                         break;
+                    case "setmainlobby":
+                        setMainLobbySubCommand(sender,args);
+                        break;
                     case "delplot":
                         delPlotSubCommand(sender,args);
                         break;
@@ -257,16 +260,16 @@ public class BBCommand implements CommandExecutor {
         if(sender.hasPermission("buildbattlepro.admin")) {
             if(args.length == 1) {
                 if(GameManager.getStatsType() == StatsType.MYSQL) {
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §cUser §e" + sender.getName() + " §chas requested exporting players stats to MySQL!");
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §7Starting exporting player stats from stats.yml into MySQL database...");
+                    BuildBattle.info("§cUser §e" + sender.getName() + " §chas requested exporting players stats to MySQL!");
+                    BuildBattle.info("§7Starting exporting player stats from stats.yml into MySQL database...");
                     sender.sendMessage(GameManager.getPrefix() + " §7§oStarting exporting players stats from stats.yml into MySQL database...");
                     int playersTransfered = 0;
                     for(BBPlayerStats stats : PlayerManager.getPlayerStats()) {
-                        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §7Copying data of user §e" + stats.getUuid().toString() + " §7into MySQL");
+                        BuildBattle.info("§7Copying data of user §e" + stats.getUuid().toString() + " §7into MySQL");
                         MySQLManager.getInstance().addPlayerToTable(stats);
                         playersTransfered += 1;
                     }
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aExport finished. §e" + playersTransfered + "§a players data have been transferred.");
+                    BuildBattle.info("§aExport finished. §e" + playersTransfered + "§a players data have been transferred.");
                     sender.sendMessage(GameManager.getPrefix() + " §2Done! §e" + playersTransfered + "§2 players have been transferred.");
                 } else {
                     sender.sendMessage(GameManager.getPrefix() + " §cTo export data, firstly please enable and setup MySQL!");
@@ -527,6 +530,7 @@ public class BBCommand implements CommandExecutor {
             p.sendMessage("§e/bb addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selection !");
             p.sendMessage("§e/bb delplot <arena> " + "§8» " + "§7Removes latest added plot in arena");
             p.sendMessage("§e/bb setlobby <arena> " + "§8» " + "§7Set lobby for Arena");
+            p.sendMessage("§e/bb setmainlobby " + "§e» " + "§7Set main lobby");
             p.sendMessage("§e/bb start " + "§8» " + "§7Force start Arena you are currently in");
             p.sendMessage("§e/bb start <arena> " + "§8» " + "§7Force start Arena");
             p.sendMessage("§e/bb start <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
@@ -555,6 +559,7 @@ public class BBCommand implements CommandExecutor {
             FancyMessage.sendCenteredMessage(p,"§6✪ §e§lBuildBattlePro §6✪ §8- §6Player Commands");
             p.sendMessage("§e/bb join " + "§8» " + "§7Automatic join to first available Arena");
             p.sendMessage("§e/bb join <arena> " + "§8» " + "§7Join specific Arena");
+            p.sendMessage("§e/bb join <team/solo> " + "§8» " + "§7Automatic join to first available solo/team arena");
             p.sendMessage("§e/bb leave " + "§8» " + "§7Leave Arena");
             p.sendMessage("§e/bb list " + "§8» " + "§7Open GUI with all arenas");
             p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
@@ -568,19 +573,45 @@ public class BBCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 2) {
-                BBArena argArena = ArenaManager.getInstance().getArena(args[1]);
-                BBArena playerArena = PlayerManager.getInstance().getPlayerArena(p);
-                if (argArena != null) {
-                    if (playerArena == null) {
-                        argArena.addPlayer(p);
+                if(args[1].equalsIgnoreCase("solo")) {
+                    BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.SOLO);
+                    BBArena playerArena = PlayerManager.getInstance().getPlayerArena(p);
+                    if (arena != null) {
+                        if(playerArena == null) {
+                            arena.addPlayer(p);
+                        } else {
+                            p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
+                        }
                     } else {
-                        p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replaceAll("%arena%", playerArena.getName()));
+                        p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
+                    }
+                } else if(args[1].equalsIgnoreCase("team")) {
+                    BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.TEAM);
+                    BBArena playerArena = PlayerManager.getInstance().getPlayerArena(p);
+                    if (arena != null) {
+                        if(playerArena == null) {
+                            arena.addPlayer(p);
+                        } else {
+                            p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
+                        }
+                    } else {
+                        p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                     }
                 } else {
-                    p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
+                    BBArena argArena = ArenaManager.getInstance().getArena(args[1]);
+                    BBArena playerArena = PlayerManager.getInstance().getPlayerArena(p);
+                    if (argArena != null) {
+                        if (playerArena == null) {
+                            argArena.addPlayer(p);
+                        } else {
+                            p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replaceAll("%arena%", playerArena.getName()));
+                        }
+                    } else {
+                        p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
+                    }
                 }
             } else {
-                BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin();
+                BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
                 BBArena playerArena = PlayerManager.getInstance().getPlayerArena(p);
                 if (arena != null) {
                     if(playerArena == null) {
@@ -591,6 +622,21 @@ public class BBCommand implements CommandExecutor {
                 } else {
                     p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                 }
+            }
+        }
+    }
+
+    private void setMainLobbySubCommand(CommandSender sender, String[] args) {
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if(args.length == 1) {
+                if(p.hasPermission("buildbattlepro.create")) {
+                    GameManager.getInstance().setMainLobbyLocation(p);
+                } else {
+                    p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+                }
+            } else {
+                sender.sendMessage("§cUsage >> /bb setmainlobby §8| §7Show the main lobby location");
             }
         }
     }

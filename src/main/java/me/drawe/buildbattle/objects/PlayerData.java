@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects;
 
+import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -76,6 +77,9 @@ public class PlayerData {
         getPlayer().setLevel(getLevel());
         getPlayer().setExp(getExp());
         getPlayer().setAllowFlight(isAllowFlight());
+        if(GameManager.getMainLobbyLocation() != null) {
+            PlayerManager.getInstance().teleportToMainLobby(getPlayer());
+        }
         PlayerManager.getPlayerData().remove(this);
     }
 

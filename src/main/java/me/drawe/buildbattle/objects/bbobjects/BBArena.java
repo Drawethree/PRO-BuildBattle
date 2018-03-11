@@ -80,6 +80,11 @@ public class BBArena {
         this.currentVotingPlot = null;
         this.themeVoting = new BBThemeVoting(this);
         this.bbArenaState = BBArenaState.LOBBY;
+        if(gameMode == BBGameMode.SOLO) {
+            this.teamSize = 1;
+        } else if(gameMode == BBGameMode.TEAM) {
+            this.teamSize = 2;
+        }
         setupTeams();
         setupTeamInventory();
         addIntoAllArenas();
@@ -107,70 +112,45 @@ public class BBArena {
     public void addPlayer(Player p) {
         if (getBBArenaState() == BBArenaState.LOBBY) {
             if (getPlayers().size() < getMaxPlayers()) {
-                BBParty party = PartyManager.getInstance().getPlayerParty(p);
-                if((party != null) && (party.isCreator(p))) {
-                    party.joinGame(this);
+                try {
+                    joinCommands(p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    p.sendMessage(Message.UNABLE_TO_JOIN.getChatMessage());
                 }
-                PlayerManager.getInstance().createNewPlayerData(p);
-                PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
-                p.getInventory().clear();
-                p.setExp(0F);
-                p.setLevel(0);
-                p.setHealth(p.getMaxHealth());
-                p.setFoodLevel(20);
-                p.setGameMode(GameMode.ADVENTURE);
-                getPlayers().add(p);
-                getPlayerBoards().add(new BBBoard(this,p));
-                p.teleport(getLobbyLocation().clone().add(0,0.5,0));
-                if(getGameType() == BBGameMode.TEAM) {
-                    p.getInventory().setItem(0, OptionsManager.getTeamsItem());
-                }
-                p.getInventory().setItem(8, OptionsManager.getLeaveItem());
-                if (GameManager.isScoreboardEnabled()) {
-                    if(lobbyCountdown == null) {
-                        updateAllScoreboards(0);
-                    } else {
-                        if(!Bukkit.getScheduler().isCurrentlyRunning(lobbyCountdown.getTaskId())) {
-                            updateAllScoreboards(0);
-                        }
-                    }
-                }
-                PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
-                OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
-                updateAllSigns();
                 if (getPlayers().size() == getMinPlayers()) {
                     startLobby();
                 }
             } else {
-                p.sendMessage(Message.ARENA_FULL.getChatMessage());
+                if(p.hasPermission("buildbattlepro.joinfull")) {
+                    try {
+                        joinVIP(p);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        p.sendMessage(Message.UNABLE_TO_JOIN.getChatMessage());
+                    }
+                } else {
+                    p.sendMessage(Message.ARENA_FULL.getChatMessage());
+                }
             }
         } else {
             p.sendMessage(Message.ARENA_ALREADY_STARTED.getChatMessage());
         }
     }
 
-    public BBTeam getFreeBBTeamForParty(BBParty party) {
-        int amountOfPlayers = party.getPlayers().size();
-        for(BBTeam team : getTeams()) {
-            if(team.getLeftSlots() >= amountOfPlayers) {
-                return team;
-            }
-        }
-        return null;
-    }
-    public void removePlayer(Player p) {
+    protected void leaveCommands(Player p) {
         getPlayers().remove(p);
         getPlayerBoard(p).removeBoard();
         BBTeam team = PlayerManager.getInstance().getPlayerTeam(this,p);
         if(team != null) {
             team.leaveTeam(p);
         }
-        PlayerManager.getInstance().restorePlayerData(p);
-        updateAllSigns();
-        OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         if (GameManager.isScoreboardEnabled()) {
             PlayerManager.getInstance().removeScoreboard(p);
         }
+        PlayerManager.getInstance().restorePlayerData(p);
+        updateAllSigns();
+        OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         if (BuildBattle.getInstance().isUseBungeecord()) {
             BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
             if(p.isOnline()) {
@@ -187,9 +167,53 @@ public class BBArena {
                 stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
             }
         }
-        /*if ((getPlayers().size() < getMinPlayers()) && ((getBBArenaState() != BBArenaState.LOBBY) && (getBBArenaState() != BBArenaState.ENDING))) {
-            stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
-        }*/
+    }
+
+    protected void joinCommands(Player p) {
+            BBParty party = PartyManager.getInstance().getPlayerParty(p);
+            if ((party != null) && (party.isCreator(p))) {
+                party.joinGame(this);
+            }
+            PlayerManager.getInstance().createNewPlayerData(p);
+            PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
+            p.getInventory().clear();
+            p.setExp(0F);
+            p.setLevel(0);
+            p.setHealth(p.getMaxHealth());
+            p.setFoodLevel(20);
+            p.setGameMode(GameMode.ADVENTURE);
+            getPlayers().add(p);
+            getPlayerBoards().add(new BBBoard(this, p));
+            p.teleport(getLobbyLocation().clone().add(0, 0.5, 0));
+            if (getGameType() == BBGameMode.TEAM) {
+                p.getInventory().setItem(0, OptionsManager.getTeamsItem());
+            }
+            p.getInventory().setItem(8, OptionsManager.getLeaveItem());
+            if (GameManager.isScoreboardEnabled()) {
+                if (lobbyCountdown == null) {
+                    updateAllScoreboards(0);
+                } else {
+                    if (!Bukkit.getScheduler().isCurrentlyRunning(lobbyCountdown.getTaskId())) {
+                        updateAllScoreboards(0);
+                    }
+                }
+            }
+            PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+            OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
+            updateAllSigns();
+    }
+
+    public BBTeam getFreeBBTeamForParty(BBParty party) {
+        int amountOfPlayers = party.getPlayers().size();
+        for(BBTeam team : getTeams()) {
+            if(team.getLeftSlots() >= amountOfPlayers) {
+                return team;
+            }
+        }
+        return null;
+    }
+    public void removePlayer(Player p) {
+        leaveCommands(p);
     }
 
     public void startLobby() {
@@ -206,7 +230,14 @@ public class BBArena {
                         if (GameManager.isVotingForThemes()) {
                             startThemeVoting();
                         } else {
-                            startGame(GameManager.getInstance().getRandomTheme(), true);
+                            switch (getGameType()) {
+                                case SOLO:
+                                    startGame(GameManager.getRandomSoloTheme(), true);
+                                    break;
+                                case TEAM:
+                                    startGame(GameManager.getRandomTeamTheme(), true);
+                                    break;
+                            }
                         }
                         cancel();
                         return;
@@ -573,6 +604,20 @@ public class BBArena {
     }
     */
 
+    public void joinVIP(Player vip) {
+        Player lastNonVIPPlayer = getLastNonVipPlayer();
+        if(lastNonVIPPlayer != null) {
+            removePlayer(lastNonVIPPlayer);
+            lastNonVIPPlayer.sendMessage(Message.KICKED_DUE_TO_VIP_JOIN.getChatMessage().replaceAll("%player%", vip.getDisplayName()));
+            joinCommands(vip);
+            if (getPlayers().size() == getMinPlayers()) {
+                startLobby();
+            }
+        } else {
+            vip.sendMessage(Message.NO_VIP_SLOT_FREE.getChatMessage());
+        }
+    }
+
     public void kickAllPlayers() {
         Iterator it = getPlayers().iterator();
         while (it.hasNext()) {
@@ -604,7 +649,7 @@ public class BBArena {
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
         }
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + "§aArena §e" + getName() + " §asuccessfully saved into config !");
+        BuildBattle.info("§aArena §e" + getName() + " §asuccessfully saved into config !");
         BuildBattle.getFileManager().getConfig("arenas.yml").save();
     }
 
@@ -696,7 +741,14 @@ public class BBArena {
                 if(GameManager.isVotingForThemes()) {
                     startThemeVoting();
                 } else {
-                    startGame(GameManager.getInstance().getRandomTheme(), true);
+                    switch (getGameType()) {
+                        case TEAM:
+                            startGame(GameManager.getRandomTeamTheme(), true);
+                            break;
+                        case SOLO:
+                            startGame(GameManager.getRandomSoloTheme(), true);
+                            break;
+                    }
                 }
             } else {
                 sender.sendMessage(Message.NOT_ENOUGH_PLAYERS.getChatMessage());
@@ -782,7 +834,7 @@ public class BBArena {
     public void setVotingPlots() {
         List<BBPlot> returnList = new ArrayList<>();
         for (BBPlot plot : getBuildPlots()) {
-            if (plot.getTeam() != null) {
+            if ((plot.getTeam() != null) && (!plot.getTeam().isEmpty())) {
                 returnList.add(plot);
             }
         }
@@ -950,5 +1002,15 @@ public class BBArena {
 
     public void setGameTime(int gameTime) {
         this.gameTime = gameTime;
+    }
+
+    public Player getLastNonVipPlayer() {
+        for(int i = getPlayers().size()-1; i >= 0;i--) {
+            Player p = getPlayers().get(i);
+            if(!p.hasPermission("buildbattlepro.joinfull")) {
+                return p;
+            }
+        }
+        return null;
     }
 }

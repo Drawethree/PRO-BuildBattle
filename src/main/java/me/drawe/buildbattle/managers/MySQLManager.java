@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.managers;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import me.drawe.buildbattle.objects.Message;
@@ -60,7 +61,7 @@ public class MySQLManager {
                         reporter.sendMessage(Message.ALREADY_REPOTED.getChatMessage());
                     }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             reporter.sendMessage(Message.REPORT_FAILED.getChatMessage());
         }
@@ -107,7 +108,7 @@ public class MySQLManager {
                 MySQL.insert("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced) VALUES('" + ps.getUuid().toString() + "','" + ps.getPlayed() + "','" + ps.getWins() + "','" + ps.getMostPoints() + "','" + ps.getBlocksPlaced() + "','" + ps.getParticlesPlaced() + "')");
             }
         }
-        Bukkit.getConsoleSender().sendMessage("§aBuildBattle player stats saved!");
+        BuildBattle.info("§aBuildBattle player stats saved!");
     }
 
     public void loadAllPlayerStats() {
@@ -126,7 +127,7 @@ public class MySQLManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aBuildBattle player stats loaded!");
+        BuildBattle.info("§aBuildBattle player stats loaded!");
     }
 
     public void savePlayerWins(BBPlayerStats ps) {

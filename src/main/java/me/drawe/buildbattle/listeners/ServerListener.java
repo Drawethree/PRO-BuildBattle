@@ -13,21 +13,23 @@ public class ServerListener implements Listener {
     @EventHandler
     public void onMOTDChange(ServerListPingEvent e) {
         if(GameManager.isChangeMOTD()) {
-            BBArena mainArena = ArenaManager.getArenas().get(0);
-            if(mainArena != null) {
-                switch(mainArena.getBBArenaState()) {
-                    case LOBBY:
-                        e.setMotd(Message.MOTD_LOBBY.getMessage());
-                        break;
-                    case INGAME:
-                        e.setMotd(Message.MOTD_INGAME.getMessage());
-                        break;
-                    case VOTING:
-                        e.setMotd(Message.MOTD_VOTING.getMessage());
-                        break;
-                    case ENDING:
-                        e.setMotd(Message.MOTD_ENDING.getMessage());
-                        break;
+            if (ArenaManager.getArenas().size() > 0) {
+                BBArena mainArena = ArenaManager.getArenas().get(0);
+                if (mainArena != null) {
+                    switch (mainArena.getBBArenaState()) {
+                        case LOBBY:
+                            e.setMotd(Message.MOTD_LOBBY.getMessage());
+                            break;
+                        case INGAME:
+                            e.setMotd(Message.MOTD_INGAME.getMessage());
+                            break;
+                        case VOTING:
+                            e.setMotd(Message.MOTD_VOTING.getMessage());
+                            break;
+                        case ENDING:
+                            e.setMotd(Message.MOTD_ENDING.getMessage());
+                            break;
+                    }
                 }
             }
         }

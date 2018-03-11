@@ -1,5 +1,5 @@
 name: BuildBattlePro
-version: 4.0
+version: 4.2
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
@@ -33,6 +33,10 @@ permissions:
       buildbattlepro.create: true
       buildbattlepro.bypass: true
       buildbattlepro.party: true
+      buildbattlepro.joinfull: true
+  buildbattlepro.joinfull:
+    description: Join full arena
+    default: op
   buildbattlepro.join:
     description: Join arena permission
     default: true
@@ -59,6 +63,7 @@ permissions:
       buildbattlepro.changetime: true
       buildbattlepro.changebiome: true
       buildbattlepro.party: false
+      buildbattlepro.joinfull: false
   buildbattlepro.changebiome:
     description: Change Biome permission
     default: true

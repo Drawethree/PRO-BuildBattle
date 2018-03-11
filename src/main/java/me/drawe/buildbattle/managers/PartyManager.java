@@ -40,6 +40,7 @@ public class PartyManager {
             creator.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
     }
+
     public void manageInvite(Player p, boolean join) {
         if(getInvitedPlayers().containsKey(p)) {
             BBParty party = getInvitedPlayers().get(p);
