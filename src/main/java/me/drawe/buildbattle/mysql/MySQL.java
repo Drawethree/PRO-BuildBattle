@@ -82,23 +82,53 @@ public class MySQL {
     }
 
     public static void createTables() {
-        update("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL)");
-        update("CREATE TABLE IF NOT EXISTS BuildBattlePro_Reports(Player varchar(36) NOT NULL, ReportedBy varchar(36) NOT NULL, Date TEXT NOT NULL)");
+        update("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL)");
+        update("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID varchar(100) NOT NULL, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL)");
+        approveChanges();
     }
 
-    public static void update(String sql) {
+    private static void approveChanges() {
+        DatabaseMetaData md = null;
         try {
-            getConnection().prepareStatement(sql).execute();
-        } catch (Exception e) {
+            md = connection.getMetaData();
+            ResultSet rs = md.getColumns(null, null, "BuildBattlePro_PlayerData", "SuperVotes");
+            if (!rs.next()) {
+                update("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0");
+                BuildBattle.info("§aMySQL detected that your table doesn't have §eSuperVotes §acolumn, adding it automatically!");
+            }
+            update("DROP TABLE IF EXISTS BuildBattlePro_Reports");
+        } catch (SQLException e) {
+            BuildBattle.severe("§cMySQL could not check for plugin changes !");
             e.printStackTrace();
         }
     }
 
-    public static void insert(String sql) {
+    public static boolean update(String sql) {
         try {
             getConnection().prepareStatement(sql).execute();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    public static boolean insert(String sql) {
+        try {
+            getConnection().prepareStatement(sql).execute();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static PreparedStatement getStatement(String sql) {
+        try {
+            return getConnection().prepareStatement(sql);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

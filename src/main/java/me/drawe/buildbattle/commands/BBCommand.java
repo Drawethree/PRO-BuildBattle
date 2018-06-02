@@ -16,6 +16,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,6 +55,9 @@ public class BBCommand implements CommandExecutor {
                     case "delplot":
                         delPlotSubCommand(sender,args);
                         break;
+                    case "supervote":
+                        superVoteSubCommand(sender,args);
+                        break;
                     case "start":
                         startSubCommand(sender,args);
                         break;
@@ -78,6 +82,9 @@ public class BBCommand implements CommandExecutor {
                     case "lb":
                         leaderBoardSubCommand(sender,args);
                         break;
+                    case "version":
+                        versionSubCommand(sender);
+                        break;
                     case "leaderboard":
                         leaderBoardSubCommand(sender,args);
                         break;
@@ -90,6 +97,13 @@ public class BBCommand implements CommandExecutor {
                     case "editor":
                         openEditor(sender);
                         break;
+                    case "reports":
+                        openReports(sender);
+                        break;
+                        default:
+                            pluginInfo(sender);
+                            break;
+
                 }
             } else {
                 if(sender instanceof Player) {
@@ -100,6 +114,68 @@ public class BBCommand implements CommandExecutor {
 
         }
         return true;
+    }
+
+    private void openReports(CommandSender sender) {
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if(p.hasPermission("buildbattlepro.manage.reports")) {
+                ReportManager.getInstance().openReports(p,1);
+            } else {
+                p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            }
+        }
+    }
+
+    private void superVoteSubCommand(CommandSender sender, String[] args) {
+        // /bb supervote <give/take> <player> <amount>
+        if(sender.hasPermission("buildbattlepro.admin")) {
+            if (args.length == 4) {
+                try {
+                    String action = args[1].toLowerCase();
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[2]);
+                    int amount = Integer.parseInt(args[3]);
+                    switch (action) {
+                        case "give":
+                            if(SuperVoteManager.getInstance().giveSuperVote(player,amount)) {
+                                sender.sendMessage(GameManager.getPrefix() + " §aYou have successfully given §e" + amount + " §asupervote(s) to player §e" + player.getName() + "§a!");
+                            } else {
+                                sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");
+                            }
+                            break;
+                        case "take":
+                            if(SuperVoteManager.getInstance().takeSuperVote(player,amount)) {
+                                sender.sendMessage(GameManager.getPrefix() + " §aYou have successfully taken §e" + amount + " §asupervote(s) from player §e" + player.getName() + "§a!");
+                            } else {
+                                sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");
+                            }
+                            break;
+                        default:
+                            sender.sendMessage("§e" + args[1] + " §cis not a valid action ! Please use: §7[§egive,take§7]");
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    sender.sendMessage("§e" + args[3] + " §cis not a valid amount !");
+                }
+            } else {
+                sender.sendMessage("§cUsage >> §e/bb supervote <give/take> <player> <amount> §8| §7Give/take supervote(s) from/to player");
+            }
+        } else {
+            sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+        }
+
+    }
+
+    private void pluginInfo(CommandSender sender) {
+        sender.sendMessage(GameManager.getPrefix() + " §e" + BuildBattle.getInstance().getDescription().getName() + " v." + BuildBattle.getInstance().getDescription().getVersion() + "§a by §eDrawethree.");
+        sender.sendMessage(GameManager.getPrefix() + " §aType §e/bb help §afor help.");
+    }
+    private void versionSubCommand(CommandSender sender) {
+        if(sender.hasPermission("buildbattlepro.admin")) {
+            sender.sendMessage(GameManager.getPrefix() + " §aYou are running §e" + BuildBattle.getInstance().getDescription().getName() + " v." + BuildBattle.getInstance().getDescription().getVersion() + "§a by §eDrawethree.");
+        } else {
+            sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+        }
     }
 
     private void openEditor(CommandSender sender) {
@@ -121,9 +197,10 @@ public class BBCommand implements CommandExecutor {
                 if (args.length > 1) {
                     String subCommand = args[1].toLowerCase();
                     switch (subCommand) {
-                        case "create":
+                        /*case "create":
                             PartyManager.getInstance().createParty(p);
                             break;
+                            */
                         case "accept":
                             PartyManager.getInstance().manageInvite(p, true);
                             break;
@@ -145,7 +222,7 @@ public class BBCommand implements CommandExecutor {
                     }
                 } else {
                     p.sendMessage("§cInvalid usage!");
-                    p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
+                    //p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
                     p.sendMessage("§e/bb party invite <player> " + "§8» " + "§7Invite player to your party");
                     p.sendMessage("§e/bb party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
                     p.sendMessage("§e/bb party leave " + "§8» " + "§7Leave your current party");
@@ -365,6 +442,7 @@ public class BBCommand implements CommandExecutor {
                     FancyMessage.sendCenteredMessage(p,Message.STATS_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(ps.getMostPoints())));
                     FancyMessage.sendCenteredMessage(p,Message.STATS_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(ps.getBlocksPlaced())));
                     FancyMessage.sendCenteredMessage(p,Message.STATS_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(ps.getParticlesPlaced())));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(ps.getSuperVotes())));
                     p.sendMessage("");
                     FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
                 } else {
@@ -500,13 +578,22 @@ public class BBCommand implements CommandExecutor {
     }
 
     private void listArenasSubCommand(CommandSender sender, String[] args) {
-        if (args.length == 1) {
-            if(sender instanceof Player) {
-                Player p = (Player) sender;
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if (args.length == 1) {
                 p.openInventory(OptionsManager.getAllArenasInventory());
+            } else if (args.length == 2) {
+                if (args[1].equalsIgnoreCase("solo")) {
+                    p.openInventory(OptionsManager.getSoloArenasInventory());
+                } else if (args[1].equalsIgnoreCase("team")) {
+                    p.openInventory(OptionsManager.getTeamArenasInventory());
+                } else {
+                    sender.sendMessage("§cUsage >> /bb list <solo/team> §8| §7Show all team/solo arenas and their status");
+                }
+            } else {
+                sender.sendMessage("§cUsage >> /bb list §8| §7Show all arenas and their status");
+                sender.sendMessage("§cUsage >> /bb list <solo/team> §8| §7Show all team/solo arenas and their status");
             }
-        } else {
-            sender.sendMessage("§cUsage >> /bb list §8| §7Show all arenas and their status");
         }
     }
 
@@ -543,6 +630,7 @@ public class BBCommand implements CommandExecutor {
             p.sendMessage("§e/bb lb delete " + "§8» " +  "§7Deletes selected leaderboard");
             p.sendMessage("§e/bb lb teleport " + "§8» " + "§7Teleports selected leaderboard to your position");
             p.sendMessage("§e/bb lb refresh " + "§8» " + "§7Refresh all leaderboards");
+            p.sendMessage("§e/bb supervote <give/take> <player> <amount> " + "§8» " + "§7Give/take supervotes from player");
             p.sendMessage("§e/settheme <theme> " + "§8» " + "§7Force-set theme for your current arena");
             p.sendMessage("§e/bb exportstats " + "§8» " + "§7Export players stats from stats.yml into MySQL");
             FancyMessage.sendCenteredMessage(p,"§6✪§e§lBuildBattlePro§6✪ §8- §6Player Commands");

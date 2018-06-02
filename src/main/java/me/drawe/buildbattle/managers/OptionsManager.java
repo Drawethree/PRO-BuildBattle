@@ -50,6 +50,8 @@ public class OptionsManager {
     private static Inventory patternsInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PATTERNS_TITLE.getMessage());
     private static Inventory timeInventory = Bukkit.createInventory(null, 6*9, Message.GUI_TIME_TITLE.getMessage());
     private static Inventory allArenasInventory = Bukkit.createInventory(null, ArenaManager.getInstance().getArenaListSize(), Message.GUI_ARENA_LIST_TITLE.getMessage());
+    private static Inventory soloArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage());
+    private static Inventory teamArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
     private static Inventory biomesInventory = Bukkit.createInventory(null, 9, Message.GUI_BIOMES_TITLE.getMessage());
 
     public static ItemStack getOptionsItem() {
@@ -158,23 +160,38 @@ public class OptionsManager {
         return deleteArenaItem;
     }
 
+    public static Inventory getSoloArenasInventory() {
+        return soloArenasInventory;
+    }
+
+    public static Inventory getTeamArenasInventory() {
+        return teamArenasInventory;
+    }
+
 
     public void openOptionsInventory(Player p, BBPlot plot) {
         Inventory optionsInv = Bukkit.createInventory(null, 9, Message.GUI_OPTIONS_TITLE.getMessage());
-        optionsInv.setItem(0, getHeadsItem());
-        optionsInv.setItem(1, plot.getOptions().getCurrentFloorItem());
-        optionsInv.setItem(2, getTimeItem());
-        optionsInv.setItem(3, getParticlesItem());
-        optionsInv.setItem(4, getWeatherItemStack(plot));
-        optionsInv.setItem(5, getBiomesItem());
-        optionsInv.setItem(6, getBannerCreatorItem());
-        optionsInv.setItem(7, getClearPlotItem());
+        if(GameManager.isEnableHeadsOption()) optionsInv.setItem(0, getHeadsItem());
+        if(GameManager.isEnableChangeFloorOption()) optionsInv.setItem(1, plot.getOptions().getCurrentFloorItem());
+        if(GameManager.isEnableTimeOption()) optionsInv.setItem(2, getTimeItem());
+        if(GameManager.isEnableParticleOption()) optionsInv.setItem(3, getParticlesItem());
+        if(GameManager.isEnabledWeatherOption()) optionsInv.setItem(4, getWeatherItemStack(plot));
+        if(GameManager.isEnableBiomeOption()) optionsInv.setItem(5, getBiomesItem());
+        if(GameManager.isEnableBannerCreatorOption()) optionsInv.setItem(6, getBannerCreatorItem());
+        if(GameManager.isEnableClearPlotOption()) optionsInv.setItem(7, getClearPlotItem());
         p.openInventory(optionsInv);
     }
 
     public void refreshAllArenasInventory() {
         getAllArenasInventory().clear();
+        getSoloArenasInventory().clear();
+        getTeamArenasInventory().clear();
         for(BBArena a : ArenaManager.getArenas()) {
+            if(a.getGameType() == BBGameMode.SOLO) {
+                getSoloArenasInventory().addItem(getArenaStatusItem(a));
+            } else if(a.getGameType() == BBGameMode.TEAM) {
+                getTeamArenasInventory().addItem(getArenaStatusItem(a));
+            }
             getAllArenasInventory().addItem(getArenaStatusItem(a));
         }
     }
@@ -187,6 +204,29 @@ public class OptionsManager {
                     item.setItemMeta(replacement.getItemMeta());
                     item.setData(replacement.getData());
                     item.setDurability(replacement.getDurability());
+                }
+            }
+        }
+        if(a.getGameType() == BBGameMode.SOLO) {
+            for (ItemStack item : getSoloArenasInventory().getContents()) {
+                if (item != null && item.hasItemMeta()) {
+                    if (item.getItemMeta().getDisplayName().equals(a.getName())) {
+                        ItemStack replacement = getArenaStatusItem(a);
+                        item.setItemMeta(replacement.getItemMeta());
+                        item.setData(replacement.getData());
+                        item.setDurability(replacement.getDurability());
+                    }
+                }
+            }
+        } else if(a.getGameType() == BBGameMode.TEAM) {
+            for (ItemStack item : getTeamArenasInventory().getContents()) {
+                if (item != null && item.hasItemMeta()) {
+                    if (item.getItemMeta().getDisplayName().equals(a.getName())) {
+                        ItemStack replacement = getArenaStatusItem(a);
+                        item.setItemMeta(replacement.getItemMeta());
+                        item.setData(replacement.getData());
+                        item.setDurability(replacement.getDurability());
+                    }
                 }
             }
         }
@@ -214,6 +254,11 @@ public class OptionsManager {
         particlesInventory.setItem(45, getBackItem());
         particlesInventory.setItem(49, getRemoveParticlesItem());
         for(BBArena a : ArenaManager.getArenas()) {
+            if(a.getGameType() == BBGameMode.SOLO) {
+                getSoloArenasInventory().addItem(getArenaStatusItem(a));
+            } else if(a.getGameType() == BBGameMode.TEAM) {
+                getTeamArenasInventory().addItem(getArenaStatusItem(a));
+            }
             getAllArenasInventory().addItem(getArenaStatusItem(a));
         }
         for(PlotBiome biome : PlotBiome.values()) {

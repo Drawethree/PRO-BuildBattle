@@ -51,10 +51,10 @@ messages:
   thanks_for_playing: "&6&oThanks for playing !"
   biome_changed: "&aPlot biome was changed to &e%biome%"
   cannot_set_theme: "&cCannot set theme when arena is started !"
-  report_success: "&aYou have successfully reported player &e%player% &a! Buy a cake ^^"
-  already_reported: "&cYou have already reported this player in past ! Don't worry, we will check him ;)"
-  report_failed: "&cUnfortunately you cannot report this player at this time."
-  cant_report_yourself: "&cYou can't report yourself!"
+  report_success: "&aYou have successfully reported this build &a! Buy a cake ^^"
+  already_reported: "&cThis build has been already reported by somebody !"
+  report_failed: "&cUnfortunately you cannot report this build at this time."
+  cant_report_yourself: "&cYou can't report your own build !"
   you_joined_team: "&aYou joined &eTeam %team% !"
   you_left_team: "&cYou left &eTeam %team% !"
   your_teammate: "&aPlayers in team: &e%players%"
@@ -64,6 +64,8 @@ messages:
   kicked_due_vip_join: "&cYou have been kicked because &6VIP &e%player% &chas joined !"
   no_vip_slot_free: "&cThere is no VIP slot free !"
   unable_to_join: "&cWe are unable to join you to arena ! Please contact admins to check console."
+  not_enough_super_votes: "&cYou don't have any super votes !"
+  theme_was_super_voted: "&aPlayer &e%player% &ahas &bSuperVoted &atheme &e%theme%&a!"
   start_message:
   - " "
   - "&f&lBuildBattlePro"
@@ -108,6 +110,12 @@ messages:
   party_decline_info: "&7>> &e/bb party decline - &cTo decline invite &7<<"
   party_not_allowed: "&cParties are not allowed on this server!"
   party_full: "&cYour party is full !"
+  party_cant_invite_yourself: "&cYou can't invite yourself !"
+ordinals:
+  st: "st"
+  nd: "nd"
+  rd: "rd"
+  th: "th"
 leaderboards:
   wins:
     title: "&bLifetime Wins"
@@ -145,6 +153,7 @@ scoreboard:
     most_points: "&fMost Points: &e%most_points%"
     blocks_placed: "&fTotal Blocks Placed: &e%blocks%"
     particles_placed: "&fTotal Particles Placed: &e%particles%"
+    super_votes: "&fSuper Votes: &e%super_votes%"
     server: "&eyour-server.net"
 stats:
   title: "&e&lBuildBattlePro Stats"
@@ -153,6 +162,7 @@ stats:
   most_points: "&aMost Points: &e%most_points%"
   blocks_placed: "&aBlocks Placed: &e%blocks%"
   particles_placed: "&aParticles Placed: &e%particles%"
+  super_votes: "&aSuper Votes: &e%super_votes%"
 voting:
   none: "&fNONE"
   very_bad: "&4VERY BAD"
@@ -205,12 +215,20 @@ gui:
         - "&7Click here to take this banner !"
   arena_list:
     title: "BuildBattle - All Arenas"
+    solo_title: "BuildBattle - Solo Arenas"
+    team_title: "BuildBattle - Team Arenas"
     status: "&eStatus: %status%"
     mode: "&eMode: %mode%"
     players: "&ePlayers: %total_players%"
     join: "&a&oClick to join !"
   theme_voting:
     title: "Poll: What Theme?"
+    supervote_item:
+      displayname: "&bSuper Vote !"
+      lore:
+      - "&7You have &b%supervotes% super votes."
+      - ""
+      - "&eClick to super vote &b%theme%&e!"
     themes:
       displayname: "&6What Theme?"
       lore:
@@ -377,7 +395,6 @@ items:
     displayname: "&aTeam Selector &8(Right Click)"
     lore:
     - "&7Click to select your team !"
-
 gamemode:
   solo: "SOLO"
   team: "TEAM"

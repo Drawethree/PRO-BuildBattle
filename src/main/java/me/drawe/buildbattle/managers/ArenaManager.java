@@ -30,6 +30,16 @@ public class ArenaManager {
 
     }
 
+    public static int getArenasAmount(BBGameMode gm) {
+        int returnVal = 0;
+        for(BBArena a : getArenas()) {
+            if(a.getGameType() == gm) {
+                returnVal+=1;
+            }
+        }
+        return returnVal;
+    }
+
     public static int getTotalPlayedGames() {
         return totalPlayedGames;
     }
@@ -88,6 +98,17 @@ public class ArenaManager {
         for(BBArena a : getArenas()) {
             for(BBPlot plot : a.getBuildPlots()) {
                 if(plot.isLocationInPlot(l)) {
+                    return plot;
+                }
+            }
+        }
+        return null;
+    }
+
+    public BBPlot getBBPlotFromNearbyLocation(Location l) {
+        for(BBArena a : getArenas()) {
+            for(BBPlot plot : a.getBuildPlots()) {
+                if(plot.isInPlotRange(l, 5)) {
                     return plot;
                 }
             }

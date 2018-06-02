@@ -50,10 +50,12 @@ public enum Message {
     SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("scoreboard.main-lobby.blocks_placed")),
     SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("scoreboard.main-lobby.particles_placed")),
     SCOREBOARD_MAIN_LOBBY_SERVER(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("scoreboard.main-lobby.server")),
+    SCOREBOARD_MAIN_LOBBY_SUPER_VOTES(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("scoreboard.main-lobby.super_votes")),
     STATS_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("stats.title")),
     STATS_WINS(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("stats.wins")),
     STATS_PLAYED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("stats.played")),
     STATS_MOST_POINTS(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("stats.most_points")),
+    STATS_SUPER_VOTES(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("stats.super_votes")),
     ARENA_FULL(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.arena_full")),
     ARENA_ALREADY_STARTED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.arena_already_started")),
     VOTE_CHANGED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.vote_changed")),
@@ -154,6 +156,7 @@ public enum Message {
     GUI_HEADS_MAIN_PAGE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.heads.items.main_page")),
     GUI_THEME_VOTING_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.theme_voting.title")),
     GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.theme_voting.themes.displayname")),
+    GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.theme_voting.supervote_item.displayname")),
     GUI_ARENA_LIST_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.title")),
     GUI_ARENA_LIST_STATUS(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.status")),
     GUI_ARENA_LIST_PLAYERS(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.players")),
@@ -229,8 +232,16 @@ public enum Message {
     THEME_BLACKLISTED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.theme_blacklisted")),
     KICKED_DUE_TO_VIP_JOIN(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.kicked_due_vip_join")),
     NO_VIP_SLOT_FREE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.no_vip_slot_free")),
-    UNABLE_TO_JOIN(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.unable_to_join"));
-
+    UNABLE_TO_JOIN(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.unable_to_join")),
+    ORDINAL_ST(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("ordinals.st")),
+    ORDINAL_ND(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("ordinals.nd")),
+    ORDINAL_RD(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("ordinals.rd")),
+    ORDINAL_TH(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("ordinals.th")),
+    GUI_ARENA_LIST_SOLO_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.solo_title")),
+    GUI_ARENA_LIST_TEAM_TITLE(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("gui.arena_list.team_title")),
+    NOT_ENOUGH_SUPER_VOTES(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.not_enough_super_votes")),
+    THEME_WAS_SUPER_VOTED(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.theme_was_super_voted")),
+    PARTY_CANT_INVITE_YOURSELF(BuildBattle.getFileManager().getConfig("messages.yml").get().getString("messages.party_cant_invite_yourself"));
     private String message;
     Message(String message) {
         this.message = ChatColor.translateAlternateColorCodes('&', message);

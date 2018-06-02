@@ -53,6 +53,12 @@ public class BuildBattleProPlaceholders extends EZPlaceholderHook {
                 } else {
                     return String.valueOf(0);
                 }
+            case "super_votes":
+                if(stats != null) {
+                    return String.valueOf(stats.getSuperVotes());
+                } else {
+                    return String.valueOf(0);
+                }
         }
         return null;
     }

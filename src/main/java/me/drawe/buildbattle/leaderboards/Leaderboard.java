@@ -52,7 +52,10 @@ public class Leaderboard {
                                 try {
                                     BBPlayerStats stats = sortedStats.get(i);
                                     hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (IndexOutOfBoundsException e) {
+                                } catch (NullPointerException e1) {
+                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
+                                    break;
+                                } catch (IndexOutOfBoundsException e2) {
                                     break;
                                 }
                             }
@@ -64,7 +67,10 @@ public class Leaderboard {
                                 try {
                                     BBPlayerStats stats = sortedStats.get(i);
                                     hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (IndexOutOfBoundsException e) {
+                                } catch (NullPointerException e1) {
+                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
+                                    break;
+                                } catch (IndexOutOfBoundsException e2) {
                                     break;
                                 }
                             }
@@ -76,19 +82,25 @@ public class Leaderboard {
                                 try {
                                     BBPlayerStats stats = sortedStats.get(i);
                                     hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (IndexOutOfBoundsException e) {
+                                } catch (NullPointerException e1) {
+                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
+                                    break;
+                                } catch (IndexOutOfBoundsException e2) {
                                     break;
                                 }
                             }
                             break;
                         case PARTICLES_PLACED:
-                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getWins));
+                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getParticlesPlaced));
                             Collections.reverse(sortedStats);
                             for(int i = 0, position=1;i < getAmountToDisplay();i++,position++) {
                                 try {
                                     BBPlayerStats stats = sortedStats.get(i);
                                     hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (IndexOutOfBoundsException e) {
+                                } catch (NullPointerException e1) {
+                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
+                                    break;
+                                } catch (IndexOutOfBoundsException e2) {
                                     break;
                                 }
                             }
@@ -104,15 +116,15 @@ public class Leaderboard {
         getHologram().delete();
         getUpdateTask().cancel();
         LeaderboardManager.getActiveLeaderboards().remove(this);
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocation(getLocation()), null);
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
         BuildBattle.getFileManager().getConfig("leaderboards.yml").save();
     }
     public void teleport(Location loc) {
         getHologram().teleport(loc);
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocation(getLocation()), null);
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocation(loc) + ".type", getType().name());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocation(loc) + ".player-amount", getAmountToDisplay());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocation(loc) + ".refresh-time", getRefreshTime());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", getType().name());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", getAmountToDisplay());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".refresh-time", getRefreshTime());
         BuildBattle.getFileManager().getConfig("leaderboards.yml").save();
         setLocation(loc);
     }

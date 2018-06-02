@@ -28,17 +28,19 @@ public class PartyManager {
     }
 
 
-    public void createParty(Player creator) {
+    public BBParty createParty(Player creator) {
         if(creator.hasPermission("buildbattlepro.party")) {
             if (getPlayerParty(creator) == null) {
                 BBParty party = new BBParty(creator);
                 parties.add(party);
+                return party;
             } else {
                 creator.sendMessage(Message.PARTY_CREATE_FAILED.getChatMessage());
             }
         } else {
             creator.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return null;
     }
 
     public void manageInvite(Player p, boolean join) {
@@ -55,45 +57,54 @@ public class PartyManager {
         }
 
     }
+
     public void invitePlayer(Player whoInvited, Player p, BBParty party) {
         if(p != null) {
-            if(party != null) {
-                if(party.isCreator(whoInvited)) {
-                    if(!party.isFull()) {
-                        if (!getInvitedPlayers().containsKey(p)) {
-                            if (getPlayerParty(p) == null) {
-                                invitedPlayers.put(p, party);
-                                whoInvited.sendMessage(Message.PARTY_INVITE.getChatMessage().replaceAll("%player%", p.getName()));
-                                p.sendMessage(Message.PARTY_YOU_HAVE_BEEN_INVITED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
-                                p.sendMessage(Message.PARTY_ACCEPT_INFO.getChatMessage());
-                                p.sendMessage(Message.PARTY_DECLINE_INFO.getChatMessage());
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (getInvitedPlayers().containsKey(p)) {
-                                            getInvitedPlayers().remove(p);
-                                            p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
-                                        }
-                                    }
-                                }, 20 * 180L);
+            if(!whoInvited.equals(p)) {
+                if (party != null) {
+                    if (party.isCreator(whoInvited)) {
+                        if (!party.isFull()) {
+                            if (!getInvitedPlayers().containsKey(p)) {
+                                if (getPlayerParty(p) == null) {
+                                    doInviteCommands(p, party);
+                                } else {
+                                    party.getCreator().sendMessage(Message.PARTY_ALREADY_IN_PARTY.getChatMessage().replaceAll("%player%", p.getName()));
+                                }
                             } else {
-                                party.getCreator().sendMessage(Message.PARTY_ALREADY_IN_PARTY.getChatMessage().replaceAll("%player%", p.getName()));
+                                party.getCreator().sendMessage(Message.PARTY_ALREADY_INVITED.getChatMessage().replaceAll("%player%", p.getName()));
                             }
                         } else {
-                            party.getCreator().sendMessage(Message.PARTY_ALREADY_INVITED.getChatMessage().replaceAll("%player%", p.getName()));
+                            whoInvited.sendMessage(Message.PARTY_FULL.getChatMessage());
                         }
                     } else {
-                        whoInvited.sendMessage(Message.PARTY_FULL.getChatMessage());
+                        whoInvited.sendMessage(Message.PARTY_NOT_ALLOWED_TO_INVITE.getChatMessage());
                     }
                 } else {
-                    whoInvited.sendMessage(Message.PARTY_NOT_ALLOWED_TO_INVITE.getChatMessage());
+                    BBParty createdParty = createParty(whoInvited);
+                    if (createdParty != null) {
+                        doInviteCommands(p, createdParty);
+                    }
                 }
             } else {
-                whoInvited.sendMessage(Message.PARTY_NOT_IN_PARTY.getChatMessage());
+                whoInvited.sendMessage(Message.PARTY_CANT_INVITE_YOURSELF.getChatMessage());
             }
         } else {
             whoInvited.sendMessage(Message.PARTY_PLAYER_NOT_ONLINE.getChatMessage());
         }
+    }
+
+    private void doInviteCommands(Player p, BBParty party) {
+        invitedPlayers.put(p, party);
+        party.getCreator().sendMessage(Message.PARTY_INVITE.getChatMessage().replaceAll("%player%", p.getName()));
+        p.sendMessage(Message.PARTY_YOU_HAVE_BEEN_INVITED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
+        p.sendMessage(Message.PARTY_ACCEPT_INFO.getChatMessage());
+        p.sendMessage(Message.PARTY_DECLINE_INFO.getChatMessage());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
+            if (getInvitedPlayers().containsKey(p)) {
+                getInvitedPlayers().remove(p);
+                p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
+            }
+        }, 20 * 180L);
     }
 
     public static HashMap<Player, BBParty> getInvitedPlayers() {

@@ -1,9 +1,9 @@
 name: BuildBattlePro
-version: 4.2
+version: 4.5.9
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
-softdepend: [WorldEdit, Vault, Multiverse-Core, PointsAPI, Vault, PlaceholderAPI, HolographicDisplays, Citizens]
+softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldEdit, Vault, Multiverse-Core, PointsAPI, Vault, HolographicDisplays, Citizens]
 author: TheRealDrawe
 description: BuildBattlePro plugin
 commands:
@@ -34,6 +34,7 @@ permissions:
       buildbattlepro.bypass: true
       buildbattlepro.party: true
       buildbattlepro.joinfull: true
+      buildbattlepro.manage.reports: true
   buildbattlepro.joinfull:
     description: Join full arena
     default: op
@@ -76,6 +77,9 @@ permissions:
   buildbattlepro.changetime:
     description: Change Time permission
     default: true
+  buildbattlepro.manage.reports:
+    description: Manage reports permission
+    default: op
 
 
 

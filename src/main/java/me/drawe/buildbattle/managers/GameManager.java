@@ -1,12 +1,13 @@
 package me.drawe.buildbattle.managers;
 
-import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
+import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
-import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.*;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -22,9 +23,7 @@ public class GameManager {
     }
 
     private GameManager() {
-
     }
-
     private static List<String> soloThemes = new ArrayList<>();
     private static List<String> teamThemes = new ArrayList<>();
     private static List<String> restricedThemes = new ArrayList<>();
@@ -51,6 +50,8 @@ public class GameManager {
     private static List<String> themeVotingLore = new ArrayList<>();
     private static List<String> weatherLore = new ArrayList<>();
     private static List<String> finalBannerLore = new ArrayList<>();
+    private static List<String> endCommands = new ArrayList<>();
+    private static List<String> superVoteLore = new ArrayList<>();
     private static boolean asyncSavePlayerData = false;
     private static StatsType statsType = StatsType.FLATFILE;
     private static boolean scoreboardEnabled = true;
@@ -62,17 +63,29 @@ public class GameManager {
     private static boolean changeMOTD = false;
     private static boolean pointsApiRewards = false;
     private static boolean vaultRewards = false;
+    private static boolean commandRewards = false;
     private static boolean arenaChat = true;
+    private static boolean teamChat = true;
     private static boolean announceNewMostPoints = true;
     private static boolean automaticGrow = true;
     private static boolean showVoteInSubtitle = true;
     private static boolean restrictPlayerMovement = true;
+    private static boolean restrictOnlyPlayerYMovement = false;
     private static boolean lockServerOnGameStart = false;
     private static boolean replaceBlockBehindSigns = true;
+    //PLOT OPTIONS
+    private static boolean enableClearPlotOption = true;
+    private static boolean enableBannerCreatorOption = true;
+    private static boolean enableHeadsOption = true;
+    private static boolean enableParticleOption = true;
+    private static boolean enableBiomeOption = true;
+    private static boolean enabledWeatherOption = true;
+    private static boolean enableChangeFloorOption = true;
+    private static boolean enableTimeOption = true;
+    //
     private static boolean autoRestarting = false;
     private static int autoRestartGamesRequired = -1;
     private static String autoRestartCommand = "NONE";
-    private static String endCommand = "NONE";
     private static EntityType floorChangeNPCtype = EntityType.VILLAGER;
     private static Location mainLobbyLocation = null;
 
@@ -309,20 +322,8 @@ public class GameManager {
         }
     }
 
-    public static String getEndCommand() {
-        return endCommand;
-    }
-
-    public static void setEndCommand(String endCommand) {
-        if (endCommand != null) {
-            GameManager.endCommand = endCommand;
-        } else {
-            BuildBattle.warning("§cVariable endCommand in config.yml is not set ! Setting it to default (" + getEndCommand() + ")");
-        }
-    }
-
     public static boolean isEndCommandValid() {
-        if ((getEndCommand() != null) && (!getEndCommand().equalsIgnoreCase("none"))) {
+        if ((getEndCommands() != null) && (!getEndCommands().isEmpty())) {
             return true;
         } else {
             return false;
@@ -570,12 +571,25 @@ public class GameManager {
         return mainLobbyLocation;
     }
 
-    public static void setMainLobbyLocation(Location mainLobbyLocation) {
-        if (mainLobbyLocation != null) {
-            GameManager.mainLobbyLocation = mainLobbyLocation;
-        } else {
-            BuildBattle.warning("§cMain Lobby Location in config.yml is not set ! If you don't want to use main lobby feature, just ignore this warning :)");
+
+    public static void setMainLobbyLocation() {
+        try {
+            World w = Bukkit.getWorld(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby.world"));
+            double x = BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.x");
+            double y = BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.y");
+            double z = BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.z");
+            float pitch = (float) BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.pitch");
+            float yaw = (float) BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.yaw");
+            GameManager.mainLobbyLocation = new Location(w,x,y,z,yaw,pitch);
+            return;
+        } catch (Exception e) {
+            try {
+                GameManager.mainLobbyLocation = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby"));
+                return;
+            } catch (Exception e2) {
+            }
         }
+        BuildBattle.warning("§cMain Lobby Location in config.yml is not set ! If you don't want to use main lobby feature, just ignore this warning :)");
     }
 
     public static boolean isMainLobbyScoreboardEnabled() {
@@ -594,6 +608,117 @@ public class GameManager {
         return teamThemes;
     }
 
+    public static boolean isRestrictOnlyPlayerYMovement() {
+        return restrictOnlyPlayerYMovement;
+    }
+
+    public static void setRestrictOnlyPlayerYMovement(boolean restrictOnlyPlayerYMovement) {
+        GameManager.restrictOnlyPlayerYMovement = restrictOnlyPlayerYMovement;
+    }
+
+    public static boolean isEnableClearPlotOption() {
+        return enableClearPlotOption;
+    }
+
+    public static void setEnableClearPlotOption(boolean enableClearPlotOption) {
+        GameManager.enableClearPlotOption = enableClearPlotOption;
+    }
+
+    public static boolean isTeamChat() {
+        return teamChat;
+    }
+
+    public static void setTeamChat(boolean teamChat) {
+        GameManager.teamChat = teamChat;
+    }
+
+    public static List<String> getSuperVoteLore() {
+        return superVoteLore;
+    }
+
+    public static void setSuperVoteLore(List<String> superVoteLore) {
+        if (superVoteLore != null) {
+            GameManager.superVoteLore = superVoteLore;
+        } else {
+            BuildBattle.severe("§cVariable gui.theme_voting.supervote_item.lore in messages.yml could not be loaded !");
+        }
+    }
+
+    public static boolean isEnableBannerCreatorOption() {
+        return enableBannerCreatorOption;
+    }
+
+    public static void setEnableBannerCreatorOption(boolean enableBannerCreatorOption) {
+        GameManager.enableBannerCreatorOption = enableBannerCreatorOption;
+    }
+
+    public static boolean isEnableHeadsOption() {
+        return enableHeadsOption;
+    }
+
+    public static void setEnableHeadsOption(boolean enableHeadsOption) {
+        GameManager.enableHeadsOption = enableHeadsOption;
+    }
+
+    public static boolean isEnableParticleOption() {
+        return enableParticleOption;
+    }
+
+    public static void setEnableParticleOption(boolean enableParticleOption) {
+        GameManager.enableParticleOption = enableParticleOption;
+    }
+
+    public static boolean isEnabledWeatherOption() {
+        return enabledWeatherOption;
+    }
+
+    public static void setEnabledWeatherOption(boolean enabledWeatherOption) {
+        GameManager.enabledWeatherOption = enabledWeatherOption;
+    }
+
+    public static boolean isEnableBiomeOption() {
+        return enableBiomeOption;
+    }
+
+    public static void setEnableBiomeOption(boolean enableBiomeOption) {
+        GameManager.enableBiomeOption = enableBiomeOption;
+    }
+
+    public static boolean isEnableChangeFloorOption() {
+        return enableChangeFloorOption;
+    }
+
+    public static void setEnableChangeFloorOption(boolean enableChangeFloorOption) {
+        GameManager.enableChangeFloorOption = enableChangeFloorOption;
+    }
+
+    public static boolean isEnableTimeOption() {
+        return enableTimeOption;
+    }
+
+    public static void setEnableTimeOption(boolean enableTimeOption) {
+        GameManager.enableTimeOption = enableTimeOption;
+    }
+
+    public static boolean isCommandRewards() {
+        return commandRewards;
+    }
+
+    public static void setCommandRewards(boolean commandRewards) {
+        GameManager.commandRewards = commandRewards;
+    }
+
+    public static List<String> getEndCommands() {
+        return endCommands;
+    }
+
+    public static void setEndCommands(List<String> endCommands) {
+        if(endCommands != null) {
+            GameManager.endCommands = endCommands;
+        } else {
+            BuildBattle.severe("§cEnd-Commands list in config.yml could not be loaded !");
+        }
+    }
 
 
     public void loadDefaultFloorMaterial() {
@@ -682,9 +807,11 @@ public class GameManager {
             setThemesToVote(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themesToVote"));
             setVotingForThemes(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.enabled"));
             setPrefix(BuildBattle.getFileManager().getConfig("config.yml").get().getString("prefix"));
-            setEndCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.end_command"));
+            setEndCommands(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.end_command"));
             setArenaChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
+            setTeamChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.team_chat"));
             setRestrictPlayerMovement(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_player_movement"));
+            setRestrictOnlyPlayerYMovement(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_only_player_Y_movement"));
             setMaxParticlesPerPlayer(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.max_particles_per_player"));
             setParticleOffset(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.offset"));
             setFireworkAmount(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.amount_per_corner"));
@@ -692,6 +819,14 @@ public class GameManager {
             setAmountParticleToSpawn(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.amount_to_spawn"));
             setPartyMaxPlayers(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("parties.max_players"));
             setAnnounceNewMostPoints(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.announce_new_most_points"));
+            setEnableClearPlotOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.clear_plot"));
+            setEnableBannerCreatorOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.banner_creator"));
+            setEnableBiomeOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.biome_selector"));
+            setEnableChangeFloorOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.change_floor"));
+            setEnabledWeatherOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.weather"));
+            setEnableHeadsOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.heads"));
+            setEnableTimeOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.time"));
+            setEnableParticleOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.particles"));
             //setLockServerOnGameStart(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.lock_server_on_game_start"));
             setPartiesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
             setParticleRefreshTime(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));
@@ -702,8 +837,10 @@ public class GameManager {
             setThemeVotingLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.theme_voting.themes.lore"));
             setFinalBannerLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
             setWeatherLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
+            setSuperVoteLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
             setPointsApiRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.PointsAPI.enabled"));
             setVaultRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Vault.enabled"));
+            setCommandRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Command.enabled"));
             setAsyncSavePlayerData(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
             setStatsType(StatsType.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
             setReportsEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.enable_reports"));
@@ -714,7 +851,7 @@ public class GameManager {
             setChangeMOTD(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
             setReplaceBlockBehindSigns(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
             setAutoRestarting(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
-            setMainLobbyLocation(LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby")));
+            setMainLobbyLocation();
             if (isAutoRestarting()) {
                 setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));
                 setAutoRestartCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("auto-restart.restart-command"));
@@ -729,12 +866,27 @@ public class GameManager {
         try {
             Location pLoc = p.getLocation();
             String locString = LocationUtil.getStringFromLocation(pLoc);
-            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby", locString).save();
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby", null);
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.world", pLoc.getWorld().getName());
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.x", pLoc.getX());
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.y", pLoc.getY());
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.z", pLoc.getZ());
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.pitch", pLoc.getPitch());
+            BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.yaw", pLoc.getYaw()).save();
             p.sendMessage("§e§lBuildBattle Setup §8| §aMain lobby location set to §e" + locString);
+            mainLobbyLocation = pLoc;
         } catch (Exception e) {
             p.sendMessage("§e§lBuildBattle Setup §8| §cOops ! Something went wrong while setting main lobby ! Check console please.");
             BuildBattle.severe("§cAn exception occurred while setting main lobby !");
             e.printStackTrace();
+        }
+    }
+
+    public static void runEndCommands(BBArena bbArena) {
+        for(String cmd : endCommands) {
+            for (Player p : bbArena.getPlayers()) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", p.getName()));
+            }
         }
     }
 }

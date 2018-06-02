@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.objects.Message;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,12 +24,12 @@ public class TimeUtil {
     }
 
     public static String ordinal(int i) {
-        String[] sufixes = new String[]{"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"};
+        String[] sufixes = new String[]{Message.ORDINAL_TH.getMessage(), Message.ORDINAL_ST.getMessage(), Message.ORDINAL_ND.getMessage(), Message.ORDINAL_RD.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage()};
         switch (i % 100) {
             case 11:
             case 12:
             case 13:
-                return i + "th";
+                return i + Message.ORDINAL_TH.getMessage();
             default:
                 return i + sufixes[i % 10];
 

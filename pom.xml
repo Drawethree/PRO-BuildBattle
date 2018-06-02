@@ -82,6 +82,11 @@
             <id>filoghost-repo</id>
             <url>http://novaguilds.pl/repo/</url>
         </repository>
+        <repository>
+            <id>mvdw-software</id>
+            <name>MVdW Public Repositories</name>
+            <url>http://repo.mvdw-software.be/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -107,6 +112,11 @@
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
             <version>6.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>be.maximvdw</groupId>
+            <artifactId>MVdWPlaceholderAPI</artifactId>
+            <version>2.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

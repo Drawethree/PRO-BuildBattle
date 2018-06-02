@@ -36,14 +36,22 @@ public class LocationUtil {
         }
     }
 
+    public static String getStringFromLocationXYZ(Location l) {
+        if (l != null) {
+            return l.getWorld().getName() + "//" + l.getBlockX() + "//" + l.getBlockY() + "//" + l.getBlockZ();
+        } else {
+            return null;
+        }
+    }
+
     public static Location getLocationFromString(String s) {
         if(s != null) {
             try {
                 String[] s1 = s.split("//");
                 World w = Bukkit.getWorld(s1[0]);
-                int x = Integer.parseInt(s1[1]);
-                int y = Integer.parseInt(s1[2]);
-                int z = Integer.parseInt(s1[3]);
+                double x = Double.parseDouble(s1[1]);
+                double y = Double.parseDouble(s1[2]);
+                double z = Double.parseDouble(s1[3]);
                 float yaw = Float.parseFloat(s1[4]);
                 float pitch = Float.parseFloat(s1[5]);
                 return new Location(w, x, y, z, yaw, pitch);
@@ -51,9 +59,9 @@ public class LocationUtil {
                 try {
                     String[] s1 = s.split("//");
                     World w = Bukkit.getWorld(s1[0]);
-                    int x = Integer.parseInt(s1[1]);
-                    int y = Integer.parseInt(s1[2]);
-                    int z = Integer.parseInt(s1[3]);
+                    double x = Double.parseDouble(s1[1]);
+                    double y = Double.parseDouble(s1[2]);
+                    double z = Double.parseDouble(s1[3]);
                     return new Location(w, x, y, z);
                 } catch (Exception e2) {
                     return null;
@@ -103,12 +111,12 @@ public class LocationUtil {
     public static List<Location> getHollowCube(Location min, Location max) {
         List<Location> result = new ArrayList<>();
         World world = min.getWorld();
-        int minX = Math.min(min.getBlockX(), max.getBlockX());
-        int minY = Math.min(min.getBlockY(), max.getBlockY());
-        int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
-        int maxX = Math.max(min.getBlockX(), max.getBlockX());
-        int maxY = Math.max(min.getBlockY(), max.getBlockY());
-        int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
+        double minX = Math.min(min.getX(), max.getX());
+        double minY = Math.min(min.getY(), max.getY());
+        double minZ = Math.min(min.getZ(), max.getZ());
+        double maxX = Math.max(min.getX(), max.getX());
+        double maxY = Math.max(min.getY(), max.getY());
+        double maxZ = Math.max(min.getZ(), max.getZ());
 
         for (double x = minX; x <= maxX; x+=1) {
             for (double y = minY; y <= maxY; y+=1) {
@@ -134,10 +142,10 @@ public class LocationUtil {
         Location min = plot.getMinPoint();
         Location max = plot.getMaxPoint();
         World w = min.getWorld();
-        returnList.add(new Location(w,min.getBlockX(),min.getBlockY(),min.getBlockZ()));
-        returnList.add(new Location(w,max.getBlockX(),min.getBlockY(),max.getBlockZ()));
-        returnList.add(new Location(w,min.getBlockX(),min.getBlockY(),max.getBlockZ()));
-        returnList.add(new Location(w,max.getBlockX(),min.getBlockY(),min.getBlockZ()));
+        returnList.add(new Location(w,min.getX(),min.getY(),min.getZ()));
+        returnList.add(new Location(w,max.getX(),min.getY(),max.getZ()));
+        returnList.add(new Location(w,min.getX(),min.getY(),max.getZ()));
+        returnList.add(new Location(w,max.getX(),min.getY(),min.getZ()));
         return returnList;
     }
 

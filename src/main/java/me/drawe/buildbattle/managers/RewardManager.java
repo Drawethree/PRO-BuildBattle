@@ -1,10 +1,15 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
-import me.drawe.buildbattle.objects.Reward;
+import me.drawe.buildbattle.objects.bbrewards.BBCommandRewards;
+import me.drawe.buildbattle.objects.bbrewards.BBPointsAPIRewards;
+import me.drawe.buildbattle.objects.bbrewards.BBVaultRewards;
 
 public class RewardManager {
     private static RewardManager ourInstance = new RewardManager();
+    private static BBVaultRewards vaultRewards = new BBVaultRewards();
+    private static BBCommandRewards commandRewards = new BBCommandRewards();
+    private static BBPointsAPIRewards pointsAPIRewards = new BBPointsAPIRewards();
 
     public static RewardManager getInstance() {
         return ourInstance;
@@ -16,17 +21,25 @@ public class RewardManager {
     public void giveRewards(BBArena a) {
         if(GameManager.isPointsApiRewards()) {
             try {
-                Reward.POINTS_API_FIRST.giveReward(a.getVotingPlots().get(0).getTeam());
-                Reward.POINTS_API_SEC.giveReward(a.getVotingPlots().get(1).getTeam());
-                Reward.POINTS_API_THIRD.giveReward(a.getVotingPlots().get(2).getTeam());
+                pointsAPIRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
+                pointsAPIRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
+                pointsAPIRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
             } catch (IndexOutOfBoundsException e) {
             }
         }
         if(GameManager.isVaultRewards()) {
             try {
-                Reward.VAULT_FIRST.giveReward(a.getVotingPlots().get(0).getTeam());
-                Reward.VAULT_SEC.giveReward(a.getVotingPlots().get(1).getTeam());
-                Reward.VAULT_THIRD.giveReward(a.getVotingPlots().get(2).getTeam());
+                vaultRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
+                vaultRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
+                vaultRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
+            } catch (IndexOutOfBoundsException e) {
+            }
+        }
+        if(GameManager.isCommandRewards()) {
+            try {
+                commandRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
+                commandRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
+                commandRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
             } catch (IndexOutOfBoundsException e) {
             }
         }

@@ -16,15 +16,17 @@ public class BBPlayerStats {
     private int mostPoints;
     private int blocksPlaced;
     private int particlesPlaced;
+    private int superVotes;
 
 
-    public BBPlayerStats(String uuid, int wins, int played, int mostPoints, int blocksPlaced, int particlesPlaced) {
+    public BBPlayerStats(String uuid, int wins, int played, int mostPoints, int blocksPlaced, int particlesPlaced, int superVotes) {
         this.uuid = uuid;
         this.wins = wins;
         this.played = played;
         this.mostPoints = mostPoints;
         this.blocksPlaced = blocksPlaced;
         this.particlesPlaced = particlesPlaced;
+        this.superVotes = superVotes;
     }
 
     public String getUuid() {
@@ -113,6 +115,24 @@ public class BBPlayerStats {
                     break;
                 case FLATFILE:
                     PlayerManager.getInstance().savePlayerParticlesPlaced(this);
+                    break;
+            }
+        }
+    }
+
+    public int getSuperVotes() {
+        return superVotes;
+    }
+
+    public void setSuperVotes(int superVotes) {
+        this.superVotes = superVotes;
+        if(GameManager.isAsyncSavePlayerData()) {
+            switch(GameManager.getStatsType()) {
+                case MYSQL:
+                    MySQLManager.getInstance().savePlayerSuperVotes(this);
+                    break;
+                case FLATFILE:
+                    PlayerManager.getInstance().savePlayerSuperVotes(this);
                     break;
             }
         }

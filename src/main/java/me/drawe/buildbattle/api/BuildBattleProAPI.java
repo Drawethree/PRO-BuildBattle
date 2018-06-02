@@ -21,7 +21,7 @@ public class BuildBattleProAPI {
 
     public static BBPlayerStats getPlayerBuildBattleStats(Player p) {
         return PlayerManager.getInstance().getPlayerStats(p);
-    }
+}
 
     public static BBTeam getPlayerTeam(Player p) { return PlayerManager.getInstance().getPlayerTeam(getPlayerArena(p), p); }
 

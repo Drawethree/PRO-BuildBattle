@@ -9,18 +9,22 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerManager {
     private static PlayerManager ourInstance = new PlayerManager();
-    private static List<BBPlayerStats> playerStats = new ArrayList<>();
+    public static List<BBPlayerStats> playerStats = new ArrayList<>();
     private static List<PlayerData> playerData = new ArrayList<>();
 
     public static PlayerManager getInstance() {
@@ -65,6 +69,7 @@ public class PlayerManager {
     }
 
     public void loadAllPlayerStats() {
+        PlayerManager.playerStats = new ArrayList<>();
         for(String s : BuildBattle.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
             String uuid = s;
             int played = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".played");
@@ -72,7 +77,8 @@ public class PlayerManager {
             int mostPoints = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".most_points");
             int blocksPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".blocks_placed");
             int particlesPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".particles_placed");
-            BBPlayerStats stats = new BBPlayerStats(uuid, wins, played, mostPoints, blocksPlaced, particlesPlaced);
+            int superVotes = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".super_votes");
+            BBPlayerStats stats = new BBPlayerStats(uuid, wins, played, mostPoints, blocksPlaced, particlesPlaced, superVotes);
             PlayerManager.getPlayerStats().add(stats);
         }
     }
@@ -266,7 +272,7 @@ public class PlayerManager {
 
     public void createPlayerStatsIfNotExists(Player p) {
         if(getPlayerStats(p) == null) {
-            BBPlayerStats stats = new BBPlayerStats(p.getUniqueId().toString(),0,0,0,0,0);
+            BBPlayerStats stats = new BBPlayerStats(p.getUniqueId().toString(),0,0,0,0,0, 0);
             PlayerManager.getPlayerStats().add(stats);
             if(GameManager.isAsyncSavePlayerData()) {
                 switch (GameManager.getStatsType()) {
@@ -288,6 +294,7 @@ public class PlayerManager {
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".most_points", stats.getMostPoints());
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".blocks_placed", stats.getBlocksPlaced());
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".particles_placed", stats.getParticlesPlaced());
+        BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".super_votes", stats.getSuperVotes());
         BuildBattle.getFileManager().getConfig("stats.yml").save();
     }
 
@@ -368,6 +375,11 @@ public class PlayerManager {
         BuildBattle.getFileManager().getConfig("stats.yml").save();
     }
 
+    public void savePlayerSuperVotes(BBPlayerStats playerStats) {
+        BuildBattle.getFileManager().getConfig("stats.yml").set(playerStats.getUuid().toString() + ".super_votes", playerStats.getSuperVotes());
+        BuildBattle.getFileManager().getConfig("stats.yml").save();
+    }
+
     public void giveAllPlayersTeamsItem(BBArena arenaInstance) {
         for(Player p : arenaInstance.getPlayers()) {
             p.getInventory().setItem(0, OptionsManager.getTeamsItem());
@@ -378,5 +390,15 @@ public class PlayerManager {
         for(Player p : arenaInstance.getPlayers()) {
             p.closeInventory();
         }
+    }
+
+    public BBPlayerStats getPlayerStats(OfflinePlayer p) {
+        for(BBPlayerStats ps : getPlayerStats()) {
+            if(ps.getUuid().equals(p.getUniqueId().toString())) {
+                return ps;
+            }
+        }
+        return null;
+
     }
 }

@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
-import me.drawe.buildbattle.objects.bbobjects.BBTeam;
-import me.drawe.buildbattle.objects.bbobjects.BBTheme;
+import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.ReportManager;
+import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.*;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.StringUtil;
 
 
 public class ItemCreator {
@@ -171,5 +173,50 @@ public class ItemCreator {
 
     public static List<String> makeTeamLore(String... string) {
         return Arrays.asList(string);
+    }
+
+    public static int getInventorySize(int arenasAmount) {
+        int size = 9;
+        while(arenasAmount > size) {
+            if(size == 54) {
+                break;
+            }
+            size += 9;
+        }
+        return size;
+    }
+
+    public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
+        return create(Material.PAPER, 1, (byte) 0, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
+    }
+
+    private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
+        List<String> lore = new ArrayList<>();
+        for(String s : list) {
+            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%supervotes%", String.valueOf(amount)));
+        }
+        return lore;
+    }
+
+    public static ItemStack createReportItem(BBBuildReport report) {
+        return create(Material.STAINED_CLAY, 1, report.getReportStatus().getData(), report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
+
+    }
+
+    private static List<String> makeReportLore(BBBuildReport report) {
+        List<String> reportLore = new ArrayList<>();
+        OfflinePlayer reportedBy = Bukkit.getOfflinePlayer(report.getReportedBy());
+        reportLore.add("");
+        reportLore.add("§eReported by: §f" + reportedBy.getName());
+        reportLore.add("§eReported players:");
+        report.getReportedPlayers().forEach(uuid -> reportLore.add(" §f- " + Bukkit.getOfflinePlayer(uuid).getName()));
+        reportLore.add("§eDate: §f" + ReportManager.reportDateformat.format(report.getReportDate()));
+        reportLore.add("§eSchematic name: §f" + report.getSchematicFile().getName());
+        reportLore.add("§eStatus: " + report.getReportStatus().getStatusColor() + report.getReportStatus().name().toUpperCase());
+        reportLore.add("");
+        reportLore.add("§eRight-Click §7to mark as " + BBReportStatus.SOLVED.getStatusColor() + BBReportStatus.SOLVED.name());
+        reportLore.add("§eLeft-Click §7to §aLOAD §7schematic to your clipboard");
+        reportLore.add("§eMiddle-Click §7to §cDELETE §7this report");
+        return reportLore;
     }
 }

@@ -28,6 +28,11 @@ rewards:
     first_place: 50
     second_place: 25
     third_place: 10
+  Command:
+    enabled: false
+    first_place: 'give %player% 264 3'
+    second_place: 'give %player% 264 2'
+    third_place: 'give %player% 264 1'
 auto-restart:
   enabled: false
   games-needed: 10
@@ -43,6 +48,7 @@ arena:
   endTime: 10
   default_floor: '5:2'
   arena_chat: true
+  team_chat: true
   announce_new_most_points: true
   replace_block_behind_signs: true
   show_game_scoreboard: true
@@ -51,8 +57,20 @@ arena:
   show_vote_in_subtitle: true
   automatic_grow: true
   restrict_player_movement: true
+  restrict_only_player_Y_movement: false
   remove_players_after_game: true
-  end_command: "eco give %winner% 100"
+  enable_clear_plot_option: true
+  end_commands:
+  - "eco give %winner% 100"
+  plot_options:
+    heads: true
+    change_floor: true
+    time: true
+    weather: true
+    biome_selector: true
+    banner_creator: true
+    particles: true
+    clear_plot: true
   particles:
     max_particles_per_player: 20
     offset: 0.5

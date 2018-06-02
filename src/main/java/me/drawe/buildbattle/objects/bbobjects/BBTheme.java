@@ -42,4 +42,8 @@ public class BBTheme {
     public void setVotes(int votes) {
         this.votes = votes;
     }
+
+    public boolean isSuperVoteSlotClicked(int clickedSlot) {
+        return clickedSlot == slotInInventory + 8;
+    }
 }

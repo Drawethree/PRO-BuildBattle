@@ -13,10 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class BBPlot implements Comparable<BBPlot> {
 
@@ -30,6 +27,7 @@ public class BBPlot implements Comparable<BBPlot> {
     private List<PlotParticle> particles;
     private List<Location> blocksInPlot;
     private List<Chunk> chunksInPlot;
+    private UUID reportedBy;
 
     public BBPlot(BBArena arena, Location minPoint, Location maxPoint) {
         this.arena = arena;
@@ -39,6 +37,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.options = new BBPlotOptions(this);
         this.votedPlayers = new HashMap<>();
         this.particles = new ArrayList<>();
+        this.reportedBy = null;
         this.team = null;
         setBlocksInPlot();
         setChunksInPlot();
@@ -76,6 +75,7 @@ public class BBPlot implements Comparable<BBPlot> {
         removeAllBlocks();
         removeAllParticles();
         setParticles(new ArrayList<>());
+        setReportedBy(null);
         setVotedPlayers(new HashMap<>());
         ItemStack item = ItemCreator.getItemStack(GameManager.getDefaultFloorMaterial());
         changeFloor(item.getType(), item.getData().getData());
@@ -404,5 +404,13 @@ public class BBPlot implements Comparable<BBPlot> {
             }
         }
         this.chunksInPlot = chunks;
+    }
+
+    public UUID getReportedBy() {
+        return reportedBy;
+    }
+
+    public void setReportedBy(UUID reportedBy) {
+        this.reportedBy = reportedBy;
     }
 }

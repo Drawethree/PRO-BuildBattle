@@ -153,9 +153,6 @@ public class BBArena {
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         if (BuildBattle.getInstance().isUseBungeecord()) {
             BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
-            if(p.isOnline()) {
-                p.kickPlayer("");
-            }
         }
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
         if(getBBArenaState() == BBArenaState.LOBBY) {
@@ -272,17 +269,11 @@ public class BBArena {
         setPlotsToTeams();
         PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
         getThemeVoting().updateVoting();
-        for (Player p : getPlayers()) {
-            p.openInventory(getThemeVoting().getVoteInventory());
-        }
         themeVotingCountdown = new BukkitRunnable() {
             @Override
             public void run() {
                 getThemeVoting().setWinner();
                 startGame();
-                for (Player p : getPlayers()) {
-                    p.closeInventory();
-                }
             }
         }.runTaskLater(BuildBattle.getInstance(), (long) (GameManager.getThemeVotingTime() * 20L));
     }
@@ -300,12 +291,12 @@ public class BBArena {
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         setTheme(getThemeVoting().getWinner().getName());
         setVotingPlots();
-        PlayerManager.getInstance().closeInventoryAllPlayersInArena(getArenaInstance());
         PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
         setGamemodeToAllPlayers(GameMode.CREATIVE);
         PlayerManager.getInstance().addPlayedToAllPlayers(getArenaInstance());
         OptionsManager.getInstance().giveAllPlayersItem(getArenaInstance(), OptionsManager.getOptionsItem());
         PlayerManager.getInstance().sendStartMessageToAllPlayers(getArenaInstance());
+        PlayerManager.getInstance().closeInventoryAllPlayersInArena(getArenaInstance());
 
         gameCountdown = new BukkitRunnable() {
             int countdown = getGameTime();
@@ -352,12 +343,13 @@ public class BBArena {
         if (fromLobby) {
             setPlotsToTeams();
         }
-        setGamemodeToAllPlayers(GameMode.CREATIVE);
         setVotingPlots();
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
         PlayerManager.getInstance().addPlayedToAllPlayers(getArenaInstance());
+        PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
+        setGamemodeToAllPlayers(GameMode.CREATIVE);
         OptionsManager.getInstance().giveAllPlayersItem(getArenaInstance(), OptionsManager.getOptionsItem());
         PlayerManager.getInstance().sendStartMessageToAllPlayers(getArenaInstance());
+        PlayerManager.getInstance().closeInventoryAllPlayersInArena(getArenaInstance());
 
         gameCountdown = new BukkitRunnable() {
             int countdown = getGameTime();
@@ -406,9 +398,7 @@ public class BBArena {
         PlayerManager.getInstance().sendResultsToAllPlayers(getArenaInstance());
         PlayerManager.getInstance().setAllPlayersMostPoints(getArenaInstance());
         if (GameManager.isEndCommandValid()) {
-            for(Player p : getWinner().getTeam().getPlayers()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), GameManager.getEndCommand().replaceAll("%winner%", p.getName()));
-            }
+            GameManager.runEndCommands(this);
         }
         RewardManager.getInstance().giveRewards(this);
         ArenaManager.setTotalPlayedGames(ArenaManager.getTotalPlayedGames() + 1);
@@ -420,7 +410,7 @@ public class BBArena {
             }
         }.runTaskLater(BuildBattle.getInstance(), GameManager.getEndTime() * 20L);
 
-        BuildBattle.getInstance().getServer().getPluginManager().callEvent(new BBGameEndEvent(getArenaInstance()));
+        BuildBattle.getInstance().getServer().getPluginManager().callEvent(new BBGameEndEvent(getArenaInstance(), getWinner().getTeam()));
     }
 
     public String getTotalPlayers() {
@@ -441,13 +431,21 @@ public class BBArena {
         if (getVotingPlots() == null) {
             stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
         } else {
-            setCurrentVotingPlot(getVotingPlots().get(0));
             votingCountdown = new BukkitRunnable() {
                 double timeLeft = GameManager.getVotingTime();
                 int index = 0;
 
                 @Override
                 public void run() {
+                    if(currentVotingPlot == null) {
+                        try {
+                            setCurrentVotingPlot(getVotingPlots().get(0));
+                        } catch (Exception e) {
+                            cancel();
+                            endGame();
+                            return;
+                        }
+                    }
                     if (timeLeft == GameManager.getVotingTime()) {
                         teleportAllPlayersToPlot(getCurrentVotingPlot());
                         updateAllScoreboards(0);
@@ -459,12 +457,11 @@ public class BBArena {
                             index += 1;
                             setCurrentVotingPlot(getVotingPlots().get(index));
                             timeLeft = GameManager.getVotingTime();
-                            return;
                         } catch (Exception e) {
                             cancel();
                             endGame();
-                            return;
                         }
+                        return;
                     } else if (timeLeft < 6) {
                         PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
                     }
@@ -985,7 +982,7 @@ public class BBArena {
             returnList.remove(p);
             return returnList;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public int getTeamSize() {
