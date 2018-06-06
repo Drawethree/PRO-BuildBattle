@@ -1,5 +1,5 @@
 name: BuildBattlePro
-version: 4.5.9
+version: 4.6
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
@@ -43,6 +43,9 @@ permissions:
     default: true
   buildbattlepro.party:
     description: Create party permission
+    default: op
+  buildbattlepro.party.size.*:
+    description: Unlimited players in party
     default: op
   buildbattlepro.leave:
     description: Leave arena permission

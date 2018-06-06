@@ -92,6 +92,7 @@ public class BBParty {
     }
 
     public boolean isFull() {
-        return getPlayers().size() == GameManager.getPartyMaxPlayers();
+        if(getCreator().isOp() || getCreator().hasPermission("buildbattlepro.party.size.*")) return false;
+        return getPlayers().size() == PartyManager.getInstance().getMaxPlayersInParty(getCreator());
     }
 }

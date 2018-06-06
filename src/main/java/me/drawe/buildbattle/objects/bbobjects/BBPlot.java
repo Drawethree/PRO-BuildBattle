@@ -135,7 +135,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.votedPlayers = votedPlayers;
     }
 
-    public void vote(Player p, Votes item) {
+    /*public void vote(Player p, Votes item) {
         if(votedPlayers.containsKey(p)) {
             if(item.getWeight() != votedPlayers.get(p)) {
                 votedPlayers.put(p, item.getWeight());
@@ -157,6 +157,7 @@ public class BBPlot implements Comparable<BBPlot> {
             getArena().updateAllScoreboards(0);
         }
     }
+    */
 
     public HashMap<Player, Integer> getVotedPlayers() {
         return votedPlayers;
@@ -218,12 +219,11 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public Location getTeleportLocation() {
         Location tploc = getCenter();
-        while(tploc.getBlock().getType() != Material.AIR || tploc.add(0,1,0).getBlock().getType() != Material.AIR)
-            tploc = tploc.add(0,1,0);
+        while(tploc.getBlock().getType() != Material.AIR || tploc.clone().add(0,1,0).getBlock().getType() != Material.AIR) tploc = tploc.add(0,1,0);
         boolean enclosed = false;
         int counter = 0;
         Location location = tploc.clone();
-        while (counter!=10){
+        while (counter != 10){
             if(!(location.getBlock().getType() == Material.BARRIER || location.getBlock().getType() == Material.AIR)){
                 enclosed = true;
                 tploc = location;

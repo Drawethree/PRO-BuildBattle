@@ -78,10 +78,10 @@ messages:
   - "&a&l----------------------------------------------------------------"
   - " "
   - "&f&lBuildBattlePro"
-  - "&e&l%position%&8- &6 %points%"
+  - "&e&l%position%&8- &6 %points% points"
   - " "
   - "&e&lYour Position"
-  - "&7%player_position% &8- &6%player_points%"
+  - "&7%player_position% &8- &6%player_points% points"
   - " "
   - "&6&oThanks for playing !"
   - " "
@@ -184,6 +184,8 @@ gamestate:
   ingame: "&eIn-Game"
   voting: "&eVoting"
   ending: "&cEnding"
+change_floor_npc:
+  name: "BuildBattle - Change Floor"
 signs:
   join:
     first_line: "&7[&bBuildBattle&7]"

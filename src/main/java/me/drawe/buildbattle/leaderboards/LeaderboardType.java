@@ -22,6 +22,7 @@ public enum LeaderboardType {
     public String getPlaceholder() {
         return placeholder;
     }
+
     public String getTitle() {
         return title;
     }

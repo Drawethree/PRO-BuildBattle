@@ -778,6 +778,7 @@ public class BBArena {
     }
 
     public void calculateResults() {
+        if(GameManager.isFairVote()) VotingManager.getInstance().checkVotes(this);
         Collections.sort(getVotingPlots());
         Collections.reverse(getVotingPlots());
         setWinner(getVotingPlots().get(0));

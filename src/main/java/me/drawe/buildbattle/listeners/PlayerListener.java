@@ -485,7 +485,7 @@ public class PlayerListener implements Listener {
                         BBPlot currentPlot = arena.getCurrentVotingPlot();
                         if (currentPlot != null) {
                             if (!currentPlot.getTeam().getPlayers().contains(p)) {
-                                currentPlot.vote(p, vote);
+                                VotingManager.getInstance().vote(p,vote,currentPlot);
                                 e.setCancelled(true);
                             } else {
                                 p.sendMessage(Message.CANT_VOTE_FOR_YOUR_PLOT.getChatMessage());

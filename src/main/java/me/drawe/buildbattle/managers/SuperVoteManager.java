@@ -15,8 +15,6 @@ public class SuperVoteManager {
 
     }
 
-
-
     public boolean giveSuperVote(OfflinePlayer player, int amount) {
         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(player);
         if(pStats != null) {

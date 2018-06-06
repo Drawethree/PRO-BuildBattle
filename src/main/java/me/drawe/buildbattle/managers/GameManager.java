@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ public class GameManager {
     private static boolean restrictOnlyPlayerYMovement = false;
     private static boolean lockServerOnGameStart = false;
     private static boolean replaceBlockBehindSigns = true;
+    private static boolean fairVote = true;
     //PLOT OPTIONS
     private static boolean enableClearPlotOption = true;
     private static boolean enableBannerCreatorOption = true;
@@ -428,9 +430,13 @@ public class GameManager {
 
     public static void setPartyMaxPlayers(int partyMaxPlayers) {
         if (partyMaxPlayers > 0) {
-            GameManager.partyMaxPlayers = partyMaxPlayers;
+            if(partyMaxPlayers <= 100) {
+                GameManager.partyMaxPlayers = partyMaxPlayers;
+            } else {
+                BuildBattle.warning("§cVariable parties.max_players can not exceed 100 ! Setting it to default (" + getPartyMaxPlayers() + ")");
+            }
         } else {
-            BuildBattle.warning("§cVariable party.maxPlayers must be higher than 0 ! Setting it to default (" + getPartyMaxPlayers() + ")");
+            BuildBattle.warning("§cVariable parties.max_players must be higher than 0 ! Setting it to default (" + getPartyMaxPlayers() + ")");
         }
     }
 
@@ -720,6 +726,14 @@ public class GameManager {
         }
     }
 
+    public static boolean isFairVote() {
+        return fairVote;
+    }
+
+    public static void setFairVote(boolean fairVote) {
+        GameManager.fairVote = fairVote;
+    }
+
 
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
@@ -810,6 +824,7 @@ public class GameManager {
             setEndCommands(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.end_command"));
             setArenaChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
             setTeamChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.team_chat"));
+            setFairVote(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.fair_vote.enabled"));
             setRestrictPlayerMovement(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_player_movement"));
             setRestrictOnlyPlayerYMovement(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_only_player_Y_movement"));
             setMaxParticlesPerPlayer(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.max_particles_per_player"));

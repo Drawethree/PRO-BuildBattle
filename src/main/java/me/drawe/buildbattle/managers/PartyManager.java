@@ -137,4 +137,13 @@ public class PartyManager {
             }
         }
     }
+
+    public int getMaxPlayersInParty(Player creator) {
+        for(int i = 100;i>GameManager.getPartyMaxPlayers();i--) {
+            if(creator.hasPermission("buildbattlepro.party.size." + i)) {
+                return i;
+            }
+        }
+        return GameManager.getPartyMaxPlayers();
+    }
 }
