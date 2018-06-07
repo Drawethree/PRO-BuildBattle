@@ -1,21 +1,9 @@
 package me.drawe.buildbattle.managers;
 
 import com.sk89q.worldedit.*;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.extent.Extent;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.schematic.SchematicFormat;
-import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.GuiItem;
 import me.drawe.buildbattle.objects.Message;
@@ -28,12 +16,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class ReportManager {
     private static ReportManager ourInstance = new ReportManager();
