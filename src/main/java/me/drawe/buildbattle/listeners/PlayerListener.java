@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
                     BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
                 }
             }, 1L);
-        } else if(GameManager.getMainLobbyLocation() != null) {
+        } else if(GameManager.getMainLobbyLocation() != null && GameManager.isTeleportToMainLobbyOnJoin()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 PlayerManager.getInstance().teleportToMainLobby(p);
             }, 1L);

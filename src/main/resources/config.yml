@@ -91,6 +91,7 @@ arena:
 change_floor_npc:
   type: VILLAGER
 main_lobby:
+teleport_to_main_lobby_on_join: false
 plugin_loading:
   load_plugin_later: false
   load_after: 10

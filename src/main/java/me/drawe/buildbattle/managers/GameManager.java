@@ -90,6 +90,7 @@ public class GameManager {
     private static String autoRestartCommand = "NONE";
     private static EntityType floorChangeNPCtype = EntityType.VILLAGER;
     private static Location mainLobbyLocation = null;
+    private static boolean teleportToMainLobbyOnJoin = false;
 
     public static void setLobbyTime(int lobbyTime) {
         if (lobbyTime > 0) {
@@ -734,6 +735,14 @@ public class GameManager {
         GameManager.fairVote = fairVote;
     }
 
+    public static boolean isTeleportToMainLobbyOnJoin() {
+        return teleportToMainLobbyOnJoin;
+    }
+
+    public static void setTeleportToMainLobbyOnJoin(boolean teleportToMainLobbyOnJoin) {
+        GameManager.teleportToMainLobbyOnJoin = teleportToMainLobbyOnJoin;
+    }
+
 
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
@@ -870,6 +879,9 @@ public class GameManager {
             if (isAutoRestarting()) {
                 setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));
                 setAutoRestartCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("auto-restart.restart-command"));
+            }
+            if(mainLobbyLocation != null) {
+                setTeleportToMainLobbyOnJoin(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("teleport_to_main_lobby_on_join"));
             }
         } catch (NullPointerException e) {
             BuildBattle.severe("§cAn exception occurred while loading arena preferences ! Check your config.yml");
