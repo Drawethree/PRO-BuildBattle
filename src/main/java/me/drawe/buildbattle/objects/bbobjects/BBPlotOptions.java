@@ -29,8 +29,7 @@ public class BBPlotOptions {
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
-        ItemStack item = ItemCreator.getItemStack(GameManager.getDefaultFloorMaterial());
-        this.currentFloorItem = ItemCreator.create(item.getType(), 1, item.getData().getData(), Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
+        this.currentFloorItem = ItemCreator.create(GameManager.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
         this.currentBiome = PlotBiome.FOREST;
@@ -50,18 +49,18 @@ public class BBPlotOptions {
                     for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
                     return;
                 } else {
-                    this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, currentFloorItem.getData().getData(), getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                    this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
                     getPlot().changeFloor(currentFloorItem);
                     for (Player p : getPlot().getTeam().getPlayers())
                         p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
                 }
             } else if (currentFloorItem.getType() == Material.WATER_BUCKET) {
-                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, currentFloorItem.getData().getData(), getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.LEGACY_STATIONARY_WATER, 0);
+                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                getPlot().changeFloor(Material.WATER);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else if (currentFloorItem.getType() == Material.LAVA_BUCKET) {
-                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, currentFloorItem.getData().getData(), getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.LEGACY_STATIONARY_LAVA, 0);
+                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                getPlot().changeFloor(Material.LAVA);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else {
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
@@ -93,16 +92,16 @@ public class BBPlotOptions {
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        if (currentFloorItem.getType() == Material.LADDER
-                || currentFloorItem.getType() == Material.CACTUS
-                || currentFloorItem.getType() == Material.STONE_BUTTON
-                || currentFloorItem.getType() == Material.LEGACY_WOOD_BUTTON
-                || currentFloorItem.getType() == Material.LEVER
-                || currentFloorItem.getType() == Material.LEGACY_RED_ROSE
-                || currentFloorItem.getType() == Material.LEGACY_YELLOW_FLOWER
-                || currentFloorItem.getType() == Material.VINE
-                || currentFloorItem.getType() == Material.LEGACY_DOUBLE_PLANT
-                || currentFloorItem.getType() == Material.TRIPWIRE_HOOK) {
+        Material m = currentFloorItem.getType();
+        if (m == Material.CACTUS
+                || m == Material.STONE_BUTTON
+                || m.name().contains("BUTTON")
+                || m == Material.LEVER
+                || m == Material.POPPY
+                || m == Material.DANDELION
+                || m == Material.VINE
+                || m == Material.SUNFLOWER
+                || m == Material.TRIPWIRE_HOOK) {
             return false;
         } else {
             return true;

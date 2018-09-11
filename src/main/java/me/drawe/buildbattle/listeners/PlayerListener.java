@@ -18,6 +18,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -40,7 +42,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPreJoin(AsyncPlayerPreLoginEvent e) {
-        //TODO: UPDATE LOGIC
         if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
             BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
             if (arena == null) {
@@ -720,9 +721,15 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (e.getBlock().getType() == Material.LEGACY_CROPS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
+                        System.out.println(e.getBlock().getType());
+                        if (e.getBlock().getType() == Material.WHEAT_SEEDS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
                             if (GameManager.isAutomaticGrow()) {
-                                //e.getBlock().setData(CropState.RIPE.getData());
+                                BlockData data = e.getBlock().getBlockData();
+                                if (data instanceof Ageable) {
+                                    Ageable agData = (Ageable) data;
+                                    agData.setAge(agData.getMaximumAge());
+                                    e.getBlock().setBlockData(agData);
+                                }
                             }
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {

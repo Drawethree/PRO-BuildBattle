@@ -1,14 +1,14 @@
 package me.drawe.buildbattle.heads;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.util.ItemStackCreator;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * This object contains the attributes, constructors and methods of a Category
@@ -49,8 +49,7 @@ public class Category {
         try {
             String categoryName = BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
             Material material = Material.getMaterial(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
-            short data = (short) BuildBattle.getFileManager().getConfig("heads.yml").get().getInt("categories." + category + ".icon.data");
-            this.icon = ItemStackCreator.createItem(material, data, 1, "&e" + categoryName);
+            this.icon = ItemStackCreator.createItem(material, 1, "&e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();
 

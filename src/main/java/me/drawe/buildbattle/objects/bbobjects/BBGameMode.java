@@ -10,6 +10,7 @@ public enum BBGameMode {
 
     int defaultTeamSize;
     String name;
+
     BBGameMode(int i, String message) {
         this.defaultTeamSize = i;
         this.name = message;

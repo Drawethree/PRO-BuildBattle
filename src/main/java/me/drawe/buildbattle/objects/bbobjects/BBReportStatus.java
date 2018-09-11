@@ -1,24 +1,25 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 
 public enum BBReportStatus {
 
-    PENDING((byte)4, ChatColor.YELLOW),
-    SOLVED((byte)5, ChatColor.GREEN);
+    PENDING(Material.YELLOW_TERRACOTTA, ChatColor.YELLOW),
+    SOLVED(Material.LIME_TERRACOTTA, ChatColor.GREEN);
 
-    private byte data;
     private ChatColor statusColor;
-    BBReportStatus(byte i, ChatColor c) {
-        this.data = i;
+    private Material statusMaterial;
+    BBReportStatus(Material i, ChatColor c) {
+        this.statusMaterial = i;
         this.statusColor = c;
-    }
-
-    public byte getData() {
-        return data;
     }
 
     public ChatColor getStatusColor() {
         return statusColor;
+    }
+
+    public Material getStatusMaterial() {
+        return statusMaterial;
     }
 }

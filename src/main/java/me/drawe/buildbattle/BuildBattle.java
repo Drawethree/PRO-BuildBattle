@@ -31,8 +31,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
 
-
     //VERSION 1.13+
+
     private static BuildBattle instance;
     private static FileManager fileManager;
     private static WorldEditPlugin worldEdit;

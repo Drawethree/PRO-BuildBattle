@@ -4,7 +4,10 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +22,7 @@ import java.util.List;
 public class ItemCreator {
 
     public static ItemStack getPlayerSkull(Player player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -29,7 +32,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -114,9 +117,9 @@ public class ItemCreator {
     /*
      * Easy creating an itemstack
      */
-    public static ItemStack create(Material material, int amount, byte data, String displayName, List<String> lore, String[] enchantments, int[] levels)
+    public static ItemStack create(Material material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels)
     {
-        ItemStack item = new ItemStack(material, amount, (short)data);
+        ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -186,7 +189,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(Material.PAPER, 1, (byte) 0, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
+        return create(Material.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
@@ -198,7 +201,7 @@ public class ItemCreator {
     }
 
     public static ItemStack createReportItem(BBBuildReport report) {
-        return create(Material.LEGACY_STAINED_CLAY, 1, report.getReportStatus().getData(), report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
+        return create(report.getReportStatus().getStatusMaterial(), 1, report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
 
     }
 

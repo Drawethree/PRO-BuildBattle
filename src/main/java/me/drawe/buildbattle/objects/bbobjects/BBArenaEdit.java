@@ -30,11 +30,11 @@ public class BBArenaEdit {
         this.gameMode = arena.getGameType();
         this.teamSize = arena.getTeamSize();
         this.gameTime = arena.getGameTime();
-        this.arenaEditItemStack = ItemCreator.create(Material.BRICK, 1, (byte) 0, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
-        this.minPlayersItem = ItemCreator.create(Material.PAPER, 1, (byte) 0, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
-        this.gameModeItem = ItemCreator.create(Material.PLAYER_HEAD, 1, (byte) 3, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"), null,null);
-        this.teamSizeItem = ItemCreator.create(Material.PAPER, 1, (byte) 0, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
-        this.gameTimeItem = ItemCreator.create(Material.PAPER, 1, (byte) 0, "Game Time: §e" + gameTime + "s", ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"), null,null);
+        this.arenaEditItemStack = ItemCreator.create(Material.BRICK, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
+        this.minPlayersItem = ItemCreator.create(Material.PAPER, 1, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
+        this.gameModeItem = ItemCreator.create(Material.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"), null,null);
+        this.teamSizeItem = ItemCreator.create(Material.PAPER, 1, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
+        this.gameTimeItem = ItemCreator.create(Material.PAPER, 1, "Game Time: §e" + gameTime + "s", ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"), null,null);
         editInventory.setItem(0, OptionsManager.getBackItem());
         editInventory.setItem(2, gameModeItem);
         editInventory.setItem(3, gameTimeItem);

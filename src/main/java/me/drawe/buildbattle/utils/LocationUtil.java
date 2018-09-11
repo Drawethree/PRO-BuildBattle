@@ -75,7 +75,7 @@ public class LocationUtil {
             for(int y = l.getBlockY() - radius; y<= l.getBlockY()+radius; y++) {
                 for(int z = l.getBlockZ() - radius; z <= l.getBlockZ()+radius; z++) {
                     Block b = l.getWorld().getBlockAt(x, y, z);
-                    if(b.getType() == Material.LAVA || b.getType() == Material.LEGACY_STATIONARY_LAVA) {
+                    if(b.getType() == Material.LAVA) {
                         return false;
                     }
                 }

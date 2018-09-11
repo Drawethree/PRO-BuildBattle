@@ -2,7 +2,6 @@ categories:
   mobhead:
     icon:
       material: BONE
-      data: 0
     description: Mob Heads
     heads:
       MHF_Blaze:
@@ -76,7 +75,6 @@ categories:
   food:
     icon:
       material: APPLE
-      data: 0
     description: Food
     heads:
       MHF_Melon:
@@ -118,7 +116,6 @@ categories:
   symbol:
     icon:
       material: SIGN
-      data: 0
     description: Symbols
     heads:
       MHF_ArrowDown:
@@ -136,7 +133,6 @@ categories:
   block:
     icon:
       material: GRASS
-      data: 0
     description: Blocks
     heads:
       MHF_Chest:
@@ -222,7 +218,6 @@ categories:
   decoration:
     icon:
       material: BOOKSHELF
-      data: 0
     description: Decoration
     heads:
       uioz:
@@ -271,8 +266,7 @@ categories:
         description: Crafting Table
   color:
     icon:
-      material: INK_SACK
-      data: 1
+      material: ROSE_RED
     description: Colors
     heads:
       cy1337:

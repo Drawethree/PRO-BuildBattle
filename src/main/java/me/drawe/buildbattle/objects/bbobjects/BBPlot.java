@@ -6,7 +6,6 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.particles.PlotParticle;
-import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -77,8 +76,7 @@ public class BBPlot implements Comparable<BBPlot> {
         setParticles(new ArrayList<>());
         setReportedBy(null);
         setVotedPlayers(new HashMap<>());
-        ItemStack item = ItemCreator.getItemStack(GameManager.getDefaultFloorMaterial());
-        changeFloor(item.getType(), item.getData().getData());
+        changeFloor(GameManager.getDefaultFloorMaterial());
         setOptions(new BBPlotOptions(this));
         getOptions().setCurrentBiome(PlotBiome.PLAINS, false);
     }
@@ -240,11 +238,11 @@ public class BBPlot implements Comparable<BBPlot> {
         return tploc;
     }
 
-    public void changeFloor(Material material, int data) {
+    public void changeFloor(Material material) {
         if (material == Material.WATER_BUCKET)
-            material = Material.LEGACY_STATIONARY_WATER;
+            material = Material.WATER;
         if (material == Material.LAVA_BUCKET)
-            material = Material.LEGACY_STATIONARY_LAVA;
+            material = Material.LAVA;
         double y = 0;
         if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
             y = getMaxPoint().getBlockY() - 1;
@@ -255,9 +253,6 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int z = getMinPoint().getBlockZ(); z <= getMaxPoint().getBlockZ(); z += 1) {
                 Location tmpblock = new Location(getWorld(), x, y, z);
                 tmpblock.getBlock().setType(material);
-                if (data != 0) {
-                    //tmpblock.getBlock().setData((byte)data);
-                }
             }
         }
     }
@@ -265,9 +260,9 @@ public class BBPlot implements Comparable<BBPlot> {
     public void changeFloor(ItemStack item){
         Material m = item.getType();
         if (item.getType() == Material.WATER_BUCKET)
-            m = Material.LEGACY_STATIONARY_WATER;
+            m = Material.WATER;
         if (item.getType() == Material.LAVA_BUCKET)
-            m = Material.LEGACY_STATIONARY_LAVA;
+            m = Material.LAVA;
         double y = 0;
         if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
             y = getMaxPoint().getBlockY() - 1;
@@ -278,7 +273,6 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int z = getMinPoint().getBlockZ(); z <= getMaxPoint().getBlockZ(); z += 1) {
                 Location tmpblock = new Location(getWorld(), x, y, z);
                 tmpblock.getBlock().setType(m);
-                //tmpblock.getBlock().setData((byte) item.getData().getData());
             }
         }
     }
@@ -348,7 +342,7 @@ public class BBPlot implements Comparable<BBPlot> {
     public void resetPlotFromGame() {
         removeAllBlocks();
         removeAllParticles();
-        ItemStack item = ItemCreator.getItemStack(GameManager.getDefaultFloorMaterial());
+        ItemStack item = new ItemStack(GameManager.getDefaultFloorMaterial());
         getOptions().setCurrentFloorItem(item);
         getOptions().setCurrentWeather(WeatherType.CLEAR, false);
         getOptions().setCurrentTime(BBPlotTime.NOON, false);

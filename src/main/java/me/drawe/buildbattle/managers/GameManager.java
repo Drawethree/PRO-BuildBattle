@@ -4,10 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -30,7 +27,7 @@ public class GameManager {
     private static List<String> restricedBlocks = new ArrayList<>();
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
-    private static String defaultFloorMaterial = "2:0";
+    private static Material defaultFloorMaterial = Material.GRASS;
     private static String prefix = "&8[&eBuildBattlePro&8]&r";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
@@ -115,11 +112,11 @@ public class GameManager {
         return defaultGameTime;
     }
 
-    public static void setDefaultFloorMaterial(String defaultFloorMaterial) {
+    public static void setDefaultFloorMaterial(Material defaultFloorMaterial) {
         if (defaultFloorMaterial != null) {
             GameManager.defaultFloorMaterial = defaultFloorMaterial;
         } else {
-            BuildBattle.warning("§cVariable default_floor cannot be loaded ! Setting it to default (" + getDefaultFloorMaterial() + ")");
+            BuildBattle.warning("§cVariable default_floor cannot be loaded (maybe it's invalid ?) ! Setting it to default (" + getDefaultFloorMaterial() + ")");
         }
     }
 
@@ -159,7 +156,7 @@ public class GameManager {
         return restricedBlocks;
     }
 
-    public static String getDefaultFloorMaterial() {
+    public static Material getDefaultFloorMaterial() {
         return defaultFloorMaterial;
     }
 
@@ -743,7 +740,7 @@ public class GameManager {
     }
 
     public void loadDefaultFloorMaterial() {
-        setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
+        setDefaultFloorMaterial(Material.matchMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
     }
 
     public void loadThemes() {

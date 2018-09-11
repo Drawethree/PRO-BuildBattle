@@ -25,7 +25,7 @@ public class BBTeam {
         this.maxPlayers = arena.getTeamSize();
         this.players = new ArrayList<>();
         this.assignedPlot = null;
-        this.statusItemstack = ItemCreator.create(Material.LEGACY_STAINED_CLAY, 1, getStatusData(), Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
+        this.statusItemstack = ItemCreator.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
     }
 
     public List<Player> getPlayers() {
@@ -110,13 +110,13 @@ public class BBTeam {
     public boolean isEmpty() {
         return getPlayers().size() == 0;
     }
-    public byte getStatusData() {
+    public Material getStatusMaterial() {
         if(isFull()) {
-            return 14;
+            return Material.RED_TERRACOTTA;
         } else if(isEmpty()) {
-            return 5;
+            return Material.LIME_TERRACOTTA;
         } else {
-            return 4;
+            return Material.YELLOW_TERRACOTTA;
         }
     }
 
@@ -128,7 +128,7 @@ public class BBTeam {
         ItemMeta meta = getStatusItemStack().getItemMeta();
         meta.setLore(ItemCreator.convertLore(ItemCreator.createTeamLore(this)));
         getStatusItemStack().setItemMeta(meta);
-        getStatusItemStack().setDurability((short) getStatusData());
+        getStatusItemStack().setType(getStatusMaterial());
         getArena().getTeamsInventory().setItem(getID()-1, getStatusItemStack());
     }
 

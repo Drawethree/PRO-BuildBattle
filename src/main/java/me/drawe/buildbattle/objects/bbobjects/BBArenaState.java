@@ -1,28 +1,29 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
+import org.bukkit.Material;
 
 public enum BBArenaState {
 
-    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), (byte) 5),
-    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), (byte) 14),
-    INGAME(Message.GAMESTATE_INGAME.getMessage(), (byte) 14),
-    VOTING(Message.GAMESTATE_VOTING.getMessage(), (byte) 14),
-    ENDING(Message.GAMESTATE_ENDING.getMessage(), (byte) 4);
+    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), Material.LIME_TERRACOTTA),
+    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), Material.RED_TERRACOTTA),
+    INGAME(Message.GAMESTATE_INGAME.getMessage(), Material.RED_TERRACOTTA),
+    VOTING(Message.GAMESTATE_VOTING.getMessage(), Material.RED_TERRACOTTA),
+    ENDING(Message.GAMESTATE_ENDING.getMessage(), Material.YELLOW_TERRACOTTA);
 
     private String prefix;
-    private byte dataValue;
+    private Material blockMaterial;
 
-    BBArenaState(String s, byte data) {
+    BBArenaState(String s, Material data) {
         this.prefix = s;
-        this.dataValue = data;
+        this.blockMaterial = data;
     }
 
     public String getPrefix() {
         return prefix;
     }
 
-    public byte getDataValue() {
-        return dataValue;
+    public Material getBlockMaterial() {
+        return blockMaterial;
     }
 }

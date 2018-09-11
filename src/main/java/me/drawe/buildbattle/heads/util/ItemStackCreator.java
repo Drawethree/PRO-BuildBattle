@@ -23,13 +23,12 @@ public class ItemStackCreator {
      * name.
      *
      * @param material The material of the ItemStack.
-     * @param data The data value / damage value of the ItemStack.
      * @param amount The amount of items in the ItemStack.
      * @param displayName The name of the items in the ItemStack.
      * @return An ItemStack with the provided parameters.
      */
-    public static ItemStack createItem(Material material, short data, int amount, String displayName) {
-        ItemStack itemStack = new ItemStack(material, amount, data);
+    public static ItemStack createItem(Material material, int amount, String displayName) {
+        ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         itemStack.setItemMeta(itemMeta);
@@ -41,13 +40,12 @@ public class ItemStackCreator {
      * name.
      *
      * @param material The material of the ItemStack.
-     * @param data The data value / damage value of the ItemStack.
      * @param amount The amount of items in the ItemStack.
      * @param displayName The name of the items in the ItemStack.
      * @param lore The lore attached to the itmes in the ItemStack.
      * @return An ItemStack with the provided parameters.
      */
-    public static ItemStack createItem(Material material, short data, int amount, String displayName, String[] lore) {
+    public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
