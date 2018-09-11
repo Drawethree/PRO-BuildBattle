@@ -81,7 +81,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             @Override
             public void run() {
                 Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion() + " - For Spigot 1.13+"));
                 Bukkit.getConsoleSender().sendMessage("");
                 GameManager.getInstance().loadArenaPreferences();
                 setupConfigPreferences();
