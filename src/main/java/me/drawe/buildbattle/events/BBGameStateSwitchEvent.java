@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 
 public class BBGameStateSwitchEvent extends Event {
 
-    public static HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
     private BBArena arena;
     private BBArenaState oldState;
@@ -35,5 +35,9 @@ public class BBGameStateSwitchEvent extends Event {
 
     public BBArenaState getNewState() {
         return newState;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 }

@@ -1,4 +1,4 @@
-prefix: "&8[&eBuildBattlePro&8]&r"
+prefix: "&8[&eBuildBattlePro&8]&r "
 stats:
   type: FLATFILE
   async_save_player_data: false

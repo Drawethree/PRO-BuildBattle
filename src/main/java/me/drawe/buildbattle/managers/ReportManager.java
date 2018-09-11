@@ -5,6 +5,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.events.BBReportEvent;
 import me.drawe.buildbattle.objects.GuiItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
@@ -18,8 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,12 @@ public class ReportManager {
             List<UUID> reportedPlayers = new ArrayList<>();
             BuildBattle.getFileManager().getConfig("reports.yml").get().getStringList(s + ".reported_players").forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
             UUID reportedBy = UUID.fromString(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".reported_by"));
-            Date date = Date.from(Instant.parse(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".date")));
+            Date date = null;
+            try {
+                date = reportDateformat.parse(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".date"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             File schematic = new File(new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName), BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".schematic_name"));
             BBReportStatus status = BBReportStatus.valueOf(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".status").toUpperCase());
             BBBuildReport report = new BBBuildReport(reportId, reportedPlayers, reportedBy, schematic, date, status);
@@ -95,7 +101,7 @@ public class ReportManager {
     }
 
     public boolean createReport(BBPlot reportedPlot, Player whoReported) {
-        String reportID = generateReportID();
+        String reportID = generateReportID(whoReported);
         List<UUID> reportedPlayers = new ArrayList<>();
         reportedPlot.getTeam().getPlayers().forEach(p-> reportedPlayers.add(p.getUniqueId()));
         UUID reportedBy = whoReported.getUniqueId();
@@ -106,6 +112,7 @@ public class ReportManager {
             whoReported.sendMessage(Message.REPORT_SUCCESS.getChatMessage());
             reportedPlot.setReportedBy(whoReported.getUniqueId());
             buildReports.add(report);
+            Bukkit.getPluginManager().callEvent(new BBReportEvent(whoReported,reportedPlot.getTeam().getPlayers(),reportedPlot,reportID));
             return true;
         } else {
             whoReported.sendMessage(Message.REPORT_FAILED.getChatMessage());
@@ -151,9 +158,9 @@ public class ReportManager {
         return false;
     }
 
-    public String generateReportID() {
+    public String generateReportID(Player reportedBy) {
         int id = 1;
-        while(existsReport(id)) {
+        while (existsReport(id)) {
             id += 1;
         }
         return "report" + id;

@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class BBGameStartEvent extends Event {
 
-    public static HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
     private BBArena arena;
 
@@ -21,5 +21,9 @@ public class BBGameStartEvent extends Event {
 
     public BBArena getArena() {
         return arena;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 }

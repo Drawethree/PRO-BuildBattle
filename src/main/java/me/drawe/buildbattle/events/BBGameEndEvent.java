@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 
 public class BBGameEndEvent extends Event {
 
-    public static HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
     private BBArena arena;
     private BBTeam winner;
@@ -17,16 +17,20 @@ public class BBGameEndEvent extends Event {
         this.winner = winner;
     }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
-
     public BBArena getArena() {
         return arena;
     }
 
     public BBTeam getWinner() {
         return winner;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 }

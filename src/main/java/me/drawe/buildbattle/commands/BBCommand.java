@@ -5,9 +5,9 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.leaderboards.Leaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
 import me.drawe.buildbattle.managers.*;
-import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
+import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
@@ -20,7 +20,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class BBCommand implements CommandExecutor {
@@ -63,6 +62,9 @@ public class BBCommand implements CommandExecutor {
                         break;
                     case "stop":
                         stopSubCommand(sender,args);
+                        break;
+                    case "forcestart":
+                        forceStartSubCommand(sender,args);
                         break;
                     case "stats":
                         sendBBStats(sender, args);
@@ -114,6 +116,48 @@ public class BBCommand implements CommandExecutor {
 
         }
         return true;
+    }
+
+    private void forceStartSubCommand(CommandSender sender, String[] args) {
+        if(sender.hasPermission("buildbattlepro.admin")) {
+            if(args.length == 1) {
+                if (sender instanceof Player) {
+                    Player p = (Player) sender;
+                    BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                    if (a != null) {
+                        a.forceStart(sender, true);
+                    } else {
+                        p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
+                    }
+                }
+            } else if(args.length == 2) {
+                BBArena arena = ArenaManager.getInstance().getArena(args[1]);
+                if (arena != null) {
+                    arena.forceStart(sender,true);
+                } else {
+                    sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
+                }
+            } else if(args.length == 3) {
+                BBArena arena = ArenaManager.getInstance().getArena(args[1]);
+                String theme = args[2];
+                if (arena != null) {
+                    if(theme != null) {
+                        arena.forceStart(sender, theme, true);
+                    } else {
+                        sender.sendMessage(GameManager.getPrefix() + "§cYou must specify theme !");
+                    }
+                } else {
+                    sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
+                }
+            } else {
+                sender.sendMessage("§cUsage >> /bb forcestart  §8| §7Force start arena you are in");
+                sender.sendMessage("§cUsage >> /bb forcestart <arena> §8| §7Force start specific arena");
+                sender.sendMessage("§cUsage >> /bb forcestart <arena> <theme> §8| §7Force start specific arena with specific theme");
+            }
+        } else {
+            sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+        }
+
     }
 
     private void openReports(CommandSender sender) {
@@ -367,7 +411,7 @@ public class BBCommand implements CommandExecutor {
                     Player p = (Player) sender;
                     BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                     if (a != null) {
-                        a.forceStart(sender);
+                        a.forceStart(sender,false);
                     } else {
                         p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
                     }
@@ -375,7 +419,7 @@ public class BBCommand implements CommandExecutor {
             } else if(args.length == 2) {
                 BBArena arena = ArenaManager.getInstance().getArena(args[1]);
                 if (arena != null) {
-                    arena.forceStart(sender);
+                    arena.forceStart(sender,false);
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
@@ -384,7 +428,7 @@ public class BBCommand implements CommandExecutor {
                 String theme = args[2];
                 if (arena != null) {
                     if(theme != null) {
-                        arena.forceStart(sender, theme);
+                        arena.forceStart(sender, theme, false);
                     } else {
                         sender.sendMessage(GameManager.getPrefix() + "§cYou must specify theme !");
                     }
@@ -392,9 +436,9 @@ public class BBCommand implements CommandExecutor {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb start  §8| §7Force start arena you are in");
-                sender.sendMessage("§cUsage >> /bb start <arena> §8| §7Force start specific arena");
-                sender.sendMessage("§cUsage >> /bb start <arena> <theme> §8| §7Force start specific arena with specific theme");
+                sender.sendMessage("§cUsage >> /bb start  §8| §7Start arena you are in");
+                sender.sendMessage("§cUsage >> /bb start <arena> §8| §7Start specific arena");
+                sender.sendMessage("§cUsage >> /bb start <arena> <theme> §8| §7Start specific arena with specific theme");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -618,9 +662,12 @@ public class BBCommand implements CommandExecutor {
             p.sendMessage("§e/bb delplot <arena> " + "§8» " + "§7Removes latest added plot in arena");
             p.sendMessage("§e/bb setlobby <arena> " + "§8» " + "§7Set lobby for Arena");
             p.sendMessage("§e/bb setmainlobby " + "§e» " + "§7Set main lobby");
-            p.sendMessage("§e/bb start " + "§8» " + "§7Force start Arena you are currently in");
-            p.sendMessage("§e/bb start <arena> " + "§8» " + "§7Force start Arena");
-            p.sendMessage("§e/bb start <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
+            p.sendMessage("§c§lNEW §e/bb forcestart " + "§8» " + "§7Force start Arena you are currently in");
+            p.sendMessage("§c§lNEW §e/bb forcestart <arena> " + "§8» " + "§7Force start Arena");
+            p.sendMessage("§c§lNEW §e/bb forcestart <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
+            p.sendMessage("§e/bb start " + "§8» " + "§7Start Arena you are currently in");
+            p.sendMessage("§e/bb start <arena> " + "§8» " + "§7Start Arena");
+            p.sendMessage("§e/bb start <arena> <theme> " + "§8» " + "§7Start Arena with specified theme");
             p.sendMessage("§e/bb stop " + "§8» " + "§7Force stop Arena you are currently in");
             p.sendMessage("§e/bb stop <arena> " + "§8» " + "§7Force stop Arena");
             p.sendMessage("§e/bb reload " + "§8» " + "§7Reload plugin");

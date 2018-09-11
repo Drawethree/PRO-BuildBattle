@@ -3,9 +3,6 @@ package me.drawe.buildbattle.objects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import net.md_5.bungee.api.ChatColor;
-import sun.awt.image.BufferedImageDevice;
-
-import java.sql.BatchUpdateException;
 
 public enum Message {
 
@@ -250,7 +247,7 @@ public enum Message {
     }
 
     public String getChatMessage() {
-        return GameManager.getPrefix() + " " + message;
+        return GameManager.getPrefix() + message;
     }
 
     public String getMessage() {

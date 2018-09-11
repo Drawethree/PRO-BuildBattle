@@ -7,7 +7,9 @@ import me.drawe.buildbattle.events.BBGameStateSwitchEvent;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -80,9 +82,9 @@ public class BBArena {
         this.currentVotingPlot = null;
         this.themeVoting = new BBThemeVoting(this);
         this.bbArenaState = BBArenaState.LOBBY;
-        if(gameMode == BBGameMode.SOLO) {
+        if (gameMode == BBGameMode.SOLO) {
             this.teamSize = 1;
-        } else if(gameMode == BBGameMode.TEAM) {
+        } else if (gameMode == BBGameMode.TEAM) {
             this.teamSize = 2;
         }
         setupTeams();
@@ -122,7 +124,7 @@ public class BBArena {
                     startLobby();
                 }
             } else {
-                if(p.hasPermission("buildbattlepro.joinfull")) {
+                if (p.hasPermission("buildbattlepro.joinfull")) {
                     try {
                         joinVIP(p);
                     } catch (Exception e) {
@@ -141,8 +143,8 @@ public class BBArena {
     protected void leaveCommands(Player p) {
         getPlayers().remove(p);
         getPlayerBoard(p).removeBoard();
-        BBTeam team = PlayerManager.getInstance().getPlayerTeam(this,p);
-        if(team != null) {
+        BBTeam team = PlayerManager.getInstance().getPlayerTeam(this, p);
+        if (team != null) {
             team.leaveTeam(p);
         }
         if (GameManager.isScoreboardEnabled()) {
@@ -155,60 +157,61 @@ public class BBArena {
             BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
         }
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
-        if(getBBArenaState() == BBArenaState.LOBBY) {
-            if(getPlayers().size() < getMinPlayers()) {
+        if (getBBArenaState() == BBArenaState.LOBBY) {
+            if (getPlayers().size() < getMinPlayers()) {
                 stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
             }
         } else {
-            if(getPlayers().size() <= getTeamSize()) {
+            if (getPlayers().size() <= getTeamSize()) {
                 stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
             }
         }
     }
 
     protected void joinCommands(Player p) {
-            BBParty party = PartyManager.getInstance().getPlayerParty(p);
-            if ((party != null) && (party.isCreator(p))) {
-                party.joinGame(this);
-            }
-            PlayerManager.getInstance().createNewPlayerData(p);
-            PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
-            p.getInventory().clear();
-            p.setExp(0F);
-            p.setLevel(0);
-            p.setHealth(p.getMaxHealth());
-            p.setFoodLevel(20);
-            p.setGameMode(GameMode.ADVENTURE);
-            getPlayers().add(p);
-            getPlayerBoards().add(new BBBoard(this, p));
-            p.teleport(getLobbyLocation().clone().add(0, 0.5, 0));
-            if (getGameType() == BBGameMode.TEAM) {
-                p.getInventory().setItem(0, OptionsManager.getTeamsItem());
-            }
-            p.getInventory().setItem(8, OptionsManager.getLeaveItem());
-            if (GameManager.isScoreboardEnabled()) {
-                if (lobbyCountdown == null) {
+        BBParty party = PartyManager.getInstance().getPlayerParty(p);
+        if ((party != null) && (party.isCreator(p))) {
+            party.joinGame(this);
+        }
+        PlayerManager.getInstance().createNewPlayerData(p);
+        PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
+        p.getInventory().clear();
+        p.setExp(0F);
+        p.setLevel(0);
+        p.setHealth(p.getMaxHealth());
+        p.setFoodLevel(20);
+        p.setGameMode(GameMode.ADVENTURE);
+        getPlayers().add(p);
+        getPlayerBoards().add(new BBBoard(this, p));
+        p.teleport(getLobbyLocation().clone().add(0, 0.5, 0));
+        if (getGameType() == BBGameMode.TEAM) {
+            p.getInventory().setItem(0, OptionsManager.getTeamsItem());
+        }
+        p.getInventory().setItem(8, OptionsManager.getLeaveItem());
+        if (GameManager.isScoreboardEnabled()) {
+            if (lobbyCountdown == null) {
+                updateAllScoreboards(0);
+            } else {
+                if (!Bukkit.getScheduler().isCurrentlyRunning(lobbyCountdown.getTaskId())) {
                     updateAllScoreboards(0);
-                } else {
-                    if (!Bukkit.getScheduler().isCurrentlyRunning(lobbyCountdown.getTaskId())) {
-                        updateAllScoreboards(0);
-                    }
                 }
             }
-            PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
-            OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
-            updateAllSigns();
+        }
+        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+        OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
+        updateAllSigns();
     }
 
     public BBTeam getFreeBBTeamForParty(BBParty party) {
         int amountOfPlayers = party.getPlayers().size();
-        for(BBTeam team : getTeams()) {
-            if(team.getLeftSlots() >= amountOfPlayers) {
+        for (BBTeam team : getTeams()) {
+            if (team.getLeftSlots() >= amountOfPlayers) {
                 return team;
             }
         }
         return null;
     }
+
     public void removePlayer(Player p) {
         leaveCommands(p);
     }
@@ -279,7 +282,7 @@ public class BBArena {
     }
 
     public void resetAllScoreboards() {
-        for(BBBoard board : getPlayerBoards()) {
+        for (BBBoard board : getPlayerBoards()) {
             board.reset();
             board.update();
         }
@@ -431,21 +434,18 @@ public class BBArena {
         if (getVotingPlots() == null) {
             stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
         } else {
+            try {
+                setCurrentVotingPlot(getVotingPlots().get(0));
+            } catch (Exception e) {
+                endGame();
+                return;
+            }
             votingCountdown = new BukkitRunnable() {
                 double timeLeft = GameManager.getVotingTime();
                 int index = 0;
 
                 @Override
                 public void run() {
-                    if(currentVotingPlot == null) {
-                        try {
-                            setCurrentVotingPlot(getVotingPlots().get(0));
-                        } catch (Exception e) {
-                            cancel();
-                            endGame();
-                            return;
-                        }
-                    }
                     if (timeLeft == GameManager.getVotingTime()) {
                         teleportAllPlayersToPlot(getCurrentVotingPlot());
                         updateAllScoreboards(0);
@@ -465,8 +465,11 @@ public class BBArena {
                     } else if (timeLeft < 6) {
                         PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
                     }
-                    PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), (int) timeLeft);
-                    PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time((int) timeLeft, TimeUnit.SECONDS).toString()));
+                    if (currentVotingPlot != null) {
+                        PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), (int) timeLeft);
+                        if (timeLeft >= 1)
+                            PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time((int) timeLeft, TimeUnit.SECONDS).toString()));
+                    }
                     timeLeft -= 0.5;
                 }
             }.runTaskTimer(BuildBattle.getInstance(), 100L, 10L);
@@ -481,9 +484,9 @@ public class BBArena {
             p.setPlayerTime(plot.getOptions().getCurrentTime().getTime(), false);
             p.setPlayerWeather(plot.getOptions().getCurrentWeather());
         }
-        if(plot.getTeam().getPlayers().size() == 1) {
+        if (plot.getTeam().getPlayers().size() == 1) {
             PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
-        } else if(plot.getTeam().getPlayers().size() == 2) {
+        } else if (plot.getTeam().getPlayers().size() == 2) {
             PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         }
     }
@@ -539,7 +542,7 @@ public class BBArena {
             PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
             PlayerManager.getInstance().teleportAllPlayersToLobby(getArenaInstance());
             setGamemodeToAllPlayers(GameMode.ADVENTURE);
-            if(getGameType() == BBGameMode.TEAM) {
+            if (getGameType() == BBGameMode.TEAM) {
                 PlayerManager.getInstance().giveAllPlayersTeamsItem(getArenaInstance());
             }
             PlayerManager.getInstance().giveAllPlayersLeaveItem(getArenaInstance());
@@ -552,14 +555,14 @@ public class BBArena {
     }
 
     private void resetAllTeams() {
-        for(BBTeam t : getTeams()) {
+        for (BBTeam t : getTeams()) {
             t.resetTeam();
         }
     }
 
     public void setPlotsToTeams() {
-        for(Player p : getPlayers()) {
-            if(getPlayerTeam(p) == null) {
+        for (Player p : getPlayers()) {
+            if (getPlayerTeam(p) == null) {
                 autoAssignTeamToPlayer(p);
             }
         }
@@ -577,8 +580,8 @@ public class BBArena {
     }
 
     private void autoAssignTeamToPlayer(Player p) {
-        for(BBTeam team : getTeams()) {
-            if(!team.isFull()) {
+        for (BBTeam team : getTeams()) {
+            if (!team.isFull()) {
                 team.getPlayers().add(p);
                 break;
             }
@@ -603,7 +606,7 @@ public class BBArena {
 
     public void joinVIP(Player vip) {
         Player lastNonVIPPlayer = getLastNonVipPlayer();
-        if(lastNonVIPPlayer != null) {
+        if (lastNonVIPPlayer != null) {
             removePlayer(lastNonVIPPlayer);
             lastNonVIPPlayer.sendMessage(Message.KICKED_DUE_TO_VIP_JOIN.getChatMessage().replaceAll("%player%", vip.getDisplayName()));
             joinCommands(vip);
@@ -642,7 +645,7 @@ public class BBArena {
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".min_players", getMinPlayers());
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".mode", getGameType().name());
         BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".teamSize", getTeamSize());
-        for(BBPlot plot : getBuildPlots()) {
+        for (BBPlot plot : getBuildPlots()) {
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
             BuildBattle.getFileManager().getConfig("arenas.yml").set(getName() + ".plots." + getBuildPlots().indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
         }
@@ -651,7 +654,7 @@ public class BBArena {
     }
 
     public String getTheme() {
-        if(theme == null) {
+        if (theme == null) {
             return Message.SCOREBOARD_WAITING.getMessage();
         } else {
             return theme;
@@ -710,7 +713,7 @@ public class BBArena {
     }
 
     public void addIntoAllArenas() {
-        if(!ArenaManager.getArenas().contains(this)) {
+        if (!ArenaManager.getArenas().contains(this)) {
             ArenaManager.getArenas().add(this);
         }
     }
@@ -729,13 +732,13 @@ public class BBArena {
         return getBuildPlots().size() * getTeamSize();
     }
 
-    public void forceStart(CommandSender sender) {
-        if(getBBArenaState() == BBArenaState.LOBBY) {
-            if (isMinimumPlayersRequirementMet()) {
+    public void forceStart(CommandSender sender, boolean ignoreMinPlayers) {
+        if (getBBArenaState() == BBArenaState.LOBBY) {
+            if (isMinimumPlayersRequirementMet() || ignoreMinPlayers) {
                 if (lobbyCountdown != null) {
                     lobbyCountdown.cancel();
                 }
-                if(GameManager.isVotingForThemes()) {
+                if (GameManager.isVotingForThemes()) {
                     startThemeVoting();
                 } else {
                     switch (getGameType()) {
@@ -756,7 +759,7 @@ public class BBArena {
     }
 
     public void forceStop(CommandSender sender) {
-        if(getBBArenaState() != BBArenaState.LOBBY) {
+        if (getBBArenaState() != BBArenaState.LOBBY) {
             switch (getBBArenaState()) {
                 case THEME_VOTING:
                     themeVotingCountdown.cancel();
@@ -778,14 +781,14 @@ public class BBArena {
     }
 
     public void calculateResults() {
-        if(GameManager.isFairVote()) VotingManager.getInstance().checkVotes(this);
+        if (GameManager.isFairVote()) VotingManager.getInstance().checkVotes(this);
         Collections.sort(getVotingPlots());
         Collections.reverse(getVotingPlots());
         setWinner(getVotingPlots().get(0));
     }
 
     public void spawnWinnerFireworks() {
-        if(getWinner() != null) {
+        if (getWinner() != null) {
             new BukkitRunnable() {
                 int times = 0;
 
@@ -813,12 +816,13 @@ public class BBArena {
     public boolean isMinimumPlayersRequirementMet() {
         return getPlayers().size() >= getMinPlayers();
     }
+
     public boolean isInFirstThree(BBPlot plot) {
-        if(getBuildPlots().indexOf(plot) == 0) {
+        if (getBuildPlots().indexOf(plot) == 0) {
             return true;
-        } else if(getBuildPlots().indexOf(plot) == 1) {
+        } else if (getBuildPlots().indexOf(plot) == 1) {
             return true;
-        } else if(getBuildPlots().indexOf(plot) == 2) {
+        } else if (getBuildPlots().indexOf(plot) == 2) {
             return true;
         } else {
             return false;
@@ -826,7 +830,7 @@ public class BBArena {
     }
 
     public String getPosition(BBPlot plot) {
-        return TimeUtil.ordinal(getVotingPlots().indexOf(plot)+1);
+        return TimeUtil.ordinal(getVotingPlots().indexOf(plot) + 1);
     }
 
     public void setVotingPlots() {
@@ -839,9 +843,9 @@ public class BBArena {
         this.votingPlots = returnList;
     }
 
-    public void forceStart(CommandSender sender, String theme) {
-        if(getBBArenaState() == BBArenaState.LOBBY) {
-            if(isMinimumPlayersRequirementMet()) {
+    public void forceStart(CommandSender sender, String theme, boolean ignoreMinPlayers) {
+        if (getBBArenaState() == BBArenaState.LOBBY) {
+            if (isMinimumPlayersRequirementMet() || ignoreMinPlayers) {
                 if (lobbyCountdown != null) {
                     lobbyCountdown.cancel();
                 }
@@ -855,7 +859,7 @@ public class BBArena {
     }
 
     public void updateAllScoreboards(int timeleft) {
-        for(BBBoard sb : getPlayerBoards()) {
+        for (BBBoard sb : getPlayerBoards()) {
             sb.updateScoreboard(timeleft);
         }
     }
@@ -877,7 +881,7 @@ public class BBArena {
     }
 
     public void updateAllSigns() {
-        for(BBSign sign : getArenaSigns()) {
+        for (BBSign sign : getArenaSigns()) {
             sign.update();
         }
     }
@@ -891,7 +895,7 @@ public class BBArena {
     }
 
     public void setupTeams() {
-        for(int i = 1;i <= getBuildPlots().size();i++) {
+        for (int i = 1; i <= getBuildPlots().size(); i++) {
             BBTeam team = new BBTeam(this, i);
             teams.add(team);
         }
@@ -907,8 +911,8 @@ public class BBArena {
 
     public List<BBTeam> getValidTeams() {
         List<BBTeam> returnList = new ArrayList<>();
-        for(BBTeam t : getTeams()) {
-            if(t.getPlayers().size() > 0) {
+        for (BBTeam t : getTeams()) {
+            if (t.getPlayers().size() > 0) {
                 returnList.add(t);
             }
         }
@@ -925,14 +929,14 @@ public class BBArena {
 
     public void setupTeamInventory() {
         this.teamsInventory = Bukkit.createInventory(null, ItemCreator.getInventorySizeBasedOnList(getTeams()), Message.GUI_TEAMS_TITLE.getMessage());
-        for(BBTeam team : getTeams()) {
+        for (BBTeam team : getTeams()) {
             getTeamsInventory().addItem(team.getStatusItemStack());
         }
     }
 
     public BBTeam getTeamByItemStack(ItemStack currentItem) {
-        for(BBTeam team : getTeams()) {
-            if(team.getStatusItemStack().equals(currentItem)) {
+        for (BBTeam team : getTeams()) {
+            if (team.getStatusItemStack().equals(currentItem)) {
                 return team;
             }
         }
@@ -940,8 +944,8 @@ public class BBArena {
     }
 
     public BBTeam getPlayerTeam(Player p) {
-        for(BBTeam t : getTeams()) {
-            if(t.getPlayers().contains(p)) {
+        for (BBTeam t : getTeams()) {
+            if (t.getPlayers().contains(p)) {
                 return t;
             }
         }
@@ -949,13 +953,14 @@ public class BBArena {
     }
 
     public BBBoard getPlayerBoard(Player p) {
-        for(BBBoard board : getPlayerBoards()) {
-            if(board.getPlayer().equals(p)) {
+        for (BBBoard board : getPlayerBoards()) {
+            if (board.getPlayer().equals(p)) {
                 return board;
             }
         }
         return null;
     }
+
     public List<BBBoard> getPlayerBoards() {
         return playerBoards;
     }
@@ -971,14 +976,15 @@ public class BBArena {
     }
 
     public String getTeamMateName(Player player) {
-        if(getPlayerTeam(player) != null) {
+        if (getPlayerTeam(player) != null) {
             return "&a" + getPlayerTeam(player).getOtherPlayers(player);
         } else {
             return "&7&oNobody";
         }
     }
+
     public List<Player> getTeamMates(Player p) {
-        if(getPlayerTeam(p) != null) {
+        if (getPlayerTeam(p) != null) {
             List<Player> returnList = new ArrayList<>(getPlayerTeam(p).getPlayers());
             returnList.remove(p);
             return returnList;
@@ -1003,9 +1009,9 @@ public class BBArena {
     }
 
     public Player getLastNonVipPlayer() {
-        for(int i = getPlayers().size()-1; i >= 0;i--) {
+        for (int i = getPlayers().size() - 1; i >= 0; i--) {
             Player p = getPlayers().get(i);
-            if(!p.hasPermission("buildbattlepro.joinfull")) {
+            if (!p.hasPermission("buildbattlepro.joinfull")) {
                 return p;
             }
         }

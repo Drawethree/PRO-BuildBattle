@@ -4,7 +4,10 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.Category;
 import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.managers.*;
-import me.drawe.buildbattle.objects.*;
+import me.drawe.buildbattle.objects.GuiItem;
+import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.PlotBiome;
+import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.particles.BBParticle;
 import me.drawe.buildbattle.particles.PlotParticle;
@@ -15,7 +18,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -26,17 +28,13 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.Inventory;
-import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
 

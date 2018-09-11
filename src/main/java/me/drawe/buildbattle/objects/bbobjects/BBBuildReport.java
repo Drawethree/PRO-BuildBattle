@@ -1,17 +1,16 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.MySQLManager;
 import me.drawe.buildbattle.managers.ReportManager;
+import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -67,6 +66,14 @@ public class BBBuildReport {
     public void setReportStatus(BBReportStatus reportStatus) {
         this.reportStatus = reportStatus;
         reportInventoryItem = ItemCreator.createReportItem(this);
+        switch(GameManager.getStatsType()) {
+            case FLATFILE:
+                BuildBattle.getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
+                break;
+            case MYSQL:
+                MySQL.update("UPDATE BuildBattlePro_ReportedBuilds SET Status=" + reportStatus.name().toUpperCase() + " WHERE ID=" + getReportID() + "");
+                break;
+        }
     }
 
     public List<UUID> getReportedPlayers() {

@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -743,7 +742,6 @@ public class GameManager {
         GameManager.teleportToMainLobbyOnJoin = teleportToMainLobbyOnJoin;
     }
 
-
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"));
     }
@@ -752,16 +750,16 @@ public class GameManager {
         try {
             for (String s : BuildBattle.getFileManager().getConfig("themes.yml").get().getStringList("solo-themes")) {
                 soloThemes.add(s);
-                BuildBattle.info("§aSolo Theme §e" + s + " §aloaded !");
             }
             for (String s : BuildBattle.getFileManager().getConfig("themes.yml").get().getStringList("team-themes")) {
                 teamThemes.add(s);
-                BuildBattle.info("§aTeam Theme §e" + s + " §aloaded !");
             }
             for (String s : BuildBattle.getFileManager().getConfig("themes.yml").get().getStringList("blacklisted-themes")) {
                 restricedThemes.add(s);
-                BuildBattle.info("§aBlacklisted Theme §e" + s + " §aloaded !");
             }
+            BuildBattle.info("§aLoaded §e" + soloThemes.size() + " Solo Themes !");
+            BuildBattle.info("§aLoaded §e" + teamThemes.size() + " Team Themes !");
+            BuildBattle.info("§aLoaded §e" + restricedThemes.size() + " Restriced Themes !");
         } catch (Exception e) {
             BuildBattle.severe("§cAn exception occurred while trying loading themes from themes.yml !");
             e.printStackTrace();
