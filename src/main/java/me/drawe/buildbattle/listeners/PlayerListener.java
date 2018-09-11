@@ -248,7 +248,7 @@ public class PlayerListener implements Listener {
                         }
                     } else if (a.getBBArenaState() == BBArenaState.LOBBY) {
                         if (inv.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.STAINED_CLAY) {
+                            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.LEGACY_STAINED_CLAY) {
                                 BBTeam team = a.getTeamByItemStack(e.getCurrentItem());
                                 BBTeam playerTeam = a.getPlayerTeam(p);
                                 if (team != null) {
@@ -426,7 +426,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == Material.INK_SACK) {
+                                    if (e.getCurrentItem().getType() == Material.INK_SAC) {
                                         DyeColor color = DyeColor.getByDyeData(e.getCurrentItem().getData().getData());
                                         bannerCreator.selectColor(color);
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -445,7 +445,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == Material.BANNER && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
+                                    if (e.getCurrentItem().getType() == Material.LEGACY_BANNER && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
                                         BannerMeta meta = (BannerMeta) e.getCurrentItem().getItemMeta();
                                         bannerCreator.addPattern(meta.getPatterns().get(0).getPattern());
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -720,9 +720,9 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (e.getBlock().getType() == Material.CROPS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
+                        if (e.getBlock().getType() == Material.LEGACY_CROPS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
                             if (GameManager.isAutomaticGrow()) {
-                                e.getBlock().setData(CropState.RIPE.getData());
+                                //e.getBlock().setData(CropState.RIPE.getData());
                             }
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {

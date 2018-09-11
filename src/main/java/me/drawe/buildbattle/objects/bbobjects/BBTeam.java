@@ -25,7 +25,7 @@ public class BBTeam {
         this.maxPlayers = arena.getTeamSize();
         this.players = new ArrayList<>();
         this.assignedPlot = null;
-        this.statusItemstack = ItemCreator.create(Material.STAINED_CLAY, 1, getStatusData(), Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
+        this.statusItemstack = ItemCreator.create(Material.LEGACY_STAINED_CLAY, 1, getStatusData(), Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
     }
 
     public List<Player> getPlayers() {

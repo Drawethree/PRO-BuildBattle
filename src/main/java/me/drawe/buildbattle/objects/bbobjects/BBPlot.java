@@ -242,9 +242,9 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public void changeFloor(Material material, int data) {
         if (material == Material.WATER_BUCKET)
-            material = Material.STATIONARY_WATER;
+            material = Material.LEGACY_STATIONARY_WATER;
         if (material == Material.LAVA_BUCKET)
-            material = Material.STATIONARY_LAVA;
+            material = Material.LEGACY_STATIONARY_LAVA;
         double y = 0;
         if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
             y = getMaxPoint().getBlockY() - 1;
@@ -256,7 +256,7 @@ public class BBPlot implements Comparable<BBPlot> {
                 Location tmpblock = new Location(getWorld(), x, y, z);
                 tmpblock.getBlock().setType(material);
                 if (data != 0) {
-                    tmpblock.getBlock().setData((byte)data);
+                    //tmpblock.getBlock().setData((byte)data);
                 }
             }
         }
@@ -265,9 +265,9 @@ public class BBPlot implements Comparable<BBPlot> {
     public void changeFloor(ItemStack item){
         Material m = item.getType();
         if (item.getType() == Material.WATER_BUCKET)
-            m = Material.STATIONARY_WATER;
+            m = Material.LEGACY_STATIONARY_WATER;
         if (item.getType() == Material.LAVA_BUCKET)
-            m = Material.STATIONARY_LAVA;
+            m = Material.LEGACY_STATIONARY_LAVA;
         double y = 0;
         if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
             y = getMaxPoint().getBlockY() - 1;
@@ -278,7 +278,7 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int z = getMinPoint().getBlockZ(); z <= getMaxPoint().getBlockZ(); z += 1) {
                 Location tmpblock = new Location(getWorld(), x, y, z);
                 tmpblock.getBlock().setType(m);
-                tmpblock.getBlock().setData((byte) item.getData().getData());
+                //tmpblock.getBlock().setData((byte) item.getData().getData());
             }
         }
     }

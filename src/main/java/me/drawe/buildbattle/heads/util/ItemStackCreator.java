@@ -1,12 +1,13 @@
 package me.drawe.buildbattle.heads.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the utility of ItemStackCreator. This utility is used to
@@ -70,7 +71,7 @@ public class ItemStackCreator {
      * @return An ItemStack with the provided parameters.
      */
     public static ItemStack createPlayerhead(int amount, String displayName, String playerName) {
-        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, amount, (short) 3);
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setOwner(playerName);
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -89,7 +90,7 @@ public class ItemStackCreator {
      * @return An ItemStack with the provided parameters.
      */
     public static ItemStack createPlayerhead(int amount, String displayName, String[] lore, String playerName) {
-        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, amount, (short) 3);
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setOwner(playerName);
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));

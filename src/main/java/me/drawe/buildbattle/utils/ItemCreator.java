@@ -1,9 +1,5 @@
 package me.drawe.buildbattle.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.objects.Message;
@@ -14,13 +10,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class ItemCreator {
 
     public static ItemStack getPlayerSkull(Player player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -30,7 +29,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -199,7 +198,7 @@ public class ItemCreator {
     }
 
     public static ItemStack createReportItem(BBBuildReport report) {
-        return create(Material.STAINED_CLAY, 1, report.getReportStatus().getData(), report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
+        return create(Material.LEGACY_STAINED_CLAY, 1, report.getReportStatus().getData(), report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
 
     }
 

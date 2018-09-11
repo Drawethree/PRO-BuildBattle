@@ -5,7 +5,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
@@ -178,7 +177,7 @@ public enum ParticleEffect {
 
     private static boolean isWater(Location location) {
         Material material = location.getBlock().getType();
-        return material == Material.WATER || material == Material.STATIONARY_WATER;
+        return material == Material.WATER || material == Material.LEGACY_STATIONARY_WATER;
     }
 
 

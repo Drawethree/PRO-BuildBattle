@@ -24,7 +24,7 @@ public class BBSign {
         try {
             this.sign = (Sign) location.getBlock().getState();
             this.blockBehind = LocationUtil.getAttachedBlock(getSign().getBlock());
-            getBlockBehind().setType(Material.STAINED_CLAY);
+            getBlockBehind().setType(Material.LEGACY_STAINED_CLAY);
             addIntoArenaSigns();
             update();
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class BBSign {
                 getSign().setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
                 getSign().update(true);
                 if(GameManager.isReplaceBlockBehindSigns()) {
-                    getBlockBehind().setData(getArena().getBBArenaState().getDataValue());
+                    //getBlockBehind().setData(getArena().getBBArenaState().getDataValue());
                 }
             }, 20L);
         }

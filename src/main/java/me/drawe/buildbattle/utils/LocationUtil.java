@@ -2,13 +2,11 @@ package me.drawe.buildbattle.utils;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -77,7 +75,7 @@ public class LocationUtil {
             for(int y = l.getBlockY() - radius; y<= l.getBlockY()+radius; y++) {
                 for(int z = l.getBlockZ() - radius; z <= l.getBlockZ()+radius; z++) {
                     Block b = l.getWorld().getBlockAt(x, y, z);
-                    if(b.getType() == Material.LAVA || b.getType() == Material.STATIONARY_LAVA) {
+                    if(b.getType() == Material.LAVA || b.getType() == Material.LEGACY_STATIONARY_LAVA) {
                         return false;
                     }
                 }
@@ -158,11 +156,7 @@ public class LocationUtil {
                     cancel();
                 } else {
                     for(Location l : getHollowCube(sel.getMinimumPoint(), sel.getMaximumPoint())) {
-                        if(Bukkit.getVersion().contains("1.12")) {
-                            p.spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
-                        } else {
-                            p.playEffect(getCenter(l),Effect.HAPPY_VILLAGER,null);
-                        }
+                        p.spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
                     }
                 }
                 count = count + 1;

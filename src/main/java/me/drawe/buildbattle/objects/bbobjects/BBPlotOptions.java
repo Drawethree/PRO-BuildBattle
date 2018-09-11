@@ -57,11 +57,11 @@ public class BBPlotOptions {
                 }
             } else if (currentFloorItem.getType() == Material.WATER_BUCKET) {
                 this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, currentFloorItem.getData().getData(), getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.STATIONARY_WATER, 0);
+                getPlot().changeFloor(Material.LEGACY_STATIONARY_WATER, 0);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else if (currentFloorItem.getType() == Material.LAVA_BUCKET) {
                 this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, currentFloorItem.getData().getData(), getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.STATIONARY_LAVA, 0);
+                getPlot().changeFloor(Material.LEGACY_STATIONARY_LAVA, 0);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else {
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
@@ -96,12 +96,12 @@ public class BBPlotOptions {
         if (currentFloorItem.getType() == Material.LADDER
                 || currentFloorItem.getType() == Material.CACTUS
                 || currentFloorItem.getType() == Material.STONE_BUTTON
-                || currentFloorItem.getType() == Material.WOOD_BUTTON
+                || currentFloorItem.getType() == Material.LEGACY_WOOD_BUTTON
                 || currentFloorItem.getType() == Material.LEVER
-                || currentFloorItem.getType() == Material.RED_ROSE
-                || currentFloorItem.getType() == Material.YELLOW_FLOWER
+                || currentFloorItem.getType() == Material.LEGACY_RED_ROSE
+                || currentFloorItem.getType() == Material.LEGACY_YELLOW_FLOWER
                 || currentFloorItem.getType() == Material.VINE
-                || currentFloorItem.getType() == Material.DOUBLE_PLANT
+                || currentFloorItem.getType() == Material.LEGACY_DOUBLE_PLANT
                 || currentFloorItem.getType() == Material.TRIPWIRE_HOOK) {
             return false;
         } else {
