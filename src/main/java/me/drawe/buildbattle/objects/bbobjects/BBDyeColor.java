@@ -1,6 +1,5 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,22 +7,22 @@ import org.bukkit.inventory.ItemStack;
 
 public enum BBDyeColor {
 
-    BLACK(0, DyeColor.BLACK, ItemCreator.create(Material.INK_SAC,1, "§0Black")),
-    BLUE(1,DyeColor.BLUE,  ItemCreator.create(Material.LAPIS_LAZULI,1, "§1Blue")),
-    BROWN(2,DyeColor.BROWN,  ItemCreator.create(Material.COCOA_BEANS, 1, "§6Brown")),
-    CYAN(3,DyeColor.CYAN,  ItemCreator.create(Material.CYAN_DYE, 1, "§cCyan")),
-    GRAY(4,DyeColor.GRAY,  ItemCreator.create(Material.GRAY_DYE, 1, "§8Gray")),
-    GREEN(5,DyeColor.GREEN,  ItemCreator.create(Material.CACTUS_GREEN, 1, "§2Green")),
-    LIGHT_BLUE(6,DyeColor.LIGHT_BLUE,  ItemCreator.create(Material.LIGHT_BLUE_DYE, 1, "§bLight Blue")),
-    LIGHT_GRAY(7,DyeColor.LIGHT_GRAY,  ItemCreator.create(Material.LIGHT_GRAY_DYE, 1, "§7Light Gray")),
-    LIME(8,DyeColor.LIME,  ItemCreator.create(Material.LIME_DYE, 1, "§aLime")),
-    MAGENTA(9,DyeColor.MAGENTA,  ItemCreator.create(Material.MAGENTA_DYE, 1, "§dMagenta")),
-    ORANGE(10,DyeColor.ORANGE,  ItemCreator.create(Material.ORANGE_DYE, 1,"§6Orange")),
-    PINK(11,DyeColor.PINK,  ItemCreator.create(Material.PINK_DYE, 1, "§dPink")),
-    PURPLE(12,DyeColor.PURPLE,  ItemCreator.create(Material.PURPLE_DYE, 1, "§5Purple")),
-    RED(13,DyeColor.RED,  ItemCreator.create(Material.ROSE_RED, 1, "§cRed")),
-    WHITE(14,DyeColor.WHITE,  ItemCreator.create(Material.BONE_MEAL, 1, "§fWhite")),
-    YELLOW(15,DyeColor.YELLOW,  ItemCreator.create(Material.DANDELION_YELLOW, 1, "§eYellow"));
+    BLACK(0, DyeColor.BLACK, new ItemStack(Material.INK_SAC,1)),
+    BLUE(1,DyeColor.BLUE,  new ItemStack(Material.LAPIS_LAZULI,1)),
+    BROWN(2,DyeColor.BROWN,  new ItemStack(Material.COCOA_BEANS, 1)),
+    CYAN(3,DyeColor.CYAN,  new ItemStack(Material.CYAN_DYE, 1)),
+    GRAY(4,DyeColor.GRAY,  new ItemStack(Material.GRAY_DYE, 1)),
+    GREEN(5,DyeColor.GREEN,  new ItemStack(Material.CACTUS_GREEN, 1)),
+    LIGHT_BLUE(6,DyeColor.LIGHT_BLUE,  new ItemStack(Material.LIGHT_BLUE_DYE, 1)),
+    LIGHT_GRAY(7,DyeColor.LIGHT_GRAY,  new ItemStack(Material.LIGHT_GRAY_DYE, 1)),
+    LIME(8,DyeColor.LIME,  new ItemStack(Material.LIME_DYE, 1)),
+    MAGENTA(9,DyeColor.MAGENTA,  new ItemStack(Material.MAGENTA_DYE, 1)),
+    ORANGE(10,DyeColor.ORANGE,  new ItemStack(Material.ORANGE_DYE, 1)),
+    PINK(11,DyeColor.PINK,  new ItemStack(Material.PINK_DYE, 1)),
+    PURPLE(12,DyeColor.PURPLE,  new ItemStack(Material.PURPLE_DYE, 1)),
+    RED(13,DyeColor.RED,  new ItemStack(Material.ROSE_RED, 1)),
+    WHITE(14,DyeColor.WHITE,  new ItemStack(Material.BONE_MEAL, 1)),
+    YELLOW(15,DyeColor.YELLOW,  new ItemStack(Material.DANDELION_YELLOW, 1));
 
     private byte data;
     private ItemStack item;
