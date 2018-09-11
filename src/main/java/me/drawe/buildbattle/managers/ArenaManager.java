@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.*;
+import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.Bukkit;
@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ArenaManager {
@@ -20,6 +21,7 @@ public class ArenaManager {
     private static List<BBArena> arenas = new ArrayList<>();
     private static List<BBArenaEdit> arenaEditors = new ArrayList<>();
     private static int totalPlayedGames = 0;
+    private static HashMap<Player, Location[]> playerBBPos = new HashMap<>();
     private Inventory editArenasInventory;
 
     public static ArenaManager getInstance() {
@@ -60,6 +62,10 @@ public class ArenaManager {
 
     public static List<BBArenaEdit> getArenaEditors() {
         return arenaEditors;
+    }
+
+    public static HashMap<Player, Location[]> getPlayerBBPos() {
+        return playerBBPos;
     }
 
     public int getArenaListSize() {
@@ -309,5 +315,32 @@ public class ArenaManager {
             }
         }
         return null;
+    }
+
+    public void setPos(Player p, int pos) {
+        Location[] poses;
+        if(playerBBPos.containsKey(p)) {
+            poses = playerBBPos.get(p);
+        } else {
+            poses = new Location[2];
+        }
+        poses[pos-1] = p.getLocation();
+        playerBBPos.put(p, poses);
+        p.sendMessage(GameManager.getPrefix() + "§aPosition §e" + pos + "§a set to §e" + LocationUtil.getStringFromLocation(p.getLocation()));
+    }
+
+    public boolean hasSelectionReady(Player p) {
+        return playerBBPos.get(p)[0] != null && playerBBPos.get(p)[1] != null;
+    }
+
+    public int getMissingSelection(Player p) {
+        if(playerBBPos.get(p) == null) {
+            return -1;
+        } else if(playerBBPos.get(p)[0] == null) {
+            return 1;
+        } else if(playerBBPos.get(p)[1] == null) {
+            return 2;
+        }
+        return -1;
     }
 }

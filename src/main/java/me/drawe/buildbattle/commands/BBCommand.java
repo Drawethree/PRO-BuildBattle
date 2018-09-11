@@ -1,6 +1,5 @@
 package me.drawe.buildbattle.commands;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.leaderboards.Leaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
@@ -10,13 +9,13 @@ import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.Sounds;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -99,6 +98,12 @@ public class BBCommand implements CommandExecutor {
                     case "editor":
                         openEditor(sender);
                         break;
+                    case "pos1":
+                        setPos(sender, 1);
+                        break;
+                    case "pos2":
+                        setPos(sender, 2);
+                        break;
                     case "reports":
                         openReports(sender);
                         break;
@@ -113,9 +118,20 @@ public class BBCommand implements CommandExecutor {
                     p.openInventory(OptionsManager.getAllArenasInventory());
                 }
             }
-
         }
         return true;
+    }
+
+    private void setPos(CommandSender sender, int pos) {
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if (sender.hasPermission("buildbattlepro.create")) {
+                ArenaManager.getInstance().setPos(p,pos);
+                return;
+            } else {
+                sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            }
+        }
     }
 
     private void forceStartSubCommand(CommandSender sender, String[] args) {
@@ -227,7 +243,7 @@ public class BBCommand implements CommandExecutor {
             Player p = (Player) sender;
             if(p.hasPermission("buildbattlepro.create")) {
                 p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                p.playSound(p.getLocation(), Sounds.NOTE_PLING.getSound(), 1.0F,1.0F);
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F,1.0F);
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
@@ -563,9 +579,19 @@ public class BBCommand implements CommandExecutor {
                 Player p = (Player) sender;
                 if (args.length == 2) {
                     BBArena arena = ArenaManager.getInstance().getArena(args[1]);
-                    Selection sel = BuildBattle.getWorldEdit().getSelection(p);
+                    //Selection sel = BuildBattle.getWorldEdit().getSelection(p);
                     if (arena != null) {
-                        if (sel != null) {
+                        if(ArenaManager.getInstance().hasSelectionReady(p)) {
+                            Location l1 = ArenaManager.getPlayerBBPos().get(p)[0];
+                            Location l2 = ArenaManager.getPlayerBBPos().get(p)[1];
+                            BBPlot newPlot = new BBPlot(arena,l1,l2);
+                            newPlot.addIntoArenaPlots();
+                            arena.saveIntoConfig();
+                            OptionsManager.getInstance().refreshArenaItem(arena);
+                            p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
+                            LocationUtil.showCreatedPlot(l1,l2, p, 5);
+                            // WORLD EDIT NOT WORKING
+                       /*if (sel != null) {
                             BBPlot newPlot = new BBPlot(arena, sel.getMinimumPoint(), sel.getMaximumPoint());
                             newPlot.addIntoArenaPlots();
                             arena.saveIntoConfig();
@@ -574,6 +600,19 @@ public class BBCommand implements CommandExecutor {
                             LocationUtil.showCreatedPlot(sel, p, 5);
                         } else {
                             p.sendMessage(Message.NO_SELECTION.getChatMessage().replaceAll("%arena%", args[1]));
+                        }
+                        */
+                        } else {
+                            int i = ArenaManager.getInstance().getMissingSelection(p);
+                            switch(i) {
+                                case -1:
+                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set positions ! Please set them by §e/bb pos1 §cand §e/bb pos2");
+                                    break;
+                                case 1:
+                                case 2:
+                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/bb pos" + i );
+                                    break;
+                            }
                         }
                     } else {
                         p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));

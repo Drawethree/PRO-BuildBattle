@@ -1,6 +1,5 @@
 package me.drawe.buildbattle.utils;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import org.bukkit.*;
@@ -147,7 +146,7 @@ public class LocationUtil {
         return returnList;
     }
 
-    public static void showCreatedPlot(Selection sel, Player p, int times) {
+    public static void showCreatedPlot(Location l1, Location l2, Player p, int times) {
         new BukkitRunnable() {
             int count = 0;
             @Override
@@ -155,7 +154,7 @@ public class LocationUtil {
                 if(count >= times) {
                     cancel();
                 } else {
-                    for(Location l : getHollowCube(sel.getMinimumPoint(), sel.getMaximumPoint())) {
+                    for(Location l : getHollowCube(l1, l2)) {
                         p.spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
                     }
                 }
