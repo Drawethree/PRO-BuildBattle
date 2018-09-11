@@ -9,13 +9,13 @@ import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
+import me.drawe.buildbattle.utils.Sounds;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -180,7 +180,8 @@ public class BBCommand implements CommandExecutor {
         if(sender instanceof Player) {
             Player p = (Player) sender;
             if(p.hasPermission("buildbattlepro.manage.reports")) {
-                ReportManager.getInstance().openReports(p,1);
+                p.sendMessage(GameManager.getPrefix() + "§cReports are turned off for version 1.13 and above because there is no stable version of WorldEdit.");
+                //ReportManager.getInstance().openReports(p,1);
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
@@ -243,7 +244,7 @@ public class BBCommand implements CommandExecutor {
             Player p = (Player) sender;
             if(p.hasPermission("buildbattlepro.create")) {
                 p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F,1.0F);
+                p.playSound(p.getLocation(), Sounds.NOTE_PLING.getSound(), 1.0F,1.0F);
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
@@ -584,12 +585,21 @@ public class BBCommand implements CommandExecutor {
                         if(ArenaManager.getInstance().hasSelectionReady(p)) {
                             Location l1 = ArenaManager.getPlayerBBPos().get(p)[0];
                             Location l2 = ArenaManager.getPlayerBBPos().get(p)[1];
-                            BBPlot newPlot = new BBPlot(arena,l1,l2);
+                            Location maxPoint;
+                            Location minPoint;
+                            if(l1.getY() > l2.getY()) {
+                                maxPoint = l1;
+                                minPoint = l2;
+                            } else {
+                                maxPoint = l2;
+                                minPoint = l1;
+                            }
+                            BBPlot newPlot = new BBPlot(arena,minPoint,maxPoint);
                             newPlot.addIntoArenaPlots();
                             arena.saveIntoConfig();
                             OptionsManager.getInstance().refreshArenaItem(arena);
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
-                            LocationUtil.showCreatedPlot(l1,l2, p, 5);
+                            LocationUtil.showCreatedPlot(minPoint,maxPoint, p, 5);
                             // WORLD EDIT NOT WORKING
                        /*if (sel != null) {
                             BBPlot newPlot = new BBPlot(arena, sel.getMinimumPoint(), sel.getMaximumPoint());
@@ -695,15 +705,17 @@ public class BBCommand implements CommandExecutor {
     private void commandUsage(CommandSender p) {
         if (p.hasPermission("buildbattlepro.create")) {
             FancyMessage.sendCenteredMessage(p, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Admin Commands");
+            p.sendMessage("§c§lNEW §e/bb pos1 " + "§8» " + "§7Select position 1 of plot.");
+            p.sendMessage("§c§lNEW §e/bb pos2 " + "§8» " + "§7Select position 2 of plot.");
             p.sendMessage("§e/bb create <arena_name> <solo/team> " + "§8» " + "§7Create Arena");
             p.sendMessage("§e/bb delete <arena_name> " + "§8» " + "§7Remove Arena");
-            p.sendMessage("§e/bb addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selection !");
+            p.sendMessage("§e/bb addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selected positions !");
             p.sendMessage("§e/bb delplot <arena> " + "§8» " + "§7Removes latest added plot in arena");
             p.sendMessage("§e/bb setlobby <arena> " + "§8» " + "§7Set lobby for Arena");
             p.sendMessage("§e/bb setmainlobby " + "§e» " + "§7Set main lobby");
-            p.sendMessage("§c§lNEW §e/bb forcestart " + "§8» " + "§7Force start Arena you are currently in");
-            p.sendMessage("§c§lNEW §e/bb forcestart <arena> " + "§8» " + "§7Force start Arena");
-            p.sendMessage("§c§lNEW §e/bb forcestart <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
+            p.sendMessage("§e/bb forcestart " + "§8» " + "§7Force start Arena you are currently in");
+            p.sendMessage("§e/bb forcestart <arena> " + "§8» " + "§7Force start Arena");
+            p.sendMessage("§e/bb forcestart <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
             p.sendMessage("§e/bb start " + "§8» " + "§7Start Arena you are currently in");
             p.sendMessage("§e/bb start <arena> " + "§8» " + "§7Start Arena");
             p.sendMessage("§e/bb start <arena> <theme> " + "§8» " + "§7Start Arena with specified theme");

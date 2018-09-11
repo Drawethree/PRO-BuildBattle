@@ -4,7 +4,6 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.Category;
 import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.managers.*;
-import me.drawe.buildbattle.objects.GuiItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
@@ -14,7 +13,10 @@ import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -64,7 +66,7 @@ public class PlayerListener implements Listener {
                     BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
                 }
             }, 1L);
-        } else if(GameManager.getMainLobbyLocation() != null && GameManager.isTeleportToMainLobbyOnJoin()) {
+        } else if (GameManager.getMainLobbyLocation() != null && GameManager.isTeleportToMainLobbyOnJoin()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 PlayerManager.getInstance().teleportToMainLobby(p);
             }, 1L);
@@ -108,7 +110,7 @@ public class PlayerListener implements Listener {
                     }
                 }
                 return;
-            } else if(inv.equals(ArenaManager.getInstance().getEditArenasInventory())) {
+            } else if (inv.equals(ArenaManager.getInstance().getEditArenasInventory())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null) {
                     BBArenaEdit clickedEdit = ArenaManager.getInstance().getArenaEdit(e.getCurrentItem());
@@ -117,15 +119,58 @@ public class PlayerListener implements Listener {
                         p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
                     }
                 }
-            } else if(inv.getTitle().contains(ReportManager.reportsInventoryTitle)) {
+            } else if (inv.getTitle().contains("Editing Arena: ")) {
                 e.setCancelled(true);
-                if(e.getCurrentItem().isSimilar(GuiItem.NEXT_PAGE.getItemStack())) {
+                BBArenaEdit currentEdit = ArenaManager.getInstance().getArenaEdit(inv);
+                if (currentEdit != null) {
+                    if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
+                        if (e.getCurrentItem().equals(currentEdit.getGameModeItem())) {
+                            if (currentEdit.editGameMode()) {
+                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            } else {
+                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                            }
+                        } else if (e.getCurrentItem().equals(currentEdit.getGameTimeItem())) {
+                            if (currentEdit.editGameTime(e.getClick())) {
+                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            } else {
+                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                            }
+                        } else if (e.getCurrentItem().equals(currentEdit.getMinPlayersItem())) {
+                            if (currentEdit.editMinPlayers(e.getClick())) {
+                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            } else {
+                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                            }
+                        } else if (e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
+                            if (currentEdit.editTeamSize(e.getClick())) {
+                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            } else {
+                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                            }
+                        } else if (e.getCurrentItem().equals(OptionsManager.getSaveItem())) {
+                            currentEdit.saveOptions();
+                            p.playSound(p.getLocation(), Sounds.LEVEL_UP.getSound(), 1.0F, 1.0F);
+                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                        } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
+                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                        } else if (e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
+                            currentEdit.getArena().delete(p);
+                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                        }
+                    }
+                }
+            } /*else if (inv.getTitle().contains(ReportManager.reportsInventoryTitle)) {
+                e.setCancelled(true);
+                if (e.getCurrentItem().isSimilar(GuiItem.NEXT_PAGE.getItemStack())) {
                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(inv));
-                } else if(e.getCurrentItem().isSimilar(GuiItem.PREV_PAGE.getItemStack())) {
+                } else if (e.getCurrentItem().isSimilar(GuiItem.PREV_PAGE.getItemStack())) {
                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getPrevPage(inv));
-                } else if(e.getCurrentItem().isSimilar(GuiItem.CLOSE_GUI.getItemStack())) {
+                } else if (e.getCurrentItem().isSimilar(GuiItem.CLOSE_GUI.getItemStack())) {
                     p.closeInventory();
-                } else if(!e.getCurrentItem().isSimilar(GuiItem.FILL_ITEM.getItemStack())){
+                } else if (!e.getCurrentItem().isSimilar(GuiItem.FILL_ITEM.getItemStack())) {
                     BBBuildReport clickedReport = ReportManager.getInstance().getReport(e.getCurrentItem());
                     if (clickedReport != null) {
                         switch (e.getClick()) {
@@ -157,50 +202,8 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            } else if(inv.getTitle().contains("Editing Arena: ")) {
-                e.setCancelled(true);
-                BBArenaEdit currentEdit = ArenaManager.getInstance().getArenaEdit(inv);
-                if(currentEdit != null) {
-                    if(e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
-                        if(e.getCurrentItem().equals(currentEdit.getGameModeItem())) {
-                            if(currentEdit.editGameMode()) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                            } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F,1.0F);
-                            }
-                        } else if(e.getCurrentItem().equals(currentEdit.getGameTimeItem())) {
-                            if(currentEdit.editGameTime(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                            } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F,1.0F);
-                            }
-                        } else if(e.getCurrentItem().equals(currentEdit.getMinPlayersItem())) {
-                            if(currentEdit.editMinPlayers(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                            } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F,1.0F);
-                            }
-                        } else if(e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
-                            if(currentEdit.editTeamSize(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                            } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F,1.0F);
-                            }
-                        } else if(e.getCurrentItem().equals(OptionsManager.getSaveItem())) {
-                            currentEdit.saveOptions();
-                            p.playSound(p.getLocation(), Sounds.LEVEL_UP.getSound(), 1.0F,1.0F);
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                        } else if(e.getCurrentItem().equals(OptionsManager.getBackItem())) {
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                        } else if(e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
-                            currentEdit.getArena().delete(p);
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F,1.0F);
-                        }
-                    }
-                }
             }
+            */
         }
         if (a != null) {
             if (inv != null) {
@@ -209,12 +212,12 @@ public class PlayerListener implements Listener {
                     p.sendMessage(Message.CANNOT_WEAR_ARMOR.getChatMessage());
                     return;
                 }
-                if(e.getCurrentItem() != null) {
-                    if(e.getCurrentItem().isSimilar(OptionsManager.getBackItem())) {
+                if (e.getCurrentItem() != null) {
+                    if (e.getCurrentItem().isSimilar(OptionsManager.getBackItem())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-                        if(plot != null) {
-                            OptionsManager.getInstance().openOptionsInventory(p,plot);
+                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        if (plot != null) {
+                            OptionsManager.getInstance().openOptionsInventory(p, plot);
                         }
                         return;
                     }
@@ -226,10 +229,10 @@ public class PlayerListener implements Listener {
                             if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == Material.SIGN || e.getCurrentItem().getType() == Material.PAPER)) {
                                 BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                                 if (selectedTheme != null) {
-                                    if(selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
-                                        if(SuperVoteManager.getInstance().hasSuperVote(p)) {
-                                            SuperVoteManager.getInstance().takeSuperVote(p,1);
-                                            a.getThemeVoting().superVote(p,selectedTheme);
+                                    if (selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
+                                        if (SuperVoteManager.getInstance().hasSuperVote(p)) {
+                                            SuperVoteManager.getInstance().takeSuperVote(p, 1);
+                                            a.getThemeVoting().superVote(p, selectedTheme);
                                             return;
                                         } else {
                                             p.sendMessage(Message.NOT_ENOUGH_SUPER_VOTES.getChatMessage());
@@ -249,7 +252,7 @@ public class PlayerListener implements Listener {
                         }
                     } else if (a.getBBArenaState() == BBArenaState.LOBBY) {
                         if (inv.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.LEGACY_STAINED_CLAY) {
+                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == Material.LIME_TERRACOTTA || e.getCurrentItem().getType() == Material.RED_TERRACOTTA || e.getCurrentItem().getType() == Material.YELLOW_TERRACOTTA)) {
                                 BBTeam team = a.getTeamByItemStack(e.getCurrentItem());
                                 BBTeam playerTeam = a.getPlayerTeam(p);
                                 if (team != null) {
@@ -276,21 +279,19 @@ public class PlayerListener implements Listener {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (p.hasPermission("buildbattlepro.changefloor")) {
                                         plot.getOptions().setCurrentFloorItem(e.getCursor());
-                                        inv.setItem(e.getSlot(), plot.getOptions().getCurrentFloorItem());
-                                        e.setCursor(null);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                     }
                                 }
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getHeadsItem())) {
                                 p.openInventory(HeadInventory.getInstance().getMainPage());
-                            } else if(e.getCurrentItem().isSimilar(OptionsManager.getBannerCreatorItem())) {
+                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBannerCreatorItem())) {
                                 BBBannerCreator bbBannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
-                                if(bbBannerCreator == null) {
+                                if (bbBannerCreator == null) {
                                     bbBannerCreator = BannerCreatorManager.getInstance().addBannerCreator(p);
                                 }
                                 OptionsManager.getInstance().openColorsInventory(bbBannerCreator);
-                            } else if(e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
+                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
                                 p.openInventory(OptionsManager.getBiomesInventory());
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getInstance().getWeatherItemStack(plot))) {
                                 if (p.hasPermission("buildbattlepro.changeweather")) {
@@ -329,7 +330,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if(inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
+                    } else if (inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -420,16 +421,17 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if(inv.getTitle().equalsIgnoreCase(Message.GUI_COLORS_TITLE.getMessage())) {
+                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_COLORS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == Material.INK_SAC) {
-                                        DyeColor color = DyeColor.getByDyeData(e.getCurrentItem().getData().getData());
-                                        bannerCreator.selectColor(color);
+                                    BBDyeColor dc = BBDyeColor.getByMaterial(e.getCurrentItem().getType());
+                                    if(dc != null) {
+                                        bannerCreator.selectColor(dc.getColor());
+                                        return;
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
                                         bannerCreator.giveItem();
                                         p.closeInventory();
@@ -439,14 +441,14 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if(inv.getTitle().equalsIgnoreCase(Message.GUI_PATTERNS_TITLE.getMessage())) {
+                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PATTERNS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == Material.LEGACY_BANNER && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
+                                    if (e.getCurrentItem().getType() == Material.WHITE_BANNER && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
                                         BannerMeta meta = (BannerMeta) e.getCurrentItem().getItemMeta();
                                         bannerCreator.addPattern(meta.getPatterns().get(0).getPattern());
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -469,22 +471,22 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
-            if((e.getItem() != null) && (e.getItem().getType() == Material.COMPASS)) {
+            if ((e.getItem() != null) && (e.getItem().getType() == Material.COMPASS)) {
                 e.setCancelled(true);
                 return;
             }
             if (arena.getBBArenaState() == BBArenaState.VOTING) {
                 if (e.getItem() != null) {
-                    if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
+                    /*if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
                         ReportManager.getInstance().attemptReport(arena.getCurrentVotingPlot(), p);
                         return;
-                    }
+                    }*/
                     Votes vote = Votes.getVoteByItemStack(e.getItem());
                     if (vote != null) {
                         BBPlot currentPlot = arena.getCurrentVotingPlot();
                         if (currentPlot != null) {
                             if (!currentPlot.getTeam().getPlayers().contains(p)) {
-                                VotingManager.getInstance().vote(p,vote,currentPlot);
+                                VotingManager.getInstance().vote(p, vote, currentPlot);
                                 e.setCancelled(true);
                             } else {
                                 p.sendMessage(Message.CANT_VOTE_FOR_YOUR_PLOT.getChatMessage());
@@ -498,14 +500,14 @@ public class PlayerListener implements Listener {
                     if (e.getItem() != null) {
                         if (e.getItem().isSimilar(OptionsManager.getOptionsItem())) {
                             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                                OptionsManager.getInstance().openOptionsInventory(p,plot);
+                                OptionsManager.getInstance().openOptionsInventory(p, plot);
                             }
-                        } else if(BBParticle.getBBParticle(e.getItem()) != null) {
+                        } else if (BBParticle.getBBParticle(e.getItem()) != null) {
                             e.setCancelled(true);
-                            if(plot.isLocationInPlot(p.getLocation())) {
+                            if (plot.isLocationInPlot(p.getLocation())) {
                                 BBParticle particle = BBParticle.getBBParticle(e.getItem());
                                 PlotParticle plotParticle = new PlotParticle(plot, particle, p.getLocation());
-                                plot.addActiveParticle(p,plotParticle);
+                                plot.addActiveParticle(p, plotParticle);
                             } else {
                                 p.sendMessage(Message.CANT_PLACE_PARTICLE_OUTSIDE.getChatMessage());
                             }
@@ -519,7 +521,7 @@ public class PlayerListener implements Listener {
                             e.setCancelled(true);
                             arena.removePlayer(p);
                         }
-                    } else if(e.getItem().isSimilar(OptionsManager.getTeamsItem())) {
+                    } else if (e.getItem().isSimilar(OptionsManager.getTeamsItem())) {
                         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             e.setCancelled(true);
                             p.openInventory(arena.getTeamsInventory());
@@ -528,14 +530,14 @@ public class PlayerListener implements Listener {
                 }
             }
         } else {
-            if(e.getClickedBlock() != null) {
-                if(e.getClickedBlock().getState() instanceof Sign) {
-                    if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock() != null) {
+                if (e.getClickedBlock().getState() instanceof Sign) {
+                    if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         Sign s = (Sign) e.getClickedBlock().getState();
                         BBSign arenaSign = ArenaManager.getInstance().getArenaSign(s);
                         if (arenaSign != null) {
                             arenaSign.getArena().addPlayer(p);
-                        } else if(s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
+                        } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
                             BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(null);
                             if (arenaToAutoJoin != null) {
                                 arenaToAutoJoin.addPlayer(p);
@@ -553,14 +555,14 @@ public class PlayerListener implements Listener {
     public void onEntitySpawn(EntitySpawnEvent e) {
         Entity ent = e.getEntity();
         Location loc = e.getLocation();
-        for(Entity ent1 : ent.getNearbyEntities(5,5,5)) {
-            if(ent1 instanceof Player) {
+        for (Entity ent1 : ent.getNearbyEntities(5, 5, 5)) {
+            if (ent1 instanceof Player) {
                 Player p = (Player) ent1;
                 BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-                if(a != null) {
-                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-                    if(plot != null) {
-                        if(!plot.isLocationInPlot(loc)) {
+                if (a != null) {
+                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                    if (plot != null) {
+                        if (!plot.isLocationInPlot(loc)) {
                             e.setCancelled(true);
                             return;
                         }
@@ -575,17 +577,17 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         BBParty party = PartyManager.getInstance().getPlayerParty(p);
-        if(party != null) {
+        if (party != null) {
             party.removePlayer(p);
         }
-        if(a != null) {
+        if (a != null) {
             a.removePlayer(p);
         }
     }
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent e) {
-        if(GameManager.isRestrictPlayerMovement()) {
+        if (GameManager.isRestrictPlayerMovement()) {
             Vehicle v = e.getVehicle();
             if (v.getPassenger() instanceof Player) {
                 Player p = (Player) v.getPassenger();
@@ -623,13 +625,13 @@ public class PlayerListener implements Listener {
                 switch (arena.getBBArenaState()) {
                     case INGAME:
                         if (plot != null) {
-                            if(GameManager.isRestrictPlayerMovement()) {
+                            if (GameManager.isRestrictPlayerMovement()) {
                                 if (!plot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if(GameManager.isRestrictOnlyPlayerYMovement()) {
-                                if(plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
+                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
                             }
@@ -638,25 +640,25 @@ public class PlayerListener implements Listener {
                     case VOTING:
                         BBPlot currentlyVoted = arena.getCurrentVotingPlot();
                         if (currentlyVoted != null) {
-                            if(GameManager.isRestrictPlayerMovement()) {
+                            if (GameManager.isRestrictPlayerMovement()) {
                                 if (!currentlyVoted.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if(GameManager.isRestrictOnlyPlayerYMovement()) {
-                                if(currentlyVoted.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
+                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                if (currentlyVoted.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
                             }
                         } else {
-                            if(plot != null) {
-                                if(GameManager.isRestrictPlayerMovement()) {
+                            if (plot != null) {
+                                if (GameManager.isRestrictPlayerMovement()) {
                                     if (!plot.isLocationInPlot(e.getTo())) {
                                         e.setTo(e.getFrom());
                                         //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                     }
-                                } else if(GameManager.isRestrictOnlyPlayerYMovement()) {
-                                    if(plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
+                                } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                    if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                         e.setTo(e.getFrom());
                                     }
                                 }
@@ -665,13 +667,13 @@ public class PlayerListener implements Listener {
                         break;
                     case THEME_VOTING:
                         if (plot != null) {
-                            if(GameManager.isRestrictPlayerMovement()) {
+                            if (GameManager.isRestrictPlayerMovement()) {
                                 if (!plot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if(GameManager.isRestrictOnlyPlayerYMovement()) {
-                                if(plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
+                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
                             }
@@ -680,13 +682,13 @@ public class PlayerListener implements Listener {
                     case ENDING:
                         BBPlot winnerPlot = arena.getWinner();
                         if (winnerPlot != null) {
-                            if(GameManager.isRestrictPlayerMovement()) {
+                            if (GameManager.isRestrictPlayerMovement()) {
                                 if (!winnerPlot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if(GameManager.isRestrictOnlyPlayerYMovement()) {
-                                if(winnerPlot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
+                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                if (winnerPlot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
                             }
@@ -701,8 +703,8 @@ public class PlayerListener implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null) {
-            if((e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)) {
+        if (a != null) {
+            if ((e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)) {
                 e.setCancelled(true);
             }
         }
@@ -714,7 +716,7 @@ public class PlayerListener implements Listener {
         Location loc = e.getBlockPlaced().getLocation();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
-            switch(arena.getBBArenaState()) {
+            switch (arena.getBBArenaState()) {
                 case LOBBY:
                     e.setCancelled(true);
                     break;
@@ -759,13 +761,13 @@ public class PlayerListener implements Listener {
     public void onBucketEmpty(PlayerBucketEmptyEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null) {
-            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
-            if(plot != null) {
-                if(!plot.isLocationInPlot(e.getBlockClicked().getLocation())) {
+        if (a != null) {
+            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+            if (plot != null) {
+                if (!plot.isLocationInPlot(e.getBlockClicked().getLocation())) {
                     p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                     e.setCancelled(true);
-                } else if(!plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0,1,0))) {
+                } else if (!plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0))) {
                     p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                     e.setCancelled(true);
                 }
@@ -776,17 +778,17 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onSignCreate(SignChangeEvent e) {
         Player p = e.getPlayer();
-        if(e.getLine(0).equalsIgnoreCase("[bb]")) {
-            if(p.hasPermission("buildbattlepro.create")) {
+        if (e.getLine(0).equalsIgnoreCase("[bb]")) {
+            if (p.hasPermission("buildbattlepro.create")) {
                 BBArena arena = ArenaManager.getInstance().getArena(e.getLine(1));
-                if(arena != null) {
+                if (arena != null) {
                     BuildBattle.getFileManager().getConfig("signs.yml").get().createSection(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(e.getBlock().getLocation()));
                     BuildBattle.getFileManager().getConfig("signs.yml").save();
                     //BBSign constructor already adds this sign into BBArena signs and update it.
                     BBSign sign = new BBSign(arena, e.getBlock().getLocation());
                     p.sendMessage(GameManager.getPrefix() + " §aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
                     return;
-                } else if(e.getLine(1).equalsIgnoreCase("autojoin")) {
+                } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
                     e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
                     e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
                     e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
@@ -806,13 +808,14 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         Location loc = e.getBlock().getLocation();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         Block block = e.getBlock();
-        if(arena != null) {
+        if (arena != null) {
             switch (arena.getBBArenaState()) {
                 case LOBBY:
                     e.setCancelled(true);
@@ -822,7 +825,7 @@ public class PlayerListener implements Listener {
                     break;
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
-                    if(plot != null) {
+                    if (plot != null) {
                         if (!plot.isLocationInPlot(loc)) {
                             p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                             e.setCancelled(true);
@@ -837,11 +840,11 @@ public class PlayerListener implements Listener {
                     break;
             }
         } else {
-            if(block.getState() instanceof Sign) {
+            if (block.getState() instanceof Sign) {
                 Sign s = (Sign) e.getBlock().getState();
                 BBSign bbSign = ArenaManager.getInstance().getArenaSign(s);
-                if(bbSign != null) {
-                    if(p.hasPermission("buildbattlepro.create")) {
+                if (bbSign != null) {
+                    if (p.hasPermission("buildbattlepro.create")) {
                         bbSign.removeSign(p);
                     } else {
                         e.setCancelled(true);
@@ -854,7 +857,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onFoodChange(FoodLevelChangeEvent e) {
-        if(e.getEntity() instanceof Player) {
+        if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
@@ -868,8 +871,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onWaterFlowEvent(BlockFromToEvent e) {
         BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
-        if(plot != null) {
-            if(!plot.isLocationInPlot(e.getToBlock().getLocation())) {
+        if (plot != null) {
+            if (!plot.isLocationInPlot(e.getToBlock().getLocation())) {
                 e.setCancelled(true);
             }
         }
@@ -879,7 +882,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onTntExplode(EntityExplodeEvent e) {
         BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
-        if(plot != null) {
+        if (plot != null) {
             e.setCancelled(true);
             e.getEntity().getLocation().getBlock().setType(Material.AIR);
             e.blockList().clear();
@@ -888,7 +891,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
-        if(e.getEntity() instanceof Player) {
+        if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             BBArena a = PlayerManager.getInstance().getPlayerArena(p);
             if (a != null) {
@@ -926,9 +929,9 @@ public class PlayerListener implements Listener {
     public void onTreeGrow(StructureGrowEvent e) {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
-        if(arena != null) {
-            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena,p);
-            if(plot != null) {
+        if (arena != null) {
+            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+            if (plot != null) {
                 for (BlockState blockState : e.getBlocks()) {
                     if (!plot.isLocationInPlot(blockState.getLocation()))
                         blockState.setType(Material.AIR);
@@ -941,7 +944,7 @@ public class PlayerListener implements Listener {
     public void onPickup(PlayerPickupItemEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null && a.getBBArenaState() == BBArenaState.VOTING) {
+        if (a != null && a.getBBArenaState() == BBArenaState.VOTING) {
             e.setCancelled(true);
         }
     }
@@ -952,12 +955,12 @@ public class PlayerListener implements Listener {
             Player p = e.getPlayer();
             BBArena a = PlayerManager.getInstance().getPlayerArena(p);
             if (a != null) {
-                if(a.getGameType() == BBGameMode.TEAM) {
-                    if(GameManager.isTeamChat()) {
+                if (a.getGameType() == BBGameMode.TEAM) {
+                    if (GameManager.isTeamChat()) {
                         e.getRecipients().clear();
-                        if(e.getMessage().charAt(0) == '!') {
+                        if (e.getMessage().charAt(0) == '!') {
                             e.setMessage(e.getMessage().substring(1, e.getMessage().length()));
-                            for(Player p1 : a.getPlayers()) {
+                            for (Player p1 : a.getPlayers()) {
                                 e.getRecipients().add(p1);
                             }
                         } else {
@@ -966,7 +969,7 @@ public class PlayerListener implements Listener {
                                 e.getRecipients().add(p1);
                             }
                         }
-                    } else if(GameManager.isArenaChat()) {
+                    } else if (GameManager.isArenaChat()) {
                         e.getRecipients().clear();
                         for (Player p1 : a.getPlayers()) {
                             e.getRecipients().add(p1);
@@ -988,21 +991,21 @@ public class PlayerListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null) {
-            if(p.hasPermission("buildbattlepro.bypass")) {
+        if (a != null) {
+            if (p.hasPermission("buildbattlepro.bypass")) {
                 return;
             } else {
-                if(e.getMessage().contains("bb") || e.getMessage().contains("buildbattle") || e.getMessage().contains("settheme")) {
+                if (e.getMessage().contains("bb") || e.getMessage().contains("buildbattle") || e.getMessage().contains("settheme")) {
                     return;
                 }
                 boolean valid = false;
-                for(String cmd : GameManager.getAllowedCommands()) {
-                    if(e.getMessage().contains(cmd)) {
+                for (String cmd : GameManager.getAllowedCommands()) {
+                    if (e.getMessage().contains(cmd)) {
                         valid = true;
                         break;
                     }
                 }
-                if(!valid) {
+                if (!valid) {
                     p.sendMessage(Message.COMMANDS_NOT_ALLOWED.getChatMessage());
                     e.setCancelled(true);
                 }
@@ -1046,7 +1049,7 @@ public class PlayerListener implements Listener {
     public void onConsume(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if(a != null) {
+        if (a != null) {
             e.setCancelled(true);
         }
     }

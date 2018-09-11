@@ -122,7 +122,7 @@ public class OptionsManager {
         int slot = 0;
         for(PatternType type : PatternType.values()) {
             Pattern p = new Pattern(DyeColor.BLACK, type);
-            ItemStack item = new ItemStack(Material.BLACK_BANNER, 1);
+            ItemStack item = new ItemStack(Material.WHITE_BANNER, 1);
             BannerMeta meta = (BannerMeta) item.getItemMeta();
             meta.setBaseColor(DyeColor.WHITE);
             meta.addPattern(p);
@@ -134,11 +134,12 @@ public class OptionsManager {
         patternsInventory.setItem(50, getBackItem());
     }
 
+
     private static void loadColorsInventory() {
         int slot = 10;
         for(int i = 0;i < 16;i++) {
-            ItemStack item = new ItemStack(Material.INK_SAC,1, (byte) i);
-            colorsInventory.setItem(slot,item);
+            BBDyeColor dyeColor = BBDyeColor.getById(i);
+            colorsInventory.setItem(slot,dyeColor.getItem());
             if(slot == 16 || slot == 25 || slot == 34) {
                 slot += 3;
             } else {
@@ -237,7 +238,7 @@ public class OptionsManager {
         for (BBPlotTime time : BBPlotTime.values()) {
             ItemStack item = time.getItem().clone();
             if (time == plot.getOptions().getCurrentTime()) {
-                item.setDurability((short) 5);
+                item.setType(Material.LIME_TERRACOTTA);
             }
             timeInv.setItem(time.getSlot(), item);
         }

@@ -221,4 +221,14 @@ public class ItemCreator {
         reportLore.add("§eMiddle-Click §7to §cDELETE §7this report");
         return reportLore;
     }
+
+    public static ItemStack create(Material m, int i, String s) {
+        ItemStack item = new ItemStack(m, i);
+        ItemMeta meta = item.getItemMeta();
+        if (s != null) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', s));
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
 }

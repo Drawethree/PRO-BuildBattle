@@ -239,19 +239,16 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public void changeFloor(Material material) {
-        if (material == Material.WATER_BUCKET)
-            material = Material.WATER;
-        if (material == Material.LAVA_BUCKET)
-            material = Material.LAVA;
-        double y = 0;
-        if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
-            y = getMaxPoint().getBlockY() - 1;
-        } else {
-            y = getMinPoint().getBlockY();
-        }
-        for (int x = getMinPoint().getBlockX(); x <= getMaxPoint().getBlockX(); x += 1) {
-            for (int z = getMinPoint().getBlockZ(); z <= getMaxPoint().getBlockZ(); z += 1) {
-                Location tmpblock = new Location(getWorld(), x, y, z);
+        if (material == Material.WATER_BUCKET) material = Material.WATER;
+        if (material == Material.LAVA_BUCKET) material = Material.LAVA;
+        int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int maxX = Math.max(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int minZ = Math.min(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int maxZ = Math.max(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int minY = Math.min(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
+        for (int x = minX; x <= maxX; x += 1) {
+            for (int z = minZ; z <= maxZ; z += 1) {
+                Location tmpblock = new Location(getWorld(), x, minY, z);
                 tmpblock.getBlock().setType(material);
             }
         }
@@ -259,25 +256,22 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public void changeFloor(ItemStack item){
         Material m = item.getType();
-        if (item.getType() == Material.WATER_BUCKET)
-            m = Material.WATER;
-        if (item.getType() == Material.LAVA_BUCKET)
-            m = Material.LAVA;
-        double y = 0;
-        if (getMinPoint().getBlockY() > getMaxPoint().getBlockY()) {
-            y = getMaxPoint().getBlockY() - 1;
-        } else {
-            y = getMinPoint().getBlockY();
-        }
-        for (int x = getMinPoint().getBlockX(); x <= getMaxPoint().getBlockX(); x += 1) {
-            for (int z = getMinPoint().getBlockZ(); z <= getMaxPoint().getBlockZ(); z += 1) {
-                Location tmpblock = new Location(getWorld(), x, y, z);
+        if (item.getType() == Material.WATER_BUCKET) m = Material.WATER;
+        if (item.getType() == Material.LAVA_BUCKET) m = Material.LAVA;
+        int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int maxX = Math.max(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
+        int minZ = Math.min(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int maxZ = Math.max(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
+        int minY = Math.min(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
+        for (int x = minX; x <= maxX; x += 1) {
+            for (int z = minZ; z <= maxZ; z += 1) {
+                Location tmpblock = new Location(getWorld(), x, minY, z);
                 tmpblock.getBlock().setType(m);
             }
         }
     }
 
-    public boolean isInPlotRange(Location location, int added){
+    public boolean isInPlotRange(Location location, int added) {
         boolean trueOrNot = false;
         if (location.getWorld().equals(getMinPoint().getWorld()) && location.getWorld().equals(getMaxPoint().getWorld())) {
             if (location.getBlockX() >= getMinPoint().getBlockX()-added && location.getBlockX() <= getMaxPoint().getBlockX()+added){

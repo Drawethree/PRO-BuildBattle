@@ -27,7 +27,7 @@ public class GameManager {
     private static List<String> restricedBlocks = new ArrayList<>();
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
-    private static Material defaultFloorMaterial = Material.GRASS;
+    private static Material defaultFloorMaterial = Material.BIRCH_PLANKS;
     private static String prefix = "&8[&eBuildBattlePro&8]&r";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
@@ -740,7 +740,7 @@ public class GameManager {
     }
 
     public void loadDefaultFloorMaterial() {
-        setDefaultFloorMaterial(Material.matchMaterial(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
+        setDefaultFloorMaterial(Material.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
     }
 
     public void loadThemes() {

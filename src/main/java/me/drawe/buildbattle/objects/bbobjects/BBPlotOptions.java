@@ -96,6 +96,26 @@ public class BBPlotOptions {
         if (m == Material.CACTUS
                 || m == Material.STONE_BUTTON
                 || m.name().contains("BUTTON")
+                || m == Material.LADDER
+                || m.name().contains("SAPLING")
+                || m == Material.SEA_PICKLE
+                || m == Material.GRASS
+                || m == Material.FERN
+                || m == Material.DEAD_BUSH
+                || m == Material.SEAGRASS
+                || m == Material.BLUE_ORCHID
+                || m == Material.ALLIUM
+                || m == Material.END_ROD
+                || m == Material.LILAC
+                || m == Material.PEONY
+                || m == Material.ROSE_BUSH
+                || m == Material.TALL_GRASS
+                || m == Material.LARGE_FERN
+                || m == Material.PAINTING
+                || m.name().contains("TULIP")
+                || m.name().contains("GATE")
+                || m.name().contains("PRESSURE")
+                || m == Material.LILY_PAD
                 || m == Material.LEVER
                 || m == Material.POPPY
                 || m == Material.DANDELION

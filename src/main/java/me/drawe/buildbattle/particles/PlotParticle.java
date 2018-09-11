@@ -38,7 +38,8 @@ public class PlotParticle {
 
             @Override
             public void run() {
-                getParticle().getEffect().display((float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),1F,GameManager.getAmountParticleToSpawn(), getLocation(),getPlot().getArena().getPlayers());
+                getLocation().getWorld().spawnParticle(particle.getEffect(),location,GameManager.getAmountParticleToSpawn(),GameManager.getParticleOffset(),GameManager.getParticleOffset(),GameManager.getParticleOffset());
+                //getParticle().getEffect().display((float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),1F,GameManager.getAmountParticleToSpawn(), getLocation(),getPlot().getArena().getPlayers());
             }
         }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) GameManager.getParticleRefreshTime()*20L);
     }

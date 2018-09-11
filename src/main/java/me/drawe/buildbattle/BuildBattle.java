@@ -82,6 +82,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             public void run() {
                 Bukkit.getConsoleSender().sendMessage("");
                 Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion() + " - For Spigot 1.13+"));
+                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§cReport features are under maintenance !"));
                 Bukkit.getConsoleSender().sendMessage("");
                 GameManager.getInstance().loadArenaPreferences();
                 setupConfigPreferences();
@@ -100,7 +101,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                 GameManager.getInstance().loadRestrictedBlocks();
                 ArenaManager.getInstance().loadArenas();
                 ArenaManager.getInstance().loadArenaEditors();
-                ReportManager.getInstance().loadAllReports();
                 if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
                 if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
 
@@ -157,7 +157,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             }
             LeaderboardManager.getInstance().loadAllLeaderboards();
         }
-        ReportManager.getInstance().loadAllReports();
     }
 
     private void registerMvdWPlaceholders() {

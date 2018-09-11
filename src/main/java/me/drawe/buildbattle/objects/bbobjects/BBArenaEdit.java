@@ -30,7 +30,7 @@ public class BBArenaEdit {
         this.gameMode = arena.getGameType();
         this.teamSize = arena.getTeamSize();
         this.gameTime = arena.getGameTime();
-        this.arenaEditItemStack = ItemCreator.create(Material.BRICK, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
+        this.arenaEditItemStack = ItemCreator.create(Material.BRICKS, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
         this.minPlayersItem = ItemCreator.create(Material.PAPER, 1, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
         this.gameModeItem = ItemCreator.create(Material.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"), null,null);
         this.teamSizeItem = ItemCreator.create(Material.PAPER, 1, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
