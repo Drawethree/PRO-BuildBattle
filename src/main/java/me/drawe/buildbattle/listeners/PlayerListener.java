@@ -279,6 +279,7 @@ public class PlayerListener implements Listener {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (p.hasPermission("buildbattlepro.changefloor")) {
                                         plot.getOptions().setCurrentFloorItem(e.getCursor());
+                                        e.setCursor(null);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                     }

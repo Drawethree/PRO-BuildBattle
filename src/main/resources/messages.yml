@@ -351,6 +351,18 @@ gui:
         displayname: "&aTaiga"
         lore:
         - "&7Click to set biome to Taiga"
+      river:
+        displayname: "&aRiver"
+        lore:
+        - "&7Click to set biome to River"
+      mushroom:
+        displayname: "&aMushroom"
+        lore:
+        - "&7Click to set biome to Mushroom"
+      warm_ocean:
+        displayname: "&aWarm Ocean"
+        lore:
+        - "&7Click to set biome to Warn Ocean"
   time:
     title: "BuildBattle - Time"
     items:

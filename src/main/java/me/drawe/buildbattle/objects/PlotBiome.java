@@ -17,11 +17,16 @@ public enum PlotBiome {
     SWAMP("Swamp", Biome.SWAMP, ItemCreator.create(Material.LILY_PAD, 1, Message.GUI_BIOMES_SWAMP_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.swamp.lore")), null, null), 6),
     SAVANNA("Savanna", Biome.SAVANNA, ItemCreator.create(Material.ACACIA_LOG, 1, Message.GUI_BIOMES_SAVANNA_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.savanna.lore")), null, null), 7),
     BEACH("Beach", Biome.BEACH, ItemCreator.create(Material.SAND, 1, Message.GUI_BIOMES_BEACH_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.beach.lore")), null, null), 8),
-    ICE_SPIKES("Ice Spikes", Biome.ICE_SPIKES, ItemCreator.create(Material.FROSTED_ICE, 1, Message.GUI_BIOMES_ICE_SPIKES_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.ice_spikes.lore")), null, null), 9),
+    ICE_SPIKES("Ice Spikes", Biome.ICE_SPIKES, ItemCreator.create(Material.PACKED_ICE, 1, Message.GUI_BIOMES_ICE_SPIKES_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.ice_spikes.lore")), null, null), 9),
     NETHER("Nether", Biome.NETHER, ItemCreator.create(Material.NETHER_BRICKS, 1, Message.GUI_BIOMES_NETHER_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.nether.lore")), null, null), 10),
     THE_END("The End", Biome.THE_END, ItemCreator.create(Material.DRAGON_EGG, 1, Message.GUI_BIOMES_THE_END_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.the_end.lore")), null, null), 11),
     MOUNTAINS("Mountains", Biome.MOUNTAINS, ItemCreator.create(Material.STONE, 1, Message.GUI_BIOMES_MOUNTAINS_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.mountains.lore")), null, null), 12),
     TAIGA("Taiga", Biome.TAIGA, ItemCreator.create(Material.SPRUCE_LOG, 1, Message.GUI_BIOMES_TAIGA_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.taiga.lore")), null, null), 13),
+    RIVER("River", Biome.RIVER, ItemCreator.create(Material.WATER_BUCKET, 1, Message.GUI_BIOMES_RIVER_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.river.lore")), null, null), 14),
+    MUSHROOM("Mushroom Fields", Biome.MUSHROOM_FIELDS, ItemCreator.create(Material.RED_MUSHROOM, 1, Message.GUI_BIOMES_MUSHROOM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.mushroom.lore")), null, null), 15),
+    WARM_OCEAN("Warm Ocean", Biome.WARM_OCEAN, ItemCreator.create(Material.TUBE_CORAL, 1, Message.GUI_BIOMES_WARM_OCEAN_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.warm_ocean.lore")), null, null), 13),
+
+
     ;
 
     private String name;

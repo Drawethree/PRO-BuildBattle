@@ -244,7 +244,10 @@ public enum Message {
     GUI_BIOMES_NETHER_DISPLAYNAME("gui.biomes.items.nether.displayname"),
     GUI_BIOMES_THE_END_DISPLAYNAME("gui.biomes.items.the_end.displayname"),
     GUI_BIOMES_MOUNTAINS_DISPLAYNAME("gui.biomes.items.mountains.displayname"),
-    GUI_BIOMES_TAIGA_DISPLAYNAME("gui.biomes.items.taiga.displayname");
+    GUI_BIOMES_TAIGA_DISPLAYNAME("gui.biomes.items.taiga.displayname"),
+    GUI_BIOMES_RIVER_DISPLAYNAME("gui.biomes.items.river.displayname"),
+    GUI_BIOMES_MUSHROOM_DISPLAYNAME("gui.biomes.items.mushroom.displayname"),
+    GUI_BIOMES_WARM_OCEAN_DISPLAYNAME("gui.biomes.items.warm_ocean.displayname");
 
     private String message;
 
