@@ -220,6 +220,8 @@ public enum Message {
     GUI_BIOMES_JUNGLE_DISPLAYNAME("gui.biomes.items.jungle.displayname"),
     GUI_BIOMES_SWAMP_DISPLAYNAME("gui.biomes.items.swamp.displayname"),
     GUI_BIOMES_SAVANNA_DISPLAYNAME("gui.biomes.items.savanna.displayname"),
+    GUI_BIOMES_BEACH_DISPLAYNAME("gui.biomes.items.beach.displayname"),
+    GUI_BIOMES_ICE_SPIKES_DISPLAYNAME("gui.biomes.items.ice_spikes.displayname"),
     GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME("gui.options.items.change_biome_item.displayname"),
     GUI_BIOMES_TITLE("gui.biomes.title"),
     ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME("gui.options.items.banner_creator_item.displayname"),
@@ -238,7 +240,11 @@ public enum Message {
     GUI_ARENA_LIST_TEAM_TITLE("gui.arena_list.team_title"),
     NOT_ENOUGH_SUPER_VOTES("messages.not_enough_super_votes"),
     THEME_WAS_SUPER_VOTED("messages.theme_was_super_voted"),
-    PARTY_CANT_INVITE_YOURSELF("messages.party_cant_invite_yourself");
+    PARTY_CANT_INVITE_YOURSELF("messages.party_cant_invite_yourself"),
+    GUI_BIOMES_NETHER_DISPLAYNAME("gui.biomes.items.nether.displayname"),
+    GUI_BIOMES_THE_END_DISPLAYNAME("gui.biomes.items.the_end.displayname"),
+    GUI_BIOMES_MOUNTAINS_DISPLAYNAME("gui.biomes.items.mountains.displayname"),
+    GUI_BIOMES_TAIGA_DISPLAYNAME("gui.biomes.items.taiga.displayname");
 
     private String message;
 

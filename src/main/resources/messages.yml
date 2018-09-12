@@ -327,6 +327,30 @@ gui:
         displayname: "&aSavanna"
         lore:
         - "&7Click to set biome to Savanna"
+      beach:
+        displayname: "&aBeach"
+        lore:
+        - "&7Click to set biome to Beach"
+      ice_spikes:
+        displayname: "&aIce Spikes"
+        lore:
+        - "&7Click to set biome to Ice Spikes"
+      nether:
+        displayname: "&aNether"
+        lore:
+        - "&7Click to set biome to Nether"
+      the_end:
+        displayname: "&aThe End"
+        lore:
+        - "&7Click to set biome to The End"
+      mountains:
+        displayname: "&aMountains"
+        lore:
+        - "&7Click to set biome to Mountains"
+      taiga:
+        displayname: "&aTaiga"
+        lore:
+        - "&7Click to set biome to Taiga"
   time:
     title: "BuildBattle - Time"
     items:

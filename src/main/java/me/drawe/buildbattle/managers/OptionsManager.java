@@ -52,7 +52,7 @@ public class OptionsManager {
     private static Inventory allArenasInventory = Bukkit.createInventory(null, ArenaManager.getInstance().getArenaListSize(), Message.GUI_ARENA_LIST_TITLE.getMessage());
     private static Inventory soloArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage());
     private static Inventory teamArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
-    private static Inventory biomesInventory = Bukkit.createInventory(null, 9, Message.GUI_BIOMES_TITLE.getMessage());
+    private static Inventory biomesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_BIOMES_TITLE.getMessage());
 
     public static ItemStack getOptionsItem() {
         return optionsItem;
@@ -265,7 +265,7 @@ public class OptionsManager {
         for(PlotBiome biome : PlotBiome.values()) {
             biomesInventory.setItem(biome.getSlot(), biome.getItem());
         }
-        biomesInventory.setItem(8, getBackItem());
+        biomesInventory.setItem(49, getBackItem());
     }
 
     private static ItemStack getArenaStatusItem(BBArena a) {
