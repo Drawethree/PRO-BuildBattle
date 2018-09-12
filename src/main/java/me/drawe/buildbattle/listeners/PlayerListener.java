@@ -279,6 +279,7 @@ public class PlayerListener implements Listener {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (p.hasPermission("buildbattlepro.changefloor")) {
                                         plot.getOptions().setCurrentFloorItem(e.getCursor());
+                                        inv.setItem(e.getSlot(), plot.getOptions().getCurrentFloorItem());
                                         e.setCursor(null);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -724,7 +725,6 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        System.out.println(e.getBlock().getType());
                         if (e.getBlock().getType() == Material.WHEAT_SEEDS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
                             if (GameManager.isAutomaticGrow()) {
                                 BlockData data = e.getBlock().getBlockData();
