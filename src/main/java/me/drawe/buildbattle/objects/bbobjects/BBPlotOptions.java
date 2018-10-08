@@ -5,6 +5,7 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.drawe.buildbattle.utils.ReflectionUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,9 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
-
-import static me.drawe.buildbattle.utils.ReflectionUtils.getNMSClass;
-import static me.drawe.buildbattle.utils.ReflectionUtils.sendPacket;
 
 
 public class BBPlotOptions {
@@ -140,10 +138,10 @@ public class BBPlotOptions {
         for(Chunk c : getPlot().getChunksInPlot()) {
             for (Player p : getPlot().getArena().getPlayers()) {
                 try {
-                    sendPacket(p, getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), boolean.class, int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), true, 65535));
+                    ReflectionUtils.sendPacket(p, ReflectionUtils.getNMSClass("PacketPlayOutMapChunk").getConstructor(ReflectionUtils.getNMSClass("Chunk"), boolean.class, int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), true, 65535));
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     try {
-                        sendPacket(p, getNMSClass("PacketPlayOutMapChunk").getConstructor(getNMSClass("Chunk"), int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), 65535));
+                        ReflectionUtils.sendPacket(p, ReflectionUtils.getNMSClass("PacketPlayOutMapChunk").getConstructor(ReflectionUtils.getNMSClass("Chunk"), int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), 65535));
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e1) {
                         e1.printStackTrace();
                     }
