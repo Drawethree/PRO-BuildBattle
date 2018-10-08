@@ -5,7 +5,6 @@ import me.drawe.buildbattle.managers.GameManager;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
-import java.util.Properties;
 
 
 public class MySQL {
@@ -28,7 +27,7 @@ public class MySQL {
         if(connection == null || connection.isClosed()) {
             Class.forName("com.mysql.jdbc.Driver");
             connection = (Connection) DriverManager.getConnection(
-                    "jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+                    "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true" , username, password);
         }
         return connection;
     }
