@@ -330,7 +330,7 @@ public class ArenaManager {
     }
 
     public boolean hasSelectionReady(Player p) {
-        return playerBBPos.get(p)[0] != null && playerBBPos.get(p)[1] != null;
+        return (playerBBPos.get(p) != null) && (playerBBPos.get(p)[0] != null) && (playerBBPos.get(p)[1] != null);
     }
 
     public int getMissingSelection(Player p) {
