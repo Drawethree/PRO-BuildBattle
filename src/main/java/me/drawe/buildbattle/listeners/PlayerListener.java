@@ -508,8 +508,12 @@ public class PlayerListener implements Listener {
                             e.setCancelled(true);
                             if (plot.isLocationInPlot(p.getLocation())) {
                                 BBParticle particle = BBParticle.getBBParticle(e.getItem());
-                                PlotParticle plotParticle = new PlotParticle(plot, particle, p.getLocation());
-                                plot.addActiveParticle(p, plotParticle);
+                                if(p.hasPermission(particle.getRequiredPermission())) {
+                                    PlotParticle plotParticle = new PlotParticle(plot, particle, p.getLocation());
+                                    plot.addActiveParticle(p, plotParticle);
+                                } else {
+                                    p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+                                }
                             } else {
                                 p.sendMessage(Message.CANT_PLACE_PARTICLE_OUTSIDE.getChatMessage());
                             }

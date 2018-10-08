@@ -25,6 +25,28 @@ permissions:
   buildbattlepro.create:
     description: Allows you to create BuildBattle arena and staff around it
     default: op
+  buildbattlepro.particle.*:
+    description: Allow to place all particles
+    default: op
+    children:
+      buildbattlepro.particle.heart: true
+      buildbattlepro.particle.happy: true
+      buildbattlepro.particle.angry: true
+      buildbattlepro.particle.lava: true
+      buildbattlepro.particle.water: true
+      buildbattlepro.particle.note: true
+      buildbattlepro.particle.glyph: true
+      buildbattlepro.particle.slime: true
+      buildbattlepro.particle.mobspawner: true
+      buildbattlepro.particle.explosion: true
+      buildbattlepro.particle.crit: true
+      buildbattlepro.particle.witch: true
+      buildbattlepro.particle.splash: true
+      buildbattlepro.particle.cloud: true
+      buildbattlepro.particle.portal: true
+      buildbattlepro.particle.firework: true
+      buildbattlepro.particle.redstone: true
+      buildbattlepro.particle.snowball: true
   buildbattlepro.admin:
     description: Allows you to reload plugin
     default: op
