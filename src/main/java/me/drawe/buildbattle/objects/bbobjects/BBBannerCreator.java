@@ -20,8 +20,8 @@ public class BBBannerCreator {
 
     public BBBannerCreator(Player p) {
         this.player = p;
-        this.createdBanner = ItemCreator.create(Material.BLACK_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(GameManager.getFinalBannerLore()), null,null);
-        this.selectedColor = DyeColor.BLACK;
+        this.createdBanner = ItemCreator.create(Material.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(GameManager.getFinalBannerLore()), null,null);
+        this.selectedColor = DyeColor.WHITE;
     }
 
     public Player getPlayer() {

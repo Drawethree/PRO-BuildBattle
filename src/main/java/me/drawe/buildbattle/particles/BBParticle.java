@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 public enum BBParticle {
 
-    HEART(Particle.HEART, "buildbattlepro.particle.heart", ItemCreator.create(Material.APPLE,1, "&aHearth particle", ItemCreator.makeLore("&7Right-Click to place."), null,null), 10),
+    HEART(Particle.HEART, "buildbattlepro.particle.heart", ItemCreator.create(Material.APPLE,1, "&aHeart particle", ItemCreator.makeLore("&7Right-Click to place."), null,null), 10),
     HAPPY(Particle.VILLAGER_HAPPY, "buildbattlepro.particle.happy", ItemCreator.create(Material.EMERALD,1, "&aHappy particle", ItemCreator.makeLore("&7Right-Click to place."), null,null), 11),
     ANGRY(Particle.VILLAGER_ANGRY, "buildbattlepro.particle.angry", ItemCreator.create(Material.BLAZE_POWDER,1, "&aAngry particle", ItemCreator.makeLore("&7Right-Click to place."), null,null), 12),
     DRIP_LAVA(Particle.DRIP_LAVA, "buildbattlepro.particle.lava", ItemCreator.create(Material.LAVA_BUCKET,1, "&aDrip Lava particle", ItemCreator.makeLore("&7Right-Click to place."), null,null), 13),
