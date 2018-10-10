@@ -470,9 +470,9 @@ public class BBArena {
                         if (timeLeft >= 1)
                             PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time((int) timeLeft, TimeUnit.SECONDS).toString()));
                     }
-                    timeLeft -= 0.5;
+                    timeLeft -= 1;
                 }
-            }.runTaskTimer(BuildBattle.getInstance(), 100L, 10L);
+            }.runTaskTimer(BuildBattle.getInstance(), 100L, 20L);
         }
     }
 

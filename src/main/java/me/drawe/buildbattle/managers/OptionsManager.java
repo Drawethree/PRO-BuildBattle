@@ -239,6 +239,7 @@ public class OptionsManager {
             ItemStack item = time.getItem().clone();
             if (time == plot.getOptions().getCurrentTime()) {
                 item.setType(Material.LIME_TERRACOTTA);
+                //ItemCreator.addGlowEffect(item);
             }
             timeInv.setItem(time.getSlot(), item);
         }
