@@ -1,15 +1,8 @@
 package me.drawe.buildbattle.managers;
 
-import com.sk89q.worldedit.*;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.events.BBReportEvent;
 import me.drawe.buildbattle.objects.GuiItem;
-import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +80,7 @@ public class ReportManager {
     }
 
 
-    public boolean attemptReport(BBPlot reportedPlot, Player whoReported) {
+    /*public boolean attemptReport(BBPlot reportedPlot, Player whoReported) {
         if(reportedPlot.getTeam().getPlayers().contains(whoReported)) {
             whoReported.sendMessage(Message.CANNOT_REPORT_YOURSELF.getChatMessage());
             return false;
@@ -98,9 +90,9 @@ public class ReportManager {
         } else {
             return createReport(reportedPlot,whoReported);
         }
-    }
+    }*/
 
-    public boolean createReport(BBPlot reportedPlot, Player whoReported) {
+    /*public boolean createReport(BBPlot reportedPlot, Player whoReported) {
         String reportID = generateReportID(whoReported);
         List<UUID> reportedPlayers = new ArrayList<>();
         reportedPlot.getTeam().getPlayers().forEach(p-> reportedPlayers.add(p.getUniqueId()));
@@ -118,9 +110,9 @@ public class ReportManager {
             whoReported.sendMessage(Message.REPORT_FAILED.getChatMessage());
         }
         return false;
-    }
+    }*/
 
-    public static File createSchematic(Player player, String reportID, BBPlot plot) {
+    /*public static File createSchematic(Player player, String reportID, BBPlot plot) {
         try {
             File dir = new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName);
             File schematic = new File(dir, reportID + ".schematic");
@@ -147,7 +139,7 @@ public class ReportManager {
             ex.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public boolean existsReport(int id) {
         for(BBBuildReport report : buildReports) {

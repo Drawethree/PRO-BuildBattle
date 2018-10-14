@@ -109,11 +109,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>6.1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
             <version>LATEST</version>
