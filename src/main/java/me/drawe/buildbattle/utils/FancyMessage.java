@@ -144,7 +144,7 @@ public class FancyMessage {
         boolean isBold = false;
 
         for(char c : message.toCharArray()){
-            if(c == '§'){
+            if(c == ChatColor.COLOR_CHAR){
                 previousCode = true;
                 continue;
             }else if(previousCode == true){
@@ -181,7 +181,7 @@ public class FancyMessage {
         boolean isBold = false;
 
         for(char c : message.toCharArray()){
-            if(c == '§'){
+            if(c == ChatColor.COLOR_CHAR){
                 previousCode = true;
                 continue;
             }else if(previousCode == true){
@@ -218,7 +218,7 @@ public class FancyMessage {
         boolean isBold = false;
 
         for(char c : message.toCharArray()){
-            if(c == '§'){
+            if(c == ChatColor.COLOR_CHAR){
                 previousCode = true;
                 continue;
             }else if(previousCode == true){

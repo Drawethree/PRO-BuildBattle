@@ -10,6 +10,10 @@ public class BBGameStartEvent extends Event {
 
     private BBArena arena;
 
+    /**
+     * Called when game starts
+     * @param arena Arena that started
+     */
     public BBGameStartEvent(BBArena arena){
         this.arena = arena;
     }

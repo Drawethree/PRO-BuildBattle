@@ -17,6 +17,13 @@ public class BBReportEvent extends Event {
     private String schematicName;
 
 
+    /**
+     * Called when build report was successfully submitted
+     * @param reporter Player who reported
+     * @param reportedPlayers Players that were reported
+     * @param reportedPlot Plot that was reported
+     * @param schematicName Schematic file name that was created
+     */
     public BBReportEvent(Player reporter, List<Player> reportedPlayers, BBPlot reportedPlot, String schematicName) {
         this.reporter = reporter;
         this.reportedPlayers = reportedPlayers;

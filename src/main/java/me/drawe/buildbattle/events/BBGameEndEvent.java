@@ -12,6 +12,11 @@ public class BBGameEndEvent extends Event {
     private BBArena arena;
     private BBTeam winner;
 
+    /**
+     * Called when game ends
+     * @param arena Arena that ended
+     * @param winner Team that won
+     */
     public BBGameEndEvent(BBArena arena, BBTeam winner) {
         this.arena = arena;
         this.winner = winner;
