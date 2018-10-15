@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.particles;
+package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.utils.ItemCreator;
 import org.bukkit.Material;

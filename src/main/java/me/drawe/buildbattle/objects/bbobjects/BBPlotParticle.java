@@ -1,20 +1,19 @@
-package me.drawe.buildbattle.particles;
+package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class PlotParticle {
+public class BBPlotParticle {
 
     private BBPlot plot;
     private BBParticle particle;
     private Location location;
     private BukkitTask showParticleTask;
 
-    public PlotParticle(BBPlot plot, BBParticle particle, Location loc){
+    public BBPlotParticle(BBPlot plot, BBParticle particle, Location loc){
         this.particle = particle;
         this.plot = plot;
         this.location = loc;

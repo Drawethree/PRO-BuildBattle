@@ -4,8 +4,6 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.bbobjects.*;
-import me.drawe.buildbattle.particles.BBParticle;
-import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.StringUtils;
 import org.bukkit.Bukkit;
@@ -299,13 +297,13 @@ public class OptionsManager {
 
     public void openActiveParticlesMenu(Player p, BBPlot plot) {
         Inventory inv = Bukkit.createInventory(null, 5*9,Message.GUI_PARTICLE_LIST_TITLE.getMessage());
-        for(PlotParticle particle : plot.getParticles()) {
+        for(BBPlotParticle particle : plot.getParticles()) {
             inv.addItem(getActiveParticleItemStack(particle));
         }
         p.openInventory(inv);
     }
 
-    public ItemStack getActiveParticleItemStack(PlotParticle particle) {
+    public ItemStack getActiveParticleItemStack(BBPlotParticle particle) {
         return ItemCreator.create(particle.getParticle().getItemStack().getType(), 1, particle.getParticle().getItemStack().getItemMeta().getDisplayName(), ItemCreator.makeLore(
                 Message.GUI_PARTICLE_LIST_ITEMS_LOCATION.getMessage(),
                 " &7X: " + particle.getLocation().getBlockX(),
@@ -315,8 +313,8 @@ public class OptionsManager {
                 Message.GUI_PARTICLE_LIST_ITEMS_CLICK_TO_REMOVE.getMessage()), null,null);
     }
 
-    public PlotParticle getPlotParticleFromLore(BBPlot plot, List<String> lore) {
-        for(PlotParticle particle : plot.getParticles()) {
+    public BBPlotParticle getPlotParticleFromLore(BBPlot plot, List<String> lore) {
+        for(BBPlotParticle particle : plot.getParticles()) {
             Location pLoc = particle.getLocation();
             int x = Integer.parseInt(lore.get(1).replaceAll(" §7X: ", ""));
             int y = Integer.parseInt(lore.get(2).replaceAll(" §7Y: ", ""));

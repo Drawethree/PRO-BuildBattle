@@ -5,7 +5,6 @@ import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
-import me.drawe.buildbattle.particles.PlotParticle;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -23,7 +22,7 @@ public class BBPlot implements Comparable<BBPlot> {
     private BBPlotOptions options;
     private int votePoints;
     private HashMap<Player, Integer> votedPlayers;
-    private List<PlotParticle> particles;
+    private List<BBPlotParticle> particles;
     private List<Location> blocksInPlot;
     private List<Chunk> chunksInPlot;
     private UUID reportedBy;
@@ -297,18 +296,18 @@ public class BBPlot implements Comparable<BBPlot> {
         return getMinPoint().getBlock().getType();
     }
 
-    public List<PlotParticle> getParticles() {
+    public List<BBPlotParticle> getParticles() {
         return particles;
     }
 
-    public void setParticles(List<PlotParticle> particles) {
+    public void setParticles(List<BBPlotParticle> particles) {
         this.particles = particles;
     }
 
-    public void addActiveParticle(Player placer,PlotParticle plotParticle) {
+    public void addActiveParticle(Player placer,BBPlotParticle BBPlotParticle) {
         if(getParticles().size() != GameManager.getMaxParticlesPerPlayer()) {
-            getParticles().add(plotParticle);
-            plotParticle.start();
+            getParticles().add(BBPlotParticle);
+            BBPlotParticle.start();
             BBPlayerStats stats = PlayerManager.getInstance().getPlayerStats(placer);
             if(stats != null) {
                 stats.setParticlesPlaced(stats.getParticlesPlaced() + 1);
@@ -318,16 +317,16 @@ public class BBPlot implements Comparable<BBPlot> {
         }
     }
 
-    public void removeActiveParticle(PlotParticle plotParticle) {
-        getParticles().remove(plotParticle);
-        plotParticle.stop();
+    public void removeActiveParticle(BBPlotParticle BBPlotParticle) {
+        getParticles().remove(BBPlotParticle);
+        BBPlotParticle.stop();
         getTeam().getCaptain().sendMessage(Message.PARTICLE_REMOVED.getChatMessage());
     }
 
     public void removeAllParticles() {
         Iterator it = getParticles().iterator();
         while(it.hasNext()) {
-            PlotParticle particle = (PlotParticle) it.next();
+            BBPlotParticle particle = (BBPlotParticle) it.next();
             particle.stop();
             it.remove();
         }

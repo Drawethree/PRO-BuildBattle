@@ -8,8 +8,6 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
-import me.drawe.buildbattle.particles.BBParticle;
-import me.drawe.buildbattle.particles.PlotParticle;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
@@ -352,7 +350,7 @@ public class PlayerListener implements Listener {
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().hasLore()) {
-                                PlotParticle particle = OptionsManager.getInstance().getPlotParticleFromLore(plot, e.getCurrentItem().getItemMeta().getLore());
+                                BBPlotParticle particle = OptionsManager.getInstance().getPlotParticleFromLore(plot, e.getCurrentItem().getItemMeta().getLore());
                                 if (particle != null) {
                                     plot.removeActiveParticle(particle);
                                     if (e.getCurrentItem().getAmount() == 1) {
@@ -509,8 +507,8 @@ public class PlayerListener implements Listener {
                             if (plot.isLocationInPlot(p.getLocation())) {
                                 BBParticle particle = BBParticle.getBBParticle(e.getItem());
                                 if(p.hasPermission(particle.getRequiredPermission())) {
-                                    PlotParticle plotParticle = new PlotParticle(plot, particle, p.getLocation());
-                                    plot.addActiveParticle(p, plotParticle);
+                                    BBPlotParticle BBPlotParticle = new BBPlotParticle(plot, particle, p.getLocation());
+                                    plot.addActiveParticle(p, BBPlotParticle);
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                 }
