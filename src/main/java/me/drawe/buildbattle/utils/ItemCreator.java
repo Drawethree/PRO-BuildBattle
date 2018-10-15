@@ -93,10 +93,10 @@ public class ItemCreator {
         return lore;
     }
 
-    public static List<String> convertThemeLore(BBTheme theme, List<String> list) {
+    public static List<String> convertThemeLore(BBTheme theme, List<String> list, int timeLeft) {
         List<String> lore = new ArrayList<>();
         for(String s : list) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%theme_percentage%", String.valueOf(theme.getPercentage())));
+            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%theme_percentage%", String.valueOf(theme.getPercentage())).replaceAll("%time_left%", String.valueOf(timeLeft)));
         }
         return lore;
     }

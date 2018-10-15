@@ -31,7 +31,7 @@ public class BBThemeVoting {
         voteInventory = Bukkit.createInventory(null, GameManager.getThemesToVote()*9, Message.GUI_THEME_VOTING_TITLE.getMessage());
         this.winner = null;
         for(BBTheme theme : getThemesVoted()) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore()) , null,null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
             voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(Material.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
         }
     }
@@ -42,7 +42,7 @@ public class BBThemeVoting {
 
     public void resetInventory() {
         for(BBTheme theme : getThemesVoted()) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore()) , null,null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
             voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(Material.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
         }
     }
@@ -92,7 +92,7 @@ public class BBThemeVoting {
         p.openInventory(openInv);
     }
 
-    public void updateVoting() {
+    public void updateVoting(int timeLeft) {
         for(BBTheme theme : getThemesVoted()) {
             if(getVotedPlayers().size() == 0) {
                 theme.setPercentage(0);
@@ -103,7 +103,7 @@ public class BBThemeVoting {
             }
             ItemStack themeItem = voteInventory.getItem(theme.getSlotInInventory());
             ItemMeta meta = themeItem.getItemMeta();
-            meta.setLore(ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore()));
+            meta.setLore(ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), timeLeft));
             themeItem.setItemMeta(meta);
 
             int numberOfGreens = 0;

@@ -237,6 +237,7 @@ gui:
       - "&7Question: What Theme?"
       - "&7Answer: &b%theme%"
       - ""
+      - "&7Time Left: &c%time_left%s"
       - "&7Current Votes: &e%theme_percentage%%"
   options:
     title: "BuildBattle - Plot Options"

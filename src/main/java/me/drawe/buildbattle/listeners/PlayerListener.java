@@ -245,7 +245,7 @@ public class PlayerListener implements Listener {
                                         }
                                         a.getThemeVoting().getVotedPlayers().put(p, selectedTheme);
                                         selectedTheme.setVotes(selectedTheme.getVotes() + 1);
-                                        a.getThemeVoting().updateVoting();
+                                        //a.getThemeVoting().updateVoting();
                                     }
                                 }
                             }

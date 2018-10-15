@@ -271,14 +271,21 @@ public class BBArena {
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         setPlotsToTeams();
         PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
-        getThemeVoting().updateVoting();
+        //getThemeVoting().updateVoting();
         themeVotingCountdown = new BukkitRunnable() {
+            int countdown = (int) GameManager.getThemeVotingTime();
             @Override
             public void run() {
-                getThemeVoting().setWinner();
-                startGame();
+                if(countdown == 0) {
+                    getThemeVoting().setWinner();
+                    startGame();
+                    cancel();
+                } else {
+                    getThemeVoting().updateVoting(countdown);
+                    countdown--;
+                }
             }
-        }.runTaskLater(BuildBattle.getInstance(), (long) (GameManager.getThemeVotingTime() * 20L));
+        }.runTaskTimer(BuildBattle.getInstance(), 20L, 20L);
     }
 
     public void resetAllScoreboards() {
@@ -781,7 +788,8 @@ public class BBArena {
     }
 
     public void calculateResults() {
-        if (GameManager.isFairVote()) VotingManager.getInstance().checkVotes(this);
+        if (GameManager.isFairVote())
+            VotingManager.getInstance().checkVotes(this);
         Collections.sort(getVotingPlots());
         Collections.reverse(getVotingPlots());
         setWinner(getVotingPlots().get(0));
