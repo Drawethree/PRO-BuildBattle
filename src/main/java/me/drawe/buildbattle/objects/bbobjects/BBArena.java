@@ -266,7 +266,6 @@ public class BBArena {
 
     public void startThemeVoting() {
         setBBArenaState(BBArenaState.THEME_VOTING);
-        updateAllScoreboards(0);
         updateAllSigns();
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
         setPlotsToTeams();
@@ -276,6 +275,7 @@ public class BBArena {
             int countdown = (int) GameManager.getThemeVotingTime();
             @Override
             public void run() {
+                updateAllScoreboards(countdown);
                 if(countdown == 0) {
                     getThemeVoting().setWinner();
                     startGame();
