@@ -2,9 +2,12 @@ package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
@@ -183,5 +186,15 @@ public class LocationUtil {
             face = ((Attachable) m).getAttachedFace();
         }
         return b.getRelative(face);
+    }
+
+    public static NPC getClosestNPC(Player p) {
+        for(Entity e : p.getNearbyEntities(5,5,5)) {
+            NPC n = CitizensAPI.getNPCRegistry().getNPC(e);
+            if(n != null) {
+                return n;
+            }
+        }
+        return null;
     }
 }

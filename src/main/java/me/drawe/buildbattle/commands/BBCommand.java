@@ -92,6 +92,9 @@ public class BBCommand implements CommandExecutor {
                     case "addnpc":
                         addFloorNPC(sender,args);
                         break;
+                    case "delnpc":
+                        delFloorNPC(sender,args);
+                        break;
                     case "party":
                         partySubCommand(sender,args);
                         break;
@@ -120,6 +123,31 @@ public class BBCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    private void delFloorNPC(CommandSender sender, String[] args) {
+        if(BuildBattle.getInstance().isUseCitizens()) {
+            if (sender.hasPermission("buildbattlepro.setup")) {
+                if (args.length == 1) {
+                    if (sender instanceof Player) {
+                        Player p = (Player) sender;
+                        NPC npc = LocationUtil.getClosestNPC(p);
+                        if(npc != null) {
+                            npc.destroy();
+                            p.sendMessage(GameManager.getPrefix() + " §aChange floor NPC removed!");
+                        } else {
+                            p.sendMessage(GameManager.getPrefix() + " §cThere is no NPC close to your location!");
+                        }
+                    }
+                } else {
+                    sender.sendMessage("§cUsage >> §e/bb delnpc §8| §7Delete closest Change floor NPC");
+                }
+            } else {
+                sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            }
+        } else {
+            sender.sendMessage(GameManager.getPrefix() + " §cCitizens plugin is not loaded!");
+        }
     }
 
     private void setPos(CommandSender sender, int pos) {
@@ -309,6 +337,8 @@ public class BBCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage("§cUsage >> §e/bb addnpc §8| §7Create Change floor NPC at your location");
                 }
+            } else {
+                sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         } else {
             sender.sendMessage(GameManager.getPrefix() + " §cCitizens plugin is not loaded!");
