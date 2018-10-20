@@ -2,13 +2,11 @@ package me.drawe.buildbattle.leaderboards;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.object.NamedHologramManager;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.LeaderboardManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.utils.LocationUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,6 +39,10 @@ public class Leaderboard {
             updateTask = new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(hologram == null) {
+                        cancel();
+                        return;
+                    }
                     hologram.clearLines();
                     hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
                     ArrayList<BBPlayerStats> sortedStats = new ArrayList<>(PlayerManager.getPlayerStats());
