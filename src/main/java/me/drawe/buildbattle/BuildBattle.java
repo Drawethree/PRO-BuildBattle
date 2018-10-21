@@ -79,7 +79,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             @Override
             public void run() {
                 Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion() + " - For Spigot 1.13+"));
+                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
                 Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§cReport features are under maintenance !"));
                 Bukkit.getConsoleSender().sendMessage("");
                 GameManager.getInstance().loadArenaPreferences();
@@ -291,7 +291,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private void loadWorldEdit() {
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (worldEdit == null) {
-            BuildBattle.warning("§cWorldEdit dependency not found ! Many features may not work !");
+            BuildBattle.warning("§cWorldEdit dependency not found ! Some features may not work !");
         }
     }
 

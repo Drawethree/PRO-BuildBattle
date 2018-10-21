@@ -5,7 +5,10 @@ import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -741,7 +744,7 @@ public class GameManager {
     }
 
     public void loadDefaultFloorMaterial() {
-        setDefaultFloorMaterial(CompMaterial.fromMaterial(Material.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"))));
+        setDefaultFloorMaterial(CompMaterial.fromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
     }
 
     public void loadThemes() {

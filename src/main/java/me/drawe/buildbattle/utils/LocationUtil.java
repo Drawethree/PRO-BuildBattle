@@ -3,7 +3,6 @@ package me.drawe.buildbattle.utils;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import me.kangarko.compatbridge.model.CompMaterial;
-import me.kangarko.compatbridge.model.CompatBridge;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -160,7 +159,9 @@ public class LocationUtil {
                     cancel();
                 } else {
                     for(Location l : getHollowCube(l1, l2)) {
-                        p.spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
+                        if(Bukkit.getVersion().contains("1.12") || Bukkit.getVersion().contains("1.13")) {
+                            p.spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
+                        }
                     }
                 }
                 count = count + 1;

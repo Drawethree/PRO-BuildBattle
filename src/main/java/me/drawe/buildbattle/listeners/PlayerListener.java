@@ -13,14 +13,13 @@ import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
 import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.model.CompSound;
+import me.kangarko.compatbridge.model.CompatBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -730,12 +729,13 @@ public class PlayerListener implements Listener {
                     if (plot != null && plot.isLocationInPlot(loc)) {
                         if (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial()) {
                             if (GameManager.isAutomaticGrow()) {
-                                BlockData data = e.getBlock().getBlockData();
+                                CompatBridge.setData(e.getBlock(), (byte) 4);
+                                /*BlockData data = e.getBlock().getBlockData();
                                 if (data instanceof Ageable) {
                                     Ageable agData = (Ageable) data;
                                     agData.setAge(agData.getMaximumAge());
                                     e.getBlock().setBlockData(agData);
-                                }
+                                }*/
                             }
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {

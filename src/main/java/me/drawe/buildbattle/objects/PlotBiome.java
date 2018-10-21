@@ -3,7 +3,6 @@ package me.drawe.buildbattle.objects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,10 +24,7 @@ public enum PlotBiome {
     TAIGA("Taiga", Biome.TAIGA, ItemCreator.create(CompMaterial.SPRUCE_LOG, 1, Message.GUI_BIOMES_TAIGA_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.taiga.lore")), null, null), 13),
     RIVER("River", Biome.RIVER, ItemCreator.create(CompMaterial.WATER_BUCKET, 1, Message.GUI_BIOMES_RIVER_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.river.lore")), null, null), 14),
     MUSHROOM("Mushroom Fields", Biome.MUSHROOM_FIELDS, ItemCreator.create(CompMaterial.RED_MUSHROOM, 1, Message.GUI_BIOMES_MUSHROOM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.mushroom.lore")), null, null), 15),
-    WARM_OCEAN("Warm Ocean", Biome.WARM_OCEAN, ItemCreator.create(CompMaterial.TUBE_CORAL, 1, Message.GUI_BIOMES_WARM_OCEAN_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.warm_ocean.lore")), null, null), 13),
-
-
-    ;
+    WARM_OCEAN("Warm Ocean", Biome.WARM_OCEAN, ItemCreator.create(CompMaterial.TUBE_CORAL, 1, Message.GUI_BIOMES_WARM_OCEAN_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.biomes.items.warm_ocean.lore")), null, null), 13);
 
     private String name;
     private Biome biome;

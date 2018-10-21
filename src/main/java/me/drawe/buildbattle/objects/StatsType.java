@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.objects;
 
 public enum StatsType {
+
     FLATFILE("Stats will be saved and loaded from stats.yml"),
     MYSQL("Stats will be saved and loaded from MySQL database");
 
