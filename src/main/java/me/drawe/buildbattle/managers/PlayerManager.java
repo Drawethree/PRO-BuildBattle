@@ -2,7 +2,9 @@ package me.drawe.buildbattle.managers;
 
 import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.*;
+import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.PlayerData;
+import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import net.md_5.bungee.api.ChatMessageType;
@@ -13,14 +15,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.*;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerManager {
     private static PlayerManager ourInstance = new PlayerManager();
@@ -110,11 +107,6 @@ public class PlayerManager {
         }
     }
 
-    public void sendTitleToAllPlayersInArena(BBArena a, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
-        for(Player p : a.getPlayers()) {
-            p.sendTitle(title,subTitle, fadeIn, stay, fadeOut);
-        }
-    }
 
     public BBArena getPlayerArena(Player p) {
         for(BBArena arena : ArenaManager.getArenas()) {
