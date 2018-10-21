@@ -12,9 +12,9 @@ import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
 import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.model.CompSound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -127,29 +127,29 @@ public class PlayerListener implements Listener {
                             if (currentEdit.editGameMode()) {
                                 p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getGameTimeItem())) {
                             if (currentEdit.editGameTime(e.getClick())) {
                                 p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getMinPlayersItem())) {
                             if (currentEdit.editMinPlayers(e.getClick())) {
                                 p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
                             if (currentEdit.editTeamSize(e.getClick())) {
                                 p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), Sounds.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(OptionsManager.getSaveItem())) {
                             currentEdit.saveOptions();
-                            p.playSound(p.getLocation(), Sounds.LEVEL_UP.getSound(), 1.0F, 1.0F);
+                            p.playSound(p.getLocation(), CompSound.ENTITY_PLAYER_LEVELUP.getSound(), 1.0F, 1.0F);
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
                         } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
@@ -429,7 +429,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    BBDyeColor dc = BBDyeColor.getByMaterial(CompMaterial.fromMaterial(e.getCurrentItem().getType()));
+                                    BBDyeColor dc = BBDyeColor.getByItem(e.getCurrentItem());
                                     if(dc != null) {
                                         bannerCreator.selectColor(dc.getColor());
                                         return;

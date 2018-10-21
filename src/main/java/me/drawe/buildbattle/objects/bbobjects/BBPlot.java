@@ -6,7 +6,11 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.*;
+import me.kangarko.compatbridge.model.CompatBridge;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.WeatherType;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -249,7 +253,8 @@ public class BBPlot implements Comparable<BBPlot> {
         for (int x = minX; x <= maxX; x += 1) {
             for (int z = minZ; z <= maxZ; z += 1) {
                 Location tmpblock = new Location(getWorld(), x, minY, z);
-                tmpblock.getBlock().setType(material.getMaterial());
+                CompatBridge.setTypeAndData(tmpblock.getBlock(),material,(byte) material.getData());
+                //tmpblock.getBlock().setType(material.getMaterial());
             }
         }
     }

@@ -5,8 +5,8 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.kangarko.compatbridge.model.CompDye;
 import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
@@ -16,12 +16,12 @@ import org.bukkit.inventory.meta.BannerMeta;
 public class BBBannerCreator {
     private Player player;
     private ItemStack createdBanner;
-    private DyeColor selectedColor;
+    private CompDye selectedColor;
 
     public BBBannerCreator(Player p) {
         this.player = p;
         this.createdBanner = ItemCreator.create(CompMaterial.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(GameManager.getFinalBannerLore()), null,null);
-        this.selectedColor = DyeColor.WHITE;
+        this.selectedColor = CompDye.WHITE;
     }
 
     public Player getPlayer() {
@@ -32,17 +32,17 @@ public class BBBannerCreator {
         return createdBanner;
     }
 
-    public DyeColor getSelectedColor() {
+    public CompDye getSelectedColor() {
         return selectedColor;
     }
 
-    public void selectColor(DyeColor color) {
+    public void selectColor(CompDye color) {
         this.selectedColor = color;
         OptionsManager.getInstance().openPatternsInventory(this);
     }
     public void addPattern(PatternType type) {
         BannerMeta meta = (BannerMeta) createdBanner.getItemMeta();
-        meta.addPattern(new Pattern(getSelectedColor(), type));
+        meta.addPattern(new Pattern(getSelectedColor().getDye(), type));
         createdBanner.setItemMeta(meta);
         OptionsManager.getInstance().openColorsInventory(this);
     }

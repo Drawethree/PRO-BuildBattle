@@ -5,6 +5,7 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.model.CompatBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -50,7 +51,8 @@ public class BBSign {
                 getSign().setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
                 getSign().update(true);
                 if(GameManager.isReplaceBlockBehindSigns()) {
-                    getBlockBehind().setType(getArena().getBBArenaState().getBlockMaterial().getMaterial());
+                    CompatBridge.setTypeAndData(getBlockBehind(), getArena().getBBArenaState().getBlockMaterial(), (byte) getArena().getBBArenaState().getBlockMaterial().getData());
+                    //getBlockBehind().setType(getArena().getBBArenaState().getBlockMaterial().getMaterial());
                 }
             }, 20L);
         }

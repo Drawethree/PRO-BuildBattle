@@ -7,6 +7,7 @@ import me.drawe.buildbattle.events.BBGameStateSwitchEvent;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.*;
+import me.kangarko.compatbridge.model.CompSound;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -242,10 +243,10 @@ public class BBArena {
                         cancel();
                         return;
                     } else if (countdown % 15 == 0) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.ORB_PICKUP.getSound());
+                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ENTITY_EXPERIENCE_ORB_PICKUP.getSound());
                         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     } else if (countdown < 6) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.ORB_PICKUP.getSound());
+                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ENTITY_EXPERIENCE_ORB_PICKUP.getSound());
                         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     }
                 } else {

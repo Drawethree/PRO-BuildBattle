@@ -3,10 +3,8 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,10 +125,7 @@ public class BBTeam {
     }
 
     private void updateStatusItemStack() {
-        ItemMeta meta = getStatusItemStack().getItemMeta();
-        meta.setLore(ItemCreator.convertLore(ItemCreator.createTeamLore(this)));
-        getStatusItemStack().setItemMeta(meta);
-        getStatusItemStack().setType(getStatusMaterial().getMaterial());
+        this.statusItemstack = ItemCreator.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
         getArena().getTeamsInventory().setItem(getID()-1, getStatusItemStack());
     }
 

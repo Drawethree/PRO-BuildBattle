@@ -6,17 +6,17 @@ import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.StringUtils;
+import me.kangarko.compatbridge.model.CompDye;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -120,10 +120,10 @@ public class OptionsManager {
     private static void loadPatternsInventory() {
         int slot = 0;
         for(PatternType type : PatternType.values()) {
-            Pattern p = new Pattern(DyeColor.BLACK, type);
+            Pattern p = new Pattern(CompDye.BLACK.getDye(), type);
             ItemStack item = CompMaterial.WHITE_BANNER.toItem();
             BannerMeta meta = (BannerMeta) item.getItemMeta();
-            meta.setBaseColor(DyeColor.WHITE);
+            meta.setBaseColor(CompDye.WHITE.getDye());
             meta.addPattern(p);
             meta.setDisplayName(StringUtils.getDisplayNameOfPattern(type));
             item.setItemMeta(meta);
@@ -237,7 +237,9 @@ public class OptionsManager {
         for (BBPlotTime time : BBPlotTime.values()) {
             ItemStack item = time.getItem().clone();
             if (time == plot.getOptions().getCurrentTime()) {
-                item.setType(CompMaterial.LIME_TERRACOTTA.getMaterial());
+                ItemMeta meta = item.getItemMeta();
+                item = CompMaterial.LIME_TERRACOTTA.toItem();
+                item.setItemMeta(meta);
                 //ItemCreator.addGlowEffect(item);
             }
             timeInv.setItem(time.getSlot(), item);
