@@ -6,6 +6,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
+import me.kangarko.compatbridge.model.CompMaterial;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ public class NPCListener implements Listener {
         if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
             BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
             if(plot != null) {
-                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != Material.AIR)) {
+                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != CompMaterial.AIR.getMaterial())) {
                     if (p.hasPermission("buildbattlepro.changefloor")) {
                         plot.getOptions().setCurrentFloorItem(p.getItemInHand());
                     } else {
@@ -40,7 +41,7 @@ public class NPCListener implements Listener {
         if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
             BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
             if(plot != null) {
-                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != Material.AIR)) {
+                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != CompMaterial.AIR.getMaterial())) {
                     if (p.hasPermission("buildbattlepro.changefloor")) {
                         plot.getOptions().setCurrentFloorItem(p.getItemInHand());
                     } else {

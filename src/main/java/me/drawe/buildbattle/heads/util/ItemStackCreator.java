@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.heads.util;
 
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -27,8 +28,8 @@ public class ItemStackCreator {
      * @param displayName The name of the items in the ItemStack.
      * @return An ItemStack with the provided parameters.
      */
-    public static ItemStack createItem(Material material, int amount, String displayName) {
-        ItemStack itemStack = new ItemStack(material, amount);
+    public static ItemStack createItem(CompMaterial material, int amount, String displayName) {
+        ItemStack itemStack = material.toItem(amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         itemStack.setItemMeta(itemMeta);
@@ -45,8 +46,8 @@ public class ItemStackCreator {
      * @param lore The lore attached to the itmes in the ItemStack.
      * @return An ItemStack with the provided parameters.
      */
-    public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {
-        ItemStack itemStack = new ItemStack(material, amount);
+    public static ItemStack createItem(CompMaterial material, int amount, String displayName, String[] lore) {
+        ItemStack itemStack = material.toItem(amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         List<String> loreList = new ArrayList();
@@ -69,7 +70,7 @@ public class ItemStackCreator {
      * @return An ItemStack with the provided parameters.
      */
     public static ItemStack createPlayerhead(int amount, String displayName, String playerName) {
-        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack itemStack = CompMaterial.PLAYER_HEAD.toItem(amount);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setOwner(playerName);
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -88,7 +89,7 @@ public class ItemStackCreator {
      * @return An ItemStack with the provided parameters.
      */
     public static ItemStack createPlayerhead(int amount, String displayName, String[] lore, String playerName) {
-        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack itemStack = CompMaterial.PLAYER_HEAD.toItem(amount);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setOwner(playerName);
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));

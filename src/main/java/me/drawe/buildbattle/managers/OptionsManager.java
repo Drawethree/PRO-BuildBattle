@@ -6,6 +6,7 @@ import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.StringUtils;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -29,20 +30,20 @@ public class OptionsManager {
     private OptionsManager() {
     }
 
-    private static ItemStack deleteArenaItem = ItemCreator.create(Material.BARRIER, 1, "&eDelete Arena", ItemCreator.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null,null);
-    private static ItemStack saveItem = ItemCreator.create(Material.EMERALD, 1, "&eSave & Close", ItemCreator.makeLore("&7Click to save and apply changes !"), null,null);
-    private static ItemStack backItem = ItemCreator.create(Material.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.back_item.lore")), null,null);
-    private static ItemStack reportItem = ItemCreator.create(Material.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.report_item.lore")), null,null);
-    private static ItemStack clearPlotItem = ItemCreator.create(Material.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null,null);
-    private static ItemStack removeParticlesItem = ItemCreator.create(Material.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null,null);
-    private static ItemStack particlesItem = ItemCreator.create(Material.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particles_item.lore")), null,null);
-    private static ItemStack biomesItem = ItemCreator.create(Material.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null,null);
-    private static ItemStack headsItem = ItemCreator.create(Material.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.heads_item.lore")), null,null);
-    private static ItemStack leaveItem = ItemCreator.create(Material.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.leave_item.lore")), null,null);
-    private static ItemStack optionsItem = ItemCreator.create(Material.NETHER_STAR,1,Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.options_item.lore")),null,null);
-    private static ItemStack teamsItem = ItemCreator.create(Material.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.teams_item.lore")), null,null);
-    private static ItemStack timeItem = ItemCreator.create(Material.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.time_item.lore")), null,null);
-    private static ItemStack bannerCreatorItem = ItemCreator.create(Material.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null,null);
+    private static ItemStack deleteArenaItem = ItemCreator.create(CompMaterial.BARRIER, 1, "&eDelete Arena", ItemCreator.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null,null);
+    private static ItemStack saveItem = ItemCreator.create(CompMaterial.EMERALD, 1, "&eSave & Close", ItemCreator.makeLore("&7Click to save and apply changes !"), null,null);
+    private static ItemStack backItem = ItemCreator.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.back_item.lore")), null,null);
+    private static ItemStack reportItem = ItemCreator.create(CompMaterial.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.report_item.lore")), null,null);
+    private static ItemStack clearPlotItem = ItemCreator.create(CompMaterial.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null,null);
+    private static ItemStack removeParticlesItem = ItemCreator.create(CompMaterial.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null,null);
+    private static ItemStack particlesItem = ItemCreator.create(CompMaterial.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.particles_item.lore")), null,null);
+    private static ItemStack biomesItem = ItemCreator.create(CompMaterial.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null,null);
+    private static ItemStack headsItem = ItemCreator.create(CompMaterial.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.heads_item.lore")), null,null);
+    private static ItemStack leaveItem = ItemCreator.create(CompMaterial.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.leave_item.lore")), null,null);
+    private static ItemStack optionsItem = ItemCreator.create(CompMaterial.NETHER_STAR,1,Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.options_item.lore")),null,null);
+    private static ItemStack teamsItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.teams_item.lore")), null,null);
+    private static ItemStack timeItem = ItemCreator.create(CompMaterial.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.time_item.lore")), null,null);
+    private static ItemStack bannerCreatorItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null,null);
     private static Inventory particlesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PARTICLES_TITLE.getMessage());
     private static Inventory colorsInventory = Bukkit.createInventory(null, 6*9, Message.GUI_COLORS_TITLE.getMessage());
     private static Inventory patternsInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PATTERNS_TITLE.getMessage());
@@ -120,7 +121,7 @@ public class OptionsManager {
         int slot = 0;
         for(PatternType type : PatternType.values()) {
             Pattern p = new Pattern(DyeColor.BLACK, type);
-            ItemStack item = new ItemStack(Material.WHITE_BANNER, 1);
+            ItemStack item = CompMaterial.WHITE_BANNER.toItem();
             BannerMeta meta = (BannerMeta) item.getItemMeta();
             meta.setBaseColor(DyeColor.WHITE);
             meta.addPattern(p);
@@ -236,7 +237,7 @@ public class OptionsManager {
         for (BBPlotTime time : BBPlotTime.values()) {
             ItemStack item = time.getItem().clone();
             if (time == plot.getOptions().getCurrentTime()) {
-                item.setType(Material.LIME_TERRACOTTA);
+                item.setType(CompMaterial.LIME_TERRACOTTA.getMaterial());
                 //ItemCreator.addGlowEffect(item);
             }
             timeInv.setItem(time.getSlot(), item);
@@ -278,12 +279,12 @@ public class OptionsManager {
     }
 
     public ItemStack getWeatherItemStack(BBPlot plot) {
-        ItemStack item = ItemCreator.create(Material.SUNFLOWER, 1, Message.GUI_OPTIONS_CHANGE_WEATHER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertWeatherLore(plot, GameManager.getWeatherLore()), null,null);
+        ItemStack item = ItemCreator.create(CompMaterial.SUNFLOWER, 1, Message.GUI_OPTIONS_CHANGE_WEATHER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertWeatherLore(plot, GameManager.getWeatherLore()), null,null);
         switch(plot.getOptions().getCurrentWeather()) {
             case CLEAR:
                 break;
             case DOWNFALL:
-                item.setType(Material.WATER_BUCKET);
+                item.setType(CompMaterial.WATER_BUCKET.getMaterial());
                 break;
         }
         return item;
@@ -304,7 +305,7 @@ public class OptionsManager {
     }
 
     public ItemStack getActiveParticleItemStack(BBPlotParticle particle) {
-        return ItemCreator.create(particle.getParticle().getItemStack().getType(), 1, particle.getParticle().getItemStack().getItemMeta().getDisplayName(), ItemCreator.makeLore(
+        return ItemCreator.create(CompMaterial.fromMaterial(particle.getParticle().getItemStack().getType()), 1, particle.getParticle().getItemStack().getItemMeta().getDisplayName(), ItemCreator.makeLore(
                 Message.GUI_PARTICLE_LIST_ITEMS_LOCATION.getMessage(),
                 " &7X: " + particle.getLocation().getBlockX(),
                 " &7Y: " + particle.getLocation().getBlockY(),

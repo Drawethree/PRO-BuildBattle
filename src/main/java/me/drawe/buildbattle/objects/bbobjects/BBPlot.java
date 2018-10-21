@@ -5,6 +5,7 @@ import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -91,8 +92,8 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int y = minY + 1; y <= maxY; y += 1) {
                 for (int z = minZ; z <= maxZ; z += 1) {
                     Location tmpblock = new Location(getWorld(), x, y, z);
-                    if(tmpblock.getBlock().getType() != Material.AIR) {
-                        tmpblock.getBlock().setType(Material.AIR);
+                    if(tmpblock.getBlock().getType() != CompMaterial.AIR.getMaterial()) {
+                        tmpblock.getBlock().setType(CompMaterial.AIR.getMaterial());
                     }
                     for (Entity e : tmpblock.getWorld().getNearbyEntities(tmpblock, 3, 3, 3)) {
                         if (e.getType() != EntityType.PLAYER) {
@@ -216,12 +217,12 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public Location getTeleportLocation() {
         Location tploc = getCenter();
-        while(tploc.getBlock().getType() != Material.AIR || tploc.clone().add(0,1,0).getBlock().getType() != Material.AIR) tploc = tploc.add(0,1,0);
+        while(tploc.getBlock().getType() != CompMaterial.AIR.getMaterial() || tploc.clone().add(0,1,0).getBlock().getType() != CompMaterial.AIR.getMaterial()) tploc = tploc.add(0,1,0);
         boolean enclosed = false;
         int counter = 0;
         Location location = tploc.clone();
         while (counter != 10){
-            if(!(location.getBlock().getType() == Material.BARRIER || location.getBlock().getType() == Material.AIR)){
+            if(!(location.getBlock().getType() == CompMaterial.BARRIER.getMaterial() || location.getBlock().getType() == CompMaterial.AIR.getMaterial())){
                 enclosed = true;
                 tploc = location;
                 counter = 9;
@@ -230,16 +231,16 @@ public class BBPlot implements Comparable<BBPlot> {
             counter++;
         }
         if(enclosed) {
-            while (tploc.getBlock().getType() != Material.AIR || tploc.add(0, 1, 0).getBlock().getType() != Material.AIR) {
+            while (tploc.getBlock().getType() != CompMaterial.AIR.getMaterial() || tploc.add(0, 1, 0).getBlock().getType() != CompMaterial.AIR.getMaterial()) {
                 tploc = tploc.add(0, 1, 0);
             }
         }
         return tploc;
     }
 
-    public void changeFloor(Material material) {
-        if (material == Material.WATER_BUCKET) material = Material.WATER;
-        if (material == Material.LAVA_BUCKET) material = Material.LAVA;
+    public void changeFloor(CompMaterial material) {
+        if (material == CompMaterial.WATER_BUCKET) material = CompMaterial.WATER;
+        if (material == CompMaterial.LAVA_BUCKET) material = CompMaterial.LAVA;
         int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
         int maxX = Math.max(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
         int minZ = Math.min(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
@@ -248,26 +249,14 @@ public class BBPlot implements Comparable<BBPlot> {
         for (int x = minX; x <= maxX; x += 1) {
             for (int z = minZ; z <= maxZ; z += 1) {
                 Location tmpblock = new Location(getWorld(), x, minY, z);
-                tmpblock.getBlock().setType(material);
+                tmpblock.getBlock().setType(material.getMaterial());
             }
         }
     }
 
     public void changeFloor(ItemStack item){
-        Material m = item.getType();
-        if (item.getType() == Material.WATER_BUCKET) m = Material.WATER;
-        if (item.getType() == Material.LAVA_BUCKET) m = Material.LAVA;
-        int minX = Math.min(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
-        int maxX = Math.max(getMinPoint().getBlockX(), getMaxPoint().getBlockX());
-        int minZ = Math.min(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
-        int maxZ = Math.max(getMinPoint().getBlockZ(), getMaxPoint().getBlockZ());
-        int minY = Math.min(getMinPoint().getBlockY(), getMaxPoint().getBlockY());
-        for (int x = minX; x <= maxX; x += 1) {
-            for (int z = minZ; z <= maxZ; z += 1) {
-                Location tmpblock = new Location(getWorld(), x, minY, z);
-                tmpblock.getBlock().setType(m);
-            }
-        }
+        CompMaterial m = CompMaterial.fromMaterial(item.getType());
+        changeFloor(m);
     }
 
     public boolean isInPlotRange(Location location, int added) {
@@ -292,8 +281,8 @@ public class BBPlot implements Comparable<BBPlot> {
         return minPoint;
     }
 
-    public Material getFloorMaterial() {
-        return getMinPoint().getBlock().getType();
+    public CompMaterial getFloorMaterial() {
+        return CompMaterial.fromMaterial(getMinPoint().getBlock().getType());
     }
 
     public List<BBPlotParticle> getParticles() {
@@ -335,7 +324,7 @@ public class BBPlot implements Comparable<BBPlot> {
     public void resetPlotFromGame() {
         removeAllBlocks();
         removeAllParticles();
-        ItemStack item = new ItemStack(GameManager.getDefaultFloorMaterial());
+        ItemStack item = GameManager.getDefaultFloorMaterial().toItem();
         getOptions().setCurrentFloorItem(item);
         getOptions().setCurrentWeather(WeatherType.CLEAR, false);
         getOptions().setCurrentTime(BBPlotTime.NOON, false);

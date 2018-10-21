@@ -2,6 +2,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -110,13 +111,14 @@ public class BBTeam {
     public boolean isEmpty() {
         return getPlayers().size() == 0;
     }
-    public Material getStatusMaterial() {
+
+    public CompMaterial getStatusMaterial() {
         if(isFull()) {
-            return Material.RED_TERRACOTTA;
+            return CompMaterial.RED_TERRACOTTA;
         } else if(isEmpty()) {
-            return Material.LIME_TERRACOTTA;
+            return CompMaterial.LIME_TERRACOTTA;
         } else {
-            return Material.YELLOW_TERRACOTTA;
+            return CompMaterial.YELLOW_TERRACOTTA;
         }
     }
 
@@ -128,7 +130,7 @@ public class BBTeam {
         ItemMeta meta = getStatusItemStack().getItemMeta();
         meta.setLore(ItemCreator.convertLore(ItemCreator.createTeamLore(this)));
         getStatusItemStack().setItemMeta(meta);
-        getStatusItemStack().setType(getStatusMaterial());
+        getStatusItemStack().setType(getStatusMaterial().getMaterial());
         getArena().getTeamsInventory().setItem(getID()-1, getStatusItemStack());
     }
 

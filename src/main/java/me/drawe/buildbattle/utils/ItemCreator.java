@@ -4,6 +4,7 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ItemCreator {
 
     public static ItemStack getPlayerSkull(Player player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -33,7 +34,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore){
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
         SkullMeta meta = (SkullMeta)skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
@@ -54,34 +55,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getItemStack(String value) {
-        Material mat = null;
-        int data = 0;
-
-        String[] obj = value.split(":");
-
-        if (obj.length == 2) {
-            try {
-                mat = Material.matchMaterial(obj[0]);
-            } catch (Exception e) {
-                return null; // material name doesn't exist
-            }
-
-            try {
-                data = Integer.valueOf(obj[1]);
-            } catch (NumberFormatException e) {
-                return null; // data not a number
-            }
-        } else {
-            try {
-                mat = Material.matchMaterial(value);
-            } catch (Exception e) {
-                return null; // material name doesn't exist
-            }
-        }
-
-        ItemStack item = new ItemStack(mat, 1);
-        item.setDurability((short) data);
-        return item;
+        return CompMaterial.fromString(value).toItem();
     }
 
     public static List<String> convertLore(List<String> list)
@@ -118,9 +92,9 @@ public class ItemCreator {
     /*
      * Easy creating an itemstack
      */
-    public static ItemStack create(Material material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels)
+    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels)
     {
-        ItemStack item = new ItemStack(material, amount);
+        ItemStack item = material.toItem(amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -190,7 +164,7 @@ public class ItemCreator {
     }
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(Material.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
+        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
@@ -223,8 +197,8 @@ public class ItemCreator {
         return reportLore;
     }
 
-    public static ItemStack create(Material m, int i, String s) {
-        ItemStack item = new ItemStack(m, i);
+    public static ItemStack create(CompMaterial m, int i, String s) {
+        ItemStack item = m.toItem(i);
         ItemMeta meta = item.getItemMeta();
         if (s != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', s));

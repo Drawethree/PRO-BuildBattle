@@ -5,8 +5,8 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class BBBannerCreator {
 
     public BBBannerCreator(Player p) {
         this.player = p;
-        this.createdBanner = ItemCreator.create(Material.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(GameManager.getFinalBannerLore()), null,null);
+        this.createdBanner = ItemCreator.create(CompMaterial.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(GameManager.getFinalBannerLore()), null,null);
         this.selectedColor = DyeColor.WHITE;
     }
 

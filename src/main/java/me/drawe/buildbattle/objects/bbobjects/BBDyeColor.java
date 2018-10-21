@@ -1,5 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
+import me.kangarko.compatbridge.model.CompDye;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -7,22 +9,22 @@ import org.bukkit.inventory.ItemStack;
 
 public enum BBDyeColor {
 
-    BLACK(0, DyeColor.BLACK, new ItemStack(Material.INK_SAC,1)),
-    BLUE(1,DyeColor.BLUE,  new ItemStack(Material.LAPIS_LAZULI,1)),
-    BROWN(2,DyeColor.BROWN,  new ItemStack(Material.COCOA_BEANS, 1)),
-    CYAN(3,DyeColor.CYAN,  new ItemStack(Material.CYAN_DYE, 1)),
-    GRAY(4,DyeColor.GRAY,  new ItemStack(Material.GRAY_DYE, 1)),
-    GREEN(5,DyeColor.GREEN,  new ItemStack(Material.CACTUS_GREEN, 1)),
-    LIGHT_BLUE(6,DyeColor.LIGHT_BLUE,  new ItemStack(Material.LIGHT_BLUE_DYE, 1)),
-    LIGHT_GRAY(7,DyeColor.LIGHT_GRAY,  new ItemStack(Material.LIGHT_GRAY_DYE, 1)),
-    LIME(8,DyeColor.LIME,  new ItemStack(Material.LIME_DYE, 1)),
-    MAGENTA(9,DyeColor.MAGENTA,  new ItemStack(Material.MAGENTA_DYE, 1)),
-    ORANGE(10,DyeColor.ORANGE,  new ItemStack(Material.ORANGE_DYE, 1)),
-    PINK(11,DyeColor.PINK,  new ItemStack(Material.PINK_DYE, 1)),
-    PURPLE(12,DyeColor.PURPLE,  new ItemStack(Material.PURPLE_DYE, 1)),
-    RED(13,DyeColor.RED,  new ItemStack(Material.ROSE_RED, 1)),
-    WHITE(14,DyeColor.WHITE,  new ItemStack(Material.BONE_MEAL, 1)),
-    YELLOW(15,DyeColor.YELLOW,  new ItemStack(Material.DANDELION_YELLOW, 1));
+    BLACK(0, DyeColor.BLACK, CompMaterial.INK_SAC.toItem()),
+    BLUE(1,DyeColor.BLUE,  CompMaterial.LAPIS_LAZULI.toItem()),
+    BROWN(2,DyeColor.BROWN,  CompMaterial.COCOA_BEANS.toItem()),
+    CYAN(3,DyeColor.CYAN,  CompMaterial.CYAN_DYE.toItem()),
+    GRAY(4,DyeColor.GRAY,  CompMaterial.GRAY_DYE.toItem()),
+    GREEN(5,DyeColor.GREEN,  CompMaterial.CACTUS_GREEN.toItem()),
+    LIGHT_BLUE(6,DyeColor.LIGHT_BLUE,  CompMaterial.LIGHT_BLUE_DYE.toItem()),
+    LIGHT_GRAY(7,DyeColor.LIGHT_GRAY,  CompMaterial.LIGHT_GRAY_DYE.toItem()),
+    LIME(8,DyeColor.LIME,  CompMaterial.LIME_DYE.toItem()),
+    MAGENTA(9,DyeColor.MAGENTA,  CompMaterial.MAGENTA_DYE.toItem()),
+    ORANGE(10,DyeColor.ORANGE,  CompMaterial.ORANGE_DYE.toItem()),
+    PINK(11,DyeColor.PINK,  CompMaterial.PINK_DYE.toItem()),
+    PURPLE(12,DyeColor.PURPLE,  CompMaterial.PURPLE_DYE.toItem()),
+    RED(13,DyeColor.RED,  CompMaterial.ROSE_RED.toItem()),
+    WHITE(14,DyeColor.WHITE,  CompMaterial.BONE_MEAL.toItem()),
+    YELLOW(15,DyeColor.YELLOW,  CompMaterial.DANDELION_YELLOW.toItem());
 
     private byte data;
     private ItemStack item;
@@ -51,9 +53,9 @@ public enum BBDyeColor {
         return null;
     }
 
-    public static BBDyeColor getByMaterial(Material type) {
+    public static BBDyeColor getByMaterial(CompMaterial type) {
         for(BBDyeColor d : values()) {
-            if(d.getItem().getType() == type) {
+            if(d.getItem().getType() == type.getMaterial()) {
                 return d;
             }
         }

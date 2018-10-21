@@ -2,6 +2,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -30,18 +31,18 @@ public class BBArenaEdit {
         this.gameMode = arena.getGameType();
         this.teamSize = arena.getTeamSize();
         this.gameTime = arena.getGameTime();
-        this.arenaEditItemStack = ItemCreator.create(Material.BRICKS, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
-        this.minPlayersItem = ItemCreator.create(Material.PAPER, 1, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
-        this.gameModeItem = ItemCreator.create(Material.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"), null,null);
-        this.teamSizeItem = ItemCreator.create(Material.PAPER, 1, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
-        this.gameTimeItem = ItemCreator.create(Material.PAPER, 1, "Game Time: §e" + gameTime + "s", ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"), null,null);
-        editInventory.setItem(0, OptionsManager.getBackItem());
-        editInventory.setItem(2, gameModeItem);
-        editInventory.setItem(3, gameTimeItem);
-        editInventory.setItem(4, minPlayersItem);
-        editInventory.setItem(5, teamSizeItem);
-        editInventory.setItem(6, OptionsManager.getDeleteArenaItem());
-        editInventory.setItem(8, OptionsManager.getSaveItem());
+        this.arenaEditItemStack = ItemCreator.create(CompMaterial.BRICKS, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()), null,null);
+        this.minPlayersItem = ItemCreator.create(CompMaterial.PAPER, 1, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
+        this.gameModeItem = ItemCreator.create(CompMaterial.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"), null,null);
+        this.teamSizeItem = ItemCreator.create(CompMaterial.PAPER, 1, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"), null,null);
+        this.gameTimeItem = ItemCreator.create(CompMaterial.PAPER, 1, "Game Time: §e" + gameTime + "s", ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"), null,null);
+        this.editInventory.setItem(0, OptionsManager.getBackItem());
+        this.editInventory.setItem(2, gameModeItem);
+        this.editInventory.setItem(3, gameTimeItem);
+        this.editInventory.setItem(4, minPlayersItem);
+        this.editInventory.setItem(5, teamSizeItem);
+        this.editInventory.setItem(6, OptionsManager.getDeleteArenaItem());
+        this.editInventory.setItem(8, OptionsManager.getSaveItem());
     }
 
     public boolean editMinPlayers(ClickType click) {

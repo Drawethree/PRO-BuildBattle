@@ -1,5 +1,7 @@
 package me.drawe.buildbattle.utils;
 
+import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.model.CompatBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -176,8 +178,8 @@ public enum ParticleEffect {
 
 
     private static boolean isWater(Location location) {
-        Material material = location.getBlock().getType();
-        return material == Material.WATER || material == Material.LEGACY_STATIONARY_WATER;
+        CompMaterial material = CompMaterial.fromMaterial(location.getBlock().getType());
+        return material == CompMaterial.WATER;
     }
 
 
@@ -388,20 +390,20 @@ public enum ParticleEffect {
 
 
     public static abstract class ParticleData {
-        private final Material material;
+        private final CompMaterial material;
         private final byte data;
         private final int[] packetData;
 
 
         @SuppressWarnings("deprecation")
-        public ParticleData(Material material, byte data) {
+        public ParticleData(CompMaterial material, byte data) {
             this.material = material;
             this.data = data;
-            this.packetData = new int[]{material.getId(), data};
+            this.packetData = new int[]{material.getData(), data};
         }
 
 
-        public Material getMaterial() {
+        public CompMaterial getMaterial() {
             return this.material;
         }
 
@@ -424,7 +426,7 @@ public enum ParticleEffect {
 
     public static final class ItemData extends ParticleData {
 
-        public ItemData(Material material, byte data) {
+        public ItemData(CompMaterial material, byte data) {
             super(material, data);
         }
     }
@@ -432,9 +434,9 @@ public enum ParticleEffect {
 
     public static final class BlockData extends ParticleData {
 
-        public BlockData(Material material, byte data) throws IllegalArgumentException {
+        public BlockData(CompMaterial material, byte data) throws IllegalArgumentException {
             super(material, data);
-            if (!material.isBlock()) {
+            if (!material.getMaterial().isBlock()) {
                 throw new IllegalArgumentException("The material is not a block");
             }
         }

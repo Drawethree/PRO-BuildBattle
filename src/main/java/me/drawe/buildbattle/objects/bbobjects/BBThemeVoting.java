@@ -4,6 +4,7 @@ import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemCreator;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,8 +32,8 @@ public class BBThemeVoting {
         voteInventory = Bukkit.createInventory(null, GameManager.getThemesToVote()*9, Message.GUI_THEME_VOTING_TITLE.getMessage());
         this.winner = null;
         for(BBTheme theme : getThemesVoted()) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
-            voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(Material.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
+            voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(CompMaterial.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
         }
     }
 
@@ -42,8 +43,8 @@ public class BBThemeVoting {
 
     public void resetInventory() {
         for(BBTheme theme : getThemesVoted()) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(Material.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
-            voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(Material.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemCreator.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemCreator.convertThemeLore(theme, GameManager.getThemeVotingLore(), (int) GameManager.getThemeVotingTime()) , null,null));
+            voteInventory.setItem(theme.getSlotInInventory()+1, ItemCreator.create(CompMaterial.IRON_BARS, 1, "&a", ItemCreator.makeLore(""),null,null));
         }
     }
 
@@ -115,10 +116,10 @@ public class BBThemeVoting {
             }
             for(int i = theme.getSlotInInventory() + 2;i < theme.getSlotInInventory() + 8;i++) {
                 if(numberOfGreens > 0) {
-                    voteInventory.setItem(i, ItemCreator.create(Material.LIME_STAINED_GLASS_PANE, 1,theme.getPercentage() + "%", ItemCreator.makeLore(""), null,null));
+                    voteInventory.setItem(i, ItemCreator.create(CompMaterial.LIME_STAINED_GLASS_PANE, 1,theme.getPercentage() + "%", ItemCreator.makeLore(""), null,null));
                     numberOfGreens = numberOfGreens - 1;
                 } else {
-                    voteInventory.setItem(i, ItemCreator.create(Material.RED_STAINED_GLASS_PANE, 1, theme.getPercentage() + "%", ItemCreator.makeLore(""), null,null));
+                    voteInventory.setItem(i, ItemCreator.create(CompMaterial.RED_STAINED_GLASS_PANE, 1, theme.getPercentage() + "%", ItemCreator.makeLore(""), null,null));
                 }
             }
         }

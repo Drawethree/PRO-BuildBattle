@@ -2,6 +2,8 @@ package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
+import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.model.CompatBridge;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -77,7 +79,7 @@ public class LocationUtil {
             for(int y = l.getBlockY() - radius; y<= l.getBlockY()+radius; y++) {
                 for(int z = l.getBlockZ() - radius; z <= l.getBlockZ()+radius; z++) {
                     Block b = l.getWorld().getBlockAt(x, y, z);
-                    if(b.getType() == Material.LAVA) {
+                    if(b.getType() == CompMaterial.LAVA.getMaterial()) {
                         return false;
                     }
                 }

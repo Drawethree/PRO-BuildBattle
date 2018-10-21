@@ -6,6 +6,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.ReflectionUtils;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,11 +24,13 @@ public class BBPlotOptions {
     private WeatherType currentWeather;
     private BBPlotTime currentTime;
     private PlotBiome currentBiome;
+    private CompMaterial currentFloorMaterial;
 
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
         this.currentFloorItem = ItemCreator.create(GameManager.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
+        this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
         this.currentBiome = PlotBiome.FOREST;
@@ -47,18 +50,18 @@ public class BBPlotOptions {
                     for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
                     return;
                 } else {
-                    this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                    this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
                     getPlot().changeFloor(currentFloorItem);
                     for (Player p : getPlot().getTeam().getPlayers())
                         p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
                 }
-            } else if (currentFloorItem.getType() == Material.WATER_BUCKET) {
-                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.WATER);
+            } else if (currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
+                this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                getPlot().changeFloor(CompMaterial.WATER);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
-            } else if (currentFloorItem.getType() == Material.LAVA_BUCKET) {
-                this.currentFloorItem = ItemCreator.create(currentFloorItem.getType(), 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(Material.LAVA);
+            } else if (currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial()) {
+                this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                getPlot().changeFloor(CompMaterial.LAVA);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else {
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
@@ -90,36 +93,36 @@ public class BBPlotOptions {
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        Material m = currentFloorItem.getType();
-        if (m == Material.CACTUS
-                || m == Material.STONE_BUTTON
+        CompMaterial m = CompMaterial.fromMaterial(currentFloorItem.getType());
+        if (m == CompMaterial.CACTUS
+                || m == CompMaterial.STONE_BUTTON
                 || m.name().contains("BUTTON")
-                || m == Material.LADDER
+                || m == CompMaterial.LADDER
                 || m.name().contains("SAPLING")
-                || m == Material.SEA_PICKLE
-                || m == Material.GRASS
-                || m == Material.FERN
-                || m == Material.DEAD_BUSH
-                || m == Material.SEAGRASS
-                || m == Material.BLUE_ORCHID
-                || m == Material.ALLIUM
-                || m == Material.END_ROD
-                || m == Material.LILAC
-                || m == Material.PEONY
-                || m == Material.ROSE_BUSH
-                || m == Material.TALL_GRASS
-                || m == Material.LARGE_FERN
-                || m == Material.PAINTING
+                || m == CompMaterial.SEA_PICKLE
+                || m == CompMaterial.GRASS
+                || m == CompMaterial.FERN
+                || m == CompMaterial.DEAD_BUSH
+                || m == CompMaterial.SEAGRASS
+                || m == CompMaterial.BLUE_ORCHID
+                || m == CompMaterial.ALLIUM
+                || m == CompMaterial.END_ROD
+                || m == CompMaterial.LILAC
+                || m == CompMaterial.PEONY
+                || m == CompMaterial.ROSE_BUSH
+                || m == CompMaterial.TALL_GRASS
+                || m == CompMaterial.LARGE_FERN
+                || m == CompMaterial.PAINTING
                 || m.name().contains("TULIP")
                 || m.name().contains("GATE")
                 || m.name().contains("PRESSURE")
-                || m == Material.LILY_PAD
-                || m == Material.LEVER
-                || m == Material.POPPY
-                || m == Material.DANDELION
-                || m == Material.VINE
-                || m == Material.SUNFLOWER
-                || m == Material.TRIPWIRE_HOOK) {
+                || m == CompMaterial.LILY_PAD
+                || m == CompMaterial.LEVER
+                || m == CompMaterial.POPPY
+                || m == CompMaterial.DANDELION
+                || m == CompMaterial.VINE
+                || m == CompMaterial.SUNFLOWER
+                || m == CompMaterial.TRIPWIRE_HOOK) {
             return false;
         } else {
             return true;

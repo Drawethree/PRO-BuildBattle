@@ -11,6 +11,7 @@ import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.Sounds;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -224,7 +225,7 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     if (a.getBBArenaState() == BBArenaState.THEME_VOTING) {
                         if (inv.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == Material.SIGN || e.getCurrentItem().getType() == Material.PAPER)) {
+                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.SIGN.getMaterial() || e.getCurrentItem().getType() == CompMaterial.PAPER.getMaterial())) {
                                 BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                                 if (selectedTheme != null) {
                                     if (selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
@@ -250,7 +251,7 @@ public class PlayerListener implements Listener {
                         }
                     } else if (a.getBBArenaState() == BBArenaState.LOBBY) {
                         if (inv.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == Material.LIME_TERRACOTTA || e.getCurrentItem().getType() == Material.RED_TERRACOTTA || e.getCurrentItem().getType() == Material.YELLOW_TERRACOTTA)) {
+                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.LIME_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.RED_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.YELLOW_TERRACOTTA.getMaterial())) {
                                 BBTeam team = a.getTeamByItemStack(e.getCurrentItem());
                                 BBTeam playerTeam = a.getPlayerTeam(p);
                                 if (team != null) {
@@ -409,7 +410,7 @@ public class PlayerListener implements Listener {
                                                 }
                                             } else {
                                                 if (head != null) {
-                                                    if (head.getData().getItemType() != Material.AIR) {
+                                                    if (head.getData().getItemType() != CompMaterial.AIR.getMaterial()) {
                                                         p.getInventory().addItem(head);
                                                         p.closeInventory();
                                                     }
@@ -428,7 +429,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    BBDyeColor dc = BBDyeColor.getByMaterial(e.getCurrentItem().getType());
+                                    BBDyeColor dc = BBDyeColor.getByMaterial(CompMaterial.fromMaterial(e.getCurrentItem().getType()));
                                     if(dc != null) {
                                         bannerCreator.selectColor(dc.getColor());
                                         return;
@@ -448,7 +449,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == Material.WHITE_BANNER && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
+                                    if (e.getCurrentItem().getType() == CompMaterial.WHITE_BANNER.getMaterial() && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
                                         BannerMeta meta = (BannerMeta) e.getCurrentItem().getItemMeta();
                                         bannerCreator.addPattern(meta.getPatterns().get(0).getPattern());
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -471,7 +472,7 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
-            if ((e.getItem() != null) && (e.getItem().getType() == Material.COMPASS)) {
+            if ((e.getItem() != null) && (e.getItem().getType() == CompMaterial.COMPASS.getMaterial())) {
                 e.setCancelled(true);
                 return;
             }
@@ -727,7 +728,7 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (e.getBlock().getType() == Material.WHEAT_SEEDS || e.getBlock().getType() == Material.MELON_STEM || e.getBlock().getType() == Material.PUMPKIN_STEM) {
+                        if (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial()) {
                             if (GameManager.isAutomaticGrow()) {
                                 BlockData data = e.getBlock().getBlockData();
                                 if (data instanceof Ageable) {
@@ -887,7 +888,7 @@ public class PlayerListener implements Listener {
         BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
         if (plot != null) {
             e.setCancelled(true);
-            e.getEntity().getLocation().getBlock().setType(Material.AIR);
+            e.getEntity().getLocation().getBlock().setType(CompMaterial.AIR.getMaterial());
             e.blockList().clear();
         }
     }
@@ -937,7 +938,7 @@ public class PlayerListener implements Listener {
             if (plot != null) {
                 for (BlockState blockState : e.getBlocks()) {
                     if (!plot.isLocationInPlot(blockState.getLocation()))
-                        blockState.setType(Material.AIR);
+                        blockState.setType(CompMaterial.AIR.getMaterial());
                 }
             }
         }

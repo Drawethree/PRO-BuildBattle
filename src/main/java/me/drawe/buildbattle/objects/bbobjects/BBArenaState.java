@@ -1,20 +1,21 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Material;
 
 public enum BBArenaState {
 
-    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), Material.LIME_TERRACOTTA),
-    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), Material.RED_TERRACOTTA),
-    INGAME(Message.GAMESTATE_INGAME.getMessage(), Material.RED_TERRACOTTA),
-    VOTING(Message.GAMESTATE_VOTING.getMessage(), Material.RED_TERRACOTTA),
-    ENDING(Message.GAMESTATE_ENDING.getMessage(), Material.YELLOW_TERRACOTTA);
+    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), CompMaterial.LIME_TERRACOTTA),
+    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), CompMaterial.RED_TERRACOTTA),
+    INGAME(Message.GAMESTATE_INGAME.getMessage(), CompMaterial.RED_TERRACOTTA),
+    VOTING(Message.GAMESTATE_VOTING.getMessage(), CompMaterial.RED_TERRACOTTA),
+    ENDING(Message.GAMESTATE_ENDING.getMessage(), CompMaterial.YELLOW_TERRACOTTA);
 
     private String prefix;
-    private Material blockMaterial;
+    private CompMaterial blockMaterial;
 
-    BBArenaState(String s, Material data) {
+    BBArenaState(String s, CompMaterial data) {
         this.prefix = s;
         this.blockMaterial = data;
     }
@@ -23,7 +24,7 @@ public enum BBArenaState {
         return prefix;
     }
 
-    public Material getBlockMaterial() {
+    public CompMaterial getBlockMaterial() {
         return blockMaterial;
     }
 }

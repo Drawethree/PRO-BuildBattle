@@ -4,6 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class GameManager {
     private static List<String> restricedBlocks = new ArrayList<>();
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
-    private static Material defaultFloorMaterial = Material.BIRCH_PLANKS;
+    private static CompMaterial defaultFloorMaterial = CompMaterial.BIRCH_PLANKS;
     private static String prefix = "&8[&eBuildBattlePro&8]&r";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
@@ -112,7 +113,7 @@ public class GameManager {
         return defaultGameTime;
     }
 
-    public static void setDefaultFloorMaterial(Material defaultFloorMaterial) {
+    public static void setDefaultFloorMaterial(CompMaterial defaultFloorMaterial) {
         if (defaultFloorMaterial != null) {
             GameManager.defaultFloorMaterial = defaultFloorMaterial;
         } else {
@@ -156,7 +157,7 @@ public class GameManager {
         return restricedBlocks;
     }
 
-    public static Material getDefaultFloorMaterial() {
+    public static CompMaterial getDefaultFloorMaterial() {
         return defaultFloorMaterial;
     }
 
@@ -740,7 +741,7 @@ public class GameManager {
     }
 
     public void loadDefaultFloorMaterial() {
-        setDefaultFloorMaterial(Material.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
+        setDefaultFloorMaterial(CompMaterial.fromMaterial(Material.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor"))));
     }
 
     public void loadThemes() {
