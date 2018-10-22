@@ -254,13 +254,12 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int z = minZ; z <= maxZ; z += 1) {
                 Location tmpblock = new Location(getWorld(), x, minY, z);
                 CompatBridge.setTypeAndData(tmpblock.getBlock(),material,(byte) material.getData());
-                //tmpblock.getBlock().setType(material.getMaterial());
             }
         }
     }
 
     public void changeFloor(ItemStack item){
-        CompMaterial m = CompMaterial.fromMaterial(item.getType());
+        CompMaterial m = CompMaterial.fromItemStack(item);
         changeFloor(m);
     }
 

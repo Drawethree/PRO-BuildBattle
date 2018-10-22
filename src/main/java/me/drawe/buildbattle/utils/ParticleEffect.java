@@ -10,10 +10,7 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -371,6 +368,12 @@ public enum ParticleEffect {
 
     public void display(ParticleData data, Vector direction, float speed, Location center, Player... players) throws ParticleVersionException, ParticleDataException {
         this.display(data, direction, speed, center, Arrays.asList(players));
+    }
+
+    public void display(float v, float v1, float v2, float v3, int i, Location center, Collection<? extends Player> onlinePlayers) {
+        for(Player p : onlinePlayers) {
+            this.display(v,v1,v2,v3,i,center,p);
+        }
     }
 
 

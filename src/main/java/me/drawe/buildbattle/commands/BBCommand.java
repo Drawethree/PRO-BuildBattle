@@ -101,11 +101,8 @@ public class BBCommand implements CommandExecutor {
                     case "editor":
                         openEditor(sender);
                         break;
-                    case "pos1":
-                        setPos(sender, 1);
-                        break;
-                    case "pos2":
-                        setPos(sender, 2);
+                    case "pos":
+                        posSubCommand(sender);
                         break;
                     case "reports":
                         openReports(sender);
@@ -123,6 +120,21 @@ public class BBCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    private void posSubCommand(CommandSender sender) {
+        if(sender instanceof Player) {
+            Player p = (Player) sender;
+            if (sender.hasPermission("buildbattlepro.create")) {
+                p.getInventory().addItem(ArenaManager.getPosSelectorItem());
+                sender.sendMessage(GameManager.getPrefix() + " §aYou were given §ePlot Selector §a!");
+                sender.sendMessage(GameManager.getPrefix() + " §eLeft-Click §ablock to selection §ePostion 1");
+                sender.sendMessage(GameManager.getPrefix() + " §eRight-Click §ablock to selection §ePostion 2");
+                return;
+            } else {
+                sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            }
+        }
     }
 
     private void delFloorNPC(CommandSender sender, String[] args) {
@@ -147,18 +159,6 @@ public class BBCommand implements CommandExecutor {
             }
         } else {
             sender.sendMessage(GameManager.getPrefix() + " §cCitizens plugin is not loaded!");
-        }
-    }
-
-    private void setPos(CommandSender sender, int pos) {
-        if(sender instanceof Player) {
-            Player p = (Player) sender;
-            if (sender.hasPermission("buildbattlepro.create")) {
-                ArenaManager.getInstance().setPos(p,pos);
-                return;
-            } else {
-                sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
-            }
         }
     }
 
@@ -646,11 +646,11 @@ public class BBCommand implements CommandExecutor {
                             int i = ArenaManager.getInstance().getMissingSelection(p);
                             switch(i) {
                                 case -1:
-                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set positions ! Please set them by §e/bb pos1 §cand §e/bb pos2");
+                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set positions ! Please set them by §e/bb pos");
                                     break;
                                 case 1:
                                 case 2:
-                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/bb pos" + i );
+                                    p.sendMessage(GameManager.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/bb pos");
                                     break;
                             }
                         }
@@ -735,8 +735,7 @@ public class BBCommand implements CommandExecutor {
     private void commandUsage(CommandSender p) {
         if (p.hasPermission("buildbattlepro.create")) {
             FancyMessage.sendCenteredMessage(p, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Admin Commands");
-            p.sendMessage("§c§lNEW §e/bb pos1 " + "§8» " + "§7Select position 1 of plot.");
-            p.sendMessage("§c§lNEW §e/bb pos2 " + "§8» " + "§7Select position 2 of plot.");
+            p.sendMessage("§c§lNEW §e/bb pos " + "§8» " + "§7Gives you item to make selection of plot");
             p.sendMessage("§e/bb create <arena_name> <solo/team> " + "§8» " + "§7Create Arena");
             p.sendMessage("§e/bb delete <arena_name> " + "§8» " + "§7Remove Arena");
             p.sendMessage("§e/bb addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selected positions !");

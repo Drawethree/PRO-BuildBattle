@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
                             clickedArena.addPlayer(p);
                         }
                     } else {
-                        p.sendMessage(Message.ALREADY_IN_ARENA.getMessage());
+                        p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
                     }
                 }
                 return;
@@ -335,7 +335,7 @@ public class PlayerListener implements Listener {
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (e.getCurrentItem() != null) {
-                                PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem(), e.getSlot());
+                                PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem());
                                 if (selectedBiome != null) {
                                     if (p.hasPermission("buildbattlepro.changebiome")) {
                                         plot.getOptions().setCurrentBiome(selectedBiome, true);
@@ -535,6 +535,16 @@ public class PlayerListener implements Listener {
             }
         } else {
             if (e.getClickedBlock() != null) {
+                if(e.getItem() != null && e.getItem().isSimilar(ArenaManager.getPosSelectorItem())) {
+                    if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        e.setCancelled(true);
+                        ArenaManager.getInstance().setPos(p,e.getClickedBlock(),2);
+                    } else if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        e.setCancelled(true);
+                        ArenaManager.getInstance().setPos(p,e.getClickedBlock(),1);
+                    }
+                    return;
+                }
                 if (e.getClickedBlock().getState() instanceof Sign) {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         Sign s = (Sign) e.getClickedBlock().getState();

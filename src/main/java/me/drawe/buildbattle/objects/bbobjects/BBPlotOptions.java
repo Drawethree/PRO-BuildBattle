@@ -49,16 +49,19 @@ public class BBPlotOptions {
                     for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
                     return;
                 } else {
+                    this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
                     this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
                     getPlot().changeFloor(currentFloorItem);
                     for (Player p : getPlot().getTeam().getPlayers())
                         p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
                 }
             } else if (currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
+                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
                 this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
                 getPlot().changeFloor(CompMaterial.WATER);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             } else if (currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial()) {
+                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
                 this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
                 getPlot().changeFloor(CompMaterial.LAVA);
                 for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
@@ -92,36 +95,15 @@ public class BBPlotOptions {
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        CompMaterial m = CompMaterial.fromMaterial(currentFloorItem.getType());
-        if (m == CompMaterial.CACTUS
-                || m == CompMaterial.STONE_BUTTON
-                || m.name().contains("BUTTON")
-                || m == CompMaterial.LADDER
-                || m.name().contains("SAPLING")
-                || m == CompMaterial.SEA_PICKLE
-                || m == CompMaterial.GRASS
-                || m == CompMaterial.FERN
-                || m == CompMaterial.DEAD_BUSH
-                || m == CompMaterial.SEAGRASS
-                || m == CompMaterial.BLUE_ORCHID
-                || m == CompMaterial.ALLIUM
-                || m == CompMaterial.END_ROD
-                || m == CompMaterial.LILAC
-                || m == CompMaterial.PEONY
-                || m == CompMaterial.ROSE_BUSH
-                || m == CompMaterial.TALL_GRASS
-                || m == CompMaterial.LARGE_FERN
-                || m == CompMaterial.PAINTING
-                || m.name().contains("TULIP")
-                || m.name().contains("GATE")
-                || m.name().contains("PRESSURE")
-                || m == CompMaterial.LILY_PAD
-                || m == CompMaterial.LEVER
-                || m == CompMaterial.POPPY
-                || m == CompMaterial.DANDELION
-                || m == CompMaterial.VINE
-                || m == CompMaterial.SUNFLOWER
-                || m == CompMaterial.TRIPWIRE_HOOK) {
+        if(!currentFloorItem.getType().isBlock()
+                || CompMaterial.isLongGrass(currentFloorItem.getType())
+                || CompMaterial.isButton(currentFloorItem.getType())
+                || CompMaterial.isFlower(currentFloorItem.getType())
+                || CompMaterial.isDoublePlant(currentFloorItem.getType())
+                || CompMaterial.isSapling(currentFloorItem.getType())
+                || CompMaterial.isPressurePlate(currentFloorItem.getType())
+                || currentFloorItem.getType() == CompMaterial.LADDER.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial()) {
             return false;
         } else {
             return true;

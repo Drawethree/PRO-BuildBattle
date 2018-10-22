@@ -2,6 +2,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
+import me.kangarko.compatbridge.utils.VersionResolver;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -37,9 +38,11 @@ public class BBPlotParticle {
 
             @Override
             public void run() {
-                //particle.getEffect().displa
-                //getLocation().getWorld().spawnParticle(particle.getEffect(),location,GameManager.getAmountParticleToSpawn(),GameManager.getParticleOffset(),GameManager.getParticleOffset(),GameManager.getParticleOffset());
-                getParticle().getEffect().display((float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),(float) GameManager.getParticleOffset(),1F,GameManager.getAmountParticleToSpawn(), getLocation(),getPlot().getArena().getPlayers());
+                if (VersionResolver.isAtLeast1_13()) {
+                    //particle.getEffect().displa
+                    //getLocation().getWorld().spawnParticle(particle.getEffect(),location,GameManager.getAmountParticleToSpawn(),GameManager.getParticleOffset(),GameManager.getParticleOffset(),GameManager.getParticleOffset());
+                    getParticle().getEffect().display((float) GameManager.getParticleOffset(), (float) GameManager.getParticleOffset(), (float) GameManager.getParticleOffset(), 1F, GameManager.getAmountParticleToSpawn(), getLocation(), getPlot().getArena().getPlayers());
+                }
             }
         }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) GameManager.getParticleRefreshTime()*20L);
     }

@@ -748,6 +748,9 @@ public class GameManager {
     }
 
     public void loadThemes() {
+        soloThemes = new ArrayList<>();
+        teamThemes = new ArrayList<>();
+        restricedThemes = new ArrayList<>();
         try {
             for (String s : BuildBattle.getFileManager().getConfig("themes.yml").get().getStringList("solo-themes")) {
                 soloThemes.add(s);

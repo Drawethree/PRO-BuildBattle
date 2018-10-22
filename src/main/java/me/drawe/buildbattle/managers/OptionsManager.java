@@ -265,7 +265,9 @@ public class OptionsManager {
             getAllArenasInventory().addItem(getArenaStatusItem(a));
         }
         for(PlotBiome biome : PlotBiome.values()) {
-            biomesInventory.setItem(biome.getSlot(), biome.getItem());
+            if(biome.getBiome().getBiome() != null) {
+                biomesInventory.addItem(biome.getItem());
+            }
         }
         biomesInventory.setItem(49, getBackItem());
     }

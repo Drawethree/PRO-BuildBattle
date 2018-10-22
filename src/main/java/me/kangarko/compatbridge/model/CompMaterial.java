@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 /**
  * Heavily inspired by a library made by Hex_27.
- *
+ * <p>
  * Source: https://www.spigotmc.org/threads/1-8-to-1-13-itemstack-material-version-support.329630/
  */
 public enum CompMaterial {
@@ -64,7 +64,7 @@ public enum CompMaterial {
     BIRCH_TRAPDOOR("TRAP_DOOR", 0),
     BIRCH_WOOD("LOG", 2),
     BLACK_BANNER("BANNER", 0),
-    BLACK_BED("BED", 15),
+    BLACK_BED("BED", 0),
     BLACK_CARPET("CARPET", 15),
     BLACK_CONCRETE("CONCRETE", 15),
     BLACK_CONCRETE_POWDER("CONCRETE_POWDER", 15),
@@ -79,7 +79,7 @@ public enum CompMaterial {
     BLAZE_ROD("BLAZE_ROD", 0),
     BLAZE_SPAWN_EGG("MONSTER_EGG", 0),
     BLUE_BANNER("BANNER", 11),
-    BLUE_BED("BED", 4),
+    BLUE_BED("BED", 0),
     BLUE_CARPET("CARPET", 11),
     BLUE_CONCRETE("CONCRETE", 11),
     BLUE_CONCRETE_POWDER("CONCRETE_POWDER", 11),
@@ -109,7 +109,7 @@ public enum CompMaterial {
     BRICK_SLAB("STEP", 4),
     BRICK_STAIRS("BRICK_STAIRS", 0),
     BROWN_BANNER("BANNER", 3),
-    BROWN_BED("BED", 12),
+    BROWN_BED("BED", 0),
     BROWN_CARPET("CARPET", 12),
     BROWN_CONCRETE("CONCRETE", 12),
     BROWN_CONCRETE_POWDER("CONCRETE_POWDER", 12),
@@ -194,7 +194,7 @@ public enum CompMaterial {
     CUT_RED_SANDSTONE("STONE", 0),
     CUT_SANDSTONE("STONE", 0),
     CYAN_BANNER("BANNER", 6),
-    CYAN_BED("BED", 9),
+    CYAN_BED("BED", 0),
     CYAN_CARPET("CARPET", 9),
     CYAN_CONCRETE("CONCRETE", 9),
     CYAN_CONCRETE_POWDER("CONCRETE_POWDER", 9),
@@ -333,20 +333,20 @@ public enum CompMaterial {
     GRASS_PATH("GRASS_PATH", 0),
     GRAVEL("GRAVEL", 0),
     GRAY_BANNER("BANNER", 8),
-    GRAY_BED("BED", 7),
+    GRAY_BED("BED", 0),
     GRAY_CARPET("CARPET", 7),
     GRAY_CONCRETE("CONCRETE", 7),
     GRAY_CONCRETE_POWDER("CONCRETE_POWDER", 7),
     GRAY_DYE("INK_SACK", 8),
     GRAY_GLAZED_TERRACOTTA("GRAY_GLAZED_TERRACOTTA", 0),
     GRAY_SHULKER_BOX("GRAY_SHULKER_BOX", 0),
-    GRAY_STAINED_GLASS("STAINED_GLASS", 8),
+    GRAY_STAINED_GLASS("STAINED_GLASS", 7),
     GRAY_STAINED_GLASS_PANE("STAINED_GLASS_PANE", 8),
     GRAY_TERRACOTTA("STAINED_CLAY", 8),
     GRAY_WALL_BANNER("WALL_BANNER", 0),
     GRAY_WOOL("WOOL", 8),
     GREEN_BANNER("BANNER", 2),
-    GREEN_BED("BED", 13),
+    GREEN_BED("BED", 0),
     GREEN_CARPET("CARPET", 13),
     GREEN_CONCRETE("CONCRETE", 13),
     GREEN_CONCRETE_POWDER("CONCRETE_POWDER", 13),
@@ -429,7 +429,7 @@ public enum CompMaterial {
     LEATHER_LEGGINGS("LEATHER_LEGGINGS", 0),
     LEVER("LEVER", 0),
     LIGHT_BLUE_BANNER("BANNER", 12),
-    LIGHT_BLUE_BED("BED", 3),
+    LIGHT_BLUE_BED("BED", 0),
     LIGHT_BLUE_CARPET("CARPET", 3),
     LIGHT_BLUE_CONCRETE("CONCRETE", 3),
     LIGHT_BLUE_CONCRETE_POWDER("CONCRETE_POWDER", 3),
@@ -442,7 +442,7 @@ public enum CompMaterial {
     LIGHT_BLUE_WALL_BANNER("BANNER", 0),
     LIGHT_BLUE_WOOL("WOOL", 3),
     LIGHT_GRAY_BANNER("BANNER", 7),
-    LIGHT_GRAY_BED("BED", 8),
+    LIGHT_GRAY_BED("BED", 0),
     LIGHT_GRAY_CARPET("CARPET", 8),
     LIGHT_GRAY_CONCRETE("CONCRETE", 8),
     LIGHT_GRAY_CONCRETE_POWDER("CONCRETE_POWDER", 8),
@@ -458,7 +458,7 @@ public enum CompMaterial {
     LILAC("DOUBLE_PLANT", 1),
     LILY_PAD("WATER_LILY", 0),
     LIME_BANNER("BANNER", 10),
-    LIME_BED("BED", 5),
+    LIME_BED("BED", 0),
     LIME_CARPET("CARPET", 5),
     LIME_CONCRETE("CONCRETE", 5),
     LIME_CONCRETE_POWDER("CONCRETE_POWDER", 5),
@@ -473,7 +473,7 @@ public enum CompMaterial {
     LINGERING_POTION("LINGERING_POTION", 0),
     LLAMA_SPAWN_EGG("MONSTER_EGG", 0),
     MAGENTA_BANNER("BANNER", 13),
-    MAGENTA_BED("BED", 2),
+    MAGENTA_BED("BED", 0),
     MAGENTA_CARPET("CARPET", 2),
     MAGENTA_CONCRETE("CONCRETE", 2),
     MAGENTA_CONCRETE_POWDER("CONCRETE_POWDER", 2),
@@ -549,7 +549,7 @@ public enum CompMaterial {
     OBSIDIAN("OBSIDIAN", 0),
     OCELOT_SPAWN_EGG("RECORD_12", 0),
     ORANGE_BANNER("BANNER", 14),
-    ORANGE_BED("BED", 1),
+    ORANGE_BED("BED", 0),
     ORANGE_CARPET("CARPET", 1),
     ORANGE_CONCRETE("CONCRETE", 1),
     ORANGE_CONCRETE_POWDER("CONCRETE_POWDER", 1),
@@ -573,7 +573,7 @@ public enum CompMaterial {
     PHANTOM_SPAWN_EGG("MONSTER_EGG", 0),
     PIG_SPAWN_EGG("MONSTER_EGG", 0),
     PINK_BANNER("BANNER", 9),
-    PINK_BED("BED", 6),
+    PINK_BED("BED", 0),
     PINK_CARPET("CARPET", 6),
     PINK_CONCRETE("CONCRETE", 6),
     PINK_CONCRETE_POWDER("CONCRETE_POWDER", 6),
@@ -640,7 +640,7 @@ public enum CompMaterial {
     PUMPKIN_SEEDS("PUMPKIN_SEEDS", 0),
     PUMPKIN_STEM("PUMPKIN_STEM", 0),
     PURPLE_BANNER("BANNER", 5),
-    PURPLE_BED("BED", 10),
+    PURPLE_BED("BED", 0),
     PURPLE_CARPET("CARPET", 10),
     PURPLE_CONCRETE("CONCRETE", 10),
     PURPLE_CONCRETE_POWDER("CONCRETE_POWDER", 10),
@@ -675,7 +675,7 @@ public enum CompMaterial {
     REDSTONE_WALL_TORCH("REDSTONE_TORCH_ON", 1),
     REDSTONE_WIRE("REDSTONE_WIRE", 0),
     RED_BANNER("BANNER", 1),
-    RED_BED("BED", 14),
+    RED_BED("BED", 0),
     RED_CARPET("CARPET", 14),
     RED_CONCRETE("CONCRETE", 14),
     RED_CONCRETE_POWDER("CONCRETE_POWDER", 14),
@@ -847,7 +847,7 @@ public enum CompMaterial {
     WRITABLE_BOOK("BOOK_AND_QUILL", 0),
     WRITTEN_BOOK("WRITTEN_BOOK", 0),
     YELLOW_BANNER("BANNER", 11),
-    YELLOW_BED("BED", 4),
+    YELLOW_BED("BED", 0),
     YELLOW_CARPET("CARPET", 4),
     YELLOW_CONCRETE("CONCRETE", 4),
     YELLOW_CONCRETE_POWDER("CONCRETE_POWDER", 4),
@@ -870,7 +870,7 @@ public enum CompMaterial {
 
     /**
      * The name of the material in Minecraft 1.12 and older (may or may not be the same).
-     *
+     * <p>
      * Returns the closest alternative in case such material was non-existing in that old version.
      */
     private final String legacyName;
@@ -882,25 +882,20 @@ public enum CompMaterial {
 
     /**
      * Holds data value for legacy material name.
-     *
+     * <p>
      * For Minecraft 1.12 and older, some materials could only be obtained by their data value
      * (for example WOOL with data value 4 represents YELLOW_WOOL in 1.13).
-     *
-     * @deprecated best value ever
      */
-
     private final int data;
 
-    private CompMaterial(String legacyName, int data) {
+    CompMaterial(String legacyName, int data) {
         this.legacyName = legacyName;
         this.data = data;
 
         try {
             material = Material.valueOf(VersionResolver.isAtLeast1_13() ? name() : parseLegacyName(legacyName));
-
         } catch (final IllegalArgumentException t) {
             t.printStackTrace();
-
             throw new RuntimeException("Malfunction loading compatible material " + this + " (see above)");
         }
     }
@@ -909,16 +904,14 @@ public enum CompMaterial {
     private static String parseLegacyName(String name) {
         try {
             return Material.valueOf(name).toString();
-
         } catch (final IllegalArgumentException ex) {
             return "STONE";
         }
     }
 
     /**
-     * Construct an {@link ItemStack} from this material (with corresponding data value if necessary).
+     * Construct an {@link ItemStack} from this material (with corresponding data value if necessary)
      *
-     * @param amount the amount
      * @return the itemstack
      */
     public final ItemStack toItem() {
@@ -934,7 +927,8 @@ public enum CompMaterial {
      */
     public final ItemStack toItem(int amount) {
         final Material mat = toMaterial();
-        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);	}
+        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);
+    }
 
     /**
      * Returns the {@link Material} representation of our material.
@@ -948,10 +942,9 @@ public enum CompMaterial {
 
     /**
      * Return true if the {@link #getMaterial()} and the given Material matches.
-     *
+     * <p>
      * NOT cross-version compatible. For this, use {@link #is(ItemStack)}
      *
-     * @param comp
      * @return
      */
     public final boolean is(Material mat) {
@@ -983,7 +976,6 @@ public enum CompMaterial {
     /**
      * Returns true for damageable materials.
      *
-     * @param type
      * @return
      */
     public final boolean isDamageable() {
@@ -1233,10 +1225,9 @@ public enum CompMaterial {
     /**
      * Creates a Monster Egg. Returns a valid type for MC 1.13, otherwise return a generic non working type!
      *
-     * @deprecated DOES ONLY RETURN THE SPECIFIC EGG FOR MC 1.13!
-     *
      * @param type
      * @return
+     * @deprecated DOES ONLY RETURN THE SPECIFIC EGG FOR MC 1.13!
      */
     @Deprecated
     public static Material makeMonsterEgg(EntityType type) {
@@ -1271,7 +1262,6 @@ public enum CompMaterial {
     public static final CompMaterial fromMaterial(Material mat) {
         try {
             return CompMaterial.valueOf(mat.toString());
-
         } catch (final IllegalArgumentException e) {
             for (final CompMaterial xmat : CompMaterial.values())
                 if (xmat.legacyName.equals(mat.toString()))
@@ -1280,10 +1270,18 @@ public enum CompMaterial {
         return null;
     }
 
+    public static final CompMaterial fromItemStack(ItemStack item) {
+        for (final CompMaterial xmat : CompMaterial.values()) {
+            if (xmat.legacyName.equals(item.getType().toString()) && xmat.data == item.getData().getData()) {
+                return xmat;
+            }
+        }
+        return null;
+    }
+
     /**
      * Creates {@link CompMaterial} class from a given String.
-     * The string may contain a colon ":" and a data value after it,
-     * we will find then call {@link #fromLegacy(String, byte)} and return the proper Material.
+     * The string may contain a colon ":" and a data value after it...
      *
      * @param key
      * @return
@@ -1291,7 +1289,6 @@ public enum CompMaterial {
     public static CompMaterial fromString(String key) {
         try {
             return CompMaterial.valueOf(key);
-
         } catch (final IllegalArgumentException e) {
             CompMaterial xmat = null;
             final String[] split = key.split(":");
@@ -1383,5 +1380,19 @@ public enum CompMaterial {
 
     public int getData() {
         return data;
+    }
+
+    public static final boolean isButton(Material mat) {
+        final String n = mat.toString();
+        return n.endsWith("_BUTTON");
+    }
+
+    public static boolean isPressurePlate(Material type) {
+        return type.toString().endsWith("_PLATE");
+    }
+
+    public static boolean isFlower(Material type) {
+        String n = type.toString();
+        return n.endsWith("_FLOWER") || n.equalsIgnoreCase("LILYPAD") || n.equalsIgnoreCase("VINE");
     }
 }

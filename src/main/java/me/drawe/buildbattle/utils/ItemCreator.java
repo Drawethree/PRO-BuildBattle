@@ -104,6 +104,20 @@ public class ItemCreator {
         return item;
     }
 
+    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, boolean glow) {
+        ItemStack item = material.toItem(amount);
+        ItemMeta meta = item.getItemMeta();
+        if (displayName != null) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        }
+        meta.setLore(convertLore(lore));
+        item.setItemMeta(meta);
+        if(glow) {
+            addGlowEffect(item);
+        }
+        return item;
+    }
+
     /*
      * replacing enchantment with string
      */

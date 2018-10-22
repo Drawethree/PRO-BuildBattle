@@ -3,9 +3,12 @@ package me.drawe.buildbattle.managers;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
+import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.LocationUtil;
+import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,11 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ArenaManager {
+
     private static ArenaManager ourInstance = new ArenaManager();
     private static List<BBArena> arenas = new ArrayList<>();
     private static List<BBArenaEdit> arenaEditors = new ArrayList<>();
     private static int totalPlayedGames = 0;
     private static HashMap<Player, Location[]> playerBBPos = new HashMap<>();
+    private static ItemStack posSelectorItem = ItemCreator.create(CompMaterial.STICK, 1, "&ePlot Selector", ItemCreator.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"),true);
     private Inventory editArenasInventory;
 
     public static ArenaManager getInstance() {
@@ -66,6 +71,10 @@ public class ArenaManager {
 
     public static HashMap<Player, Location[]> getPlayerBBPos() {
         return playerBBPos;
+    }
+
+    public static ItemStack getPosSelectorItem() {
+        return posSelectorItem;
     }
 
     public int getArenaListSize() {
@@ -317,16 +326,16 @@ public class ArenaManager {
         return null;
     }
 
-    public void setPos(Player p, int pos) {
+    public void setPos(Player p, Block clickedBlock, int pos) {
         Location[] poses;
         if(playerBBPos.containsKey(p)) {
             poses = playerBBPos.get(p);
         } else {
             poses = new Location[2];
         }
-        poses[pos-1] = p.getLocation();
+        poses[pos-1] = clickedBlock.getLocation();
         playerBBPos.put(p, poses);
-        p.sendMessage(GameManager.getPrefix() + "§aPosition §e" + pos + "§a set to §e" + LocationUtil.getStringFromLocation(p.getLocation()));
+        p.sendMessage(GameManager.getPrefix() + "§aPosition §e" + pos + "§a set to §eWorld:" + clickedBlock.getLocation().getWorld().getName() + ", X:" + clickedBlock.getLocation().getBlockX() + ", Y:" + clickedBlock.getLocation().getBlockY() + ", Z:" + clickedBlock.getLocation().getBlockZ());
     }
 
     public boolean hasSelectionReady(Player p) {
