@@ -9,7 +9,6 @@ import me.drawe.buildbattle.utils.ReflectionUtils;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -136,7 +135,7 @@ public class BBPlotOptions {
             for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
         }
         for(Location l : getPlot().getBlocksInPlot()) {
-            l.getBlock().setBiome(currentBiome.getBiome());
+            l.getBlock().setBiome(currentBiome.getBiome().getBiome());
         }
         for(Chunk c : getPlot().getChunksInPlot()) {
             for (Player p : getPlot().getArena().getPlayers()) {

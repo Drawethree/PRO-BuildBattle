@@ -48,7 +48,7 @@ arena:
   fair_vote:
     enabled: true
   endTime: 10
-  default_floor: '5:2'
+  default_floor: "WOOD:2"
   arena_chat: true
   team_chat: true
   announce_new_most_points: true

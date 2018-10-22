@@ -7,7 +7,6 @@ import me.drawe.buildbattle.objects.bbobjects.*;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -23,9 +22,9 @@ import java.util.List;
 
 public class ItemCreator {
 
-    public static ItemStack getPlayerSkull(Player player, String title, List<String> lore){
+    public static ItemStack getPlayerSkull(Player player, String title, List<String> lore) {
         ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
-        SkullMeta meta = (SkullMeta)skull.getItemMeta();
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
         meta.setLore(convertLore(lore));
@@ -33,9 +32,9 @@ public class ItemCreator {
         return skull;
     }
 
-    public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore){
+    public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore) {
         ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
-        SkullMeta meta = (SkullMeta)skull.getItemMeta();
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwner(player.getName());
         meta.setDisplayName(title);
         meta.setLore(convertLore(lore));
@@ -45,8 +44,8 @@ public class ItemCreator {
 
     public static int getInventorySizeBasedOnList(List<?> list) {
         int size = 9;
-        while(list.size() > size) {
-            if(size == 54) {
+        while (list.size() > size) {
+            if (size == 54) {
                 break;
             }
             size += 9;
@@ -58,42 +57,39 @@ public class ItemCreator {
         return CompMaterial.fromString(value).toItem();
     }
 
-    public static List<String> convertLore(List<String> list)
-    {
+    public static List<String> convertLore(List<String> list) {
         List<String> lore = new ArrayList<String>();
         for (int i = 0; i < list.size(); i++) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', (String)list.get(i)));
+            lore.add(ChatColor.translateAlternateColorCodes('&', (String) list.get(i)));
         }
         return lore;
     }
 
     public static List<String> convertThemeLore(BBTheme theme, List<String> list, int timeLeft) {
         List<String> lore = new ArrayList<>();
-        for(String s : list) {
+        for (String s : list) {
             lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%theme_percentage%", String.valueOf(theme.getPercentage())).replaceAll("%time_left%", String.valueOf(timeLeft)));
         }
         return lore;
     }
 
-    public static List<String> convertWeatherLore(BBPlot plot,List<String> list) {
+    public static List<String> convertWeatherLore(BBPlot plot, List<String> list) {
         List<String> lore = new ArrayList<>();
-        for(String s : list) {
+        for (String s : list) {
             lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%weather%", plot.getOptions().getCurrentWeather().name()));
         }
         return lore;
     }
 
 
-    public static List<String> makeLore(String... string)
-    {
+    public static List<String> makeLore(String... string) {
         return Arrays.asList(string);
     }
 
     /*
      * Easy creating an itemstack
      */
-    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels)
-    {
+    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels) {
         ItemStack item = material.toItem(amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
@@ -101,7 +97,7 @@ public class ItemCreator {
         }
         meta.setLore(convertLore(lore));
         if (enchantments != null) {
-            for (int i = 0;i<enchantments.length;i++)
+            for (int i = 0; i < enchantments.length; i++)
                 meta.addEnchant(ench(enchantments[i]), levels[i], true);
         }
         item.setItemMeta(meta);
@@ -111,8 +107,7 @@ public class ItemCreator {
     /*
      * replacing enchantment with string
      */
-    private static Enchantment ench(String n)
-    {
+    private static Enchantment ench(String n) {
         n = n.toLowerCase();
         n = n.replace("alldamage", "DAMAGE_ALL").replace("alldmg", "DAMAGE_ALL").replace("sharpness", "DAMAGE_ALL");
         n = n.replace("arthropodsdamage", "DAMAGE_ARTHROPODS").replace("ardmg", "DAMAGE_ARTHROPODS").replace("baneofarthropods", "DAMAGE_ARTHROPODS");
@@ -142,7 +137,7 @@ public class ItemCreator {
 
     public static List<String> createTeamLore(BBTeam team) {
         List<String> returnList = new ArrayList<>();
-        for(int i = 0;i < team.getMaxPlayers();i++) {
+        for (int i = 0; i < team.getMaxPlayers(); i++) {
             returnList.add(team.getPlayerName(i));
         }
         return returnList;
@@ -154,8 +149,8 @@ public class ItemCreator {
 
     public static int getInventorySize(int arenasAmount) {
         int size = 9;
-        while(arenasAmount > size) {
-            if(size == 54) {
+        while (arenasAmount > size) {
+            if (size == 54) {
                 break;
             }
             size += 9;
@@ -164,19 +159,19 @@ public class ItemCreator {
     }
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null,null);
+        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
         List<String> lore = new ArrayList<>();
-        for(String s : list) {
+        for (String s : list) {
             lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%supervotes%", String.valueOf(amount)));
         }
         return lore;
     }
 
     public static ItemStack createReportItem(BBBuildReport report) {
-        return create(report.getReportStatus().getStatusMaterial(), 1, report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null,null);
+        return create(report.getReportStatus().getStatusMaterial(), 1, report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null, null);
 
     }
 
@@ -209,7 +204,7 @@ public class ItemCreator {
 
     public static void addGlowEffect(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.ARROW_FIRE,1,true);
+        meta.addEnchant(Enchantment.ARROW_FIRE, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
     }

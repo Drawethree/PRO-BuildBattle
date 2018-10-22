@@ -1,11 +1,9 @@
 package me.drawe.buildbattle.utils;
 
 import me.kangarko.compatbridge.model.CompMaterial;
-import me.kangarko.compatbridge.model.CompatBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -19,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-//Darkblade12
 public enum ParticleEffect {
 
     EXPLOSION_NORMAL("explode", 0, -1, ParticleProperty.DIRECTIONAL),

@@ -188,9 +188,9 @@ public enum CompMaterial {
     COW_SPAWN_EGG("MONSTER_EGG", 0),
     CRACKED_STONE_BRICKS("SMOOTH_BRICK", 2),
     CRAFTING_TABLE("WORKBENCH", 0),
-    CREEPER_HEAD("SKULL_ITEM", 0),
+    CREEPER_HEAD("SKULL_ITEM", 4),
     CREEPER_SPAWN_EGG("MONSTER_EGG", 0),
-    CREEPER_WALL_HEAD("SKULL", 0),
+    CREEPER_WALL_HEAD("SKULL", 4),
     CUT_RED_SANDSTONE("STONE", 0),
     CUT_SANDSTONE("STONE", 0),
     CYAN_BANNER("BANNER", 6),
@@ -588,8 +588,8 @@ public enum CompMaterial {
     PINK_WOOL("WOOL", 6),
     PISTON("PISTON_BASE", 0),
     PISTON_HEAD("PISTON_EXTENSION", 0),
-    PLAYER_HEAD("SKULL_ITEM", 0),
-    PLAYER_WALL_HEAD("SKULL", 0),
+    PLAYER_HEAD("SKULL_ITEM", 3),
+    PLAYER_WALL_HEAD("SKULL", 3),
     PODZOL("DIRT", 2),
     POISONOUS_POTATO("POISONOUS_POTATO", 0),
     POLAR_BEAR_SPAWN_EGG("MONSTER_EGG", 0),
@@ -858,12 +858,12 @@ public enum CompMaterial {
     YELLOW_TERRACOTTA("STAINED_CLAY", 4),
     YELLOW_WALL_BANNER("WALL_BANNER", 0),
     YELLOW_WOOL("WOOL", 4),
-    ZOMBIE_HEAD("SKULL_ITEM", 0),
+    ZOMBIE_HEAD("SKULL_ITEM", 2),
     ZOMBIE_HORSE_SPAWN_EGG("MONSTER_EGG", 0),
     ZOMBIE_PIGMAN_SPAWN_EGG("MONSTER_EGG", 0),
     ZOMBIE_SPAWN_EGG("MONSTER_EGG", 0),
     ZOMBIE_VILLAGER_SPAWN_EGG("MONSTER_EGG", 0),
-    ZOMBIE_WALL_HEAD("SKULL", 0);
+    ZOMBIE_WALL_HEAD("SKULL", 2);
 
     // Holds history of last called translated names, for performance.
     private static HashMap<String, CompMaterial> cachedSearch = new HashMap<>();
@@ -934,7 +934,6 @@ public enum CompMaterial {
      */
     public final ItemStack toItem(int amount) {
         final Material mat = toMaterial();
-
         return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);	}
 
     /**
@@ -944,7 +943,6 @@ public enum CompMaterial {
      */
     public final Material toMaterial() {
         final Material mat = Material.matchMaterial(toString());
-
         return mat != null ? mat : Material.matchMaterial(legacyName);
     }
 
