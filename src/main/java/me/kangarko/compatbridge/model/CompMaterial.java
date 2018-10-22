@@ -1263,17 +1263,23 @@ public enum CompMaterial {
         try {
             return CompMaterial.valueOf(mat.toString());
         } catch (final IllegalArgumentException e) {
-            for (final CompMaterial xmat : CompMaterial.values())
-                if (xmat.legacyName.equals(mat.toString()))
+            for (final CompMaterial xmat : CompMaterial.values()) {
+                if (xmat.legacyName.equals(mat.toString())) {
                     return xmat;
+                }
+            }
         }
         return null;
     }
 
     public static final CompMaterial fromItemStack(ItemStack item) {
-        for (final CompMaterial xmat : CompMaterial.values()) {
-            if (xmat.legacyName.equals(item.getType().toString()) && xmat.data == item.getData().getData()) {
-                return xmat;
+        try {
+            return CompMaterial.valueOf(item.getType().toString());
+        } catch (final IllegalArgumentException e) {
+            for (final CompMaterial xmat : CompMaterial.values()) {
+                if (xmat.legacyName.equals(item.getType().toString()) && xmat.data == item.getData().getData()) {
+                    return xmat;
+                }
             }
         }
         return null;

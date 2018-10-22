@@ -3,12 +3,10 @@ package me.drawe.buildbattle.utils;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.utils.VersionResolver;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -165,7 +163,11 @@ public class LocationUtil {
                     cancel();
                 } else {
                     for (Location l : getHollowCube(l1, l2)) {
-                        ParticleEffect.VILLAGER_HAPPY.display(0f, 0f, 0f, 0f, 1, getCenter(l), p);
+                        if(VersionResolver.isAtLeast1_13()) {
+                            l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY,getCenter(l),1);
+                        } else {
+                            ParticleEffect.VILLAGER_HAPPY.display(0f, 0f, 0f, 0f, 1, getCenter(l), p);
+                        }
                     }
                 }
                 count = count + 1;
