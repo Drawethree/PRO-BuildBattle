@@ -26,7 +26,7 @@ public class MySQL {
     public static Connection getConnection() throws Exception {
         if(connection == null || connection.isClosed()) {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = (Connection) DriverManager.getConnection(
+            connection = DriverManager.getConnection(
                     "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true" , username, password);
         }
         return connection;
