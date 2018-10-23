@@ -44,31 +44,32 @@ public class BBPlotOptions {
     }
 
     public void setCurrentFloorItem(ItemStack currentFloorItem) {
-            if (currentFloorItem.getType().isBlock()) {
-                if(!isItemValidForChange(currentFloorItem)) {
-                    for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
-                    return;
-                } else {
-                    this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
-                    this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                    getPlot().changeFloor(currentFloorItem);
-                    for (Player p : getPlot().getTeam().getPlayers())
-                        p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
-                }
-            } else if (currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
-                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
-                this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(CompMaterial.WATER);
-                for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
-            } else if (currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial()) {
-                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
-                this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
-                getPlot().changeFloor(CompMaterial.LAVA);
-                for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+        if (currentFloorItem.getType().isBlock()) {
+            if (!isItemValidForChange(currentFloorItem)) {
+                for (Player p : getPlot().getTeam().getPlayers())
+                    p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+                return;
             } else {
-                for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
+                this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+                getPlot().changeFloor(currentFloorItem);
+                for (Player p : getPlot().getTeam().getPlayers())
+                    p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             }
-     }
+        } else if (currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
+            this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
+            this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+            getPlot().changeFloor(CompMaterial.WATER);
+            for (Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+        } else if (currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial()) {
+            this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
+            this.currentFloorItem = ItemCreator.create(currentFloorMaterial, 1, getCurrentFloorItem().getItemMeta().getDisplayName(), getCurrentFloorItem().getItemMeta().getLore(), null, null);
+            getPlot().changeFloor(CompMaterial.LAVA);
+            for (Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+        } else {
+            for (Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+        }
+    }
 
     public WeatherType getCurrentWeather() {
         return currentWeather;
@@ -76,10 +77,10 @@ public class BBPlotOptions {
 
     public void setCurrentWeather(WeatherType currentWeather, boolean b) {
         this.currentWeather = currentWeather;
-        if(b) {
+        if (b) {
             getPlot().getTeam().getCaptain().sendMessage(Message.WEATHER_CHANGED.getChatMessage().replaceAll("%weather%", getCurrentWeather().name()));
         }
-        for(Player p : getPlot().getTeam().getPlayers()) p.setPlayerWeather(getCurrentWeather());
+        for (Player p : getPlot().getTeam().getPlayers()) p.setPlayerWeather(getCurrentWeather());
     }
 
     public BBPlotTime getCurrentTime() {
@@ -88,38 +89,35 @@ public class BBPlotOptions {
 
     public void setCurrentTime(BBPlotTime currentTime, boolean broadcast) {
         this.currentTime = currentTime;
-        for(Player p : getPlot().getTeam().getPlayers()) p.setPlayerTime(getCurrentTime().getTime(), false);
-        if(broadcast) {
+        for (Player p : getPlot().getTeam().getPlayers()) p.setPlayerTime(getCurrentTime().getTime(), false);
+        if (broadcast) {
             getPlot().getTeam().getCaptain().sendMessage(Message.TIME_CHANGED.getChatMessage().replaceAll("%time%", getCurrentTime().getName()));
         }
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        if(!currentFloorItem.getType().isBlock()
-                || CompMaterial.isLongGrass(currentFloorItem.getType())
+        return !(CompMaterial.isLongGrass(currentFloorItem.getType())
                 || CompMaterial.isButton(currentFloorItem.getType())
                 || CompMaterial.isFlower(currentFloorItem.getType())
                 || CompMaterial.isDoublePlant(currentFloorItem.getType())
                 || CompMaterial.isSapling(currentFloorItem.getType())
                 || CompMaterial.isPressurePlate(currentFloorItem.getType())
+                || CompMaterial.isBed(currentFloorItem.getType())
                 || currentFloorItem.getType() == CompMaterial.LADDER.getMaterial()
-                || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial()) {
-            return false;
-        } else {
-            return true;
-        }
+                || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial());
     }
 
 
-   public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
+    public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
         this.currentBiome = currentBiome;
-        if(broadcast) {
-            for(Player p : getPlot().getTeam().getPlayers()) p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
+        if (broadcast) {
+            for (Player p : getPlot().getTeam().getPlayers())
+                p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
         }
-        for(Location l : getPlot().getBlocksInPlot()) {
+        for (Location l : getPlot().getBlocksInPlot()) {
             l.getBlock().setBiome(currentBiome.getBiome().getBiome());
         }
-        for(Chunk c : getPlot().getChunksInPlot()) {
+        for (Chunk c : getPlot().getChunksInPlot()) {
             for (Player p : getPlot().getArena().getPlayers()) {
                 try {
                     ReflectionUtils.sendPacket(p, ReflectionUtils.getNMSClass("PacketPlayOutMapChunk").getConstructor(ReflectionUtils.getNMSClass("Chunk"), boolean.class, int.class).newInstance(c.getClass().getMethod("getHandle").invoke(c), true, 65535));

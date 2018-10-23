@@ -114,6 +114,7 @@ public class LocationUtil {
     public static List<Location> getHollowCube(Location min, Location max) {
         List<Location> result = new ArrayList<>();
         World world = min.getWorld();
+
         double minX = Math.min(min.getX(), max.getX());
         double minY = Math.min(min.getY(), max.getY());
         double minZ = Math.min(min.getZ(), max.getZ());
@@ -164,7 +165,7 @@ public class LocationUtil {
                 } else {
                     for (Location l : getHollowCube(l1, l2)) {
                         if(VersionResolver.isAtLeast1_13()) {
-                            l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY,getCenter(l),1);
+                            l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l),1);
                         } else {
                             ParticleEffect.VILLAGER_HAPPY.display(0f, 0f, 0f, 0f, 1, getCenter(l), p);
                         }

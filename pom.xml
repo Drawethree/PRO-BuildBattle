@@ -76,6 +76,10 @@
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
+            <id>everything</id>
+            <url>http://repo.citizensnpcs.co/</url>
+        </repository>
+        <repository>
             <id>sk89q-snapshots</id>
             <url>http://maven.sk89q.com/artifactory/repo</url>
             <releases>
@@ -87,7 +91,7 @@
         </repository>
         <repository>
             <id>filoghost-repo</id>
-            <url>http://novaguilds.pl/repo/</url>
+            <url>https://ci.filoghost.me/plugin/repository/everything/</url>
         </repository>
         <repository>
             <id>mvdw-software</id>
@@ -116,9 +120,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizens</artifactId>
+            <version>2.0.24-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
             <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

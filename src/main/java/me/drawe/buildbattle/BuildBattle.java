@@ -3,7 +3,6 @@ package me.drawe.buildbattle;
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.drawe.buildbattle.api.BuildBattleProPlaceholders;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
@@ -33,7 +32,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private static BuildBattle instance;
     private static FileManager fileManager;
-    private static WorldEditPlugin worldEdit;
+    //private static WorldEditPlugin worldEdit;
     private static boolean debug = false;
     private boolean mysqlEnabled = false;
     private boolean useBungeecord = false;
@@ -54,9 +53,9 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         return instance;
     }
 
-    public static WorldEditPlugin getWorldEdit() {
+    /*public static WorldEditPlugin getWorldEdit() {
         return worldEdit;
-    }
+    }*/
 
     public static FileManager getFileManager() {
         return fileManager;
@@ -84,7 +83,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                 Bukkit.getConsoleSender().sendMessage("");
                 GameManager.getInstance().loadArenaPreferences();
                 setupConfigPreferences();
-                loadWorldEdit();
+                //loadWorldEdit();
                 //setupChat();
                 useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
                 useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
@@ -288,12 +287,12 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.mysqlEnabled = mysqlEnabled;
     }
 
-    private void loadWorldEdit() {
+    /*private void loadWorldEdit() {
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (worldEdit == null) {
             BuildBattle.warning("§cWorldEdit dependency not found ! Some features may not work !");
         }
-    }
+    }*/
 
     public boolean isUseBungeecord() {
         return useBungeecord;

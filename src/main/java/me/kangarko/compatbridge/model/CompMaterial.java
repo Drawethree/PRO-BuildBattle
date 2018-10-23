@@ -332,7 +332,7 @@ public enum CompMaterial {
     GRASS_BLOCK("GRASS", 0),
     GRASS_PATH("GRASS_PATH", 0),
     GRAVEL("GRAVEL", 0),
-    GRAY_BANNER("BANNER", 8),
+    GRAY_BANNER("BANNER", 7),
     GRAY_BED("BED", 0),
     GRAY_CARPET("CARPET", 7),
     GRAY_CONCRETE("CONCRETE", 7),
@@ -344,7 +344,7 @@ public enum CompMaterial {
     GRAY_STAINED_GLASS_PANE("STAINED_GLASS_PANE", 8),
     GRAY_TERRACOTTA("STAINED_CLAY", 8),
     GRAY_WALL_BANNER("WALL_BANNER", 0),
-    GRAY_WOOL("WOOL", 8),
+    GRAY_WOOL("WOOL", 7),
     GREEN_BANNER("BANNER", 2),
     GREEN_BED("BED", 0),
     GREEN_CARPET("CARPET", 13),
@@ -1273,16 +1273,16 @@ public enum CompMaterial {
     }
 
     public static final CompMaterial fromItemStack(ItemStack item) {
-        try {
+        if (VersionResolver.isAtLeast1_13()) {
             return CompMaterial.valueOf(item.getType().toString());
-        } catch (final IllegalArgumentException e) {
+        } else {
             for (final CompMaterial xmat : CompMaterial.values()) {
                 if (xmat.legacyName.equals(item.getType().toString()) && xmat.data == item.getData().getData()) {
                     return xmat;
                 }
             }
+            return null;
         }
-        return null;
     }
 
     /**
@@ -1400,5 +1400,10 @@ public enum CompMaterial {
     public static boolean isFlower(Material type) {
         String n = type.toString();
         return n.endsWith("_FLOWER") || n.equalsIgnoreCase("LILYPAD") || n.equalsIgnoreCase("VINE");
+    }
+
+    public static boolean isBed(Material type) {
+        String n = type.toString();
+        return n.endsWith("_BED") || n.equalsIgnoreCase("BED");
     }
 }
