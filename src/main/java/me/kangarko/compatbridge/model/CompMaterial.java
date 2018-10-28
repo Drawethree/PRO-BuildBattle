@@ -927,7 +927,7 @@ public enum CompMaterial {
      */
     public final ItemStack toItem(int amount) {
         final Material mat = toMaterial();
-        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);
+        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) this.data);
     }
 
     /**

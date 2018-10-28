@@ -75,6 +75,7 @@ public class GameManager {
     private static boolean lockServerOnGameStart = false;
     private static boolean replaceBlockBehindSigns = true;
     private static boolean fairVote = true;
+    private static boolean giveRewardsAfterGameEnds = true;
     //PLOT OPTIONS
     private static boolean enableClearPlotOption = true;
     private static boolean enableBannerCreatorOption = true;
@@ -743,6 +744,14 @@ public class GameManager {
         GameManager.teleportToMainLobbyOnJoin = teleportToMainLobbyOnJoin;
     }
 
+    public static boolean isGiveRewardsAfterGameEnds() {
+        return giveRewardsAfterGameEnds;
+    }
+
+    public static void setGiveRewardsAfterGameEnds(boolean giveRewardsAfterGameEnds) {
+        GameManager.giveRewardsAfterGameEnds = giveRewardsAfterGameEnds;
+    }
+
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(CompMaterial.fromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
     }
@@ -867,6 +876,7 @@ public class GameManager {
             setPointsApiRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.PointsAPI.enabled"));
             setVaultRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Vault.enabled"));
             setCommandRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Command.enabled"));
+            setGiveRewardsAfterGameEnds(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.give_after_game_ends"));
             setAsyncSavePlayerData(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
             setStatsType(StatsType.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
             setReportsEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.enable_reports"));
@@ -877,6 +887,7 @@ public class GameManager {
             setChangeMOTD(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
             setReplaceBlockBehindSigns(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
             setAutoRestarting(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
+
             setMainLobbyLocation();
             if (isAutoRestarting()) {
                 setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));

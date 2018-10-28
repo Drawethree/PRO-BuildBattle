@@ -18,6 +18,7 @@ parties:
   enabled: true
   max_players: 5
 rewards:
+  give_after_game_ends: true
   PointsAPI:
     enabled: false
     first_place: 50

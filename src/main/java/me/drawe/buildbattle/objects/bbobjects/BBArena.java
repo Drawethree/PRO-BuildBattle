@@ -411,7 +411,9 @@ public class BBArena {
         if (GameManager.isEndCommandValid()) {
             GameManager.runEndCommands(this);
         }
-        RewardManager.getInstance().giveRewards(this);
+        if(!GameManager.isGiveRewardsAfterGameEnds()) {
+            RewardManager.getInstance().giveRewards(this);
+        }
         ArenaManager.setTotalPlayedGames(ArenaManager.getTotalPlayedGames() + 1);
         endCountdown = new BukkitRunnable() {
 
@@ -530,17 +532,6 @@ public class BBArena {
             default:
                 break;
         }
-        setWinner(null);
-        setCurrentVotingPlot(null);
-        setTheme(null);
-        if (GameManager.isVotingForThemes()) {
-            getThemeVoting().setVotedPlayers(new HashMap<>());
-            getThemeVoting().setThemesVoted(getThemeVoting().getRandomThemesToVote());
-            getThemeVoting().resetInventory();
-        }
-        ArenaManager.getInstance().resetAllPlots(getArenaInstance());
-        resetAllTeams();
-        setBBArenaState(BBArenaState.LOBBY);
         if (forced || GameManager.isRemovePlayersAfterGame()) {
             kickAllPlayers();
         } else {
@@ -558,6 +549,20 @@ public class BBArena {
                 startLobby();
             }
         }
+        if(GameManager.isGiveRewardsAfterGameEnds()) {
+            RewardManager.getInstance().giveRewards(this);
+        }
+        setWinner(null);
+        setCurrentVotingPlot(null);
+        setTheme(null);
+        if (GameManager.isVotingForThemes()) {
+            getThemeVoting().setVotedPlayers(new HashMap<>());
+            getThemeVoting().setThemesVoted(getThemeVoting().getRandomThemesToVote());
+            getThemeVoting().resetInventory();
+        }
+        ArenaManager.getInstance().resetAllPlots(getArenaInstance());
+        resetAllTeams();
+        setBBArenaState(BBArenaState.LOBBY);
         updateAllSigns();
         OptionsManager.getInstance().refreshArenaItem(getArenaInstance());
     }
