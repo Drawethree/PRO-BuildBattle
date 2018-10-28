@@ -10,7 +10,6 @@ import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.Sounds;
 import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.model.CompSound;
 import me.kangarko.compatbridge.model.CompatBridge;
@@ -114,7 +113,7 @@ public class PlayerListener implements Listener {
                     BBArenaEdit clickedEdit = ArenaManager.getInstance().getArenaEdit(e.getCurrentItem());
                     if (clickedEdit != null) {
                         p.openInventory(clickedEdit.getEditInventory());
-                        p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                        p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                     }
                 }
             } else if (inv.getTitle().contains("Editing Arena: ")) {
@@ -124,39 +123,39 @@ public class PlayerListener implements Listener {
                     if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
                         if (e.getCurrentItem().equals(currentEdit.getGameModeItem())) {
                             if (currentEdit.editGameMode()) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getGameTimeItem())) {
                             if (currentEdit.editGameTime(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getMinPlayersItem())) {
                             if (currentEdit.editMinPlayers(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
                             if (currentEdit.editTeamSize(e.getClick())) {
-                                p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             } else {
-                                p.playSound(p.getLocation(), CompSound.BLOCK_NOTE_BASS.getSound(), 1.0F, 1.0F);
+                                p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
                         } else if (e.getCurrentItem().equals(OptionsManager.getSaveItem())) {
                             currentEdit.saveOptions();
-                            p.playSound(p.getLocation(), CompSound.ENTITY_PLAYER_LEVELUP.getSound(), 1.0F, 1.0F);
+                            p.playSound(p.getLocation(), CompSound.LEVEL_UP.getSound(), 1.0F, 1.0F);
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
                         } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                         } else if (e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
                             currentEdit.getArena().delete(p);
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                            p.playSound(p.getLocation(), Sounds.CLICK.getSound(), 1.0F, 1.0F);
+                            p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                         }
                     }
                 }

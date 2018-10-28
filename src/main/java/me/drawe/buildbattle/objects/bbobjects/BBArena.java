@@ -243,10 +243,10 @@ public class BBArena {
                         cancel();
                         return;
                     } else if (countdown % 15 == 0) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ENTITY_EXPERIENCE_ORB_PICKUP.getSound());
+                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ORB_PICKUP.getSound());
                         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     } else if (countdown < 6) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ENTITY_EXPERIENCE_ORB_PICKUP.getSound());
+                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ORB_PICKUP.getSound());
                         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     }
                 } else {
@@ -322,13 +322,13 @@ public class BBArena {
                     cancel();
                     return;
                 } else if (countdown % 60 == 0 && countdown >= 60 && countdown != getGameTime()) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown % 30 == 0 && countdown < 60) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown < 11) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 }
                 if (GameManager.isScoreboardEnabled()) {
@@ -375,13 +375,13 @@ public class BBArena {
                     cancel();
                     return;
                 } else if (countdown % 60 == 0 && countdown >= 60 && countdown != getGameTime()) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown % 30 == 0 && countdown < 60) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 } else if (countdown < 11) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 }
                 if (GameManager.isScoreboardEnabled()) {
@@ -473,7 +473,7 @@ public class BBArena {
                         }
                         return;
                     } else if (timeLeft < 6) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), Sounds.CLICK.getSound());
+                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK.getSound());
                     }
                     if (currentVotingPlot != null) {
                         PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), (int) timeLeft);

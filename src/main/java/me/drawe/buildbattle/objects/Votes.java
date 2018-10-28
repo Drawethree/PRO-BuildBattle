@@ -1,22 +1,21 @@
 package me.drawe.buildbattle.objects;
 
 import me.drawe.buildbattle.utils.ItemCreator;
-import me.drawe.buildbattle.utils.Sounds;
 import me.kangarko.compatbridge.model.CompMaterial;
+import me.kangarko.compatbridge.model.CompSound;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
 public enum Votes {
 
-    NONE(Message.VOTING_NONE.getMessage(), 0, null, Sounds.CAT_MEOW.getSound(), 0.0F),
-    VERY_BAD(Message.VOTING_VERY_BAD.getMessage(), 0, ItemCreator.create(CompMaterial.RED_TERRACOTTA, 1, Message.VOTING_VERY_BAD.getMessage(), ItemCreator.makeLore(""), null, null), Sounds.CAT_MEOW.getSound(), 0.1F),
-    BAD(Message.VOTING_BAD.getMessage(), 1, ItemCreator.create(CompMaterial.ORANGE_TERRACOTTA, 1, Message.VOTING_BAD.getMessage(), ItemCreator.makeLore(""), null, null),Sounds.CAT_MEOW.getSound(), 0.5F),
-    OK(Message.VOTING_OK.getMessage(), 2, ItemCreator.create(CompMaterial.LIME_TERRACOTTA, 1, Message.VOTING_OK.getMessage(), ItemCreator.makeLore(""), null, null),Sounds.CAT_MEOW.getSound(), 1.0F),
-    NICE(Message.VOTING_NICE.getMessage(), 3, ItemCreator.create(CompMaterial.GREEN_TERRACOTTA, 1, Message.VOTING_NICE.getMessage(), ItemCreator.makeLore(""), null, null),Sounds.CAT_MEOW.getSound(),1.25F),
-    EPIC(Message.VOTING_EPIC.getMessage(), 4, ItemCreator.create(CompMaterial.PURPLE_TERRACOTTA, 1, Message.VOTING_EPIC.getMessage(), ItemCreator.makeLore(""), null, null),Sounds.CAT_MEOW.getSound(), 1.5F),
-    LEGENDARY(Message.VOTING_LEGENDARY.getMessage(), 5, ItemCreator.create(CompMaterial.YELLOW_TERRACOTTA, 1, Message.VOTING_LEGENDARY.getMessage(), ItemCreator.makeLore(""), null, null),Sounds.CAT_MEOW.getSound(), 2.0F);
+    NONE(Message.VOTING_NONE.getMessage(), 0, null, CompSound.CAT_MEOW.getSound(), 0.0F),
+    VERY_BAD(Message.VOTING_VERY_BAD.getMessage(), 0, ItemCreator.create(CompMaterial.RED_TERRACOTTA, 1, Message.VOTING_VERY_BAD.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 0.1F),
+    BAD(Message.VOTING_BAD.getMessage(), 1, ItemCreator.create(CompMaterial.ORANGE_TERRACOTTA, 1, Message.VOTING_BAD.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 0.5F),
+    OK(Message.VOTING_OK.getMessage(), 2, ItemCreator.create(CompMaterial.LIME_TERRACOTTA, 1, Message.VOTING_OK.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 1.0F),
+    NICE(Message.VOTING_NICE.getMessage(), 3, ItemCreator.create(CompMaterial.GREEN_TERRACOTTA, 1, Message.VOTING_NICE.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 1.25F),
+    EPIC(Message.VOTING_EPIC.getMessage(), 4, ItemCreator.create(CompMaterial.PURPLE_TERRACOTTA, 1, Message.VOTING_EPIC.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 1.5F),
+    LEGENDARY(Message.VOTING_LEGENDARY.getMessage(), 5, ItemCreator.create(CompMaterial.YELLOW_TERRACOTTA, 1, Message.VOTING_LEGENDARY.getMessage(), ItemCreator.makeLore(""), null, null), CompSound.CAT_MEOW.getSound(), 2.0F);
 
     private String prefix;
     private int weight;
@@ -45,8 +44,8 @@ public enum Votes {
     }
 
     public static Votes getVoteItemByPoints(Integer integer) {
-        for(Votes item : values()) {
-            if((item.getWeight() == integer) && (item != Votes.NONE)) {
+        for (Votes item : values()) {
+            if ((item.getWeight() == integer) && (item != Votes.NONE)) {
                 return item;
             }
         }
@@ -54,8 +53,8 @@ public enum Votes {
     }
 
     public static Votes getVoteByItemStack(ItemStack item) {
-        for(Votes vote : values()) {
-            if(vote.getItem() != null && vote.getItem().isSimilar(item)) {
+        for (Votes vote : values()) {
+            if (vote.getItem() != null && vote.getItem().isSimilar(item)) {
                 return vote;
             }
         }

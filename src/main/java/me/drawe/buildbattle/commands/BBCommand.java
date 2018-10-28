@@ -9,7 +9,7 @@ import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.Sounds;
+import me.kangarko.compatbridge.model.CompSound;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -272,7 +272,7 @@ public class BBCommand implements CommandExecutor {
             Player p = (Player) sender;
             if(p.hasPermission("buildbattlepro.create")) {
                 p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
-                p.playSound(p.getLocation(), Sounds.NOTE_PLING.getSound(), 1.0F,1.0F);
+                p.playSound(p.getLocation(), CompSound.NOTE_PLING.getSound(), 1.0F,1.0F);
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
