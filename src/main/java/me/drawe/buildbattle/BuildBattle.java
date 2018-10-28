@@ -79,7 +79,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             public void run() {
                 Bukkit.getConsoleSender().sendMessage("");
                 Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
-                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§cReport features are under maintenance !"));
                 Bukkit.getConsoleSender().sendMessage("");
                 GameManager.getInstance().loadArenaPreferences();
                 setupConfigPreferences();
