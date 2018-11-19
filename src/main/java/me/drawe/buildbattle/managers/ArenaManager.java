@@ -23,18 +23,16 @@ public class ArenaManager {
 
     private static ArenaManager ourInstance = new ArenaManager();
     private static List<BBArena> arenas = new ArrayList<>();
-    private static List<BBArenaEdit> arenaEditors = new ArrayList<>();
     private static int totalPlayedGames = 0;
     private static HashMap<Player, Location[]> playerBBPos = new HashMap<>();
     private static ItemStack posSelectorItem = ItemCreator.create(CompMaterial.STICK, 1, "&ePlot Selector", ItemCreator.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"),true);
     private Inventory editArenasInventory;
 
-    public static ArenaManager getInstance() {
-        return ourInstance;
+    private ArenaManager() {
     }
 
-    private ArenaManager() {
-
+    public static ArenaManager getInstance() {
+        return ourInstance;
     }
 
     public static int getArenasAmount(BBGameMode gm) {
@@ -63,10 +61,6 @@ public class ArenaManager {
                 }, GameManager.getEndTime()* 20L);
             }
         }
-    }
-
-    public static List<BBArenaEdit> getArenaEditors() {
-        return arenaEditors;
     }
 
     public static HashMap<Player, Location[]> getPlayerBBPos() {
@@ -202,9 +196,9 @@ public class ArenaManager {
     }
 
     public BBArenaEdit getArenaEdit(Inventory inv) {
-        for(BBArenaEdit edit : getArenaEditors()) {
-            if(edit.getEditInventory().equals(inv)) {
-                return edit;
+        for(BBArena a : arenas) {
+            if(a.getArenaEdit().getEditInventory().equals(inv)) {
+                return a.getArenaEdit();
             }
         }
         return null;
@@ -245,7 +239,7 @@ public class ArenaManager {
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".gameTime")) {
                     BuildBattle.getFileManager().getConfig("arenas.yml").get().set(arena + ".gameTime", GameManager.getDefaultGameTime());
                     BuildBattle.getFileManager().getConfig("arenas.yml").save();
-                    BuildBattle.warning(GameManager.getPrefix() + " §4[Warning] §cArena §e" + arena + " §chave not set gameTime ! Automatically set to default (" + GameManager.getDefaultGameTime() + ")");
+                    BuildBattle.warning(GameManager.getPrefix() + "§4[Warning] §cArena §e" + arena + " §chave not set gameTime ! Automatically set to default (" + GameManager.getDefaultGameTime() + ")");
                 }
                 int gameTime = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(arena + ".gameTime");
                 if(!BuildBattle.getFileManager().getConfig("arenas.yml").get().isSet(arena + ".mode")) {
@@ -295,10 +289,8 @@ public class ArenaManager {
 
     public void loadArenaEditors() {
         editArenasInventory = Bukkit.createInventory(null, getArenaListSize(), "Arena Editor");
-        for(BBArena a : getArenas()) {
-            BBArenaEdit edit = new BBArenaEdit(a);
-            arenaEditors.add(edit);
-            editArenasInventory.addItem(edit.getArenaEditItemStack());
+        for(BBArena a : arenas) {
+            editArenasInventory.addItem(a.getArenaEdit().getArenaEditItemStack());
         }
     }
 
@@ -318,9 +310,9 @@ public class ArenaManager {
     }
 
     public BBArenaEdit getArenaEdit(ItemStack currentItem) {
-        for(BBArenaEdit edit: getArenaEditors()) {
-            if(edit.getArenaEditItemStack().equals(currentItem)) {
-                return edit;
+        for(BBArena a : arenas) {
+            if(a.getArenaEdit().getArenaEditItemStack().equals(currentItem)) {
+                return a.getArenaEdit();
             }
         }
         return null;

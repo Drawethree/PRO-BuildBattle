@@ -53,6 +53,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        if(GameManager.isCreateStatsOnServerJoin()) {
+            PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
+        }
         if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
@@ -173,9 +176,9 @@ public class PlayerListener implements Listener {
                         switch (e.getClick()) {
                             case LEFT:
                                 if (clickedReport.selectSchematic(p)) {
-                                    p.sendMessage(GameManager.getPrefix() + " §aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
+                                    p.sendMessage(GameManager.getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
                                 } else {
-                                    p.sendMessage(GameManager.getPrefix() + " §cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
+                                    p.sendMessage(GameManager.getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
                                 }
                                 p.closeInventory();
                                 break;
@@ -189,10 +192,10 @@ public class PlayerListener implements Listener {
                                 break;
                             case MIDDLE:
                                 if (ReportManager.getInstance().deleteReport(clickedReport)) {
-                                    p.sendMessage(GameManager.getPrefix() + " §aReport deleted !");
+                                    p.sendMessage(GameManager.getPrefix() + "§aReport deleted !");
                                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(inv));
                                 } else {
-                                    p.sendMessage(GameManager.getPrefix() + " §cThere is an issue with deleting this report ! Check console.");
+                                    p.sendMessage(GameManager.getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
                                     p.closeInventory();
                                 }
                                 break;
@@ -589,10 +592,6 @@ public class PlayerListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        BBParty party = PartyManager.getInstance().getPlayerParty(p);
-        if (party != null) {
-            party.removePlayer(p);
-        }
         if (a != null) {
             a.removePlayer(p);
         }
@@ -799,14 +798,14 @@ public class PlayerListener implements Listener {
                     BuildBattle.getFileManager().getConfig("signs.yml").save();
                     //BBSign constructor already adds this sign into BBArena signs and update it.
                     BBSign sign = new BBSign(arena, e.getBlock().getLocation());
-                    p.sendMessage(GameManager.getPrefix() + " §aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
+                    p.sendMessage(GameManager.getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
                     return;
                 } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
                     e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
                     e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
                     e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
                     e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
-                    p.sendMessage(GameManager.getPrefix() + " §aAuto-Join sign successfully created!");
+                    p.sendMessage(GameManager.getPrefix() + "§aAuto-Join sign successfully created!");
                     return;
                 } else {
                     p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());

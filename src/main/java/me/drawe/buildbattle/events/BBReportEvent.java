@@ -10,7 +10,6 @@ import java.util.List;
 public class BBReportEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-
     private Player reporter;
     private List<Player> reportedPlayers;
     private BBPlot reportedPlot;

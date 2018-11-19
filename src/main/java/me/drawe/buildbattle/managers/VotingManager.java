@@ -24,7 +24,7 @@ public class VotingManager {
                 if (GameManager.isShowVoteInSubtitle()) {
                     p.sendTitle("", vote.getPrefix());
                 }
-                p.playSound(p.getLocation(), vote.getSound(), 1L, vote.getPitch());
+                p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
             }
         } else {
             plot.getVotedPlayers().put(p, vote.getWeight());
@@ -32,7 +32,7 @@ public class VotingManager {
             if (GameManager.isShowVoteInSubtitle()) {
                 p.sendTitle("", vote.getPrefix());
             }
-            p.playSound(p.getLocation(), vote.getSound(), 1L, vote.getPitch());
+            p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
         }
         if (GameManager.isScoreboardEnabled()) {
             plot.getArena().updateAllScoreboards(0);

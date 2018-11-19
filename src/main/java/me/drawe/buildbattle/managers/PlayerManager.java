@@ -7,12 +7,12 @@ import me.drawe.buildbattle.objects.PlayerData;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.utils.FancyMessage;
+import me.kangarko.compatbridge.model.CompSound;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -173,9 +173,9 @@ public class PlayerManager {
         }
     }
 
-    public void playSoundToAllPlayers(BBArena arenaInstance, Sound sound) {
+    public void playSoundToAllPlayers(BBArena arenaInstance, CompSound sound) {
         for(Player p : arenaInstance.getPlayers()) {
-            p.playSound(p.getLocation(),sound,1.0F,1.0F);
+            p.playSound(p.getLocation(),sound.getSound(),1.0F,1.0F);
         }
     }
 
@@ -198,8 +198,10 @@ public class PlayerManager {
     }
     public void sendActionBarToAllPlayers(BBArena arenaInstance, String message) {
         for(Player p : arenaInstance.getPlayers()) {
-            if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11") || Bukkit.getVersion().contains("1.12")) {
+            try {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+            } catch(Exception e) {
+
             }
         }
     }

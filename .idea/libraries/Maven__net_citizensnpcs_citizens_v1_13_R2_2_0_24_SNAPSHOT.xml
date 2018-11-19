@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: net.citizensnpcs:citizens-v1_13_R2:2.0.24-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181014.135042-1583.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181117.160013-1592.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181014.135042-1583-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181117.160013-1592-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181014.135042-1583-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/net/citizensnpcs/citizens-v1_13_R2/2.0.24-SNAPSHOT/citizens-v1_13_R2-2.0.24-20181117.160013-1592-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

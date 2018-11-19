@@ -9,7 +9,6 @@ import java.util.List;
 public class BannerCreatorManager {
     private static BannerCreatorManager ourInstance = new BannerCreatorManager();
     private static List<BBBannerCreator> activeBannerCreators = new ArrayList<>();
-
     public static BannerCreatorManager getInstance() {
         return ourInstance;
     }

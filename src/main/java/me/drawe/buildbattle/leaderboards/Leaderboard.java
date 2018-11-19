@@ -31,85 +31,49 @@ public class Leaderboard {
         this.amountToDisplay = amountToDisplay;
         this.refreshTime = refreshTime;
         this.hologram = HologramsAPI.createHologram(BuildBattle.getInstance(), location);
-        update();
+        this.update();
     }
 
     public void update() {
-        if(BuildBattle.getInstance().isUseHolographicDisplays()) {
+        if (BuildBattle.getInstance().isUseHolographicDisplays()) {
             updateTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(hologram == null) {
+                    if (hologram == null) {
                         cancel();
                         return;
                     }
                     hologram.clearLines();
                     hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
                     ArrayList<BBPlayerStats> sortedStats = new ArrayList<>(PlayerManager.getPlayerStats());
-                    switch(getType()) {
+                    switch (getType()) {
                         case WINS:
-                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getWins));
-                            Collections.reverse(sortedStats);
-                            for(int i = 0, position=1;i < getAmountToDisplay();i++,position++) {
-                                try {
-                                    BBPlayerStats stats = sortedStats.get(i);
-                                    hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (NullPointerException e1) {
-                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
-                                    break;
-                                } catch (IndexOutOfBoundsException e2) {
-                                    break;
-                                }
-                            }
+                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats::getWins));
                             break;
                         case PLAYED:
-                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getPlayed));
-                            Collections.reverse(sortedStats);
-                            for(int i = 0, position=1;i < getAmountToDisplay();i++,position++) {
-                                try {
-                                    BBPlayerStats stats = sortedStats.get(i);
-                                    hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (NullPointerException e1) {
-                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
-                                    break;
-                                } catch (IndexOutOfBoundsException e2) {
-                                    break;
-                                }
-                            }
+                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats::getPlayed));
                             break;
                         case BLOCKS_PLACED:
-                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getBlocksPlaced));
-                            Collections.reverse(sortedStats);
-                            for(int i = 0, position=1;i < getAmountToDisplay();i++,position++) {
-                                try {
-                                    BBPlayerStats stats = sortedStats.get(i);
-                                    hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (NullPointerException e1) {
-                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
-                                    break;
-                                } catch (IndexOutOfBoundsException e2) {
-                                    break;
-                                }
-                            }
+                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats::getBlocksPlaced));
                             break;
                         case PARTICLES_PLACED:
-                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats :: getParticlesPlaced));
-                            Collections.reverse(sortedStats);
-                            for(int i = 0, position=1;i < getAmountToDisplay();i++,position++) {
-                                try {
-                                    BBPlayerStats stats = sortedStats.get(i);
-                                    hologram.insertTextLine(position, getFormattedFormat(stats,position,getType()));
-                                } catch (NullPointerException e1) {
-                                    BuildBattle.warning("§cLooks like there are empty stats for leaderboard §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
-                                    break;
-                                } catch (IndexOutOfBoundsException e2) {
-                                    break;
-                                }
-                            }
+                            Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats::getParticlesPlaced));
                             break;
                     }
+                    Collections.reverse(sortedStats);
+                    for (int i = 0, position = 1; i < getAmountToDisplay(); i++, position++) {
+                        try {
+                            BBPlayerStats stats = sortedStats.get(i);
+                            hologram.insertTextLine(position, getFormattedFormat(stats, position, getType()));
+                        } catch (NullPointerException e1) {
+                            BuildBattle.warning("§cLooks like there are empty stats for leaderboard at §e" + LocationUtil.getStringFromLocationXYZ(location) + "§c ! Please change player-amount value");
+                            break;
+                        } catch (IndexOutOfBoundsException e2) {
+                            break;
+                        }
+                    }
                 }
-            }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) (20*60*getRefreshTime()));
+            }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) (20 * 60 * getRefreshTime()));
         }
     }
 
@@ -121,6 +85,7 @@ public class Leaderboard {
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
         BuildBattle.getFileManager().getConfig("leaderboards.yml").save();
     }
+
     public void teleport(Location loc) {
         getHologram().teleport(loc);
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
@@ -151,7 +116,7 @@ public class Leaderboard {
         String returnString = type.getLineFormat().
                 replaceAll("%position%", String.valueOf(position + ".")).
                 replaceAll("%player%", stats.getOfflinePlayer().getName());
-        switch(type) {
+        switch (type) {
             case WINS:
                 returnString = returnString.replaceAll(type.getPlaceholder(), String.valueOf(stats.getWins()));
                 break;
@@ -171,9 +136,11 @@ public class Leaderboard {
     public double getRefreshTime() {
         return refreshTime;
     }
+
     public void setLocation(Location location) {
         this.location = location;
     }
+
     public BukkitTask getUpdateTask() {
         return updateTask;
     }

@@ -434,6 +434,79 @@ items:
     displayname: "&aTeam Selector &8(Right Click)"
     lore:
     - "&7Click to select your team !"
+particles:
+  heart:
+    displayname: "&aHeart particle"
+    lore:
+    - "&7Right-Click to place."
+  happy:
+    displayname: "&aHappy particle"
+    lore:
+    - "&7Right-Click to place."
+  angry:
+    displayname: "&aAngry particle"
+    lore:
+    - "&7Right-Click to place."
+  drip_lava:
+    displayname: "&aDrip Lava particle"
+    lore:
+    - "&7Right-Click to place."
+  drip_water:
+    displayname: "&aDrip Water particle"
+    lore:
+    - "&7Right-Click to place."
+  note:
+    displayname: "&aNote particle"
+    lore:
+    - "&7Right-Click to place."
+  glyph:
+    displayname: "&aGlyph particle"
+    lore:
+    - "&7Right-Click to place."
+  slime:
+    displayname: "&aSlime particle"
+    lore:
+    - "&7Right-Click to place."
+  mob_spawner:
+    displayname: "&aMobspawner particle"
+    lore:
+    - "&7Right-Click to place."
+  explosion:
+    displayname: "&aExplosion particle"
+    lore:
+    - "&7Right-Click to place."
+  magic_crit:
+    displayname: "&aMagic Crit particle"
+    lore:
+    - "&7Right-Click to place."
+  witch:
+    displayname: "&aWitch particle"
+    lore:
+    - "&7Right-Click to place."
+  splash:
+    displayname: "&aSplash particle"
+    lore:
+    - "&7Right-Click to place."
+  cloud:
+    displayname: "&aCloud particle"
+    lore:
+    - "&7Right-Click to place."
+  portal:
+    displayname: "&aPortal particle"
+    lore:
+    - "&7Right-Click to place."
+  firework_spark:
+    displayname: "&aFirework Spark particle"
+    lore:
+    - "&7Right-Click to place."
+  redstone:
+    displayname: "&aRedstone particle"
+    lore:
+    - "&7Right-Click to place."
+  snowball_poof:
+    displayname: "&aSnowball Poof particle"
+    lore:
+    - "&7Right-Click to place."
 gamemode:
   solo: "SOLO"
   team: "TEAM"

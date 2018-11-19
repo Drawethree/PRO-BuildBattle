@@ -891,9 +891,8 @@ public enum CompMaterial {
     CompMaterial(String legacyName, int data) {
         this.legacyName = legacyName;
         this.data = data;
-
         try {
-            material = Material.valueOf(VersionResolver.isAtLeast1_13() ? name() : parseLegacyName(legacyName));
+            this.material = Material.valueOf(VersionResolver.isAtLeast1_13() ? name() : parseLegacyName(legacyName));
         } catch (final IllegalArgumentException t) {
             t.printStackTrace();
             throw new RuntimeException("Malfunction loading compatible material " + this + " (see above)");
@@ -927,7 +926,7 @@ public enum CompMaterial {
      */
     public final ItemStack toItem(int amount) {
         final Material mat = toMaterial();
-        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) this.data);
+        return VersionResolver.isAtLeast1_13() ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (short) 0, (byte) this.data);
     }
 
     /**

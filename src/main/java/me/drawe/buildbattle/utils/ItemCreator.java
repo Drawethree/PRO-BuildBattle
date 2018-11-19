@@ -222,4 +222,8 @@ public class ItemCreator {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
     }
+
+    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore) {
+        return create(material,amount,displayName,lore,null,null);
+    }
 }

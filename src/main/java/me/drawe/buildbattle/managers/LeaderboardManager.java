@@ -4,7 +4,6 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.leaderboards.Leaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
 import me.drawe.buildbattle.utils.LocationUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -17,16 +16,16 @@ public class LeaderboardManager {
     private static List<Leaderboard> activeLeaderboards;
     private static HashMap<Player, Leaderboard> selectedLeaderboards = new HashMap<>();
 
+    private LeaderboardManager() {
+    }
+
+
     public static LeaderboardManager getInstance() {
         return ourInstance;
     }
     public static List<Leaderboard> getActiveLeaderboards() {
         return activeLeaderboards;
     }
-
-    private LeaderboardManager() {
-    }
-
     public static HashMap<Player, Leaderboard> getSelectedLeaderboards() {
         return selectedLeaderboards;
     }

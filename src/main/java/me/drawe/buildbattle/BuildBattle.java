@@ -337,7 +337,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public static void info(String message) {
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " " + message);
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + message);
     }
     public static void debug(String message) {
         if(debug) instance.getLogger().info("[DEBUG] " + message);
@@ -346,7 +346,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         instance.getLogger().severe(message);
     }
     public static void warning(String message) {
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §4[Warning] §r" + message);
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + "§4[Warning] §r" + message);
     }
 
     public boolean isLoadPluginLater() {

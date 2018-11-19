@@ -72,7 +72,7 @@ public class BBSign {
         getArena().getArenaSigns().remove(this);
         getBlockBehind().setType(CompMaterial.AIR.getMaterial());
         if(p != null) {
-            p.sendMessage(GameManager.getPrefix() + " §aSign for arena §e" + getArena().getName() + "§a successfully removed!");
+            p.sendMessage(GameManager.getPrefix() + "§aSign for arena §e" + getArena().getName() + "§a successfully removed!");
         }
     }
 

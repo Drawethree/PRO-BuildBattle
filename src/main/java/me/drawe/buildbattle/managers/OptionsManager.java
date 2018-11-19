@@ -21,15 +21,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class OptionsManager {
+
     private static OptionsManager ourInstance = new OptionsManager();
-
-    public static OptionsManager getInstance() {
-        return ourInstance;
-    }
-
-    private OptionsManager() {
-    }
-
     private static ItemStack deleteArenaItem = ItemCreator.create(CompMaterial.BARRIER, 1, "&eDelete Arena", ItemCreator.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null,null);
     private static ItemStack saveItem = ItemCreator.create(CompMaterial.EMERALD, 1, "&eSave & Close", ItemCreator.makeLore("&7Click to save and apply changes !"), null,null);
     private static ItemStack backItem = ItemCreator.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("items.back_item.lore")), null,null);
@@ -52,6 +45,13 @@ public class OptionsManager {
     private static Inventory soloArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage());
     private static Inventory teamArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
     private static Inventory biomesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_BIOMES_TITLE.getMessage());
+
+    private OptionsManager() {
+    }
+
+    public static OptionsManager getInstance() {
+        return ourInstance;
+    }
 
     public static ItemStack getOptionsItem() {
         return optionsItem;

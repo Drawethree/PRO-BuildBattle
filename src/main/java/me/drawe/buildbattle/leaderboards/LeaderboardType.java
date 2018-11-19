@@ -26,6 +26,7 @@ public enum LeaderboardType {
     public String getTitle() {
         return title;
     }
+
     public String getLineFormat() {
         return lineFormat;
     }

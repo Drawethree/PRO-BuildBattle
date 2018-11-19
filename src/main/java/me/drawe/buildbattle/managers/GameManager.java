@@ -32,7 +32,7 @@ public class GameManager {
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
     private static CompMaterial defaultFloorMaterial = CompMaterial.BIRCH_PLANKS;
-    private static String prefix = "&8[&eBuildBattlePro&8]&r";
+    private static String prefix = "§8[§eBuildBattlePro§8]§r";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
     private static int themeVotingTime = 15;
@@ -56,6 +56,7 @@ public class GameManager {
     private static boolean asyncSavePlayerData = false;
     private static StatsType statsType = StatsType.FLATFILE;
     private static boolean scoreboardEnabled = true;
+    private static boolean createStatsOnServerJoin = true;
     private static boolean mainLobbyScoreboardEnabled = true;
     private static boolean partiesEnabled = true;
     private static boolean reportsEnabled = true;
@@ -166,12 +167,12 @@ public class GameManager {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', prefix);
+        return prefix;
     }
 
     public static void setPrefix(String prefix) {
         if (prefix != null) {
-            GameManager.prefix = prefix;
+            GameManager.prefix = ChatColor.translateAlternateColorCodes('&', prefix);
         } else {
             BuildBattle.warning("§cVariable prefix could not be loaded ! Setting it to default (" + getPrefix() + ")");
         }
@@ -752,6 +753,14 @@ public class GameManager {
         GameManager.giveRewardsAfterGameEnds = giveRewardsAfterGameEnds;
     }
 
+    public static boolean isCreateStatsOnServerJoin() {
+        return createStatsOnServerJoin;
+    }
+
+    public static void setCreateStatsOnServerJoin(boolean createStatsOnServerJoin) {
+        GameManager.createStatsOnServerJoin = createStatsOnServerJoin;
+    }
+
     public void loadDefaultFloorMaterial() {
         setDefaultFloorMaterial(CompMaterial.fromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
     }
@@ -879,6 +888,7 @@ public class GameManager {
             setGiveRewardsAfterGameEnds(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.give_after_game_ends"));
             setAsyncSavePlayerData(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
             setStatsType(StatsType.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
+            setCreateStatsOnServerJoin(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("stats.create_stats_on_server_join"));
             setReportsEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.enable_reports"));
             setShowVoteInSubtitle(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_vote_in_subtitle"));
             setFloorChangeNPCtype(EntityType.valueOf(BuildBattle.getFileManager().getConfig("config.yml").get().getString("change_floor_npc.type")));

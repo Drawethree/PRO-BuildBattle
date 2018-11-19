@@ -27,13 +27,13 @@ public class MySQL {
         if(connection == null || connection.isClosed()) {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true" , username, password);
+                    "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useUnicode=yes", username, password);
         }
         return connection;
     }
 
     public void connect() {
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + " §aAttemping to connect to MySQL database...");
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + "§aAttemping to connect to MySQL database...");
         try {
             host = BuildBattle.getInstance().getConfig().getString("mysql.host");
             port = BuildBattle.getInstance().getConfig().getInt("mysql.port");
