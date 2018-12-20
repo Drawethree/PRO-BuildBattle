@@ -375,7 +375,7 @@ public class GameManager {
         if (themeVotingLore != null) {
             GameManager.themeVotingLore = themeVotingLore;
         } else {
-            BuildBattle.severe("§cVariable gui.theme_voting.themes.lore in messages.yml could not be loaded !");
+            BuildBattle.severe("§cVariable gui.theme_voting.themes.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -395,7 +395,7 @@ public class GameManager {
         if (weatherLore != null) {
             GameManager.weatherLore = weatherLore;
         } else {
-            BuildBattle.severe("§cVariable gui.options.items.change_weather_item.lore in messages.yml could not be loaded !");
+            BuildBattle.severe("§cVariable gui.options.items.change_weather_item.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -560,7 +560,7 @@ public class GameManager {
         if (finalBannerLore != null) {
             GameManager.finalBannerLore = finalBannerLore;
         } else {
-            BuildBattle.warning("§cFinal banner lore in messages.yml is empty !");
+            BuildBattle.warning("§cFinal banner lore in translates.yml is empty !");
         }
     }
 
@@ -649,7 +649,7 @@ public class GameManager {
         if (superVoteLore != null) {
             GameManager.superVoteLore = superVoteLore;
         } else {
-            BuildBattle.severe("§cVariable gui.theme_voting.supervote_item.lore in messages.yml could not be loaded !");
+            BuildBattle.severe("§cVariable gui.theme_voting.supervote_item.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -874,14 +874,14 @@ public class GameManager {
             //setLockServerOnGameStart(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.lock_server_on_game_start"));
             setPartiesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
             setParticleRefreshTime(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));
-            setStartMessage(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("messages.start_message"));
+            setStartMessage(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("messages.start_message"));
             setAllowedCommands(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.allowed_commands"));
             setRemovePlayersAfterGame(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.remove_players_after_game"));
-            setEndMessage(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("messages.end_message"));
-            setThemeVotingLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.theme_voting.themes.lore"));
-            setFinalBannerLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
-            setWeatherLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
-            setSuperVoteLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
+            setEndMessage(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("messages.end_message"));
+            setThemeVotingLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.theme_voting.themes.lore"));
+            setFinalBannerLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
+            setWeatherLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
+            setSuperVoteLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
             setPointsApiRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.PointsAPI.enabled"));
             setVaultRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Vault.enabled"));
             setCommandRewards(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Command.enabled"));

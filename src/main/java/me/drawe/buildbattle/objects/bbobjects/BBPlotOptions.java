@@ -28,7 +28,7 @@ public class BBPlotOptions {
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
-        this.currentFloorItem = ItemCreator.create(GameManager.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("messages.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
+        this.currentFloorItem = ItemCreator.create(GameManager.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
         this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;

@@ -1,3 +1,4 @@
+# List of all themes Solo Themes in BuildBattlePro
 solo-themes:
   - TV
   - Car
@@ -6,6 +7,7 @@ solo-themes:
   - House
   - Mobile
   - Beach
+# List of all themes Team Themes in BuildBattlePro
 team-themes:
   - TV
   - Car
@@ -14,5 +16,8 @@ team-themes:
   - House
   - Mobile
   - Beach
+# List of all themes that are restricted by setting manually
 blacklisted-themes:
-  - Penis
+  - Some
+  - Ugly
+  - Words

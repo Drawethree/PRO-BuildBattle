@@ -219,7 +219,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         fileManager.getConfig("arenas.yml").copyDefaults(true).save();
         fileManager.getConfig("heads.yml").copyDefaults(true).save();
         fileManager.getConfig("leaderboards.yml").copyDefaults(true).save();
-        fileManager.getConfig("messages.yml").copyDefaults(true).save();
+        fileManager.getConfig("translates.yml").copyDefaults(true).save();
         fileManager.getConfig("signs.yml").copyDefaults(true).save();
         fileManager.getConfig("stats.yml").copyDefaults(true).save();
         fileManager.getConfig("themes.yml").copyDefaults(true).save();

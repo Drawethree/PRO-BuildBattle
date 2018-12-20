@@ -252,7 +252,7 @@ public enum Message {
     private String message;
 
     Message(String path) {
-        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("messages.yml").get().getString(path));
+        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(path));
     }
 
     public String getChatMessage() {
