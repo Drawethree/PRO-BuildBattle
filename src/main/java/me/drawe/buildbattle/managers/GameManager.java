@@ -897,7 +897,6 @@ public class GameManager {
             setChangeMOTD(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
             setReplaceBlockBehindSigns(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
             setAutoRestarting(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
-
             setMainLobbyLocation();
             if (isAutoRestarting()) {
                 setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));

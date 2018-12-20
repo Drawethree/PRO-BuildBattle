@@ -1,15 +1,13 @@
-######################################
-#                                    #
-#     BuildBattlePro config.yml      #
-#                                    #
-######################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#     BuildBattlePro config.yml
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # Plugin's prefix
 prefix: "&8[&eBuildBattlePro&8]&r "
 
-####################################
-#    Player statistics settings    #
-####################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#    Player statistics settings
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 stats:
   # Type of storing players data.
   #   MYSQL - Storing data in MySQL
@@ -20,9 +18,9 @@ stats:
   # Should player stats be generated when player joins the server ?
   create_stats_on_server_join: true
 
-########################
-#    MySQL Settings    #
-########################
+#~~~~~~~~~~~~~~~~~~~~~~~#
+#    MySQL Settings
+#~~~~~~~~~~~~~~~~~~~~~~~#
 mysql:
   host: dbHost
   port: 3306
@@ -30,9 +28,9 @@ mysql:
   database: dbName
   password: dbPass
 
-#############################
-#    BungeeCord Settings    #
-#############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#    BungeeCord Settings
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 bungeecord:
  # Are we using bungee ?
  use_bungee: false
@@ -44,9 +42,9 @@ bungeecord:
  # Should BuildBattlePro change automatically server's MOTD ?
  change_motd: false
 
-##############################
-#    Settings for parties    #
-##############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#    Settings for parties
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 parties:
   # Should players be able to use /bb party command ?
   enabled: true
@@ -54,9 +52,9 @@ parties:
   max_players: 5
 
 
-##############################
-#    Game reward settings    #
-##############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#    Game reward settings
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 rewards:
   # Should player receive rewards after game has ended or immediately after winner is announced ?
   give_after_game_ends: true
@@ -77,9 +75,9 @@ rewards:
     second_place: 'give %player% 264 2'
     third_place: 'give %player% 264 1'
 
-################################
-#    Auto restarting server    #
-################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#    Auto restarting server
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 auto-restart:
   # Should auto-restarting be enabled ?
   enabled: false
@@ -88,9 +86,9 @@ auto-restart:
   # What command should be executed to restart the server ?
   restart-command: "stop"
 
-##########################
-#     Arena Settings     #
-##########################
+#~~~~~~~~~~~~~~~~~~~~~~~~#
+#     Arena Settings
+#~~~~~~~~~~~~~~~~~~~~~~~~#
 arena:
   # How many seconds should players be in lobby ?
   lobbyTime: 30
@@ -182,9 +180,9 @@ arena:
     - 10
     - 11
 
-##########################################
-#       Change Floor NPC Settings        #
-##########################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#       Change Floor NPC Settings
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 change_floor_npc:
   # Type of Change Floor NPC
   type: VILLAGER
@@ -194,9 +192,9 @@ main_lobby:
 # Should players be teleported on join to the main lobby ?
 teleport_to_main_lobby_on_join: false
 
-###################################
-#     Plugin Loading Settings     #
-###################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#     Plugin Loading Settings
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 plugin_loading:
   # Should the plugin load later ?
   load_plugin_later: false
