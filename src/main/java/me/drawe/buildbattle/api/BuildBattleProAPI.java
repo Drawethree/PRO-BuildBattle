@@ -2,14 +2,14 @@ package me.drawe.buildbattle.api;
 
 import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.PlayerManager;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class BuildBattleProAPI {
+public final class BuildBattleProAPI {
 
     /**
      * Method to get all arenas

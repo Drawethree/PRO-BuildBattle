@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

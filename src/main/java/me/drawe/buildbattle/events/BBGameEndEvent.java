@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.events;
 
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

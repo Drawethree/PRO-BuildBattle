@@ -1,6 +1,8 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.entity.Player;

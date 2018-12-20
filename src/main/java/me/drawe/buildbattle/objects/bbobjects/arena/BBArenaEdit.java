@@ -1,6 +1,7 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.managers.OptionsManager;
+import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;

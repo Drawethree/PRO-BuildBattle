@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.events.BBGameEndEvent;
@@ -6,6 +6,9 @@ import me.drawe.buildbattle.events.BBGameStartEvent;
 import me.drawe.buildbattle.events.BBGameStateSwitchEvent;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.*;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.utils.*;
 import me.kangarko.compatbridge.model.CompSound;
 import org.bukkit.Bukkit;

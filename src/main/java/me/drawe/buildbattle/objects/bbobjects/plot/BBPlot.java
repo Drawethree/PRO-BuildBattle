@@ -1,10 +1,13 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
+import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.BBTeam;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.model.CompatBridge;
 import org.bukkit.Chunk;

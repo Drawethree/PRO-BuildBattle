@@ -2,7 +2,7 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;

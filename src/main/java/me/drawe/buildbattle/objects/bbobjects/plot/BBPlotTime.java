@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.plot;
 
 
 import me.drawe.buildbattle.BuildBattle;

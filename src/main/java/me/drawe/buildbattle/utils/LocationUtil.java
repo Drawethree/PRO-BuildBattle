@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.utils.VersionResolver;
 import net.citizensnpcs.api.CitizensAPI;

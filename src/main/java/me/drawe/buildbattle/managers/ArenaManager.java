@@ -2,7 +2,12 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
-import me.drawe.buildbattle.objects.bbobjects.*;
+import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
+import me.drawe.buildbattle.objects.bbobjects.BBSign;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaEdit;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.ItemCreator;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;

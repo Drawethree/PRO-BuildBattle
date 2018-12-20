@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
 
 public class BBVotingBoard extends BBBoard {

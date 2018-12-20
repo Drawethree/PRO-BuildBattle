@@ -1,7 +1,8 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.objects.bbobjects.BBParticle;
 import me.kangarko.compatbridge.utils.VersionResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

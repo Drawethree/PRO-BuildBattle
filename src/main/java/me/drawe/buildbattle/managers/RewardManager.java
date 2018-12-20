@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.managers;
 
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbrewards.BBCommandRewards;
 import me.drawe.buildbattle.objects.bbrewards.BBPointsAPIRewards;
 import me.drawe.buildbattle.objects.bbrewards.BBVaultRewards;

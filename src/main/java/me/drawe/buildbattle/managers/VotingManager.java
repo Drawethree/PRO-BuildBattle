@@ -2,8 +2,8 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.Votes;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import org.bukkit.entity.Player;
 
 public class VotingManager {

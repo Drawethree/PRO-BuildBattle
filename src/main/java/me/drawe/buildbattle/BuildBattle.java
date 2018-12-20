@@ -14,8 +14,8 @@ import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.MetricsLite;
 import net.milkbowl.vault.chat.Chat;
@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
 
@@ -70,49 +69,53 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         instance = this;
         fileManager = new FileManager(this);
         loadAllConfigs();
-        if(setPluginLoading()) {
+
+        if (setPluginLoading()) {
             warning("§cPlugin will be loaded after §e" + getLoadAfter() + "s !");
-        }
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
-                Bukkit.getConsoleSender().sendMessage("");
-                GameManager.getInstance().loadArenaPreferences();
-                setupConfigPreferences();
-                //loadWorldEdit();
-                //setupChat();
-                useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
-                useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
-
-                getCommand("buildbattle").setExecutor(new BBCommand());
-                getCommand("settheme").setExecutor(new SetThemeCommand());
-                getServer().getPluginManager().registerEvents(new PlayerListener(), getInstance());
-                getServer().getPluginManager().registerEvents(new ServerListener(), getInstance());
-
-                GameManager.getInstance().loadThemes();
-                GameManager.getInstance().loadDefaultFloorMaterial();
-                GameManager.getInstance().loadRestrictedBlocks();
-                ArenaManager.getInstance().loadArenas();
-                ArenaManager.getInstance().loadArenaEditors();
-                if(useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
-                if(isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
-
-                if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                    new BuildBattleProPlaceholders(getInstance()).hook();
-                }
-                registerMvdWPlaceholders();
-                MetricsLite metrics = new MetricsLite(getInstance());
-                HeadInventory.loadHeads();
+            try {
+                Thread.sleep(this.loadAfter * 1000);
+            } catch (InterruptedException e) {
+                warning("§cSomething has interrupted loading plugin later. Loading it now.");
             }
-        }.runTaskLater(this, 20*getLoadAfter());
+        }
+
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+        Bukkit.getConsoleSender().sendMessage("");
+
+        //loadWorldEdit();
+        //setupChat();
+
+        useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
+        useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
+
+        getCommand("buildbattle").setExecutor(new BBCommand());
+        getCommand("settheme").setExecutor(new SetThemeCommand());
+        getServer().getPluginManager().registerEvents(new PlayerListener(), getInstance());
+        getServer().getPluginManager().registerEvents(new ServerListener(), getInstance());
+
+        GameManager.getInstance().loadArenaPreferences();
+        setupConfigPreferences();
+        GameManager.getInstance().loadThemes();
+        GameManager.getInstance().loadDefaultFloorMaterial();
+        GameManager.getInstance().loadRestrictedBlocks();
+        ArenaManager.getInstance().loadArenas();
+        ArenaManager.getInstance().loadArenaEditors();
+
+        if (useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
+        if (isUseHolographicDisplays()) LeaderboardManager.getInstance().loadAllLeaderboards();
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new BuildBattleProPlaceholders(getInstance()).hook();
+        }
+        registerMvdWPlaceholders();
+        MetricsLite metrics = new MetricsLite(getInstance());
+        HeadInventory.loadHeads();
     }
 
     private boolean setPluginLoading() {
         setLoadPluginLater(fileManager.getConfig("config.yml").get().getBoolean("plugin_loading.load_plugin_later"));
-        if(loadPluginLater) {
+        if (loadPluginLater) {
             setLoadAfter(fileManager.getConfig("config.yml").get().getInt("plugin_loading.load_after"));
         }
         return loadPluginLater;
@@ -147,7 +150,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         GameManager.getInstance().loadRestrictedBlocks();
         ArenaManager.getInstance().loadArenas();
         ArenaManager.getInstance().loadArenaEditors();
-        if(isUseHolographicDisplays()) {
+        if (isUseHolographicDisplays()) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
                 h.delete();
             }
@@ -161,7 +164,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getWins());
                         }
                         return "0";
@@ -170,7 +173,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getPlayed());
                         }
                         return "0";
@@ -179,7 +182,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getMostPoints());
                         }
                         return "0";
@@ -188,7 +191,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getBlocksPlaced());
                         }
                         return "0";
@@ -197,7 +200,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getParticlesPlaced());
                         }
                         return "0";
@@ -206,7 +209,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     event -> {
                         OfflinePlayer offlinePlayer = event.getPlayer();
                         BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                        if(pStats != null) {
+                        if (pStats != null) {
                             return String.valueOf(pStats.getSuperVotes());
                         }
                         return "0";
@@ -228,11 +231,11 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public void saveAllConfigs() {
-        fileManager.getConfigs().values().forEach(c-> c.save());
+        fileManager.getConfigs().values().forEach(c -> c.save());
     }
 
     public void reloadAllConfigs() {
-        fileManager.getConfigs().values().forEach(c-> c.reload());
+        fileManager.getConfigs().values().forEach(c -> c.reload());
     }
 
     protected void removeUnusedPathsFromConfigs() {
@@ -322,12 +325,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         return true;
     }
 
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        chat = rsp.getProvider();
-        return chat != null;
-    }
-
     public boolean isUseHolographicDisplays() {
         return useHolographicDisplays;
     }
@@ -339,12 +336,15 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     public static void info(String message) {
         Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + message);
     }
+
     public static void debug(String message) {
-        if(debug) instance.getLogger().info("[DEBUG] " + message);
+        if (debug) instance.getLogger().info("[DEBUG] " + message);
     }
+
     public static void severe(String message) {
         instance.getLogger().severe(message);
     }
+
     public static void warning(String message) {
         Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix() + "§4[Warning] §r" + message);
     }

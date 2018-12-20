@@ -2,7 +2,7 @@ package me.drawe.buildbattle.listeners;
 
 import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.GameManager;
-import me.drawe.buildbattle.objects.bbobjects.BBArena;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;

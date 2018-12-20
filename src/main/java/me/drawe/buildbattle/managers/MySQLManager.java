@@ -2,13 +2,13 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.mysql.MySQL;
-import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
-import me.drawe.buildbattle.objects.bbobjects.BBPlot;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
+import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.TimeUtil;
 import org.bukkit.entity.Player;
-import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 
 import java.io.File;
 import java.sql.PreparedStatement;

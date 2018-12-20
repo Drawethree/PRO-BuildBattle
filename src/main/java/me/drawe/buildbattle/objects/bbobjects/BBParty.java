@@ -1,9 +1,9 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PartyManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

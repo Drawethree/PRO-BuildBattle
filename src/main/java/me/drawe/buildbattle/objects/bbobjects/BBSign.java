@@ -3,6 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.model.CompatBridge;
