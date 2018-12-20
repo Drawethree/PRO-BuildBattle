@@ -556,9 +556,6 @@ public class BBArena {
                 startLobby();
             }
         }
-        if(GameManager.isGiveRewardsAfterGameEnds()) {
-            RewardManager.getInstance().giveRewards(this);
-        }
         setWinner(null);
         setCurrentVotingPlot(null);
         setTheme(null);
