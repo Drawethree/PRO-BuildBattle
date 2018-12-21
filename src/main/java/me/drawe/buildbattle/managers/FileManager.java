@@ -1,15 +1,10 @@
 package me.drawe.buildbattle.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import org.bukkit.plugin.Plugin;
+
+import java.io.*;
+import java.util.HashMap;
 
 
 public class FileManager {
@@ -22,8 +17,7 @@ public class FileManager {
 
     public static HashMap<String, Config> configs = new HashMap<String, Config>();
 
-    public FileManager(Plugin plugin)
-    {
+    public FileManager(Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -62,12 +56,11 @@ public class FileManager {
 
     public class Config {
 
-        private String                        name;
-        private File                            file;
-        private YamlConfiguration    config;
+        private String name;
+        private File file;
+        private YamlConfiguration config;
 
-        public Config(String name)
-        {
+        public Config(String name) {
             this.name = name;
         }
 
@@ -79,13 +72,10 @@ public class FileManager {
         public Config save() {
             if ((this.config == null) || (this.file == null))
                 return this;
-            try
-            {
+            try {
                 if (config.getConfigurationSection("").getKeys(true).size() != 0)
                     config.save(this.file);
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
             return this;
@@ -130,18 +120,14 @@ public class FileManager {
             this.config = YamlConfiguration.loadConfiguration(file);
 
             Reader defConfigStream;
-            try
-            {
+            try {
                 defConfigStream = new InputStreamReader(plugin.getResource(this.name), "UTF8");
 
-                if (defConfigStream != null)
-                {
+                if (defConfigStream != null) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     this.config.setDefaults(defConfig);
                 }
-            }
-            catch (UnsupportedEncodingException | NullPointerException e)
-            {
+            } catch (UnsupportedEncodingException | NullPointerException e) {
 
             }
             return this;

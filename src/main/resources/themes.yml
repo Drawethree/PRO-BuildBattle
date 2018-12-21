@@ -1,23 +1,20 @@
-# List of all themes Solo Themes in BuildBattlePro
 solo-themes:
-  - TV
-  - Car
-  - Winter
-  - School
-  - House
-  - Mobile
-  - Beach
-# List of all themes Team Themes in BuildBattlePro
+- TV
+- Car
+- Winter
+- School
+- House
+- Mobile
+- Beach
 team-themes:
-  - TV
-  - Car
-  - Winter
-  - School
-  - House
-  - Mobile
-  - Beach
-# List of all themes that are restricted by setting manually
+- TV
+- Car
+- Winter
+- School
+- House
+- Mobile
+- Beach
 blacklisted-themes:
-  - Some
-  - Ugly
-  - Words
+- Some
+- Ugly
+- Words

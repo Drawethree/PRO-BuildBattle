@@ -30,28 +30,28 @@ import java.util.List;
 public class OptionsManager {
 
     private static OptionsManager ourInstance = new OptionsManager();
-    private static ItemStack deleteArenaItem = ItemCreator.create(CompMaterial.BARRIER, 1, "&eDelete Arena", ItemCreator.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null,null);
-    private static ItemStack saveItem = ItemCreator.create(CompMaterial.EMERALD, 1, "&eSave & Close", ItemCreator.makeLore("&7Click to save and apply changes !"), null,null);
-    private static ItemStack backItem = ItemCreator.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.back_item.lore")), null,null);
-    private static ItemStack reportItem = ItemCreator.create(CompMaterial.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.report_item.lore")), null,null);
-    private static ItemStack clearPlotItem = ItemCreator.create(CompMaterial.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null,null);
-    private static ItemStack removeParticlesItem = ItemCreator.create(CompMaterial.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null,null);
-    private static ItemStack particlesItem = ItemCreator.create(CompMaterial.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particles_item.lore")), null,null);
-    private static ItemStack biomesItem = ItemCreator.create(CompMaterial.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null,null);
-    private static ItemStack headsItem = ItemCreator.create(CompMaterial.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.heads_item.lore")), null,null);
-    private static ItemStack leaveItem = ItemCreator.create(CompMaterial.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.leave_item.lore")), null,null);
-    private static ItemStack optionsItem = ItemCreator.create(CompMaterial.NETHER_STAR,1,Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.options_item.lore")),null,null);
-    private static ItemStack teamsItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.teams_item.lore")), null,null);
-    private static ItemStack timeItem = ItemCreator.create(CompMaterial.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.time_item.lore")), null,null);
-    private static ItemStack bannerCreatorItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null,null);
-    private static Inventory particlesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PARTICLES_TITLE.getMessage());
-    private static Inventory colorsInventory = Bukkit.createInventory(null, 6*9, Message.GUI_COLORS_TITLE.getMessage());
-    private static Inventory patternsInventory = Bukkit.createInventory(null, 6*9, Message.GUI_PATTERNS_TITLE.getMessage());
-    private static Inventory timeInventory = Bukkit.createInventory(null, 6*9, Message.GUI_TIME_TITLE.getMessage());
+    private static ItemStack deleteArenaItem = ItemCreator.create(CompMaterial.BARRIER, 1, "&eDelete Arena", ItemCreator.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null, null);
+    private static ItemStack saveItem = ItemCreator.create(CompMaterial.EMERALD, 1, "&eSave & Close", ItemCreator.makeLore("&7Click to save and apply changes !"), null, null);
+    private static ItemStack backItem = ItemCreator.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.back_item.lore")), null, null);
+    private static ItemStack reportItem = ItemCreator.create(CompMaterial.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.report_item.lore")), null, null);
+    private static ItemStack clearPlotItem = ItemCreator.create(CompMaterial.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null, null);
+    private static ItemStack removeParticlesItem = ItemCreator.create(CompMaterial.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null, null);
+    private static ItemStack particlesItem = ItemCreator.create(CompMaterial.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particles_item.lore")), null, null);
+    private static ItemStack biomesItem = ItemCreator.create(CompMaterial.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null, null);
+    private static ItemStack headsItem = ItemCreator.create(CompMaterial.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.heads_item.lore")), null, null);
+    private static ItemStack leaveItem = ItemCreator.create(CompMaterial.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.leave_item.lore")), null, null);
+    private static ItemStack optionsItem = ItemCreator.create(CompMaterial.NETHER_STAR, 1, Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.options_item.lore")), null, null);
+    private static ItemStack teamsItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.teams_item.lore")), null, null);
+    private static ItemStack timeItem = ItemCreator.create(CompMaterial.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.time_item.lore")), null, null);
+    private static ItemStack bannerCreatorItem = ItemCreator.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null, null);
+    private static Inventory particlesInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_PARTICLES_TITLE.getMessage());
+    private static Inventory colorsInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_COLORS_TITLE.getMessage());
+    private static Inventory patternsInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_PATTERNS_TITLE.getMessage());
+    private static Inventory timeInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_TIME_TITLE.getMessage());
     private static Inventory allArenasInventory = Bukkit.createInventory(null, ArenaManager.getInstance().getArenaListSize(), Message.GUI_ARENA_LIST_TITLE.getMessage());
     private static Inventory soloArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage());
     private static Inventory teamArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
-    private static Inventory biomesInventory = Bukkit.createInventory(null, 6*9, Message.GUI_BIOMES_TITLE.getMessage());
+    private static Inventory biomesInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_BIOMES_TITLE.getMessage());
 
     private OptionsManager() {
     }
@@ -126,7 +126,7 @@ public class OptionsManager {
 
     private static void loadPatternsInventory() {
         int slot = 0;
-        for(PatternType type : PatternType.values()) {
+        for (PatternType type : PatternType.values()) {
             Pattern p = new Pattern(CompDye.BLACK.getDye(), type);
             ItemStack item = CompMaterial.WHITE_BANNER.toItem();
             BannerMeta meta = (BannerMeta) item.getItemMeta();
@@ -143,10 +143,10 @@ public class OptionsManager {
 
     private static void loadColorsInventory() {
         int slot = 10;
-        for(int i = 0;i < 16;i++) {
+        for (int i = 0; i < 16; i++) {
             BBDyeColor dyeColor = BBDyeColor.getById(i);
-            colorsInventory.setItem(slot,dyeColor.getItem());
-            if(slot == 16 || slot == 25 || slot == 34) {
+            colorsInventory.setItem(slot, dyeColor.getItem());
+            if (slot == 16 || slot == 25 || slot == 34) {
                 slot += 3;
             } else {
                 slot += 1;
@@ -178,58 +178,58 @@ public class OptionsManager {
 
     public void openOptionsInventory(Player p, BBPlot plot) {
         Inventory optionsInv = Bukkit.createInventory(null, 9, Message.GUI_OPTIONS_TITLE.getMessage());
-        if(GameManager.isEnableHeadsOption()) optionsInv.setItem(0, getHeadsItem());
-        if(GameManager.isEnableChangeFloorOption()) optionsInv.setItem(1, plot.getOptions().getCurrentFloorItem());
-        if(GameManager.isEnableTimeOption()) optionsInv.setItem(2, getTimeItem());
-        if(GameManager.isEnableParticleOption()) optionsInv.setItem(3, getParticlesItem());
-        if(GameManager.isEnabledWeatherOption()) optionsInv.setItem(4, getWeatherItemStack(plot));
-        if(GameManager.isEnableBiomeOption()) optionsInv.setItem(5, getBiomesItem());
-        if(GameManager.isEnableBannerCreatorOption()) optionsInv.setItem(6, getBannerCreatorItem());
-        if(GameManager.isEnableClearPlotOption()) optionsInv.setItem(7, getClearPlotItem());
+        if (GameManager.isEnableHeadsOption()) optionsInv.setItem(0, getHeadsItem());
+        if (GameManager.isEnableChangeFloorOption()) optionsInv.setItem(1, plot.getOptions().getCurrentFloorItem());
+        if (GameManager.isEnableTimeOption()) optionsInv.setItem(2, getTimeItem());
+        if (GameManager.isEnableParticleOption()) optionsInv.setItem(3, getParticlesItem());
+        if (GameManager.isEnabledWeatherOption()) optionsInv.setItem(4, getWeatherItemStack(plot));
+        if (GameManager.isEnableBiomeOption()) optionsInv.setItem(5, getBiomesItem());
+        if (GameManager.isEnableBannerCreatorOption()) optionsInv.setItem(6, getBannerCreatorItem());
+        if (GameManager.isEnableClearPlotOption()) optionsInv.setItem(7, getClearPlotItem());
         p.openInventory(optionsInv);
     }
 
     public void refreshAllArenasInventory() {
-        getAllArenasInventory().clear();
-        getSoloArenasInventory().clear();
-        getTeamArenasInventory().clear();
-        for(BBArena a : ArenaManager.getArenas()) {
-            if(a.getGameType() == BBGameMode.SOLO) {
-                getSoloArenasInventory().addItem(getArenaStatusItem(a));
-            } else if(a.getGameType() == BBGameMode.TEAM) {
-                getTeamArenasInventory().addItem(getArenaStatusItem(a));
+        allArenasInventory.clear();
+        soloArenasInventory.clear();
+        teamArenasInventory.clear();
+        for (BBArena a : ArenaManager.getArenas()) {
+            if (a.getGameType() == BBGameMode.SOLO) {
+                getSoloArenasInventory().addItem(a.getArenaStatusItem());
+            } else if (a.getGameType() == BBGameMode.TEAM) {
+                getTeamArenasInventory().addItem(a.getArenaStatusItem());
             }
-            getAllArenasInventory().addItem(getArenaStatusItem(a));
+            allArenasInventory.addItem(a.getArenaStatusItem());
         }
     }
 
     public void refreshArenaItem(BBArena a) {
-        for (ItemStack item : getAllArenasInventory().getContents()) {
+        for (ItemStack item : allArenasInventory.getContents()) {
             if (item != null && item.hasItemMeta()) {
                 if (item.getItemMeta().getDisplayName().equals(a.getName())) {
-                    ItemStack replacement = getArenaStatusItem(a);
+                    ItemStack replacement = a.getArenaStatusItem();
                     item.setItemMeta(replacement.getItemMeta());
                     item.setData(replacement.getData());
                     item.setDurability(replacement.getDurability());
                 }
             }
         }
-        if(a.getGameType() == BBGameMode.SOLO) {
+        if (a.getGameType() == BBGameMode.SOLO) {
             for (ItemStack item : getSoloArenasInventory().getContents()) {
                 if (item != null && item.hasItemMeta()) {
                     if (item.getItemMeta().getDisplayName().equals(a.getName())) {
-                        ItemStack replacement = getArenaStatusItem(a);
+                        ItemStack replacement = a.getArenaStatusItem();
                         item.setItemMeta(replacement.getItemMeta());
                         item.setData(replacement.getData());
                         item.setDurability(replacement.getDurability());
                     }
                 }
             }
-        } else if(a.getGameType() == BBGameMode.TEAM) {
+        } else if (a.getGameType() == BBGameMode.TEAM) {
             for (ItemStack item : getTeamArenasInventory().getContents()) {
                 if (item != null && item.hasItemMeta()) {
                     if (item.getItemMeta().getDisplayName().equals(a.getName())) {
-                        ItemStack replacement = getArenaStatusItem(a);
+                        ItemStack replacement = a.getArenaStatusItem();
                         item.setItemMeta(replacement.getItemMeta());
                         item.setData(replacement.getData());
                         item.setDurability(replacement.getDurability());
@@ -258,40 +258,23 @@ public class OptionsManager {
     static {
         loadColorsInventory();
         loadPatternsInventory();
-        for(BBParticle particle : BBParticle.values()) {
-            particlesInventory.setItem(particle.getSlot(),particle.getItemStack());
+        for (BBParticle particle : BBParticle.values()) {
+            particlesInventory.setItem(particle.getSlot(), particle.getItemStack());
         }
         particlesInventory.setItem(45, getBackItem());
         particlesInventory.setItem(49, getRemoveParticlesItem());
-        for(BBArena a : ArenaManager.getArenas()) {
-            if(a.getGameType() == BBGameMode.SOLO) {
-                getSoloArenasInventory().addItem(getArenaStatusItem(a));
-            } else if(a.getGameType() == BBGameMode.TEAM) {
-                getTeamArenasInventory().addItem(getArenaStatusItem(a));
-            }
-            getAllArenasInventory().addItem(getArenaStatusItem(a));
-        }
-        for(PlotBiome biome : PlotBiome.values()) {
-            if(biome.getBiome().getBiome() != null) {
+
+        for (PlotBiome biome : PlotBiome.values()) {
+            if (biome.getBiome().getBiome() != null) {
                 biomesInventory.addItem(biome.getItem());
             }
         }
         biomesInventory.setItem(49, getBackItem());
     }
 
-    private static ItemStack getArenaStatusItem(BBArena a) {
-        return ItemCreator.create(a.getBBArenaState().getBlockMaterial(), 1, a.getName(), ItemCreator.makeLore(
-                " ",
-                Message.ARENA_LIST_MODE.getMessage().replaceAll("%mode%", a.getGameType().getName()),
-                Message.ARENA_LIST_PLAYERS.getMessage().replaceAll("%total_players%", a.getTotalPlayers()),
-                Message.ARENA_LIST_STATUS.getMessage().replaceAll("%status%", a.getBBArenaState().getPrefix()),
-                " ",
-                Message.ARENA_LIST_CLICK_TO_JOIN.getMessage()), null,null);
-    }
-
     public ItemStack getWeatherItemStack(BBPlot plot) {
-        ItemStack item = ItemCreator.create(CompMaterial.SUNFLOWER, 1, Message.GUI_OPTIONS_CHANGE_WEATHER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertWeatherLore(plot, GameManager.getWeatherLore()), null,null);
-        switch(plot.getOptions().getCurrentWeather()) {
+        ItemStack item = ItemCreator.create(CompMaterial.SUNFLOWER, 1, Message.GUI_OPTIONS_CHANGE_WEATHER_ITEM_DISPLAYNAME.getMessage(), ItemCreator.convertWeatherLore(plot, GameManager.getWeatherLore()), null, null);
+        switch (plot.getOptions().getCurrentWeather()) {
             case CLEAR:
                 break;
             case DOWNFALL:
@@ -302,14 +285,14 @@ public class OptionsManager {
     }
 
     public void giveAllPlayersItem(BBArena a, ItemStack item) {
-        for(Player p : a.getPlayers()) {
+        for (Player p : a.getPlayers()) {
             p.getInventory().setItem(8, item);
         }
     }
 
     public void openActiveParticlesMenu(Player p, BBPlot plot) {
-        Inventory inv = Bukkit.createInventory(null, 5*9,Message.GUI_PARTICLE_LIST_TITLE.getMessage());
-        for(BBPlotParticle particle : plot.getParticles()) {
+        Inventory inv = Bukkit.createInventory(null, 5 * 9, Message.GUI_PARTICLE_LIST_TITLE.getMessage());
+        for (BBPlotParticle particle : plot.getParticles()) {
             inv.addItem(getActiveParticleItemStack(particle));
         }
         p.openInventory(inv);
@@ -322,16 +305,16 @@ public class OptionsManager {
                 " &7Y: " + particle.getLocation().getBlockY(),
                 " &7Z: " + particle.getLocation().getBlockZ(),
                 " ",
-                Message.GUI_PARTICLE_LIST_ITEMS_CLICK_TO_REMOVE.getMessage()), null,null);
+                Message.GUI_PARTICLE_LIST_ITEMS_CLICK_TO_REMOVE.getMessage()), null, null);
     }
 
     public BBPlotParticle getPlotParticleFromLore(BBPlot plot, List<String> lore) {
-        for(BBPlotParticle particle : plot.getParticles()) {
+        for (BBPlotParticle particle : plot.getParticles()) {
             Location pLoc = particle.getLocation();
             int x = Integer.parseInt(lore.get(1).replaceAll(" §7X: ", ""));
             int y = Integer.parseInt(lore.get(2).replaceAll(" §7Y: ", ""));
             int z = Integer.parseInt(lore.get(3).replaceAll(" §7Z: ", ""));
-            if(pLoc.getBlockX() == x && pLoc.getBlockY() == y && pLoc.getBlockZ() == z) {
+            if (pLoc.getBlockX() == x && pLoc.getBlockY() == y && pLoc.getBlockZ() == z) {
                 return particle;
             }
         }
@@ -343,6 +326,7 @@ public class OptionsManager {
         openInv.setItem(48, bbBannerCreator.getCreatedBanner());
         bbBannerCreator.getPlayer().openInventory(openInv);
     }
+
     public void openPatternsInventory(BBBannerCreator bbBannerCreator) {
         Inventory openInv = getPatternsInventory();
         openInv.setItem(48, bbBannerCreator.getCreatedBanner());

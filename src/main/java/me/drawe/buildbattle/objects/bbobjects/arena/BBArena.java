@@ -155,7 +155,7 @@ public class BBArena {
             team.leaveTeam(p);
         }
         BBParty party = PartyManager.getInstance().getPlayerParty(p);
-        if(party != null) {
+        if (party != null) {
             party.removePlayer(p);
         }
         if (GameManager.isScoreboardEnabled()) {
@@ -284,10 +284,11 @@ public class BBArena {
         //getThemeVoting().updateVoting();
         themeVotingCountdown = new BukkitRunnable() {
             int countdown = (int) GameManager.getThemeVotingTime();
+
             @Override
             public void run() {
                 updateAllScoreboards(countdown);
-                if(countdown == 0) {
+                if (countdown == 0) {
                     getThemeVoting().setWinner();
                     startGame();
                     cancel();
@@ -421,7 +422,7 @@ public class BBArena {
         if (GameManager.isEndCommandValid()) {
             GameManager.runEndCommands(this);
         }
-        if(!GameManager.isGiveRewardsAfterGameEnds()) {
+        if (!GameManager.isGiveRewardsAfterGameEnds()) {
             RewardManager.getInstance().giveRewards(this);
         }
         ArenaManager.setTotalPlayedGames(ArenaManager.getTotalPlayedGames() + 1);
@@ -962,6 +963,16 @@ public class BBArena {
             }
         }
         return null;
+    }
+
+    public ItemStack getArenaStatusItem() {
+        return ItemCreator.create(bbArenaState.getBlockMaterial(), 1, name, ItemCreator.makeLore(
+                " ",
+                Message.ARENA_LIST_MODE.getMessage().replaceAll("%mode%", gameMode.getName()),
+                Message.ARENA_LIST_PLAYERS.getMessage().replaceAll("%total_players%", getTotalPlayers()),
+                Message.ARENA_LIST_STATUS.getMessage().replaceAll("%status%", bbArenaState.getPrefix()),
+                " ",
+                Message.ARENA_LIST_CLICK_TO_JOIN.getMessage()), null, null);
     }
 
     public BBTeam getPlayerTeam(Player p) {

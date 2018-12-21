@@ -274,6 +274,7 @@ public class ArenaManager {
             BuildBattle.severe("§cAn exception occurred while trying loading arenas !");
             e.printStackTrace();
         }
+        OptionsManager.getInstance().refreshAllArenasInventory();
     }
 
     public void loadBBPlots(BBArena a) {
