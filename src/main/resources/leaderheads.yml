@@ -1,0 +1,55 @@
+leaderheads:
+  wins:
+    name: "bb-wins"
+    title: "&eBuildBattle - Wins"
+    command: "bbwins"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} wins"
+    - "&c----------------"
+  played:
+    name: "bb-played"
+    title: "&eBuildBattle - Played"
+    command: "bbplayed"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} times"
+    - "&c----------------"
+  most-points:
+    name: "bb-points"
+    title: "&eBuildBattle - Most Points"
+    command: "bbpoints"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} pts"
+    - "&c----------------"
+  particles-placed:
+    name: "bb-particles"
+    title: "&eBuildBattle - Particles Placed"
+    command: "bbparticles"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} particles"
+    - "&c----------------"
+  blocks-placed:
+    name: "bb-blocks"
+    title: "&eBuildBattle - Blocks Placed"
+    command: "bbblocks"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} blocks"
+    - "&c----------------"
+  super-votes:
+    name: "bb-votes"
+    title: "&eBuildBattle - Super Votes"
+    command: "bbvotes"
+    sign:
+    - "&c----------------"
+    - "&e{name}"
+    - "&e{amount} votes"
+    - "&c----------------"

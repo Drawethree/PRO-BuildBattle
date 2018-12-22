@@ -49,5 +49,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_13_R2:2.0.24-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.3.0" level="project" />
+    <orderEntry type="library" name="LeaderHeads" level="project" />
   </component>
 </module>

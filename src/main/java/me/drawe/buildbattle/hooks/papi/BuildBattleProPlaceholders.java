@@ -1,11 +1,10 @@
-package me.drawe.buildbattle.api;
+package me.drawe.buildbattle.hooks.papi;
 
+import me.clip.placeholderapi.external.EZPlaceholderHook;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import org.bukkit.entity.Player;
-
-import me.clip.placeholderapi.external.EZPlaceholderHook;
 
 public class BuildBattleProPlaceholders extends EZPlaceholderHook {
 
