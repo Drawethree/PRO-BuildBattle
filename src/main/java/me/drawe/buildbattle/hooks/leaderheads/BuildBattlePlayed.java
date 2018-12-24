@@ -1,20 +1,22 @@
 package me.drawe.buildbattle.hooks.leaderheads;
 
-import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.robin.leaderheads.datacollectors.OnlineDataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class BuildBattlePlayed extends OnlineDataCollector {
 
     public BuildBattlePlayed() {
         super(
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.played.name"),
+                "bb-played",
                 "BuildBattlePro",
-                BoardType.DEFAULT, BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.played.title"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.played.command"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getStringList("leaderheads.played.sign")
+                BoardType.DEFAULT,
+                "&eBuildBattle - Most Played",
+                "bbplayed",
+                Arrays.asList(null,null,"&e{amount} times",null)
         );
     }
 

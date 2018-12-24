@@ -247,7 +247,8 @@ public enum Message {
     GUI_BIOMES_TAIGA_DISPLAYNAME("gui.biomes.items.taiga.displayname"),
     GUI_BIOMES_RIVER_DISPLAYNAME("gui.biomes.items.river.displayname"),
     GUI_BIOMES_MUSHROOM_DISPLAYNAME("gui.biomes.items.mushroom.displayname"),
-    GUI_BIOMES_WARM_OCEAN_DISPLAYNAME("gui.biomes.items.warm_ocean.displayname");
+    GUI_BIOMES_WARM_OCEAN_DISPLAYNAME("gui.biomes.items.warm_ocean.displayname"),
+    BUILD_SOMETHING_RELEVANT("messages.build_something_relevant");
 
     private String message;
 

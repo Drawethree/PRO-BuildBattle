@@ -45,6 +45,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private boolean loadPluginLater = false;
     private int loadAfter = 0;
     private static Economy econ = null;
+    private static MetricsLite metrics = null;
 
     public static Chat getChat() {
         return chat;
@@ -86,12 +87,11 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§fMerry Christmas!"));
         Bukkit.getConsoleSender().sendMessage("");
 
         //loadWorldEdit();
         //setupChat();
-
-        hook();
 
         getCommand("buildbattle").setExecutor(new BBCommand());
         getCommand("settheme").setExecutor(new SetThemeCommand());
@@ -106,6 +106,12 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         ArenaManager.getInstance().loadArenas();
         ArenaManager.getInstance().loadArenaEditors();
         HeadInventory.loadHeads();
+
+        hook();
+
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
+        Bukkit.getConsoleSender().sendMessage("");
     }
 
     private void hook() {
@@ -115,11 +121,24 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
         useMVdWPlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI");
 
-        if (useCitizens) Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
-        if (useHolographicDisplays) LeaderboardManager.getInstance().loadAllLeaderboards();
-        if (usePlaceholderAPI) new BuildBattleProPlaceholders(getInstance()).hook();
-        if (useMVdWPlaceholderAPI) registerMvdWPlaceholders();
+        if (useCitizens) {
+            info("§aSuccessfully hooked into §eCitizens §a!");
+            Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(), getInstance());
+        }
+        if (useHolographicDisplays) {
+            info("§aSuccessfully hooked into §eHolographicDisplays §a!");
+            LeaderboardManager.getInstance().loadAllLeaderboards();
+        }
+        if (usePlaceholderAPI) {
+            info("§aSuccessfully hooked into §ePlaceholderAPI §a!");
+            new BuildBattleProPlaceholders(getInstance()).hook();
+        }
+        if (useMVdWPlaceholderAPI) {
+            info("§aSuccessfully hooked into §eMVdWPlaceholderAPI §a!");
+            registerMvdWPlaceholders();
+        }
         if (useLeaderHeads) {
+            info("§aSuccessfully hooked into §eLeaderHeads §a!");
             new BuildBattleWins();
             new BuildBattlePlayed();
             new BuildBattleBlocksPlaced();
@@ -128,7 +147,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             new BuildBattleParticlesPlaced();
         }
 
-        new MetricsLite(getInstance());
+        metrics = new MetricsLite(getInstance());
     }
 
     private boolean setPluginLoading() {
@@ -159,6 +178,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         //ENABLING
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§fMerry Christmas!"));
         Bukkit.getConsoleSender().sendMessage("");
         reloadAllConfigs();
         GameManager.getInstance().loadArenaPreferences();
@@ -174,6 +194,9 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             }
             LeaderboardManager.getInstance().loadAllLeaderboards();
         }
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
+        Bukkit.getConsoleSender().sendMessage("");
     }
 
     private void registerMvdWPlaceholders() {
@@ -243,7 +266,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         fileManager.getConfig("stats.yml").copyDefaults(true).save();
         fileManager.getConfig("themes.yml").copyDefaults(true).save();
         fileManager.getConfig("reports.yml").copyDefaults(true).save();
-        fileManager.getConfig("leaderheads.yml").copyDefaults(true).save();
         removeUnusedPathsFromConfigs();
     }
 

@@ -1,20 +1,22 @@
 package me.drawe.buildbattle.hooks.leaderheads;
 
-import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.robin.leaderheads.datacollectors.OnlineDataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class BuildBattleParticlesPlaced extends OnlineDataCollector {
 
     public BuildBattleParticlesPlaced() {
         super(
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.particles-placed.name"),
+                "bb-particles",
                 "BuildBattlePro",
-                BoardType.DEFAULT, BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.particles-placed.title"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.particles-placed.command"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getStringList("leaderheads.particles-placed.sign")
+                BoardType.DEFAULT,
+                "&eBuildBattle - Particles Placed",
+                "bbparticles",
+                Arrays.asList(null,null,"&e{amount} particles",null)
         );
     }
 

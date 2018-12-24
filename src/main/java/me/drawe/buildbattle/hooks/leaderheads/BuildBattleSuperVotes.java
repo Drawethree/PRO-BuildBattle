@@ -1,21 +1,22 @@
 package me.drawe.buildbattle.hooks.leaderheads;
 
-import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.robin.leaderheads.datacollectors.OnlineDataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import org.bukkit.entity.Player;
 
-public class BuildBattleSuperVotes extends OnlineDataCollector {
+import java.util.Arrays;
 
+public class BuildBattleSuperVotes extends OnlineDataCollector {
 
     public BuildBattleSuperVotes() {
         super(
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.super-votes.name"),
+                "bb-supervotes",
                 "BuildBattlePro",
-                BoardType.DEFAULT, BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.super-votes.title"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getString("leaderheads.super-votes.command"),
-                BuildBattle.getFileManager().getConfig("leaderheads.yml").get().getStringList("leaderheads.super-votes.sign")
+                BoardType.DEFAULT,
+                "&eBuildBattle - Super Votes",
+                "bbsupervotes",
+                Arrays.asList(null, null, "&e{amount} votes", null)
         );
     }
 

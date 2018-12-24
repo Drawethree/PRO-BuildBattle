@@ -32,7 +32,7 @@ public class GameManager {
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
     private static CompMaterial defaultFloorMaterial = CompMaterial.BIRCH_PLANKS;
-    private static String prefix = "§8[§eBuildBattlePro§8]§r";
+    private static String prefix = "§8[§eBuildBattlePro§8]§r ";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
     private static int themeVotingTime = 15;

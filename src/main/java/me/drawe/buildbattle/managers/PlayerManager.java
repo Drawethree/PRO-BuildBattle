@@ -221,6 +221,7 @@ public class PlayerManager {
 
     public void sendStartMessageToAllPlayers(BBArena a) {
         for (Player p : a.getPlayers()) {
+            p.sendTitle(Message.THEME.getMessage().replaceAll("%theme%", a.getTheme()), Message.BUILD_SOMETHING_RELEVANT.getMessage());
             FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
             for (String s : GameManager.getStartMessage()) {
                 FancyMessage.sendCenteredMessage(p, s.replaceAll("%theme%", a.getTheme()));
