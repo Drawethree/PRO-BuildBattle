@@ -198,6 +198,16 @@ signs:
     second_line: "&7Right-Click to"
     third_line: "&aAUTO-JOIN"
     fourth_line: ""
+  auto-join-solo:
+    first_line: "&7[&bBuildBattle&7]"
+    second_line: "&7Right-Click to"
+    third_line: "&aAUTO-JOIN"
+    fourth_line: "&eSOLO"
+  auto-join-team:
+    first_line: "&7[&bBuildBattle&7]"
+    second_line: "&7Right-Click to"
+    third_line: "&aAUTO-JOIN"
+    fourth_line: "&eTEAM"
 time:
   seconds: "Seconds"
   minutes: "Minutes"

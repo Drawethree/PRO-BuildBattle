@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if(GameManager.isCreateStatsOnServerJoin()) {
+        if (GameManager.isCreateStatsOnServerJoin()) {
             PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
         }
         if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
@@ -437,7 +437,7 @@ public class PlayerListener implements Listener {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
                                     BBDyeColor dc = BBDyeColor.getByItem(e.getCurrentItem());
-                                    if(dc != null) {
+                                    if (dc != null) {
                                         bannerCreator.selectColor(dc.getColor());
                                         return;
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -514,7 +514,7 @@ public class PlayerListener implements Listener {
                             e.setCancelled(true);
                             if (plot.isLocationInPlot(p.getLocation())) {
                                 BBParticle particle = BBParticle.getBBParticle(e.getItem());
-                                if(p.hasPermission(particle.getRequiredPermission())) {
+                                if (p.hasPermission(particle.getRequiredPermission())) {
                                     BBPlotParticle BBPlotParticle = new BBPlotParticle(plot, particle, p.getLocation());
                                     plot.addActiveParticle(p, BBPlotParticle);
                                 } else {
@@ -543,13 +543,13 @@ public class PlayerListener implements Listener {
             }
         } else {
             if (e.getClickedBlock() != null) {
-                if(e.getItem() != null && e.getItem().isSimilar(ArenaManager.getPosSelectorItem())) {
-                    if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (e.getItem() != null && e.getItem().isSimilar(ArenaManager.getPosSelectorItem())) {
+                    if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         e.setCancelled(true);
-                        ArenaManager.getInstance().setPos(p,e.getClickedBlock(),2);
-                    } else if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        ArenaManager.getInstance().setPos(p, e.getClickedBlock(), 2);
+                    } else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         e.setCancelled(true);
-                        ArenaManager.getInstance().setPos(p,e.getClickedBlock(),1);
+                        ArenaManager.getInstance().setPos(p, e.getClickedBlock(), 1);
                     }
                     return;
                 }
@@ -561,6 +561,20 @@ public class PlayerListener implements Listener {
                             arenaSign.getArena().addPlayer(p);
                         } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
                             BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(null);
+                            if (arenaToAutoJoin != null) {
+                                arenaToAutoJoin.addPlayer(p);
+                            } else {
+                                p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
+                            }
+                        } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage())) {
+                            BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.SOLO);
+                            if (arenaToAutoJoin != null) {
+                                arenaToAutoJoin.addPlayer(p);
+                            } else {
+                                p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
+                            }
+                        } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_TEAM_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage())) {
+                            BBArena arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.TEAM);
                             if (arenaToAutoJoin != null) {
                                 arenaToAutoJoin.addPlayer(p);
                             } else {
@@ -807,12 +821,26 @@ public class PlayerListener implements Listener {
                     p.sendMessage(GameManager.getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
                     return;
                 } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
-                    e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
-                    e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
-                    e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
-                    e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
-                    p.sendMessage(GameManager.getPrefix() + "§aAuto-Join sign successfully created!");
-                    return;
+                    if (e.getLine(2).equalsIgnoreCase("team")) {
+                        e.setLine(0, Message.SIGN_AUTO_JOIN_TEAM_FIRST_LINE.getMessage());
+                        e.setLine(1, Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage());
+                        e.setLine(2, Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage());
+                        e.setLine(3, Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage());
+                        p.sendMessage(GameManager.getPrefix() + "§aTeam Auto-Join sign successfully created!");
+                    } else if (e.getLine(2).equalsIgnoreCase("solo")) {
+                        e.setLine(0, Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage());
+                        e.setLine(1, Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage());
+                        e.setLine(2, Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage());
+                        e.setLine(3, Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage());
+                        p.sendMessage(GameManager.getPrefix() + "§aSolo Auto-Join sign successfully created!");
+                    } else {
+                        e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
+                        e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
+                        e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
+                        e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
+                        p.sendMessage(GameManager.getPrefix() + "§aAuto-Join sign successfully created!");
+                        return;
+                    }
                 } else {
                     p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                     e.setCancelled(true);
