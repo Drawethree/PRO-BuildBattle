@@ -77,6 +77,7 @@ public enum Message {
     CANT_VOTE_FOR_YOUR_PLOT("messages.cant_vote_for_your_plot"),
     VOTE_TIME("messages.voting_ends"),
     MAX_PARTICLES("messages.max_particles"),
+    PARTICLE_PLACED("messages.particle_placed"),
     PARTICLE_REMOVED("messages.particle_removed"),
     CANT_PLACE_PARTICLE_OUTSIDE("messages.cant_place_particle"),
     STATS_PARTICLES_PLACED("stats.particles_placed"),

@@ -1387,7 +1387,7 @@ public enum CompMaterial {
         return data;
     }
 
-    public static final boolean isButton(Material mat) {
+    public static boolean isButton(Material mat) {
         final String n = mat.toString();
         return n.endsWith("_BUTTON");
     }

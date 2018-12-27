@@ -333,7 +333,7 @@ public class PlayerListener implements Listener {
                                     return;
                                 } else {
                                     if (!p.getInventory().contains(e.getCurrentItem())) {
-                                        p.getInventory().setItem(7, e.getCurrentItem());
+                                        p.getInventory().addItem(e.getCurrentItem());
                                     }
                                 }
                             }
@@ -515,8 +515,7 @@ public class PlayerListener implements Listener {
                             if (plot.isLocationInPlot(p.getLocation())) {
                                 BBParticle particle = BBParticle.getBBParticle(e.getItem());
                                 if (p.hasPermission(particle.getRequiredPermission())) {
-                                    BBPlotParticle BBPlotParticle = new BBPlotParticle(plot, particle, p.getLocation());
-                                    plot.addActiveParticle(p, BBPlotParticle);
+                                    plot.addActiveParticle(p, new BBPlotParticle(plot, particle, p.getLocation()));
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                 }
