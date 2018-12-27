@@ -33,6 +33,9 @@ public class BBCommand implements CommandExecutor {
             if (args.length > 0) {
                 String subCommand = args[0].toLowerCase();
                 switch (subCommand) {
+                    case "debug":
+                        debugSubCommand(sender);
+                        break;
                     case "join":
                         joinSubCommand(sender, args);
                         break;
@@ -124,6 +127,12 @@ public class BBCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    private void debugSubCommand(CommandSender sender) {
+        if (sender.isOp()) {
+            sender.sendMessage(GameManager.getPrefix() + "§aDebug mode >> §e" + BuildBattle.enableDebugMode());
+        }
     }
 
     private void posSubCommand(CommandSender sender) {

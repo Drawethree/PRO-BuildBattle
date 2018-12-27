@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects.plot;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
@@ -386,5 +387,32 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public void setReportedBy(UUID reportedBy) {
         this.reportedBy = reportedBy;
+    }
+
+    public Location getRandomLocationInPlot() {
+
+        final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
+        final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
+        final int minZ = Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ());
+        final int maxZ = Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ());
+        final int minY = Math.min(minPoint.getBlockY(), maxPoint.getBlockY());
+        final int maxY = Math.max(minPoint.getBlockY(), maxPoint.getBlockY());
+
+        int tries = 0;
+        int randomX;
+        int randomY;
+        int randomZ;
+
+        BuildBattle.debug("Generating random location..");
+        do {
+            tries++;
+            BuildBattle.debug("Attempt no." + tries);
+            randomX = new Random().nextInt(maxX - minX) + minX;
+            randomY = new Random().nextInt(maxY - minY) + minY;
+            randomZ = new Random().nextInt(maxZ - minZ) + minZ;
+        } while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != CompMaterial.AIR.getMaterial()) && tries < 10);
+
+        BuildBattle.debug("Returning Location: " + getWorld().getName() + ", " + randomX + ", " + randomY + ", " + randomZ);
+        return new Location(getWorld(), randomX, randomY, randomZ);
     }
 }

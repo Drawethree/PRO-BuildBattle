@@ -501,13 +501,13 @@ public class BBArena {
         for (Player p : getPlayers()) {
             p.setAllowFlight(true);
             p.setFlying(true);
-            p.teleport(plot.getTeleportLocation());
+            p.teleport(plot.getRandomLocationInPlot());
             p.setPlayerTime(plot.getOptions().getCurrentTime().getTime(), false);
             p.setPlayerWeather(plot.getOptions().getCurrentWeather());
         }
         if (plot.getTeam().getPlayers().size() == 1) {
             PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
-        } else if (plot.getTeam().getPlayers().size() == 2) {
+        } else {
             PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         }
     }

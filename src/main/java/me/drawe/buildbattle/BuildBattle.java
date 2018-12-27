@@ -403,5 +403,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     public void setLoadAfter(int loadAfter) {
         this.loadAfter = loadAfter;
     }
+
+    public static boolean enableDebugMode() {
+        BuildBattle.debug = !BuildBattle.debug;
+        return BuildBattle.debug;
+    }
 }
 
