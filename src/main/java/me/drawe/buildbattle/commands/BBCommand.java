@@ -221,8 +221,11 @@ public class BBCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (p.hasPermission("buildbattlepro.manage.reports")) {
-                p.sendMessage(GameManager.getPrefix() + "§cReports are turned off for version 1.13 and above because there is no stable version of WorldEdit.");
-                //ReportManager.getInstance().openReports(p,1);
+                if(BuildBattle.getWorldEdit() != null) {
+                    ReportManager.getInstance().openReports(p, 1);
+                } else {
+                    p.sendMessage(GameManager.getPrefix() + "§cReports are turned off for version 1.13 and above because there is no stable version of WorldEdit.");
+                }
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }

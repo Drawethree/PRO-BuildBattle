@@ -1,15 +1,23 @@
 package me.drawe.buildbattle.managers;
 
+import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.events.BBReportEvent;
 import me.drawe.buildbattle.objects.GuiItem;
+import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,13 +34,13 @@ public class ReportManager {
     }
 
     private ReportManager() {
+
     }
 
     public static List<BBBuildReport> buildReports;
     public static final DateFormat reportDateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
     public static final String reportsDirectoryName = "reports_schematics";
     private static int maxReportsPerInv = 45;
-    public static String reportsInventoryTitle = "Build Reports Page: ";
 
     public static List<BBBuildReport> getBuildReports() {
         return buildReports;
@@ -50,7 +58,7 @@ public class ReportManager {
 
     }
 
-    public void loadAllReportsFromConfig() {
+    private void loadAllReportsFromConfig() {
         buildReports = new ArrayList<>();
         for (String s : BuildBattle.getFileManager().getConfig("reports.yml").get().getKeys(false)) {
             String reportId = s;
@@ -71,8 +79,8 @@ public class ReportManager {
     }
 
     public BBBuildReport getReport(ItemStack item) {
-        for(BBBuildReport report : buildReports) {
-            if(report.getReportInventoryItem().equals(item)) {
+        for (BBBuildReport report : buildReports) {
+            if (report.getReportInventoryItem().equals(item)) {
                 return report;
             }
         }
@@ -80,39 +88,39 @@ public class ReportManager {
     }
 
 
-    /*public boolean attemptReport(BBPlot reportedPlot, Player whoReported) {
-        if(reportedPlot.getTeam().getPlayers().contains(whoReported)) {
+    public boolean attemptReport(BBPlot reportedPlot, Player whoReported) {
+        if (reportedPlot.getTeam().getPlayers().contains(whoReported)) {
             whoReported.sendMessage(Message.CANNOT_REPORT_YOURSELF.getChatMessage());
             return false;
-        } else if(reportedPlot.getReportedBy() != null) {
+        } else if (reportedPlot.getReportedBy() != null) {
             whoReported.sendMessage(Message.ALREADY_REPOTED.getChatMessage());
             return false;
         } else {
-            return createReport(reportedPlot,whoReported);
+            return createReport(reportedPlot, whoReported);
         }
-    }*/
+    }
 
-    /*public boolean createReport(BBPlot reportedPlot, Player whoReported) {
+    private boolean createReport(BBPlot reportedPlot, Player whoReported) {
         String reportID = generateReportID(whoReported);
         List<UUID> reportedPlayers = new ArrayList<>();
-        reportedPlot.getTeam().getPlayers().forEach(p-> reportedPlayers.add(p.getUniqueId()));
+        reportedPlot.getTeam().getPlayers().forEach(p -> reportedPlayers.add(p.getUniqueId()));
         UUID reportedBy = whoReported.getUniqueId();
         BBReportStatus status = BBReportStatus.PENDING;
-        File schem = createSchematic(whoReported,reportID,reportedPlot);
-        BBBuildReport report = new BBBuildReport(reportID,reportedPlayers,reportedBy,schem,new Date(),status);
+        File schem = createSchematic(whoReported, reportID, reportedPlot);
+        BBBuildReport report = new BBBuildReport(reportID, reportedPlayers, reportedBy, schem, new Date(), status);
         if (report.saveReport()) {
             whoReported.sendMessage(Message.REPORT_SUCCESS.getChatMessage());
             reportedPlot.setReportedBy(whoReported.getUniqueId());
             buildReports.add(report);
-            Bukkit.getPluginManager().callEvent(new BBReportEvent(whoReported,reportedPlot.getTeam().getPlayers(),reportedPlot,reportID));
+            Bukkit.getPluginManager().callEvent(new BBReportEvent(whoReported, reportedPlot.getTeam().getPlayers(), reportedPlot, reportID));
             return true;
         } else {
             whoReported.sendMessage(Message.REPORT_FAILED.getChatMessage());
         }
         return false;
-    }*/
+    }
 
-    /*public static File createSchematic(Player player, String reportID, BBPlot plot) {
+    private File createSchematic(Player player, String reportID, BBPlot plot) {
         try {
             File dir = new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName);
             File schematic = new File(dir, reportID + ".schematic");
@@ -135,15 +143,17 @@ public class ReportManager {
             SchematicFormat.MCEDIT.save(clipboard, schematic);
             editSession.flushQueue();
             return schematic;
-        } catch (IOException | DataException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DataException e) {
+            e.printStackTrace();
         }
         return null;
-    }*/
+    }
 
     public boolean existsReport(int id) {
-        for(BBBuildReport report : buildReports) {
-            if(Integer.parseInt(report.getReportID().replaceAll("report", "")) == id) {
+        for (BBBuildReport report : buildReports) {
+            if (Integer.parseInt(report.getReportID().replaceAll("report", "")) == id) {
                 return true;
             }
         }
@@ -177,14 +187,15 @@ public class ReportManager {
 
     public int getNextPage(Inventory inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(reportsInventoryTitle, "")) + 1;
+            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) + 1;
         } catch (Exception e) {
             return 0;
         }
     }
+
     public int getCurrentPage(Inventory inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(reportsInventoryTitle, ""));
+            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), ""));
         } catch (Exception e) {
             return 0;
         }
@@ -192,15 +203,16 @@ public class ReportManager {
 
     public int getPrevPage(Inventory inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(reportsInventoryTitle, "")) - 1;
+            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) - 1;
         } catch (Exception e) {
             return 0;
         }
     }
+
     public void openReports(Player p, int page) {
-        if(page > 0) {
-            if(getBuildReports().size() >= (page*maxReportsPerInv)-45) {
-                Inventory inv = Bukkit.createInventory(null, 54, reportsInventoryTitle + page);
+        if (page > 0) {
+            if (getBuildReports().size() >= (page * maxReportsPerInv) - 45) {
+                Inventory inv = Bukkit.createInventory(null, 54, OptionsManager.getReportsInventoryTitle() + page);
                 for (int i = page * maxReportsPerInv - 45; i < page * maxReportsPerInv; i++) {
                     try {
                         inv.addItem(getBuildReports().get(i).getReportInventoryItem());
@@ -233,7 +245,7 @@ public class ReportManager {
     }
 
     public boolean deleteReport(BBBuildReport clickedReport) {
-        if(clickedReport.delete()) {
+        if (clickedReport.delete()) {
             buildReports.remove(clickedReport);
             clickedReport = null;
             return true;

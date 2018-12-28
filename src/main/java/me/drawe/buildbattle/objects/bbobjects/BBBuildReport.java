@@ -1,14 +1,24 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.GameManager;
 import me.drawe.buildbattle.managers.MySQLManager;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.utils.ItemCreator;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -100,7 +110,7 @@ public class BBBuildReport {
         return reportInventoryItem;
     }
 
-    /*public boolean selectSchematic(Player p) {
+    public boolean selectSchematic(Player p) {
         com.sk89q.worldedit.util.io.Closer closer = com.sk89q.worldedit.util.io.Closer.create();
         try {
             FileInputStream fis = closer.register(new FileInputStream(schematic));
@@ -120,7 +130,7 @@ public class BBBuildReport {
             }
         }
         return false;
-    }*/
+    }
 
     public boolean delete() {
         if(schematic.exists()) schematic.delete();

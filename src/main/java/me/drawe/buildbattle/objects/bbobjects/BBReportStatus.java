@@ -2,7 +2,6 @@ package me.drawe.buildbattle.objects.bbobjects;
 
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 
 public enum BBReportStatus {
 

@@ -4,6 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.Category;
 import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.managers.*;
+import me.drawe.buildbattle.objects.GuiItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
@@ -168,7 +169,7 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            } /*else if (inv.getTitle().contains(ReportManager.reportsInventoryTitle)) {
+            } else if (inv.getTitle().contains(OptionsManager.getReportsInventoryTitle())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem().isSimilar(GuiItem.NEXT_PAGE.getItemStack())) {
                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(inv));
@@ -209,7 +210,6 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            */
         }
         if (a != null) {
             if (inv != null) {
@@ -485,10 +485,10 @@ public class PlayerListener implements Listener {
             }
             if (arena.getBBArenaState() == BBArenaState.VOTING) {
                 if (e.getItem() != null) {
-                    /*if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
+                    if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
                         ReportManager.getInstance().attemptReport(arena.getCurrentVotingPlot(), p);
                         return;
-                    }*/
+                    }
                     Votes vote = Votes.getVoteByItemStack(e.getItem());
                     if (vote != null) {
                         BBPlot currentPlot = arena.getCurrentVotingPlot();

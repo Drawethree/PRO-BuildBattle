@@ -50,5 +50,6 @@
     <orderEntry type="library" name="Maven: be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.3.0" level="project" />
     <orderEntry type="library" name="LeaderHeads" level="project" />
+    <orderEntry type="library" name="worldedit-bukkit-6.1.9 (2)" level="project" />
   </component>
 </module>

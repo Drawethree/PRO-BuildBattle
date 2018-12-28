@@ -53,6 +53,8 @@ public class OptionsManager {
     private static Inventory teamArenasInventory = Bukkit.createInventory(null, ItemCreator.getInventorySize(ArenaManager.getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
     private static Inventory biomesInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_BIOMES_TITLE.getMessage());
 
+    private static String reportsInventoryTitle = "Build Reports Page: ";
+
     private OptionsManager() {
     }
 
@@ -173,6 +175,10 @@ public class OptionsManager {
 
     public static Inventory getTeamArenasInventory() {
         return teamArenasInventory;
+    }
+
+    public static String getReportsInventoryTitle() {
+        return reportsInventoryTitle;
     }
 
 

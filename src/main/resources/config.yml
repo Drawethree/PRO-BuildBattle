@@ -57,7 +57,7 @@ arena:
   replace_block_behind_signs: true
   show_game_scoreboard: true
   show_main_lobby_scoreboard: true
-  enable_reports: false
+  enable_reports: true
   show_vote_in_subtitle: true
   automatic_grow: true
   restrict_player_movement: true

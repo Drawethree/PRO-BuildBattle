@@ -3,6 +3,7 @@ package me.drawe.buildbattle;
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
 import me.drawe.buildbattle.heads.HeadInventory;
@@ -19,6 +20,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.MetricsLite;
+import me.kangarko.compatbridge.utils.VersionResolver;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -32,7 +34,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private static BuildBattle instance;
     private static FileManager fileManager;
-    //private static WorldEditPlugin worldEdit;
+    private static WorldEditPlugin worldEdit;
     private static boolean debug = false;
     private boolean mysqlEnabled = false;
     private boolean useBungeecord = false;
@@ -57,9 +59,9 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         return instance;
     }
 
-    /*public static WorldEditPlugin getWorldEdit() {
+    public static WorldEditPlugin getWorldEdit() {
         return worldEdit;
-    }*/
+    }
 
     public static FileManager getFileManager() {
         return fileManager;
@@ -90,7 +92,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§fMerry Christmas!"));
         Bukkit.getConsoleSender().sendMessage("");
 
-        //loadWorldEdit();
         //setupChat();
 
         getCommand("buildbattle").setExecutor(new BBCommand());
@@ -147,6 +148,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             new BuildBattleParticlesPlaced();
         }
 
+        loadWorldEdit();
         metrics = new MetricsLite(getInstance());
     }
 
@@ -166,7 +168,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                 MySQLManager.getInstance().saveAllPlayerStats();
                 MySQL.getConnection().close();
             } catch (Exception e) {
-                BuildBattle.severe("§cAn exception occurred while trying to close MySQL connection !");
+                severe("§cAn exception occurred while trying to close MySQL connection !");
                 e.printStackTrace();
             }
         } else {
@@ -288,7 +290,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                 MySQLManager.getInstance().saveAllPlayerStats();
                 MySQL.getConnection().close();
             } catch (Exception e) {
-                BuildBattle.severe("§cAn exception occurred while trying to close MySQL connection !");
+                severe("§cAn exception occurred while trying to close MySQL connection !");
                 e.printStackTrace();
             }
         } else {
@@ -300,7 +302,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void setupConfigPreferences() {
-        BuildBattle.info("§aPlayer Data >> §e" + GameManager.getStatsType() + " §a>> §e" + GameManager.getStatsType().getInfo());
+        info("§aPlayer Data >> §e" + GameManager.getStatsType() + " §a>> §e" + GameManager.getStatsType().getInfo());
         if (GameManager.getStatsType() == StatsType.MYSQL) {
             MySQL.getInstance().connect();
             MySQLManager.getInstance().loadAllPlayerStats();
@@ -309,7 +311,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             setMysqlEnabled(false);
         }
         if (getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.use_bungee")) {
-            BuildBattle.info("§aBungeeCord system for BuildBattlePro loaded !");
+            info("§aBungeeCord system for BuildBattlePro loaded !");
             setUseBungeecord(true);
             getServer().getMessenger().unregisterIncomingPluginChannel(this);
             getServer().getMessenger().unregisterOutgoingPluginChannel(this);
@@ -328,12 +330,21 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.mysqlEnabled = mysqlEnabled;
     }
 
-    /*private void loadWorldEdit() {
-        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        if (worldEdit == null) {
-            BuildBattle.warning("§cWorldEdit dependency not found ! Some features may not work !");
+    private void loadWorldEdit() {
+        if(VersionResolver.isAtLeast1_13()) {
+            warning("§cWorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
+            return;
         }
-    }*/
+
+        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+
+        if (worldEdit == null) {
+            warning("§cWorldEdit dependency not found ! Report features will be disabled !");
+        } else {
+            info("§aSuccessfully hooked into §eWorldEdit §a!");
+            ReportManager.getInstance().loadAllReports();
+        }
+    }
 
     public boolean isUseBungeecord() {
         return useBungeecord;
