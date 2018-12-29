@@ -10,18 +10,19 @@ import java.util.List;
 public class BBReportEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private Player reporter;
-    private List<Player> reportedPlayers;
-    private BBPlot reportedPlot;
-    private String schematicName;
+    private final Player reporter;
+    private final List<Player> reportedPlayers;
+    private final BBPlot reportedPlot;
+    private final String schematicName;
 
 
     /**
      * Called when build report was successfully submitted
-     * @param reporter Player who reported
+     *
+     * @param reporter        Player who reported
      * @param reportedPlayers Players that were reported
-     * @param reportedPlot Plot that was reported
-     * @param schematicName Schematic file name that was created
+     * @param reportedPlot    Plot that was reported
+     * @param schematicName   Schematic file name that was created
      */
     public BBReportEvent(Player reporter, List<Player> reportedPlayers, BBPlot reportedPlot, String schematicName) {
         this.reporter = reporter;
@@ -29,7 +30,6 @@ public class BBReportEvent extends Event {
         this.reportedPlot = reportedPlot;
         this.schematicName = schematicName;
     }
-
 
 
     public HandlerList getHandlerList() {

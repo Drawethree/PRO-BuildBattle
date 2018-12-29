@@ -7,13 +7,14 @@ import org.bukkit.event.HandlerList;
 public class BBGameStartEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private BBArena arena;
+    private final BBArena arena;
 
     /**
      * Called when game starts
+     *
      * @param arena Arena that started
      */
-    public BBGameStartEvent(BBArena arena){
+    public BBGameStartEvent(BBArena arena) {
         this.arena = arena;
     }
 

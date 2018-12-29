@@ -8,12 +8,13 @@ import org.bukkit.event.HandlerList;
 public class BBGameEndEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private BBArena arena;
-    private BBTeam winner;
+    private final BBArena arena;
+    private final BBTeam winner;
 
     /**
      * Called when game ends
-     * @param arena Arena that ended
+     *
+     * @param arena  Arena that ended
      * @param winner Team that won
      */
     public BBGameEndEvent(BBArena arena, BBTeam winner) {

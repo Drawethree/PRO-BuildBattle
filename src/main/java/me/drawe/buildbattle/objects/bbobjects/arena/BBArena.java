@@ -4,6 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.events.BBGameEndEvent;
 import me.drawe.buildbattle.events.BBGameStartEvent;
 import me.drawe.buildbattle.events.BBGameStateSwitchEvent;
+import me.drawe.buildbattle.events.BBPlayerGameJoinEvent;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
@@ -121,6 +122,11 @@ public class BBArena {
     public void addPlayer(Player p) {
         if (getBBArenaState() == BBArenaState.LOBBY) {
             if (getPlayers().size() < getMaxPlayers()) {
+
+                if (callJoinEvent(p)) {
+                    return;
+                }
+
                 try {
                     joinCommands(p);
                 } catch (Exception e) {
@@ -145,6 +151,12 @@ public class BBArena {
         } else {
             p.sendMessage(Message.ARENA_ALREADY_STARTED.getChatMessage());
         }
+    }
+
+    private boolean callJoinEvent(Player p) {
+        BBPlayerGameJoinEvent bbPlayerGameJoinEvent = new BBPlayerGameJoinEvent(this, p);
+        Bukkit.getPluginManager().callEvent(bbPlayerGameJoinEvent);
+        return bbPlayerGameJoinEvent.isCancelled();
     }
 
     protected void leaveCommands(Player p) {

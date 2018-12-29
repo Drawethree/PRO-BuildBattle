@@ -8,13 +8,14 @@ import org.bukkit.event.HandlerList;
 public class BBGameStateSwitchEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private BBArena arena;
-    private BBArenaState oldState;
-    private BBArenaState newState;
+    private final BBArena arena;
+    private final BBArenaState oldState;
+    private final BBArenaState newState;
 
     /**
      * Called when gamestate changes
-     * @param arena Arena in which gamestate has changed
+     *
+     * @param arena    Arena in which gamestate has changed
      * @param oldState Old gamestate
      * @param newState New gamestate
      */
