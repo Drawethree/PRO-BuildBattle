@@ -17,51 +17,47 @@ public class BBParty {
     public BBParty(Player creator) {
         this.creator = creator;
         this.players = new ArrayList<>();
-        players.add(creator);
+        this.players.add(creator);
         creator.sendMessage(Message.PARTY_CREATED.getChatMessage());
     }
 
 
     public void joinPlayer(Player p) {
-        getPlayers().add(p);
-        PartyManager.getInvitedPlayers().remove(p);
         p.sendMessage(Message.PARTY_JOIN.getChatMessage().replaceAll("%creator%", getCreator().getName()));
-        for(Player p1 : getPlayers()) {
-            if(!p1.equals(p)) {
-                p1.sendMessage(Message.PARTY_PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getName()));
-            }
+        for (Player p1 : players) {
+            p1.sendMessage(Message.PARTY_PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getName()));
         }
+        players.add(p);
+        PartyManager.getInvitedPlayers().remove(p);
     }
 
     public void removePlayer(Player p) {
-        if(!isCreator(p)) {
-            getPlayers().remove(p);
+        if (!isCreator(p)) {
+            players.remove(p);
             p.sendMessage(Message.PARTY_LEFT.getChatMessage().replaceAll("%creator%", getCreator().getName()));
-            for(Player p1 : getPlayers()) {
-                if(!p1.equals(p)) {
-                    p1.sendMessage(Message.PARTY_PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getName()));
-                }
+            for (Player p1 : players) {
+                p1.sendMessage(Message.PARTY_PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getName()));
             }
         } else {
-            disbandParty();
+            this.disbandParty();
         }
     }
 
-    public void disbandParty() {
-        for(Player p : getPlayers()) {
+    private void disbandParty() {
+        for (Player p : players) {
+            PartyManager.getPlayersInParties().remove(p);
             p.sendMessage(Message.PARTY_DISBANDED.getChatMessage());
         }
-        getPlayers().clear();
-        PartyManager.getParties().remove(this);
+        players.clear();
         PartyManager.getInstance().clearInvitations(this);
-        setCreator(null);
+        this.creator = null;
     }
 
     public void joinGame(BBArena a) {
-        if(a.getPlayers().size() + getPlayers().size() <= a.getMaxPlayers()) {
+        if (a.getPlayers().size() + players.size() <= a.getMaxPlayers()) {
             BBTeam team = a.getFreeBBTeamForParty(this);
-            for (Player p : getPlayers()) {
-                if (!p.equals(getCreator())) {
+            for (Player p : players) {
+                if (!p.equals(creator)) {
                     BBArena pArena = PlayerManager.getInstance().getPlayerArena(p);
                     if (pArena != null) {
                         pArena.removePlayer(p);
@@ -73,26 +69,24 @@ public class BBParty {
                 }
             }
         } else {
-            getCreator().sendMessage(Message.PARTY_NO_SPACE_FOR_YOUR_PARTY.getChatMessage());
+            creator.sendMessage(Message.PARTY_NO_SPACE_FOR_YOUR_PARTY.getChatMessage());
         }
     }
 
     public boolean isCreator(Player p) {
         return getCreator().equals(p);
     }
+
     public Player getCreator() {
         return creator;
     }
+
     public List<Player> getPlayers() {
         return players;
     }
 
-    public void setCreator(Player p) {
-        this.creator = creator;
-    }
-
     public boolean isFull() {
-        if(getCreator().isOp() || getCreator().hasPermission("buildbattlepro.party.size.*")) return false;
+        if (creator.isOp() || creator.hasPermission("buildbattlepro.party.size.*")) return false;
         return getPlayers().size() == PartyManager.getInstance().getMaxPlayersInParty(getCreator());
     }
 }

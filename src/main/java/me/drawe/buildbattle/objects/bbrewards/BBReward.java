@@ -2,7 +2,7 @@ package me.drawe.buildbattle.objects.bbrewards;
 
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 
-public abstract class BBReward {
+public interface BBReward {
 
-    public abstract void giveReward(BBTeam team, int placement);
+    void giveReward(BBTeam team, int placement);
 }

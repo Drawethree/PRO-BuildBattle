@@ -5,7 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.utils.TimeUtil;
+import me.drawe.buildbattle.utils.Time;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -71,7 +71,7 @@ public class BBBoard {
                     add(getArena().getArenaModeInString(), 11);
                     add("&a", 10);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
-                    add(TimeUtil.formatTimeMMSS(timeLeft), 8);
+                    add(Time.formatTimeMMSS(timeLeft), 8);
                     add("", 7);
                     add(Message.SCOREBOARD_THEME.getMessage(), 6);
                     add("&a" + getArena().getTheme(), 5);
@@ -96,7 +96,7 @@ public class BBBoard {
                     add("&a" + getArena().getTheme(), index + 5);
                     add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
                     add("", index + 7);
-                    add("&a" + TimeUtil.formatTimeMMSS(timeLeft), index + 8);
+                    add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
                     add("&a", index + 10);
                     add(getArena().getArenaModeInString(), index + 11);
@@ -106,7 +106,7 @@ public class BBBoard {
                     add(getArena().getArenaModeInString(), 11);
                     add("&a", 10);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
-                    add("&a" + TimeUtil.formatTimeMMSS(timeLeft), 8);
+                    add("&a" + Time.formatTimeMMSS(timeLeft), 8);
                     add("", 7);
                     add(Message.SCOREBOARD_THEME.getMessage(), 6);
                     add("&a" + getArena().getTheme(), 5);
@@ -131,7 +131,7 @@ public class BBBoard {
                     add("&a" + getArena().getTheme(), index + 5);
                     add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
                     add("", index + 7);
-                    add("&a" + TimeUtil.formatTimeMMSS(timeLeft), index + 8);
+                    add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
                     add("&a", index + 10);
                     add(getArena().getArenaModeInString(), index + 11);
@@ -377,10 +377,6 @@ public class BBBoard {
         }
     }
 
-    public void removeBoard() {
-        getArena().getPlayerBoards().remove(this);
-        getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-    }
 
     public BBArena getArena() {
         return arena;

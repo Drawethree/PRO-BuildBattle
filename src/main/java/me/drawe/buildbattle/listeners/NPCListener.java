@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.listeners;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
@@ -14,6 +15,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class NPCListener implements Listener {
+
+    private final BuildBattle plugin;
+
+    public NPCListener(BuildBattle buildBattle) {
+        this.plugin = buildBattle;
+    }
 
     @EventHandler
     public void onNPCLClick(NPCLeftClickEvent e) {

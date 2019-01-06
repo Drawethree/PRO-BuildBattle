@@ -1,12 +1,13 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.kangarko.compatbridge.model.CompMaterial;
 import me.kangarko.compatbridge.utils.VersionResolver;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -75,42 +76,6 @@ public class LocationUtil {
         }
     }
 
-    public static boolean isLocationSafe(Location l, int radius) {
-        for (int x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++) {
-            for (int y = l.getBlockY() - radius; y <= l.getBlockY() + radius; y++) {
-                for (int z = l.getBlockZ() - radius; z <= l.getBlockZ() + radius; z++) {
-                    Block b = l.getWorld().getBlockAt(x, y, z);
-                    if (b.getType() == CompMaterial.LAVA.getMaterial()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public static List<Location> getBlocksBetweenLocations(Location l1, Location l2) {
-        List<Location> result = new ArrayList<>();
-        if (l1.getWorld().equals(l2.getWorld())) {
-            int minX = Math.min(l1.getBlockX(), l2.getBlockX());
-            int minY = Math.min(l1.getBlockY(), l2.getBlockY());
-            int minZ = Math.min(l1.getBlockZ(), l2.getBlockZ());
-            int maxX = Math.max(l1.getBlockX(), l2.getBlockX());
-            int maxY = Math.max(l1.getBlockY(), l2.getBlockY());
-            int maxZ = Math.max(l1.getBlockZ(), l2.getBlockZ());
-            for (int x = minX; x <= maxX; x += 1) {
-                for (int y = minY; y <= maxY; y += 1) {
-                    for (int z = minZ; z <= maxZ; z += 1) {
-                        result.add(new Location(l1.getWorld(), x, y, z));
-                    }
-                }
-            }
-        } else {
-            BuildBattle.warning("§cCould not get all blocks between locations because they are not in same world !");
-        }
-        return result;
-    }
-
     public static List<Location> getHollowCube(Location min, Location max) {
         List<Location> result = new ArrayList<>();
         World world = min.getWorld();
@@ -134,26 +99,6 @@ public class LocationUtil {
         return result;
     }
 
-    public static Location getChunkCorner1(Player p, Chunk c) {
-        return new Location(c.getWorld(), c.getX() * 16, p.getLocation().getBlockY(), c.getZ() * 16);
-    }
-
-    public static Location getChunkCorner2(Player p, Chunk c) {
-        return new Location(c.getWorld(), (c.getX() * 16) + 15, p.getLocation().getBlockY() + 15, (c.getZ() * 16) + 15);
-    }
-
-    public static List<Location> getAllCornersOfPlot(BBPlot plot) {
-        List<Location> returnList = new ArrayList<>();
-        Location min = plot.getMinPoint();
-        Location max = plot.getMaxPoint();
-        World w = min.getWorld();
-        returnList.add(new Location(w, min.getX(), min.getY(), min.getZ()));
-        returnList.add(new Location(w, max.getX(), min.getY(), max.getZ()));
-        returnList.add(new Location(w, min.getX(), min.getY(), max.getZ()));
-        returnList.add(new Location(w, max.getX(), min.getY(), min.getZ()));
-        return returnList;
-    }
-
     public static void showCreatedPlot(Location l1, Location l2, Player p, int times) {
         new BukkitRunnable() {
             int count = 0;
@@ -164,8 +109,8 @@ public class LocationUtil {
                     cancel();
                 } else {
                     for (Location l : getHollowCube(l1, l2)) {
-                        if(VersionResolver.isAtLeast1_13()) {
-                            l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l),1);
+                        if (VersionResolver.isAtLeast1_13()) {
+                            l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
                         } else {
                             ParticleEffect.VILLAGER_HAPPY.display(0f, 0f, 0f, 0f, 1, getCenter(l), p);
                         }

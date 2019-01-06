@@ -2,7 +2,6 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
-import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
@@ -16,15 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameManager {
-    private static GameManager ourInstance = new GameManager();
+public class BBSettings {
 
-    public static GameManager getInstance() {
-        return ourInstance;
-    }
-
-    private GameManager() {
-    }
     private static List<String> soloThemes = new ArrayList<>();
     private static List<String> teamThemes = new ArrayList<>();
     private static List<String> restricedThemes = new ArrayList<>();
@@ -94,19 +86,24 @@ public class GameManager {
     private static Location mainLobbyLocation = null;
     private static boolean teleportToMainLobbyOnJoin = false;
 
-    public static void setLobbyTime(int lobbyTime) {
+    private static boolean useBungeecord = false;
+    private static boolean autoJoinPlayers = false;
+    private static boolean loadPluginLater = false;
+    private static int loadAfter = 0;
+
+    private static void setLobbyTime(int lobbyTime) {
         if (lobbyTime > 0) {
-            GameManager.lobbyTime = lobbyTime;
+            BBSettings.lobbyTime = lobbyTime;
         } else {
-            BuildBattle.warning("§cVariable lobbyTime must be higher than 0 ! Setting it to default (" + getLobbyTime() + ")");
+            BuildBattle.warning("§cVariable lobbyTime must be higher than 0 ! Setting it to default (" + BBSettings.lobbyTime + ")");
         }
     }
 
-    public static void setThemeVotingTime(int time) {
+    private static void setThemeVotingTime(int time) {
         if (time > 0) {
-            GameManager.themeVotingTime = time;
+            BBSettings.themeVotingTime = time;
         } else {
-            BuildBattle.warning("§cVariable themeVotingTime must be higher than 0 ! Setting it to default (" + getThemeVotingTime() + ")");
+            BuildBattle.warning("§cVariable themeVotingTime must be higher than 0 ! Setting it to default (" + BBSettings.themeVotingTime + ")");
         }
     }
 
@@ -118,19 +115,19 @@ public class GameManager {
         return defaultGameTime;
     }
 
-    public static void setDefaultFloorMaterial(CompMaterial defaultFloorMaterial) {
+    private static void setDefaultFloorMaterial(CompMaterial defaultFloorMaterial) {
         if (defaultFloorMaterial != null) {
-            GameManager.defaultFloorMaterial = defaultFloorMaterial;
+            BBSettings.defaultFloorMaterial = defaultFloorMaterial;
         } else {
-            BuildBattle.warning("§cVariable default_floor cannot be loaded (maybe it's invalid ?) ! Setting it to default (" + getDefaultFloorMaterial() + ")");
+            BuildBattle.warning("§cVariable default_floor cannot be loaded (maybe it's invalid ?) ! Setting it to default (" + BBSettings.defaultFloorMaterial + ")");
         }
     }
 
-    public static void setDefaultGameTime(int defaultGameTime) {
+    private static void setDefaultGameTime(int defaultGameTime) {
         if (defaultGameTime > 0) {
-            GameManager.defaultGameTime = defaultGameTime;
+            BBSettings.defaultGameTime = defaultGameTime;
         } else {
-            BuildBattle.warning("§cVariable defaultGameTime must be higher than 0 ! Setting it to default (" + getDefaultGameTime() + ")");
+            BuildBattle.warning("§cVariable defaultGameTime must be higher than 0 ! Setting it to default (" + BBSettings.defaultGameTime + ")");
         }
     }
 
@@ -138,11 +135,11 @@ public class GameManager {
         return votingTime;
     }
 
-    public static void setVotingTime(int votingTime) {
+    private static void setVotingTime(int votingTime) {
         if (votingTime > 0) {
-            GameManager.votingTime = votingTime;
+            BBSettings.votingTime = votingTime;
         } else {
-            BuildBattle.warning("§cVariable votingTime must be higher than 0 ! Setting it to default (" + getVotingTime() + ")");
+            BuildBattle.warning("§cVariable votingTime must be higher than 0 ! Setting it to default (" + BBSettings.votingTime + ")");
         }
     }
 
@@ -150,11 +147,11 @@ public class GameManager {
         return endTime;
     }
 
-    public static void setEndTime(int endTime) {
+    private static void setEndTime(int endTime) {
         if (endTime > 0) {
-            GameManager.endTime = endTime;
+            BBSettings.endTime = endTime;
         } else {
-            BuildBattle.warning("§cVariable endTime must be higher than 0 ! Setting it to default (" + getEndTime() + ")");
+            BuildBattle.warning("§cVariable endTime must be higher than 0 ! Setting it to default (" + BBSettings.endTime + ")");
         }
     }
 
@@ -170,11 +167,11 @@ public class GameManager {
         return prefix;
     }
 
-    public static void setPrefix(String prefix) {
+    private static void setPrefix(String prefix) {
         if (prefix != null) {
-            GameManager.prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+            BBSettings.prefix = ChatColor.translateAlternateColorCodes('&', prefix);
         } else {
-            BuildBattle.warning("§cVariable prefix could not be loaded ! Setting it to default (" + getPrefix() + ")");
+            BuildBattle.warning("§cVariable prefix could not be loaded ! Setting it to default (" + BBSettings.prefix + ")");
         }
     }
 
@@ -182,11 +179,11 @@ public class GameManager {
         return maxParticlesPerPlayer;
     }
 
-    public static void setMaxParticlesPerPlayer(int maxParticlesPerPlayer) {
+    private static void setMaxParticlesPerPlayer(int maxParticlesPerPlayer) {
         if (maxParticlesPerPlayer < 0) {
-            BuildBattle.warning("§cVariable particles.max_particles_per_player must be higher or equal 0 ! Setting it to default (" + getMaxParticlesPerPlayer() + ")");
+            BuildBattle.warning("§cVariable particles.max_particles_per_player must be higher or equal 0 ! Setting it to default (" + BBSettings.maxParticlesPerPlayer + ")");
         } else {
-            GameManager.maxParticlesPerPlayer = maxParticlesPerPlayer;
+            BBSettings.maxParticlesPerPlayer = maxParticlesPerPlayer;
         }
     }
 
@@ -194,19 +191,19 @@ public class GameManager {
         return particleOffset;
     }
 
-    public static void setParticleOffset(double particleOffset) {
-        GameManager.particleOffset = particleOffset;
+    private static void setParticleOffset(double particleOffset) {
+        BBSettings.particleOffset = particleOffset;
     }
 
     public static int getAmountParticleToSpawn() {
         return amountParticleToSpawn;
     }
 
-    public static void setAmountParticleToSpawn(int amountParticleToSpawn) {
+    private static void setAmountParticleToSpawn(int amountParticleToSpawn) {
         if (amountParticleToSpawn > 0) {
-            GameManager.amountParticleToSpawn = amountParticleToSpawn;
+            BBSettings.amountParticleToSpawn = amountParticleToSpawn;
         } else {
-            BuildBattle.warning("§cVariable particles.amount_to_spawn must be higher than 0 ! Setting it to default (" + getAmountParticleToSpawn() + ")");
+            BuildBattle.warning("§cVariable particles.amount_to_spawn must be higher than 0 ! Setting it to default (" + BBSettings.amountParticleToSpawn + ")");
         }
     }
 
@@ -214,11 +211,11 @@ public class GameManager {
         return particleRefreshTime;
     }
 
-    public static void setParticleRefreshTime(double particleRefreshTime) {
+    private static void setParticleRefreshTime(double particleRefreshTime) {
         if (particleRefreshTime > 0) {
-            GameManager.particleRefreshTime = particleRefreshTime;
+            BBSettings.particleRefreshTime = particleRefreshTime;
         } else {
-            BuildBattle.warning("§cVariable particles.refresh_time must be higher than 0 ! Setting it to default (" + getAmountParticleToSpawn() + ")");
+            BuildBattle.warning("§cVariable particles.refresh_time must be higher than 0 ! Setting it to default (" + BBSettings.particleRefreshTime + ")");
         }
     }
 
@@ -226,17 +223,13 @@ public class GameManager {
         return fallbackServers;
     }
 
-    public static void setFallbackServers(List<String> fallbackServers) {
-        GameManager.fallbackServers = fallbackServers;
-    }
-
     public static List<String> getStartMessage() {
         return startMessage;
     }
 
-    public static void setStartMessage(List<String> startMessage) {
+    private static void setStartMessage(List<String> startMessage) {
         if (startMessage != null) {
-            GameManager.startMessage = startMessage;
+            BBSettings.startMessage = startMessage;
         } else {
             BuildBattle.severe("§cVariable start message could not be loaded !");
         }
@@ -246,19 +239,19 @@ public class GameManager {
         return asyncSavePlayerData;
     }
 
-    public static void setAsyncSavePlayerData(boolean asyncSavePlayerData) {
-        GameManager.asyncSavePlayerData = asyncSavePlayerData;
+    private static void setAsyncSavePlayerData(boolean asyncSavePlayerData) {
+        BBSettings.asyncSavePlayerData = asyncSavePlayerData;
     }
 
     public static int getFireworkWaves() {
         return fireworkWaves;
     }
 
-    public static void setFireworkWaves(int fireworkWaves) {
+    private static void setFireworkWaves(int fireworkWaves) {
         if (fireworkWaves >= 0) {
-            GameManager.fireworkWaves = fireworkWaves;
+            BBSettings.fireworkWaves = fireworkWaves;
         } else {
-            BuildBattle.warning("§cVariable firework_waves must be higher or equal 0 ! Setting it to default (" + getFireworkWaves() + ")");
+            BuildBattle.warning("§cVariable firework_waves must be higher or equal 0 ! Setting it to default (" + BBSettings.fireworkWaves + ")");
         }
     }
 
@@ -266,11 +259,11 @@ public class GameManager {
         return fireworkAmount;
     }
 
-    public static void setFireworkAmount(int fireworkAmount) {
+    private static void setFireworkAmount(int fireworkAmount) {
         if (fireworkAmount >= 0) {
-            GameManager.fireworkAmount = fireworkAmount;
+            BBSettings.fireworkAmount = fireworkAmount;
         } else {
-            BuildBattle.warning("§cVariable firework_amount must be higher or equal 0 ! Setting it to default (" + getFireworkAmount() + ")");
+            BuildBattle.warning("§cVariable firework_amount must be higher or equal 0 ! Setting it to default (" + BBSettings.fireworkAmount + ")");
         }
     }
 
@@ -278,16 +271,16 @@ public class GameManager {
         return scoreboardEnabled;
     }
 
-    public static void setScoreboardEnabled(boolean scoreboardEnabled) {
-        GameManager.scoreboardEnabled = scoreboardEnabled;
+    private static void setScoreboardEnabled(boolean scoreboardEnabled) {
+        BBSettings.scoreboardEnabled = scoreboardEnabled;
     }
 
     public static boolean isChangeMOTD() {
         return changeMOTD;
     }
 
-    public static void setChangeMOTD(boolean changeMOTD) {
-        GameManager.changeMOTD = changeMOTD;
+    private static void setChangeMOTD(boolean changeMOTD) {
+        BBSettings.changeMOTD = changeMOTD;
     }
 
     public static double getThemeVotingTime() {
@@ -298,37 +291,36 @@ public class GameManager {
         return themesToVote;
     }
 
-    public static void setThemesToVote(int themesToVote) {
+    private static void setThemesToVote(int themesToVote) {
         if (themesToVote > 0 && themesToVote <= 6) {
-            GameManager.themesToVote = themesToVote;
+            BBSettings.themesToVote = themesToVote;
         } else {
-            BuildBattle.warning("§cVariable themesToVote must be higher than 0 and lower or equal 6 ! Setting it to default (" + getThemesToVote() + ")");
+            BuildBattle.warning("§cVariable themesToVote must be higher than 0 and lower or equal 6 ! Setting it to default (" + BBSettings.themesToVote + ")");
         }
-        GameManager.themesToVote = themesToVote;
     }
 
     public static boolean isVotingForThemes() {
         return votingForThemes;
     }
 
-    public static void setVotingForThemes(boolean votingForThemes) {
-        GameManager.votingForThemes = votingForThemes;
+    private static void setVotingForThemes(boolean votingForThemes) {
+        BBSettings.votingForThemes = votingForThemes;
     }
 
     public static StatsType getStatsType() {
         return statsType;
     }
 
-    public static void setStatsType(StatsType statsType) {
+    private static void setStatsType(StatsType statsType) {
         try {
-            GameManager.statsType = statsType;
+            BBSettings.statsType = statsType;
         } catch (Exception e) {
-            BuildBattle.warning("§cVariable stats.Type is invalid ! Setting it to default (" + getStatsType() + ")");
+            BuildBattle.warning("§cVariable stats.Type is invalid ! Setting it to default (" + BBSettings.statsType.name() + ")");
         }
     }
 
     public static boolean isEndCommandValid() {
-        if ((getEndCommands() != null) && (!getEndCommands().isEmpty())) {
+        if ((endCommands != null) && (!endCommands.isEmpty())) {
             return true;
         } else {
             return false;
@@ -339,12 +331,12 @@ public class GameManager {
         return pointsApiRewards;
     }
 
-    public static void setPointsApiRewards(boolean pointsApiRewards) {
-        GameManager.pointsApiRewards = pointsApiRewards;
+    private static void setPointsApiRewards(boolean pointsApiRewards) {
+        BBSettings.pointsApiRewards = pointsApiRewards;
         if (pointsApiRewards) {
             if (BuildBattle.getInstance().getServer().getPluginManager().getPlugin("PointsAPI") == null) {
                 BuildBattle.warning("§cYou enabled PointsAPI rewards, but PointsAPI plugin cannot be found ! Disabling PointsAPI rewards...");
-                GameManager.pointsApiRewards = false;
+                BBSettings.pointsApiRewards = false;
             } else {
                 BuildBattle.info("§ePointsAPI §arewards enabled!");
             }
@@ -355,12 +347,12 @@ public class GameManager {
         return vaultRewards;
     }
 
-    public static void setVaultRewards(boolean vaultRewards) {
-        GameManager.vaultRewards = vaultRewards;
+    private static void setVaultRewards(boolean vaultRewards) {
+        BBSettings.vaultRewards = vaultRewards;
         if (vaultRewards) {
             if (BuildBattle.getInstance().setupEconomy() == false) {
                 BuildBattle.warning("§cYou enabled Vault rewards, but Vault plugin cannot be found ! Disabling Vault rewards...");
-                GameManager.vaultRewards = false;
+                BBSettings.vaultRewards = false;
             } else {
                 BuildBattle.info("§eVault §arewards enabled!");
             }
@@ -371,9 +363,9 @@ public class GameManager {
         return themeVotingLore;
     }
 
-    public static void setThemeVotingLore(List<String> themeVotingLore) {
+    private static void setThemeVotingLore(List<String> themeVotingLore) {
         if (themeVotingLore != null) {
-            GameManager.themeVotingLore = themeVotingLore;
+            BBSettings.themeVotingLore = themeVotingLore;
         } else {
             BuildBattle.severe("§cVariable gui.theme_voting.themes.lore in translates.yml could not be loaded !");
         }
@@ -383,17 +375,17 @@ public class GameManager {
         return reportsEnabled;
     }
 
-    public static void setReportsEnabled(boolean reportsEnabled) {
-        GameManager.reportsEnabled = reportsEnabled;
+    private static void setReportsEnabled(boolean reportsEnabled) {
+        BBSettings.reportsEnabled = reportsEnabled;
     }
 
     public static List<String> getWeatherLore() {
         return weatherLore;
     }
 
-    public static void setWeatherLore(List<String> weatherLore) {
+    private static void setWeatherLore(List<String> weatherLore) {
         if (weatherLore != null) {
-            GameManager.weatherLore = weatherLore;
+            BBSettings.weatherLore = weatherLore;
         } else {
             BuildBattle.severe("§cVariable gui.options.items.change_weather_item.lore in translates.yml could not be loaded !");
         }
@@ -403,9 +395,9 @@ public class GameManager {
         return allowedCommands;
     }
 
-    public static void setAllowedCommands(List<String> allowedCommands) {
+    private static void setAllowedCommands(List<String> allowedCommands) {
         if (allowedCommands != null) {
-            GameManager.allowedCommands = allowedCommands;
+            BBSettings.allowedCommands = allowedCommands;
         } else {
             BuildBattle.severe("§cVariable allowed_commands in config.yml could not be loaded !");
         }
@@ -415,31 +407,31 @@ public class GameManager {
         return showVoteInSubtitle;
     }
 
-    public static void setShowVoteInSubtitle(boolean showVoteInSubtitle) {
-        GameManager.showVoteInSubtitle = showVoteInSubtitle;
+    private static void setShowVoteInSubtitle(boolean showVoteInSubtitle) {
+        BBSettings.showVoteInSubtitle = showVoteInSubtitle;
     }
 
     public static EntityType getFloorChangeNPCtype() {
         return floorChangeNPCtype;
     }
 
-    public static void setFloorChangeNPCtype(EntityType floorChangeNPCtype) {
-        GameManager.floorChangeNPCtype = floorChangeNPCtype;
+    private static void setFloorChangeNPCtype(EntityType floorChangeNPCtype) {
+        BBSettings.floorChangeNPCtype = floorChangeNPCtype;
     }
 
     public static int getPartyMaxPlayers() {
         return partyMaxPlayers;
     }
 
-    public static void setPartyMaxPlayers(int partyMaxPlayers) {
+    private static void setPartyMaxPlayers(int partyMaxPlayers) {
         if (partyMaxPlayers > 0) {
-            if(partyMaxPlayers <= 100) {
-                GameManager.partyMaxPlayers = partyMaxPlayers;
+            if (partyMaxPlayers <= 100) {
+                BBSettings.partyMaxPlayers = partyMaxPlayers;
             } else {
-                BuildBattle.warning("§cVariable parties.max_players can not exceed 100 ! Setting it to default (" + getPartyMaxPlayers() + ")");
+                BuildBattle.warning("§cVariable parties.max_players can not exceed 100 ! Setting it to default (" + BBSettings.partyMaxPlayers + ")");
             }
         } else {
-            BuildBattle.warning("§cVariable parties.max_players must be higher than 0 ! Setting it to default (" + getPartyMaxPlayers() + ")");
+            BuildBattle.warning("§cVariable parties.max_players must be higher than 0 ! Setting it to default (" + BBSettings.partyMaxPlayers + ")");
         }
     }
 
@@ -447,80 +439,80 @@ public class GameManager {
         return partiesEnabled;
     }
 
-    public static void setPartiesEnabled(boolean partiesEnabled) {
-        GameManager.partiesEnabled = partiesEnabled;
+    private static void setPartiesEnabled(boolean partiesEnabled) {
+        BBSettings.partiesEnabled = partiesEnabled;
     }
 
     public static boolean isRestrictPlayerMovement() {
         return restrictPlayerMovement;
     }
 
-    public static void setRestrictPlayerMovement(boolean restrictPlayerMovement) {
-        GameManager.restrictPlayerMovement = restrictPlayerMovement;
+    private static void setRestrictPlayerMovement(boolean restrictPlayerMovement) {
+        BBSettings.restrictPlayerMovement = restrictPlayerMovement;
     }
 
     public static boolean isRemovePlayersAfterGame() {
         return removePlayersAfterGame;
     }
 
-    public static void setRemovePlayersAfterGame(boolean removePlayersAfterGame) {
-        GameManager.removePlayersAfterGame = removePlayersAfterGame;
+    private static void setRemovePlayersAfterGame(boolean removePlayersAfterGame) {
+        BBSettings.removePlayersAfterGame = removePlayersAfterGame;
     }
 
     public static List<String> getEndMessage() {
         return endMessage;
     }
 
-    public static void setEndMessage(List<String> endMessage) {
-        GameManager.endMessage = endMessage;
+    private static void setEndMessage(List<String> endMessage) {
+        BBSettings.endMessage = endMessage;
     }
 
     public static boolean isAutomaticGrow() {
         return automaticGrow;
     }
 
-    public static void setAutomaticGrow(boolean automaticGrow) {
-        GameManager.automaticGrow = automaticGrow;
+    private static void setAutomaticGrow(boolean automaticGrow) {
+        BBSettings.automaticGrow = automaticGrow;
     }
 
     public static boolean isLockServerOnGameStart() {
         return lockServerOnGameStart;
     }
 
-    public static void setLockServerOnGameStart(boolean lockServerOnGameStart) {
-        GameManager.lockServerOnGameStart = lockServerOnGameStart;
+    private static void setLockServerOnGameStart(boolean lockServerOnGameStart) {
+        BBSettings.lockServerOnGameStart = lockServerOnGameStart;
     }
 
     public static boolean isArenaChat() {
         return arenaChat;
     }
 
-    public static void setArenaChat(boolean arenaChat) {
-        GameManager.arenaChat = arenaChat;
+    private static void setArenaChat(boolean arenaChat) {
+        BBSettings.arenaChat = arenaChat;
     }
 
     public static boolean isAnnounceNewMostPoints() {
         return announceNewMostPoints;
     }
 
-    public static void setAnnounceNewMostPoints(boolean announceNewMostPoints) {
-        GameManager.announceNewMostPoints = announceNewMostPoints;
+    private static void setAnnounceNewMostPoints(boolean announceNewMostPoints) {
+        BBSettings.announceNewMostPoints = announceNewMostPoints;
     }
 
     public static boolean isReplaceBlockBehindSigns() {
         return replaceBlockBehindSigns;
     }
 
-    public static void setReplaceBlockBehindSigns(boolean replaceBlockBehindSigns) {
-        GameManager.replaceBlockBehindSigns = replaceBlockBehindSigns;
+    private static void setReplaceBlockBehindSigns(boolean replaceBlockBehindSigns) {
+        BBSettings.replaceBlockBehindSigns = replaceBlockBehindSigns;
     }
 
     public static boolean isAutoRestarting() {
         return autoRestarting;
     }
 
-    public static void setAutoRestarting(boolean autoRestarting) {
-        GameManager.autoRestarting = autoRestarting;
+    private static void setAutoRestarting(boolean autoRestarting) {
+        BBSettings.autoRestarting = autoRestarting;
         if (autoRestarting) {
             BuildBattle.info("§aAuto-Restarting >> §eEnabled !");
         }
@@ -530,12 +522,12 @@ public class GameManager {
         return autoRestartGamesRequired;
     }
 
-    public static void setAutoRestartGamesRequired(int autoRestartGamesRequired) {
+    private static void setAutoRestartGamesRequired(int autoRestartGamesRequired) {
         if (autoRestartGamesRequired > 0) {
-            GameManager.autoRestartGamesRequired = autoRestartGamesRequired;
+            BBSettings.autoRestartGamesRequired = autoRestartGamesRequired;
             BuildBattle.info("§aAuto-Restarting >> Games Needed to restart : §e" + autoRestartGamesRequired);
         } else {
-            BuildBattle.warning("§cVariable auto-restart.games-needed must be higher than 0 ! Setting it to default (" + getAutoRestartGamesRequired() + ")");
+            BuildBattle.warning("§cVariable auto-restart.games-needed must be higher than 0 ! Setting it to default (" + BBSettings.autoRestartGamesRequired + ")");
         }
     }
 
@@ -543,12 +535,12 @@ public class GameManager {
         return autoRestartCommand;
     }
 
-    public static void setAutoRestartCommand(String autoRestartCommand) {
+    private static void setAutoRestartCommand(String autoRestartCommand) {
         if (autoRestartCommand != null) {
-            GameManager.autoRestartCommand = autoRestartCommand;
+            BBSettings.autoRestartCommand = autoRestartCommand;
             BuildBattle.info("§aAuto-Restarting >> Restart command : §e" + autoRestartCommand);
         } else {
-            BuildBattle.warning("§cVariable auto-restart.restart-command in config.yml is not set ! Setting it to default (" + getAutoRestartCommand() + ")");
+            BuildBattle.warning("§cVariable auto-restart.restart-command in config.yml is not set ! Setting it to default (" + BBSettings.autoRestartCommand + ")");
         }
     }
 
@@ -556,9 +548,9 @@ public class GameManager {
         return finalBannerLore;
     }
 
-    public static void setFinalBannerLore(List<String> finalBannerLore) {
+    private static void setFinalBannerLore(List<String> finalBannerLore) {
         if (finalBannerLore != null) {
-            GameManager.finalBannerLore = finalBannerLore;
+            BBSettings.finalBannerLore = finalBannerLore;
         } else {
             BuildBattle.warning("§cFinal banner lore in translates.yml is empty !");
         }
@@ -568,9 +560,9 @@ public class GameManager {
         return restricedThemes;
     }
 
-    public static void setRestricedThemes(List<String> restricedThemes) {
+    private static void setRestricedThemes(List<String> restricedThemes) {
         if (restricedThemes != null) {
-            GameManager.restricedThemes = restricedThemes;
+            BBSettings.restricedThemes = restricedThemes;
         } else {
             BuildBattle.warning("§cBlacklisted themes in config.yml are empty !");
         }
@@ -581,7 +573,7 @@ public class GameManager {
     }
 
 
-    public static void setMainLobbyLocation() {
+    private static void setMainLobbyLocation() {
         try {
             World w = Bukkit.getWorld(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby.world"));
             double x = BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.x");
@@ -589,11 +581,11 @@ public class GameManager {
             double z = BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.z");
             float pitch = (float) BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.pitch");
             float yaw = (float) BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.yaw");
-            GameManager.mainLobbyLocation = new Location(w,x,y,z,yaw,pitch);
+            BBSettings.mainLobbyLocation = new Location(w, x, y, z, yaw, pitch);
             return;
         } catch (Exception e) {
             try {
-                GameManager.mainLobbyLocation = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby"));
+                BBSettings.mainLobbyLocation = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_lobby"));
                 return;
             } catch (Exception e2) {
             }
@@ -605,8 +597,8 @@ public class GameManager {
         return mainLobbyScoreboardEnabled;
     }
 
-    public static void setMainLobbyScoreboardEnabled(boolean mainLobbyScoreboardEnabled) {
-        GameManager.mainLobbyScoreboardEnabled = mainLobbyScoreboardEnabled;
+    private static void setMainLobbyScoreboardEnabled(boolean mainLobbyScoreboardEnabled) {
+        BBSettings.mainLobbyScoreboardEnabled = mainLobbyScoreboardEnabled;
     }
 
     public static List<String> getSoloThemes() {
@@ -621,33 +613,33 @@ public class GameManager {
         return restrictOnlyPlayerYMovement;
     }
 
-    public static void setRestrictOnlyPlayerYMovement(boolean restrictOnlyPlayerYMovement) {
-        GameManager.restrictOnlyPlayerYMovement = restrictOnlyPlayerYMovement;
+    private static void setRestrictOnlyPlayerYMovement(boolean restrictOnlyPlayerYMovement) {
+        BBSettings.restrictOnlyPlayerYMovement = restrictOnlyPlayerYMovement;
     }
 
     public static boolean isEnableClearPlotOption() {
         return enableClearPlotOption;
     }
 
-    public static void setEnableClearPlotOption(boolean enableClearPlotOption) {
-        GameManager.enableClearPlotOption = enableClearPlotOption;
+    private static void setEnableClearPlotOption(boolean enableClearPlotOption) {
+        BBSettings.enableClearPlotOption = enableClearPlotOption;
     }
 
     public static boolean isTeamChat() {
         return teamChat;
     }
 
-    public static void setTeamChat(boolean teamChat) {
-        GameManager.teamChat = teamChat;
+    private static void setTeamChat(boolean teamChat) {
+        BBSettings.teamChat = teamChat;
     }
 
     public static List<String> getSuperVoteLore() {
         return superVoteLore;
     }
 
-    public static void setSuperVoteLore(List<String> superVoteLore) {
+    private static void setSuperVoteLore(List<String> superVoteLore) {
         if (superVoteLore != null) {
-            GameManager.superVoteLore = superVoteLore;
+            BBSettings.superVoteLore = superVoteLore;
         } else {
             BuildBattle.severe("§cVariable gui.theme_voting.supervote_item.lore in translates.yml could not be loaded !");
         }
@@ -657,73 +649,73 @@ public class GameManager {
         return enableBannerCreatorOption;
     }
 
-    public static void setEnableBannerCreatorOption(boolean enableBannerCreatorOption) {
-        GameManager.enableBannerCreatorOption = enableBannerCreatorOption;
+    private static void setEnableBannerCreatorOption(boolean enableBannerCreatorOption) {
+        BBSettings.enableBannerCreatorOption = enableBannerCreatorOption;
     }
 
     public static boolean isEnableHeadsOption() {
         return enableHeadsOption;
     }
 
-    public static void setEnableHeadsOption(boolean enableHeadsOption) {
-        GameManager.enableHeadsOption = enableHeadsOption;
+    private static void setEnableHeadsOption(boolean enableHeadsOption) {
+        BBSettings.enableHeadsOption = enableHeadsOption;
     }
 
     public static boolean isEnableParticleOption() {
         return enableParticleOption;
     }
 
-    public static void setEnableParticleOption(boolean enableParticleOption) {
-        GameManager.enableParticleOption = enableParticleOption;
+    private static void setEnableParticleOption(boolean enableParticleOption) {
+        BBSettings.enableParticleOption = enableParticleOption;
     }
 
     public static boolean isEnabledWeatherOption() {
         return enabledWeatherOption;
     }
 
-    public static void setEnabledWeatherOption(boolean enabledWeatherOption) {
-        GameManager.enabledWeatherOption = enabledWeatherOption;
+    private static void setEnabledWeatherOption(boolean enabledWeatherOption) {
+        BBSettings.enabledWeatherOption = enabledWeatherOption;
     }
 
     public static boolean isEnableBiomeOption() {
         return enableBiomeOption;
     }
 
-    public static void setEnableBiomeOption(boolean enableBiomeOption) {
-        GameManager.enableBiomeOption = enableBiomeOption;
+    private static void setEnableBiomeOption(boolean enableBiomeOption) {
+        BBSettings.enableBiomeOption = enableBiomeOption;
     }
 
     public static boolean isEnableChangeFloorOption() {
         return enableChangeFloorOption;
     }
 
-    public static void setEnableChangeFloorOption(boolean enableChangeFloorOption) {
-        GameManager.enableChangeFloorOption = enableChangeFloorOption;
+    private static void setEnableChangeFloorOption(boolean enableChangeFloorOption) {
+        BBSettings.enableChangeFloorOption = enableChangeFloorOption;
     }
 
     public static boolean isEnableTimeOption() {
         return enableTimeOption;
     }
 
-    public static void setEnableTimeOption(boolean enableTimeOption) {
-        GameManager.enableTimeOption = enableTimeOption;
+    private static void setEnableTimeOption(boolean enableTimeOption) {
+        BBSettings.enableTimeOption = enableTimeOption;
     }
 
     public static boolean isCommandRewards() {
         return commandRewards;
     }
 
-    public static void setCommandRewards(boolean commandRewards) {
-        GameManager.commandRewards = commandRewards;
+    private static void setCommandRewards(boolean commandRewards) {
+        BBSettings.commandRewards = commandRewards;
     }
 
     public static List<String> getEndCommands() {
         return endCommands;
     }
 
-    public static void setEndCommands(List<String> endCommands) {
-        if(endCommands != null) {
-            GameManager.endCommands = endCommands;
+    private static void setEndCommands(List<String> endCommands) {
+        if (endCommands != null) {
+            BBSettings.endCommands = endCommands;
         } else {
             BuildBattle.severe("§cEnd-Commands list in config.yml could not be loaded !");
         }
@@ -733,39 +725,35 @@ public class GameManager {
         return fairVote;
     }
 
-    public static void setFairVote(boolean fairVote) {
-        GameManager.fairVote = fairVote;
+    private static void setFairVote(boolean fairVote) {
+        BBSettings.fairVote = fairVote;
     }
 
     public static boolean isTeleportToMainLobbyOnJoin() {
         return teleportToMainLobbyOnJoin;
     }
 
-    public static void setTeleportToMainLobbyOnJoin(boolean teleportToMainLobbyOnJoin) {
-        GameManager.teleportToMainLobbyOnJoin = teleportToMainLobbyOnJoin;
+    private static void setTeleportToMainLobbyOnJoin(boolean teleportToMainLobbyOnJoin) {
+        BBSettings.teleportToMainLobbyOnJoin = teleportToMainLobbyOnJoin;
     }
 
     public static boolean isGiveRewardsAfterGameEnds() {
         return giveRewardsAfterGameEnds;
     }
 
-    public static void setGiveRewardsAfterGameEnds(boolean giveRewardsAfterGameEnds) {
-        GameManager.giveRewardsAfterGameEnds = giveRewardsAfterGameEnds;
+    private static void setGiveRewardsAfterGameEnds(boolean giveRewardsAfterGameEnds) {
+        BBSettings.giveRewardsAfterGameEnds = giveRewardsAfterGameEnds;
     }
 
     public static boolean isCreateStatsOnServerJoin() {
         return createStatsOnServerJoin;
     }
 
-    public static void setCreateStatsOnServerJoin(boolean createStatsOnServerJoin) {
-        GameManager.createStatsOnServerJoin = createStatsOnServerJoin;
+    private static void setCreateStatsOnServerJoin(boolean createStatsOnServerJoin) {
+        BBSettings.createStatsOnServerJoin = createStatsOnServerJoin;
     }
 
-    public void loadDefaultFloorMaterial() {
-        setDefaultFloorMaterial(CompMaterial.fromString(BuildBattle.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
-    }
-
-    public void loadThemes() {
+    private static void loadThemes() {
         soloThemes = new ArrayList<>();
         teamThemes = new ArrayList<>();
         restricedThemes = new ArrayList<>();
@@ -788,32 +776,27 @@ public class GameManager {
         }
     }
 
-    public void loadFallbackServers() {
+    private static void loadFallbackServers() {
         try {
-            List<String> allServers = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("bungeecord.fallback_servers");
-            for (String server : allServers) {
-                fallbackServers.add(server);
-                BuildBattle.info("§aFallback server §e" + server + " §aloaded !");
-            }
+            BBSettings.fallbackServers = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("bungeecord.fallback_servers");
+            BuildBattle.info("§aFallback servers loaded !");
         } catch (Exception e) {
             BuildBattle.severe("§cAn exception occurred while trying loading fallback servers from config!");
             e.printStackTrace();
         }
     }
 
-    public void loadRestrictedBlocks() {
+    private static void loadRestrictedBlocks() {
         try {
-            for (String s : BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.restriced_blocks")) {
-                getRestricedBlocks().add(s);
-                BuildBattle.info("§aRestricted block with ID §e" + s + " §aloaded !");
-            }
+            BBSettings.restricedBlocks = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.restriced_blocks");
+            BuildBattle.info("§aRestricted blocks loaded !");
         } catch (Exception e) {
             BuildBattle.severe("§cAn exception occurred while trying loading restriced blocks from config !");
             e.printStackTrace();
         }
     }
 
-    public boolean isThemeOK(String theme) {
+    public static boolean isThemeOK(String theme) {
         for (String s : restricedThemes) {
             if (s.equalsIgnoreCase(theme)) {
                 return false;
@@ -823,24 +806,23 @@ public class GameManager {
     }
 
     public static String getRandomSoloTheme() {
-        Random ran = new Random();
-        int index = ran.nextInt(soloThemes.size());
-        return soloThemes.get(index);
+        return soloThemes.get(new Random().nextInt(soloThemes.size()));
     }
+
     public static String getRandomTeamTheme() {
-        Random ran = new Random();
-        int index = ran.nextInt(teamThemes.size());
-        return teamThemes.get(index);
+        return teamThemes.get(new Random().nextInt(teamThemes.size()));
     }
 
     public static String getRandomFallbackServer() {
-        Random ran = new Random();
-        int index = ran.nextInt(fallbackServers.size());
-        return fallbackServers.get(index);
+        return fallbackServers.get(new Random().nextInt(fallbackServers.size()));
     }
 
-    public void loadArenaPreferences() {
+    public static void loadBBSettings() {
         try {
+            setUseBungeecord(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.use_bungee"));
+            setAutoJoinPlayers(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.auto_join_players"));
+            setLoadPluginLater(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("plugin_loading.load_plugin_later"));
+            setLoadAfter(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("plugin_loading.load_after"));
             setLobbyTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.lobbyTime"));
             setDefaultGameTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.defaultGameTime"));
             setVotingTime(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.votingTime"));
@@ -871,7 +853,6 @@ public class GameManager {
             setEnableHeadsOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.heads"));
             setEnableTimeOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.time"));
             setEnableParticleOption(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.particles"));
-            //setLockServerOnGameStart(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.lock_server_on_game_start"));
             setPartiesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
             setParticleRefreshTime(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));
             setStartMessage(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("messages.start_message"));
@@ -898,20 +879,24 @@ public class GameManager {
             setReplaceBlockBehindSigns(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
             setAutoRestarting(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
             setMainLobbyLocation();
+            loadFallbackServers();
+            loadRestrictedBlocks();
+            loadThemes();
             if (isAutoRestarting()) {
                 setAutoRestartGamesRequired(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));
                 setAutoRestartCommand(BuildBattle.getFileManager().getConfig("config.yml").get().getString("auto-restart.restart-command"));
             }
-            if(mainLobbyLocation != null) {
+            if (mainLobbyLocation != null) {
                 setTeleportToMainLobbyOnJoin(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("teleport_to_main_lobby_on_join"));
             }
+
         } catch (NullPointerException e) {
             BuildBattle.severe("§cAn exception occurred while loading arena preferences ! Check your config.yml");
             e.printStackTrace();
         }
     }
 
-    public void setMainLobbyLocation(Player p) {
+    public static void setMainLobbyLocation(Player p) {
         try {
             Location pLoc = p.getLocation();
             String locString = LocationUtil.getStringFromLocation(pLoc);
@@ -931,11 +916,42 @@ public class GameManager {
         }
     }
 
-    public static void runEndCommands(BBArena bbArena) {
-        for(String cmd : endCommands) {
-            for (Player p : bbArena.getPlayers()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", p.getName()));
-            }
+    public static boolean isUseBungeecord() {
+        return useBungeecord;
+    }
+
+    private static void setUseBungeecord(boolean useBungeecord) {
+        BBSettings.useBungeecord = useBungeecord;
+        if (useBungeecord) {
+            Bukkit.getConsoleSender().sendMessage(prefix + "§aBungeeCord system for BuildBattle loaded !");
+            BuildBattle.getInstance().getServer().getMessenger().unregisterOutgoingPluginChannel(BuildBattle.getInstance());
+            BuildBattle.getInstance().getServer().getMessenger().unregisterIncomingPluginChannel(BuildBattle.getInstance());
+            BuildBattle.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(BuildBattle.getInstance(), "BungeeCord");
+            BuildBattle.getInstance().getServer().getMessenger().registerIncomingPluginChannel(BuildBattle.getInstance(), "BungeeCord", BuildBattle.getInstance());
         }
+    }
+
+    public static boolean isAutoJoinPlayers() {
+        return autoJoinPlayers;
+    }
+
+    private static void setAutoJoinPlayers(boolean autoJoinPlayers) {
+        BBSettings.autoJoinPlayers = autoJoinPlayers;
+    }
+
+    public static boolean isLoadPluginLater() {
+        return loadPluginLater;
+    }
+
+    private static void setLoadPluginLater(boolean loadPluginLater) {
+        BBSettings.loadPluginLater = loadPluginLater;
+    }
+
+    public static int getLoadAfter() {
+        return loadAfter;
+    }
+
+    private static void setLoadAfter(int loadAfter) {
+        BBSettings.loadAfter = loadAfter;
     }
 }

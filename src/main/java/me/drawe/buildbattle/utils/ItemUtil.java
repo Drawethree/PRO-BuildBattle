@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.utils;
 
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
@@ -13,38 +13,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class ItemCreator {
-
-    public static ItemStack getPlayerSkull(Player player, String title, List<String> lore) {
-        ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(player.getName());
-        meta.setDisplayName(title);
-        meta.setLore(convertLore(lore));
-        skull.setItemMeta(meta);
-        return skull;
-    }
-
-    public static ItemStack getPlayerSkull(OfflinePlayer player, String title, List<String> lore) {
-        ItemStack skull = CompMaterial.PLAYER_HEAD.toItem();
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(player.getName());
-        meta.setDisplayName(title);
-        meta.setLore(convertLore(lore));
-        skull.setItemMeta(meta);
-        return skull;
-    }
+public class ItemUtil {
 
     public static int getInventorySizeBasedOnList(List<?> list) {
         int size = 9;
@@ -57,14 +35,11 @@ public class ItemCreator {
         return size;
     }
 
-    public static ItemStack getItemStack(String value) {
-        return CompMaterial.fromString(value).toItem();
-    }
 
-    public static List<String> convertLore(List<String> list) {
-        List<String> lore = new ArrayList<String>();
+    public static List<String> colorizeLore(List<String> list) {
+        List<String> lore = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', (String) list.get(i)));
+            lore.add(ChatColor.translateAlternateColorCodes('&', list.get(i)));
         }
         return lore;
     }
@@ -99,7 +74,7 @@ public class ItemCreator {
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         }
-        meta.setLore(convertLore(lore));
+        meta.setLore(colorizeLore(lore));
         if (enchantments != null) {
             for (int i = 0; i < enchantments.length; i++)
                 meta.addEnchant(ench(enchantments[i]), levels[i], true);
@@ -114,7 +89,7 @@ public class ItemCreator {
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         }
-        meta.setLore(convertLore(lore));
+        meta.setLore(colorizeLore(lore));
         item.setItemMeta(meta);
         if(glow) {
             addGlowEffect(item);
@@ -161,23 +136,9 @@ public class ItemCreator {
         return returnList;
     }
 
-    public static List<String> makeTeamLore(String... string) {
-        return Arrays.asList(string);
-    }
-
-    public static int getInventorySize(int arenasAmount) {
-        int size = 9;
-        while (arenasAmount > size) {
-            if (size == 54) {
-                break;
-            }
-            size += 9;
-        }
-        return size;
-    }
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(GameManager.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
+        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(BBSettings.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
@@ -189,7 +150,7 @@ public class ItemCreator {
     }
 
     public static ItemStack createReportItem(BBBuildReport report) {
-        return create(report.getReportStatus().getStatusMaterial(), 1, report.getReportStatus().getStatusColor() + report.getReportID(), ItemCreator.convertLore(ItemCreator.makeReportLore(report)), null, null);
+        return create(report.getReportStatus().getStatusMaterial(), 1, report.getReportStatus().getStatusColor() + report.getReportID(), ItemUtil.colorizeLore(ItemUtil.makeReportLore(report)), null, null);
 
     }
 

@@ -19,7 +19,7 @@ public class RewardManager {
     }
 
     public void giveRewards(BBArena a) {
-        if(GameManager.isPointsApiRewards()) {
+        if(BBSettings.isPointsApiRewards()) {
             try {
                 pointsAPIRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 pointsAPIRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
@@ -27,7 +27,7 @@ public class RewardManager {
             } catch (IndexOutOfBoundsException e) {
             }
         }
-        if(GameManager.isVaultRewards()) {
+        if(BBSettings.isVaultRewards()) {
             try {
                 vaultRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 vaultRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
@@ -35,7 +35,7 @@ public class RewardManager {
             } catch (IndexOutOfBoundsException e) {
             }
         }
-        if(GameManager.isCommandRewards()) {
+        if(BBSettings.isCommandRewards()) {
             try {
                 commandRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 commandRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);

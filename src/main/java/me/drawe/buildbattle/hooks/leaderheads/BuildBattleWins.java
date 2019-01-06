@@ -22,6 +22,6 @@ public class BuildBattleWins extends OnlineDataCollector {
 
     @Override
     public Double getScore(Player player) {
-        return Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getWins());
+        return PlayerManager.getInstance().getPlayerStats(player) == null ? 0 : Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getWins());
     }
 }

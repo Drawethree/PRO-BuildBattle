@@ -5,7 +5,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import org.bukkit.entity.Player;
 
-public class BBPointsAPIRewards extends BBReward {
+public class BBPointsAPIRewards implements BBReward {
 
     public static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.first_place");
     public static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.second_place");

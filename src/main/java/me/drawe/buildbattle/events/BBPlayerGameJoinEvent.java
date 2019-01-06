@@ -14,7 +14,7 @@ public class BBPlayerGameJoinEvent extends Event implements Cancellable {
     private boolean cancelled;
 
     /**
-     * Called when gamestate changes
+     * Called when player wants to join an arena
      *
      * @param arena  Arena in which gamestate has changed
      * @param player Player who joined

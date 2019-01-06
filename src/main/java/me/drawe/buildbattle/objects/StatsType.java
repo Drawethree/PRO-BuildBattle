@@ -6,6 +6,7 @@ public enum StatsType {
     MYSQL("Stats will be saved and loaded from MySQL database");
 
     private String info;
+
     StatsType(String info) {
         this.info = info;
     }

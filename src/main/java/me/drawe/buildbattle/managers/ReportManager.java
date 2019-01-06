@@ -6,8 +6,9 @@ import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.events.BBReportEvent;
-import me.drawe.buildbattle.objects.GuiItem;
+import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
@@ -28,53 +29,48 @@ import java.util.UUID;
 
 public class ReportManager {
     private static ReportManager ourInstance = new ReportManager();
-
-    public static ReportManager getInstance() {
-        return ourInstance;
-    }
+    public static List<BBBuildReport> buildReports;
+    public static final DateFormat reportDateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+    public static final String reportsDirectoryName = "reports_schematics";
+    private static int maxReportsPerInv = 45;
 
     private ReportManager() {
 
     }
 
-    public static List<BBBuildReport> buildReports;
-    public static final DateFormat reportDateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-    public static final String reportsDirectoryName = "reports_schematics";
-    private static int maxReportsPerInv = 45;
+    public static ReportManager getInstance() {
+        return ourInstance;
+    }
 
     public static List<BBBuildReport> getBuildReports() {
         return buildReports;
     }
 
     public void loadAllReports() {
-        switch (GameManager.getStatsType()) {
-            case MYSQL:
-                MySQLManager.getInstance().loadAllReports();
-                break;
-            case FLATFILE:
-                loadAllReportsFromConfig();
-                break;
+        if (BBSettings.getStatsType() == StatsType.FLATFILE) {
+            loadAllReportsFromConfig();
         }
-
     }
 
     private void loadAllReportsFromConfig() {
         buildReports = new ArrayList<>();
         for (String s : BuildBattle.getFileManager().getConfig("reports.yml").get().getKeys(false)) {
-            String reportId = s;
-            List<UUID> reportedPlayers = new ArrayList<>();
+            final List<UUID> reportedPlayers = new ArrayList<>();
             BuildBattle.getFileManager().getConfig("reports.yml").get().getStringList(s + ".reported_players").forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
-            UUID reportedBy = UUID.fromString(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".reported_by"));
+
+            final UUID reportedBy = UUID.fromString(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".reported_by"));
+
             Date date = null;
             try {
                 date = reportDateformat.parse(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".date"));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            File schematic = new File(new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName), BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".schematic_name"));
-            BBReportStatus status = BBReportStatus.valueOf(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".status").toUpperCase());
-            BBBuildReport report = new BBBuildReport(reportId, reportedPlayers, reportedBy, schematic, date, status);
-            ReportManager.getBuildReports().add(report);
+
+            final File schematic = new File(new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName), BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".schematic_name"));
+            final BBReportStatus status = BBReportStatus.valueOf(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".status").toUpperCase());
+            final BBBuildReport report = new BBBuildReport(s, reportedPlayers, reportedBy, schematic, date, status);
+            buildReports.add(report);
         }
     }
 
@@ -101,7 +97,7 @@ public class ReportManager {
     }
 
     private boolean createReport(BBPlot reportedPlot, Player whoReported) {
-        String reportID = generateReportID(whoReported);
+        String reportID = generateReportID();
         List<UUID> reportedPlayers = new ArrayList<>();
         reportedPlot.getTeam().getPlayers().forEach(p -> reportedPlayers.add(p.getUniqueId()));
         UUID reportedBy = whoReported.getUniqueId();
@@ -160,7 +156,7 @@ public class ReportManager {
         return false;
     }
 
-    public String generateReportID(Player reportedBy) {
+    public String generateReportID() {
         int id = 1;
         while (existsReport(id)) {
             id += 1;
@@ -220,15 +216,15 @@ public class ReportManager {
                         break;
                     }
                 }
-                inv.setItem(45, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(46, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(47, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(48, GuiItem.PREV_PAGE.getItemStack());
-                inv.setItem(49, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(50, GuiItem.NEXT_PAGE.getItemStack());
-                inv.setItem(51, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(52, GuiItem.FILL_ITEM.getItemStack());
-                inv.setItem(53, GuiItem.CLOSE_GUI.getItemStack());
+                inv.setItem(45, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(46, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(47, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(48, GUIItem.PREV_PAGE.getItemStack());
+                inv.setItem(49, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(50, GUIItem.NEXT_PAGE.getItemStack());
+                inv.setItem(51, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(52, GUIItem.FILL_ITEM.getItemStack());
+                inv.setItem(53, GUIItem.CLOSE_GUI.getItemStack());
                 p.openInventory(inv);
             }
         }
@@ -247,7 +243,6 @@ public class ReportManager {
     public boolean deleteReport(BBBuildReport clickedReport) {
         if (clickedReport.delete()) {
             buildReports.remove(clickedReport);
-            clickedReport = null;
             return true;
         }
         return false;

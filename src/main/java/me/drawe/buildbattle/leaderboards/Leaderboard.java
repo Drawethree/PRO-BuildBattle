@@ -45,7 +45,7 @@ public class Leaderboard {
                     }
                     hologram.clearLines();
                     hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
-                    ArrayList<BBPlayerStats> sortedStats = new ArrayList<>(PlayerManager.getPlayerStats());
+                    ArrayList<BBPlayerStats> sortedStats = new ArrayList<>(PlayerManager.getPlayerStats().values());
                     switch (getType()) {
                         case WINS:
                             Collections.sort(sortedStats, Comparator.comparing(BBPlayerStats::getWins));

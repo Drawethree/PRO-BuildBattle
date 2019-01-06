@@ -3,7 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.drawe.buildbattle.utils.ItemCreator;
+import me.drawe.buildbattle.utils.ItemUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,7 @@ public class BBTeam {
         this.maxPlayers = arena.getTeamSize();
         this.players = new ArrayList<>();
         this.assignedPlot = null;
-        this.statusItemstack = ItemCreator.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
+        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
     }
 
     public List<Player> getPlayers() {
@@ -38,25 +38,17 @@ public class BBTeam {
     }
 
     public Player getCaptain() {
-        return getPlayers().get(0);
+        return players.get(0);
     }
 
     public void resetTeam() {
-        setPlayers(new ArrayList<>());
-        assignPlot(null);
-        updateStatusItemStack();
+        this.players = new ArrayList<>();
+        this.assignedPlot = null;
+        this.updateStatusItemStack();
     }
 
     public int getLeftSlots() {
-        return getMaxPlayers() - getPlayers().size();
-    }
-
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
-    public void assignPlot(BBPlot plot) {
-        this.assignedPlot = plot;
+        return maxPlayers - players.size();
     }
 
     public int getMaxPlayers() {
@@ -64,12 +56,12 @@ public class BBTeam {
     }
 
     public boolean isFull() {
-        return getPlayers().size() == getMaxPlayers();
+        return players.size() == maxPlayers;
     }
 
     public String getPlayersInCommaSeparatedString() {
         String str = "";
-        for (Player p : getPlayers()) {
+        for (Player p : players) {
             str = str + p.getName() + ",";
         }
         if (str.isEmpty()) {
@@ -81,14 +73,17 @@ public class BBTeam {
 
     public void joinTeam(Player p) {
         if(!isFull()) {
-            BBTeam previousTeam = getArena().getPlayerTeam(p);
+            BBTeam previousTeam = arena.getPlayerTeam(p);
+
             if(previousTeam != null) {
                 previousTeam.leaveTeam(p);
             }
-            getPlayers().add(p);
-            if (getPlayers().size() > 1) {
+
+            players.add(p);
+            if (players.size() > 1) {
                 p.sendMessage(Message.YOUR_TEAMMATE.getChatMessage().replaceAll("%players%", getPlayersInCommaSeparatedString()));
             }
+
             updateStatusItemStack();
         } else {
             p.sendMessage(Message.TEAM_IS_FULL.getChatMessage());
@@ -96,7 +91,7 @@ public class BBTeam {
     }
 
     public void leaveTeam(Player p) {
-        getPlayers().remove(p);
+        players.remove(p);
         updateStatusItemStack();
     }
 
@@ -109,7 +104,7 @@ public class BBTeam {
     }
 
     public boolean isEmpty() {
-        return getPlayers().size() == 0;
+        return players.size() == 0;
     }
 
     public CompMaterial getStatusMaterial() {
@@ -127,14 +122,14 @@ public class BBTeam {
     }
 
     private void updateStatusItemStack() {
-        this.statusItemstack = ItemCreator.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(getID())), ItemCreator.createTeamLore(this), null,null);
-        getArena().getTeamsInventory().setItem(getID()-1, getStatusItemStack());
+        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
+        arena.getTeamsInventory().setItem(ID-1,statusItemstack);
     }
 
 
     public String getPlayerName(int index) {
         try {
-            return "&a" + getPlayers().get(index).getName();
+            return "&a" + players.get(index).getName();
         } catch (Exception e) {
             return Message.GUI_TEAM_ITEMS_NOBODY.getMessage();
         }
@@ -142,7 +137,7 @@ public class BBTeam {
 
     public String getOtherPlayers(Player player) {
         String str = "";
-        for(Player p : getPlayers()) {
+        for(Player p : players) {
             if(!p.equals(player)) {
                 str = str + p.getName() + ",";
             }

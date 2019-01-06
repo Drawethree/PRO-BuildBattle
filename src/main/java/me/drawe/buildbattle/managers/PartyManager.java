@@ -6,33 +6,33 @@ import me.drawe.buildbattle.objects.bbobjects.BBParty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 public class PartyManager {
+
     private static PartyManager ourInstance = new PartyManager();
     private static HashMap<Player, BBParty> invitedPlayers = new HashMap<>();
-    private static List<BBParty> parties = new ArrayList<>();
+    private static HashMap<Player, BBParty> playersInParties = new HashMap<>();
+
+
+    private PartyManager() {
+
+    }
 
     public static PartyManager getInstance() {
         return ourInstance;
     }
 
-    private PartyManager() {
+    public static HashMap<Player, BBParty> getPlayersInParties() {
+        return playersInParties;
     }
-
-    public static List<BBParty> getParties() {
-        return parties;
-    }
-
 
     public BBParty createParty(Player creator) {
-        if(creator.hasPermission("buildbattlepro.party")) {
+        if (creator.hasPermission("buildbattlepro.party")) {
             if (getPlayerParty(creator) == null) {
                 BBParty party = new BBParty(creator);
-                parties.add(party);
+                playersInParties.put(creator, party);
                 return party;
             } else {
                 creator.sendMessage(Message.PARTY_CREATE_FAILED.getChatMessage());
@@ -44,27 +44,27 @@ public class PartyManager {
     }
 
     public void manageInvite(Player p, boolean join) {
-        if(getInvitedPlayers().containsKey(p)) {
-            BBParty party = getInvitedPlayers().get(p);
-            if(join) {
+        if (invitedPlayers.containsKey(p)) {
+            BBParty party = invitedPlayers.get(p);
+            if (join) {
                 party.joinPlayer(p);
+                playersInParties.put(p, party);
             } else {
                 p.sendMessage(Message.PARTY_INVITE_DECLINE.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
             }
-            getInvitedPlayers().remove(p);
+            invitedPlayers.remove(p);
         } else {
             p.sendMessage(Message.PARTY_NO_PENDING_INVITES.getChatMessage());
         }
-
     }
 
     public void invitePlayer(Player whoInvited, Player p, BBParty party) {
-        if(p != null) {
-            if(!whoInvited.equals(p)) {
+        if (p != null) {
+            if (!whoInvited.equals(p)) {
                 if (party != null) {
                     if (party.isCreator(whoInvited)) {
                         if (!party.isFull()) {
-                            if (!getInvitedPlayers().containsKey(p)) {
+                            if (!invitedPlayers.containsKey(p)) {
                                 if (getPlayerParty(p) == null) {
                                     doInviteCommands(p, party);
                                 } else {
@@ -96,12 +96,14 @@ public class PartyManager {
     private void doInviteCommands(Player p, BBParty party) {
         invitedPlayers.put(p, party);
         party.getCreator().sendMessage(Message.PARTY_INVITE.getChatMessage().replaceAll("%player%", p.getName()));
+
         p.sendMessage(Message.PARTY_YOU_HAVE_BEEN_INVITED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
         p.sendMessage(Message.PARTY_ACCEPT_INFO.getChatMessage());
         p.sendMessage(Message.PARTY_DECLINE_INFO.getChatMessage());
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-            if (getInvitedPlayers().containsKey(p)) {
-                getInvitedPlayers().remove(p);
+            if (invitedPlayers.containsKey(p)) {
+                invitedPlayers.remove(p);
                 p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
             }
         }, 20 * 180L);
@@ -110,40 +112,37 @@ public class PartyManager {
     public static HashMap<Player, BBParty> getInvitedPlayers() {
         return invitedPlayers;
     }
+
     public BBParty getPlayerParty(Player p) {
-        for(BBParty party : getParties()) {
-            if(party.getPlayers().contains(p)) {
-                return party;
-            }
-        }
-        return null;
+        return playersInParties.get(p);
     }
 
     public void leaveParty(Player p) {
         BBParty pParty = getPlayerParty(p);
-        if(pParty != null) {
+        if (pParty != null) {
             pParty.removePlayer(p);
+            playersInParties.remove(p);
         } else {
             p.sendMessage(Message.PARTY_NOT_IN_PARTY.getChatMessage());
         }
     }
 
     public void clearInvitations(BBParty bbParty) {
-        Iterator it = getInvitedPlayers().keySet().iterator();
-        while(it.hasNext()) {
+        Iterator it = invitedPlayers.keySet().iterator();
+        while (it.hasNext()) {
             Player p = (Player) it.next();
-            if(getInvitedPlayers().get(p).equals(bbParty)) {
+            if (invitedPlayers.get(p).equals(bbParty)) {
                 it.remove();
             }
         }
     }
 
     public int getMaxPlayersInParty(Player creator) {
-        for(int i = 100;i>GameManager.getPartyMaxPlayers();i--) {
-            if(creator.hasPermission("buildbattlepro.party.size." + i)) {
+        for (int i = 100; i > BBSettings.getPartyMaxPlayers(); i--) {
+            if (creator.hasPermission("buildbattlepro.party.size." + i)) {
                 return i;
             }
         }
-        return GameManager.getPartyMaxPlayers();
+        return BBSettings.getPartyMaxPlayers();
     }
 }

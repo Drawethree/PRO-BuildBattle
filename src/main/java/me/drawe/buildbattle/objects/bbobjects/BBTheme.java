@@ -13,12 +13,6 @@ public class BBTheme {
         this.slotInInventory = slotInInventory;
     }
 
-    public BBTheme(String name) {
-        this.name = name;
-        this.votes = -1;
-        this.slotInInventory = -1;
-    }
-
     public int getPercentage() {
         return percentage;
     }

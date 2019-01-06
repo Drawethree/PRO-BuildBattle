@@ -19,38 +19,37 @@ public class VotingManager {
     public void vote(Player p, Votes vote, BBPlot plot) {
         if (plot.getVotedPlayers().containsKey(p)) {
             if (vote.getWeight() != plot.getVotedPlayers().get(p)) {
-                plot.getVotedPlayers().put(p, vote.getWeight());
                 p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
-                if (GameManager.isShowVoteInSubtitle()) {
+                if (BBSettings.isShowVoteInSubtitle()) {
                     p.sendTitle("", vote.getPrefix());
                 }
                 p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
+
+                plot.getVotedPlayers().put(p, vote.getWeight());
             }
         } else {
-            plot.getVotedPlayers().put(p, vote.getWeight());
             p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
-            if (GameManager.isShowVoteInSubtitle()) {
+            if (BBSettings.isShowVoteInSubtitle()) {
                 p.sendTitle("", vote.getPrefix());
             }
             p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
-        }
-        if (GameManager.isScoreboardEnabled()) {
-            plot.getArena().updateAllScoreboards(0);
+
+            plot.getVotedPlayers().put(p, vote.getWeight());
         }
     }
 
     public void checkVotes(BBArena a) {
-        for(Player p : a.getPlayers()) {
+        for (Player p : a.getPlayers()) {
             int sum = 0;
-            for(BBPlot plot : a.getBuildPlots()) {
-                if(plot.getVotedPlayers().containsKey(p)) {
+            for (BBPlot plot : a.getBuildPlots()) {
+                if (plot.getVotedPlayers().containsKey(p)) {
                     sum += plot.getVotedPlayers().get(p);
-                    if(sum > 0) break;
+                    if (sum > 0) break;
                 }
             }
-            if(sum == 0) {
-                for(BBPlot plot : a.getBuildPlots()) {
-                    if(plot.getVotedPlayers().containsKey(p)) {
+            if (sum == 0) {
+                for (BBPlot plot : a.getBuildPlots()) {
+                    if (plot.getVotedPlayers().containsKey(p)) {
                         plot.setVotePoints(plot.getVotePoints() + Votes.OK.getWeight());
                     }
                 }

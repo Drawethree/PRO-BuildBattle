@@ -1,7 +1,10 @@
 package me.drawe.buildbattle.utils;
 
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -214,6 +217,40 @@ public class Time {
             super(reason, cause);
         }
 
+    }
+
+    public static String formatTimeMMSS(int secs) {
+        int minutes = (secs % 3600) / 60;
+        int seconds = secs % 60;
+
+        String timeString = String.format("%02d:%02d", minutes, seconds);
+
+        if(secs > BBSettings.getDefaultGameTime() / 2) {
+            return "§a" + timeString;
+        } else if(secs > BBSettings.getDefaultGameTime() / 10) {
+            return "§e" + timeString;
+        } else {
+            return "§c" + timeString;
+        }
+    }
+
+    public static String ordinal(int i) {
+        String[] sufixes = new String[]{Message.ORDINAL_TH.getMessage(), Message.ORDINAL_ST.getMessage(), Message.ORDINAL_ND.getMessage(), Message.ORDINAL_RD.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage(), Message.ORDINAL_TH.getMessage()};
+        switch (i % 100) {
+            case 11:
+            case 12:
+            case 13:
+                return i + Message.ORDINAL_TH.getMessage();
+            default:
+                return i + sufixes[i % 10];
+
+        }
+    }
+
+    public static String getCurrentDateTime() {
+        final Date d = new Date();
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(d);
     }
 
 }

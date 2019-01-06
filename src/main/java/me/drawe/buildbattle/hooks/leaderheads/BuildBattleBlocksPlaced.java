@@ -16,12 +16,12 @@ public class BuildBattleBlocksPlaced extends OnlineDataCollector {
                 BoardType.DEFAULT,
                 "&eBuildBattle - Blocks Placed",
                 "bbblocks",
-                Arrays.asList(null,null,"&e{amount} blocks",null)
+                Arrays.asList(null, null, "&e{amount} blocks", null)
         );
     }
 
     @Override
     public Double getScore(Player player) {
-        return Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getBlocksPlaced());
+        return PlayerManager.getInstance().getPlayerStats(player) == null ? 0 : Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getBlocksPlaced());
     }
 }

@@ -23,7 +23,6 @@ public class BBGameStateSwitchEvent extends Event {
         this.arena = arena;
         this.oldState = oldState;
         this.newState = newState;
-        arena.resetAllScoreboards();
     }
 
     @Override

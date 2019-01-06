@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.commands;
 
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
@@ -12,6 +13,12 @@ import org.bukkit.entity.Player;
 
 public class SetThemeCommand implements CommandExecutor {
 
+    private final BuildBattle plugin;
+
+    public SetThemeCommand(BuildBattle buildBattle) {
+        this.plugin = buildBattle;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(command.getName().equalsIgnoreCase("settheme")) {
@@ -20,7 +27,7 @@ public class SetThemeCommand implements CommandExecutor {
                 if (p.hasPermission("buildbattlepro.settheme")) {
                     if (args.length == 1) {
                         String theme = args[0];
-                        if (GameManager.getInstance().isThemeOK(theme)) {
+                        if (BBSettings.isThemeOK(theme)) {
                             BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                             if (a != null) {
                                 if (a.isMinimumPlayersRequirementMet()) {

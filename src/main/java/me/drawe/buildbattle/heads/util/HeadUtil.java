@@ -1,9 +1,8 @@
 package me.drawe.buildbattle.heads.util;
 
-import java.util.logging.Level;
-
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+
+import java.util.logging.Level;
 
 /**
  * This class contains a few utilities for adding and removing heads to the

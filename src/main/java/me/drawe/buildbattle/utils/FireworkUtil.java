@@ -5,7 +5,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Random;
@@ -21,13 +20,13 @@ public class FireworkUtil {
         f.setFireworkMeta(fm);
     }
 
-    public static boolean randomBoolean() {
+    private static boolean randomBoolean() {
         Random rBoolean = new Random();
         boolean b = rBoolean.nextBoolean();
         return b;
     }
 
-    public static Type randomType() {
+    private static Type randomType() {
         Random rType = new Random();
         int type = rType.nextInt(4);
         if (type == 0) {
@@ -44,7 +43,7 @@ public class FireworkUtil {
         return null;
     }
 
-    public static Color randomColor() {
+    private static Color randomColor() {
         Random rColor = new Random();
         int color = rColor.nextInt(8);
         if (color == 0) {

@@ -2,8 +2,10 @@ package me.drawe.buildbattle.managers;
 
 import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlayerData;
+import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.BBMainLobbyBoard;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
@@ -21,13 +23,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerManager {
     private static PlayerManager ourInstance = new PlayerManager();
-    public static List<BBPlayerStats> playerStats = new ArrayList<>();
-    private static List<PlayerData> playerData = new ArrayList<>();
+    private static HashMap<UUID, BBPlayerStats> playerStats = new HashMap<>();
+    private static HashMap<Player, PlayerData> playerData = new HashMap<>();
+    private static HashMap<Player, BBArena> playersInArenas = new HashMap<>();
 
     public static PlayerManager getInstance() {
         return ourInstance;
@@ -36,21 +39,20 @@ public class PlayerManager {
     private PlayerManager() {
     }
 
-    public static List<BBPlayerStats> getPlayerStats() {
+    public static HashMap<UUID, BBPlayerStats> getPlayerStats() {
         return playerStats;
     }
 
-    public static List<PlayerData> getPlayerData() {
+    public static HashMap<Player, PlayerData> getPlayerData() {
         return playerData;
     }
 
+    public static HashMap<Player, BBArena> getPlayersInArenas() {
+        return playersInArenas;
+    }
+
     public BBPlayerStats getPlayerStats(Player p) {
-        for (BBPlayerStats ps : getPlayerStats()) {
-            if (ps.getUuid().equals(p.getUniqueId().toString())) {
-                return ps;
-            }
-        }
-        return null;
+        return playerStats.get(p.getUniqueId());
     }
 
     public void setMainLobbyScoreboard(Player... players) {
@@ -63,35 +65,32 @@ public class PlayerManager {
 
     public void teleportToMainLobby(Player... players) {
         for (Player p : players) {
-            p.teleport(GameManager.getMainLobbyLocation());
+            p.teleport(BBSettings.getMainLobbyLocation());
         }
-        if (GameManager.isMainLobbyScoreboardEnabled()) {
+        if (BBSettings.isMainLobbyScoreboardEnabled()) {
             setMainLobbyScoreboard(players);
         }
     }
 
     public void loadAllPlayerStats() {
-        PlayerManager.playerStats = new ArrayList<>();
-        for (String s : BuildBattle.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
-            String uuid = s;
-            int played = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".played");
-            int wins = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".wins");
-            int mostPoints = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".most_points");
-            int blocksPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".blocks_placed");
-            int particlesPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".particles_placed");
-            int superVotes = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".super_votes");
-            BBPlayerStats stats = new BBPlayerStats(uuid, wins, played, mostPoints, blocksPlaced, particlesPlaced, superVotes);
-            PlayerManager.getPlayerStats().add(stats);
+        this.playerStats = new HashMap<>();
+        if(BBSettings.getStatsType() == StatsType.MYSQL) {
+            MySQL.getInstance().connect();
+        } else {
+            for (String s : BuildBattle.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
+                final int played = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".played");
+                final int wins = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".wins");
+                final int mostPoints = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".most_points");
+                final int blocksPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".blocks_placed");
+                final int particlesPlaced = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".particles_placed");
+                final int superVotes = BuildBattle.getFileManager().getConfig("stats.yml").get().getInt(s + ".super_votes");
+                playerStats.put(UUID.fromString(s), new BBPlayerStats(s, wins, played, mostPoints, blocksPlaced, particlesPlaced, superVotes));
+            }
         }
     }
 
     public static PlayerData getPlayerData(Player p) {
-        for (PlayerData pd : getPlayerData()) {
-            if (pd.getUuid().equals(p.getUniqueId())) {
-                return pd;
-            }
-        }
-        return null;
+        return playerData.get(p);
     }
 
     public void broadcastToAllPlayersInArena(BBArena a, String message) {
@@ -112,28 +111,16 @@ public class PlayerManager {
         }
     }
 
-
     public BBArena getPlayerArena(Player p) {
-        for (BBArena arena : ArenaManager.getArenas()) {
-            if (arena.getPlayers().contains(p)) {
-                return arena;
-            }
-        }
-        return null;
+        return playersInArenas.get(p);
     }
 
     public boolean isPlayerInGame(Player p) {
-        for (BBArena a : ArenaManager.getArenas()) {
-            if (a.getPlayers().contains(p)) {
-                return true;
-            }
-        }
-        return false;
+        return getPlayerArena(p) != null;
     }
 
     public void createNewPlayerData(Player p) {
-        PlayerData playerData = new PlayerData(p.getUniqueId(), p.getInventory().getContents(), p.getInventory().getArmorContents(), p.getLocation(), p.getGameMode(), p.getLevel(), p.getExp(), p.getAllowFlight());
-        getPlayerData().add(playerData);
+        playerData.put(p, new PlayerData(p));
     }
 
     public void setAllPlayersFlying(BBArena a) {
@@ -150,7 +137,7 @@ public class PlayerManager {
                 p.getInventory().addItem(items.getItem());
             }
         }
-        if (GameManager.isReportsEnabled()) {
+        if (BBSettings.isReportsEnabled()) {
             p.getInventory().setItem(8, OptionsManager.getReportItem());
         }
     }
@@ -159,10 +146,6 @@ public class PlayerManager {
         for (Player p : a.getPlayers()) {
             giveVoteItems(p);
         }
-    }
-
-    public boolean isCaptain(BBTeam t, Player p) {
-        return t.getCaptain().equals(p);
     }
 
     public BBTeam getPlayerTeam(BBArena a, Player p) {
@@ -194,6 +177,7 @@ public class PlayerManager {
         PlayerData pd = getPlayerData(p);
         if (pd != null) {
             pd.restorePlayerData();
+            playerData.remove(p);
         }
     }
 
@@ -223,7 +207,7 @@ public class PlayerManager {
         for (Player p : a.getPlayers()) {
             p.sendTitle(Message.THEME.getMessage().replaceAll("%theme%", a.getTheme()), Message.BUILD_SOMETHING_RELEVANT.getMessage());
             FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
-            for (String s : GameManager.getStartMessage()) {
+            for (String s : BBSettings.getStartMessage()) {
                 FancyMessage.sendCenteredMessage(p, s.replaceAll("%theme%", a.getTheme()));
             }
             FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
@@ -243,7 +227,7 @@ public class PlayerManager {
     public void sendResultsToAllPlayers(BBArena a) {
         for (Player player : a.getPlayers()) {
             BBPlot playerPlot = ArenaManager.getInstance().getPlayerPlot(a, player);
-            for (String s : GameManager.getEndMessage()) {
+            for (String s : BBSettings.getEndMessage()) {
                 if (s.contains("%position%")) {
                     for (int i = 0; i < 3; i++) {
                         try {
@@ -275,9 +259,9 @@ public class PlayerManager {
     public void createPlayerStatsIfNotExists(Player p) {
         if (getPlayerStats(p) == null) {
             BBPlayerStats stats = new BBPlayerStats(p.getUniqueId().toString(), 0, 0, 0, 0, 0, 0);
-            PlayerManager.getPlayerStats().add(stats);
-            if (GameManager.isAsyncSavePlayerData()) {
-                switch (GameManager.getStatsType()) {
+            playerStats.put(p.getUniqueId(),stats);
+            if (BBSettings.isAsyncSavePlayerData()) {
+                switch (BBSettings.getStatsType()) {
                     case FLATFILE:
                         addPlayerToStatsYML(stats);
                         break;
@@ -290,7 +274,7 @@ public class PlayerManager {
         }
     }
 
-    public void addPlayerToStatsYML(BBPlayerStats stats) {
+    private void addPlayerToStatsYML(BBPlayerStats stats) {
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".played", stats.getPlayed());
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".wins", stats.getWins());
         BuildBattle.getFileManager().getConfig("stats.yml").set(stats.getUuid().toString() + ".most_points", stats.getMostPoints());
@@ -301,7 +285,7 @@ public class PlayerManager {
     }
 
     public void saveAllPlayerStatsToStatsYML() {
-        for (BBPlayerStats stats : getPlayerStats()) {
+        for (BBPlayerStats stats : playerStats.values()) {
             addPlayerToStatsYML(stats);
         }
     }
@@ -334,7 +318,7 @@ public class PlayerManager {
                     int oldPoints = stats.getMostPoints();
                     if (plot.getVotePoints() > stats.getMostPoints()) {
                         stats.setMostPoints(plot.getVotePoints());
-                        if (GameManager.isAnnounceNewMostPoints()) {
+                        if (BBSettings.isAnnounceNewMostPoints()) {
                             sendMostPointsAnnounce(p, oldPoints, stats.getMostPoints());
                         }
                     }
@@ -395,12 +379,6 @@ public class PlayerManager {
     }
 
     public BBPlayerStats getPlayerStats(OfflinePlayer p) {
-        for (BBPlayerStats ps : getPlayerStats()) {
-            if (ps.getUuid().equals(p.getUniqueId().toString())) {
-                return ps;
-            }
-        }
-        return null;
-
+        return playerStats.get(p.getUniqueId());
     }
 }

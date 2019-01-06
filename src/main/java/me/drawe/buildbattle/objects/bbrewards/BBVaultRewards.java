@@ -4,7 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import org.bukkit.entity.Player;
 
-public class BBVaultRewards extends BBReward {
+public class BBVaultRewards implements BBReward {
 
     public static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.first_place");
     public static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.second_place");

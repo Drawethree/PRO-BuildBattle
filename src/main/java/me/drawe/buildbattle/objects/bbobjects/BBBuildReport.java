@@ -7,11 +7,11 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.MySQLManager;
 import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.mysql.MySQL;
-import me.drawe.buildbattle.utils.ItemCreator;
+import me.drawe.buildbattle.utils.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,7 +41,7 @@ public class BBBuildReport {
         this.schematic = schematic;
         this.reportDate = reportDate;
         this.reportStatus = status;
-        this.reportInventoryItem = ItemCreator.createReportItem(this);
+        this.reportInventoryItem = ItemUtil.createReportItem(this);
     }
 
 
@@ -50,7 +50,7 @@ public class BBBuildReport {
     }
 
     public boolean saveReport() {
-        switch(GameManager.getStatsType()) {
+        switch(BBSettings.getStatsType()) {
             case FLATFILE:
                 return ReportManager.getInstance().saveReportIntoConfig(this);
             case MYSQL:
@@ -65,8 +65,8 @@ public class BBBuildReport {
 
     public void setReportStatus(BBReportStatus reportStatus) {
         this.reportStatus = reportStatus;
-        reportInventoryItem = ItemCreator.createReportItem(this);
-        switch(GameManager.getStatsType()) {
+        reportInventoryItem = ItemUtil.createReportItem(this);
+        switch(BBSettings.getStatsType()) {
             case FLATFILE:
                 BuildBattle.getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
                 break;
@@ -134,7 +134,7 @@ public class BBBuildReport {
 
     public boolean delete() {
         if(schematic.exists()) schematic.delete();
-        switch(GameManager.getStatsType()) {
+        switch(BBSettings.getStatsType()) {
             case FLATFILE:
                 return ReportManager.getInstance().deleteReportFromConfig(this);
             case MYSQL:

@@ -2,7 +2,7 @@ package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
-import me.drawe.buildbattle.utils.ItemCreator;
+import me.drawe.buildbattle.utils.ItemUtil;
 import me.kangarko.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
@@ -31,11 +31,11 @@ public class BBArenaEdit {
         this.gameMode = arena.getGameType();
         this.teamSize = arena.getTeamSize();
         this.gameTime = arena.getGameTime();
-        this.arenaEditItemStack = ItemCreator.create(CompMaterial.BRICKS, 1, "§e" + arena.getName(), ItemCreator.makeLore("&7Click to edit arena " + arena.getName()));
-        this.minPlayersItem = ItemCreator.create(CompMaterial.PAPER, 1, "Min Players: §e" + minPlayers, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"));
-        this.gameModeItem = ItemCreator.create(CompMaterial.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemCreator.makeLore("", "&8(Click to change)"));
-        this.teamSizeItem = ItemCreator.create(CompMaterial.PAPER, 1, "Team Size: §e" + teamSize, ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"));
-        this.gameTimeItem = ItemCreator.create(CompMaterial.PAPER, 1, "Game Time: §e" + gameTime + "s", ItemCreator.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"));
+        this.arenaEditItemStack = ItemUtil.create(CompMaterial.BRICKS, 1, "§e" + arena.getName(), ItemUtil.makeLore("&7Click to edit arena " + arena.getName()));
+        this.minPlayersItem = ItemUtil.create(CompMaterial.PAPER, 1, "Min Players: §e" + minPlayers, ItemUtil.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"));
+        this.gameModeItem = ItemUtil.create(CompMaterial.PLAYER_HEAD, 1, "Game Mode: §e" + gameMode.name(), ItemUtil.makeLore("", "&8(Click to change)"));
+        this.teamSizeItem = ItemUtil.create(CompMaterial.PAPER, 1, "Team Size: §e" + teamSize, ItemUtil.makeLore("", "&8(Click to adjust)", "&7< &c-1   &a+1 &7>"));
+        this.gameTimeItem = ItemUtil.create(CompMaterial.PAPER, 1, "Game Time: §e" + gameTime + "s", ItemUtil.makeLore("", "&8(Click to adjust)", "&7< &c-10s   &a+10s &7>"));
         this.loadInventory();
     }
 

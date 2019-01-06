@@ -19,6 +19,7 @@ public enum BBGameMode {
     public int getDefaultTeamSize() {
         return defaultTeamSize;
     }
+
     public String getName() {
         return name;
     }

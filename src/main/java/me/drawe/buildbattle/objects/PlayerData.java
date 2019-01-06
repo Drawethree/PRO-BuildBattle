@@ -1,7 +1,5 @@
 package me.drawe.buildbattle.objects;
 
-import me.drawe.buildbattle.managers.GameManager;
-import me.drawe.buildbattle.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -12,48 +10,39 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    private Location l;
+    private Location location;
     private UUID uuid;
     private ItemStack[] contents;
     private ItemStack[] armor;
-    private GameMode gm;
+    private GameMode gameMode;
     private int level;
     private float exp;
     private boolean allowFlight;
 
-    public PlayerData(UUID uuid, ItemStack[] contents, ItemStack[] armor, Location loc, GameMode gm, int level, float exp, boolean allowFlight) {
-        this.setContents(contents);
-        this.setArmor(armor);
-        this.l = loc;
-        this.uuid = uuid;
-        this.gm = gm;
-        this.level = level;
-        this.exp = exp;
-        this.allowFlight = allowFlight;
+    public PlayerData(Player p) {
+        this.contents = p.getInventory().getContents();
+        this.armor = p.getInventory().getArmorContents();
+        this.location = p.getLocation();
+        this.uuid = p.getUniqueId();
+        this.gameMode = p.getGameMode();
+        this.level = p.getLevel();
+        this.exp = p.getExp();
+        this.allowFlight = p.getAllowFlight();
     }
-
     public Location getLocation() {
-        return l;
+        return location;
     }
 
     public GameMode getGamemode() {
-        return gm;
+        return gameMode;
     }
 
     public ItemStack[] getContents() {
         return contents;
     }
 
-    public void setContents(ItemStack[] contents) {
-        this.contents = contents;
-    }
-
     public ItemStack[] getArmor() {
         return armor;
-    }
-
-    public void setArmor(ItemStack[] armor) {
-        this.armor = armor;
     }
 
     public UUID getUuid() {
@@ -61,26 +50,22 @@ public class PlayerData {
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(getUuid());
+        return Bukkit.getPlayer(uuid);
     }
 
     public void restorePlayerData() {
         getPlayer().getInventory().clear();
-        getPlayer().resetPlayerWeather();
-        getPlayer().resetPlayerTime();
+        getPlayer().getActivePotionEffects().forEach(e -> getPlayer().removePotionEffect(e.getType()));
+        getPlayer().setMaxHealth(20);
         getPlayer().setHealth(getPlayer().getMaxHealth());
         getPlayer().setFoodLevel(20);
-        getPlayer().getInventory().setArmorContents(getArmor());
-        getPlayer().getInventory().setContents(getContents());
-        getPlayer().setGameMode(getGamemode());
-        getPlayer().teleport(getLocation());
-        getPlayer().setLevel(getLevel());
-        getPlayer().setExp(getExp());
-        getPlayer().setAllowFlight(isAllowFlight());
-        if(GameManager.getMainLobbyLocation() != null) {
-            PlayerManager.getInstance().teleportToMainLobby(getPlayer());
-        }
-        PlayerManager.getPlayerData().remove(this);
+        getPlayer().getInventory().setArmorContents(armor);
+        getPlayer().getInventory().setContents(contents);
+        getPlayer().setGameMode(gameMode);
+        getPlayer().teleport(location);
+        getPlayer().setLevel(level);
+        getPlayer().setExp(exp);
+        getPlayer().setAllowFlight(allowFlight);
     }
 
     public int getLevel() {
@@ -93,9 +78,5 @@ public class PlayerData {
 
     public boolean isAllowFlight() {
         return allowFlight;
-    }
-
-    public void setAllowFlight(boolean allowFlight) {
-        this.allowFlight = allowFlight;
     }
 }

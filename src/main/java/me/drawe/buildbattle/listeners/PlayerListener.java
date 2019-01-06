@@ -4,7 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.Category;
 import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.managers.*;
-import me.drawe.buildbattle.objects.GuiItem;
+import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
@@ -46,9 +46,15 @@ import org.bukkit.inventory.meta.BannerMeta;
 
 public class PlayerListener implements Listener {
 
+    private final BuildBattle plugin;
+
+    public PlayerListener(BuildBattle buildBattle) {
+        this.plugin = buildBattle;
+    }
+
     @EventHandler
     public void onPreJoin(AsyncPlayerPreLoginEvent e) {
-        if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
+        if (BBSettings.isUseBungeecord() && BBSettings.isAutoJoinPlayers()) {
             BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
             if (arena == null) {
                 e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
@@ -60,51 +66,35 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if (GameManager.isCreateStatsOnServerJoin()) {
+
+        if (BBSettings.isCreateStatsOnServerJoin()) {
             PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
         }
-        if (BuildBattle.getInstance().isUseBungeecord() && BuildBattle.getInstance().isAutoJoinPlayers()) {
+
+        if (BBSettings.isUseBungeecord() && BBSettings.isAutoJoinPlayers()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
                 if (arena != null) {
                     arena.addPlayer(p);
                 } else {
                     p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
-                    BungeeUtils.connectPlayerToServer(p, GameManager.getInstance().getRandomFallbackServer());
+                    BungeeUtils.connectPlayerToServer(p, BBSettings.getRandomFallbackServer());
                 }
             }, 1L);
-        } else if (GameManager.getMainLobbyLocation() != null && GameManager.isTeleportToMainLobbyOnJoin()) {
+        } else if (BBSettings.getMainLobbyLocation() != null && BBSettings.isTeleportToMainLobbyOnJoin()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 PlayerManager.getInstance().teleportToMainLobby(p);
             }, 1L);
         }
     }
 
-    /*@EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        Player p = (Player) e.getPlayer();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if ((a != null) && (a.getBBArenaState() == BBArenaState.THEME_VOTING)) {
-            if (!a.getThemeVoting().getVotedPlayers().containsKey(p)) {
-                new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-                        p.openInventory(a.getThemeVoting().getVoteInventory());
-                    }
-                }.runTaskLater(BuildBattle.getInstance(), 1L);
-            }
-        }
-    }
-    */
-
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        Inventory inv = e.getClickedInventory();
+        Inventory inv = e.getInventory();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         if (inv != null) {
-            if (inv.getTitle().equalsIgnoreCase(OptionsManager.getAllArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(OptionsManager.getTeamArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(OptionsManager.getSoloArenasInventory().getTitle())) {
+            if (inv.getTitle().equalsIgnoreCase(ArenaManager.getAllArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(ArenaManager.getTeamArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(ArenaManager.getSoloArenasInventory().getTitle())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
                     BBArena clickedArena = ArenaManager.getInstance().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
@@ -171,21 +161,21 @@ public class PlayerListener implements Listener {
                 }
             } else if (inv.getTitle().contains(OptionsManager.getReportsInventoryTitle())) {
                 e.setCancelled(true);
-                if (e.getCurrentItem().isSimilar(GuiItem.NEXT_PAGE.getItemStack())) {
+                if (e.getCurrentItem().isSimilar(GUIItem.NEXT_PAGE.getItemStack())) {
                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(inv));
-                } else if (e.getCurrentItem().isSimilar(GuiItem.PREV_PAGE.getItemStack())) {
+                } else if (e.getCurrentItem().isSimilar(GUIItem.PREV_PAGE.getItemStack())) {
                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getPrevPage(inv));
-                } else if (e.getCurrentItem().isSimilar(GuiItem.CLOSE_GUI.getItemStack())) {
+                } else if (e.getCurrentItem().isSimilar(GUIItem.CLOSE_GUI.getItemStack())) {
                     p.closeInventory();
-                } else if (!e.getCurrentItem().isSimilar(GuiItem.FILL_ITEM.getItemStack())) {
+                } else if (!e.getCurrentItem().isSimilar(GUIItem.FILL_ITEM.getItemStack())) {
                     BBBuildReport clickedReport = ReportManager.getInstance().getReport(e.getCurrentItem());
                     if (clickedReport != null) {
                         switch (e.getClick()) {
                             case LEFT:
                                 if (clickedReport.selectSchematic(p)) {
-                                    p.sendMessage(GameManager.getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
+                                    p.sendMessage(BBSettings.getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
                                 } else {
-                                    p.sendMessage(GameManager.getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
+                                    p.sendMessage(BBSettings.getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
                                 }
                                 p.closeInventory();
                                 break;
@@ -199,10 +189,10 @@ public class PlayerListener implements Listener {
                                 break;
                             case MIDDLE:
                                 if (ReportManager.getInstance().deleteReport(clickedReport)) {
-                                    p.sendMessage(GameManager.getPrefix() + "§aReport deleted !");
+                                    p.sendMessage(BBSettings.getPrefix() + "§aReport deleted !");
                                     ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(inv));
                                 } else {
-                                    p.sendMessage(GameManager.getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
+                                    p.sendMessage(BBSettings.getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
                                     p.closeInventory();
                                 }
                                 break;
@@ -542,7 +532,7 @@ public class PlayerListener implements Listener {
             }
         } else {
             if (e.getClickedBlock() != null) {
-                if (e.getItem() != null && e.getItem().isSimilar(ArenaManager.getPosSelectorItem())) {
+                if (e.getItem() != null && e.getItem().isSimilar(ArenaManager.posSelectorItem)) {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         e.setCancelled(true);
                         ArenaManager.getInstance().setPos(p, e.getClickedBlock(), 2);
@@ -618,7 +608,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent e) {
-        if (GameManager.isRestrictPlayerMovement()) {
+        if (BBSettings.isRestrictPlayerMovement()) {
             Vehicle v = e.getVehicle();
             if (v.getPassenger() instanceof Player) {
                 Player p = (Player) v.getPassenger();
@@ -636,7 +626,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
-        for (BBArena a : ArenaManager.getArenas()) {
+        for (BBArena a : ArenaManager.getArenas().values()) {
             if (a.getLobbyLocation() != null) {
                 if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
                     e.setCancelled(true);
@@ -648,7 +638,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        if (GameManager.isRestrictPlayerMovement() || GameManager.isRestrictOnlyPlayerYMovement()) {
+        if (BBSettings.isRestrictPlayerMovement() || BBSettings.isRestrictOnlyPlayerYMovement()) {
             Player p = e.getPlayer();
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
@@ -656,12 +646,12 @@ public class PlayerListener implements Listener {
                 switch (arena.getBBArenaState()) {
                     case INGAME:
                         if (plot != null) {
-                            if (GameManager.isRestrictPlayerMovement()) {
+                            if (BBSettings.isRestrictPlayerMovement()) {
                                 if (!plot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                            } else if (BBSettings.isRestrictOnlyPlayerYMovement()) {
                                 if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
@@ -671,24 +661,24 @@ public class PlayerListener implements Listener {
                     case VOTING:
                         BBPlot currentlyVoted = arena.getCurrentVotingPlot();
                         if (currentlyVoted != null) {
-                            if (GameManager.isRestrictPlayerMovement()) {
+                            if (BBSettings.isRestrictPlayerMovement()) {
                                 if (!currentlyVoted.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                            } else if (BBSettings.isRestrictOnlyPlayerYMovement()) {
                                 if (currentlyVoted.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
                             }
                         } else {
                             if (plot != null) {
-                                if (GameManager.isRestrictPlayerMovement()) {
+                                if (BBSettings.isRestrictPlayerMovement()) {
                                     if (!plot.isLocationInPlot(e.getTo())) {
                                         e.setTo(e.getFrom());
                                         //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                     }
-                                } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                                } else if (BBSettings.isRestrictOnlyPlayerYMovement()) {
                                     if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                         e.setTo(e.getFrom());
                                     }
@@ -698,12 +688,12 @@ public class PlayerListener implements Listener {
                         break;
                     case THEME_VOTING:
                         if (plot != null) {
-                            if (GameManager.isRestrictPlayerMovement()) {
+                            if (BBSettings.isRestrictPlayerMovement()) {
                                 if (!plot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                            } else if (BBSettings.isRestrictOnlyPlayerYMovement()) {
                                 if (plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
@@ -713,12 +703,12 @@ public class PlayerListener implements Listener {
                     case ENDING:
                         BBPlot winnerPlot = arena.getWinner();
                         if (winnerPlot != null) {
-                            if (GameManager.isRestrictPlayerMovement()) {
+                            if (BBSettings.isRestrictPlayerMovement()) {
                                 if (!winnerPlot.isLocationInPlot(e.getTo())) {
                                     e.setTo(e.getFrom());
                                     //p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
                                 }
-                            } else if (GameManager.isRestrictOnlyPlayerYMovement()) {
+                            } else if (BBSettings.isRestrictOnlyPlayerYMovement()) {
                                 if (winnerPlot.getMaxPoint().getBlockY() <= e.getTo().getBlockY()) {
                                     e.setTo(e.getFrom());
                                 }
@@ -755,7 +745,7 @@ public class PlayerListener implements Listener {
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
                         if (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial()) {
-                            if (GameManager.isAutomaticGrow()) {
+                            if (BBSettings.isAutomaticGrow()) {
                                 CompatBridge.setData(e.getBlock(), (byte) 4);
                                 /*BlockData data = e.getBlock().getBlockData();
                                 if (data instanceof Ageable) {
@@ -817,7 +807,8 @@ public class PlayerListener implements Listener {
                     BuildBattle.getFileManager().getConfig("signs.yml").save();
                     //BBSign constructor already adds this sign into BBArena signs and update it.
                     BBSign sign = new BBSign(arena, e.getBlock().getLocation());
-                    p.sendMessage(GameManager.getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
+                    arena.getArenaSigns().add(sign);
+                    p.sendMessage(BBSettings.getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
                     return;
                 } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
                     if (e.getLine(2).equalsIgnoreCase("team")) {
@@ -825,19 +816,19 @@ public class PlayerListener implements Listener {
                         e.setLine(1, Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage());
-                        p.sendMessage(GameManager.getPrefix() + "§aTeam Auto-Join sign successfully created!");
+                        p.sendMessage(BBSettings.getPrefix() + "§aTeam Auto-Join sign successfully created!");
                     } else if (e.getLine(2).equalsIgnoreCase("solo")) {
                         e.setLine(0, Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage());
                         e.setLine(1, Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage());
-                        p.sendMessage(GameManager.getPrefix() + "§aSolo Auto-Join sign successfully created!");
+                        p.sendMessage(BBSettings.getPrefix() + "§aSolo Auto-Join sign successfully created!");
                     } else {
                         e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
                         e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
-                        p.sendMessage(GameManager.getPrefix() + "§aAuto-Join sign successfully created!");
+                        p.sendMessage(BBSettings.getPrefix() + "§aAuto-Join sign successfully created!");
                         return;
                     }
                 } else {
@@ -996,12 +987,12 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChatIngame(AsyncPlayerChatEvent e) {
-        if (GameManager.isArenaChat() || GameManager.isTeamChat()) {
+        if (BBSettings.isArenaChat() || BBSettings.isTeamChat()) {
             Player p = e.getPlayer();
             BBArena a = PlayerManager.getInstance().getPlayerArena(p);
             if (a != null) {
                 if (a.getGameType() == BBGameMode.TEAM) {
-                    if (GameManager.isTeamChat()) {
+                    if (BBSettings.isTeamChat()) {
                         e.getRecipients().clear();
                         if (e.getMessage().charAt(0) == '!') {
                             e.setMessage(e.getMessage().substring(1, e.getMessage().length()));
@@ -1014,14 +1005,14 @@ public class PlayerListener implements Listener {
                                 e.getRecipients().add(p1);
                             }
                         }
-                    } else if (GameManager.isArenaChat()) {
+                    } else if (BBSettings.isArenaChat()) {
                         e.getRecipients().clear();
                         for (Player p1 : a.getPlayers()) {
                             e.getRecipients().add(p1);
                         }
                     }
                 } else {
-                    if (GameManager.isArenaChat()) {
+                    if (BBSettings.isArenaChat()) {
                         e.getRecipients().clear();
                         for (Player p1 : a.getPlayers()) {
                             e.getRecipients().add(p1);
@@ -1044,7 +1035,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
                 boolean valid = false;
-                for (String cmd : GameManager.getAllowedCommands()) {
+                for (String cmd : BBSettings.getAllowedCommands()) {
                     if (e.getMessage().contains(cmd)) {
                         valid = true;
                         break;

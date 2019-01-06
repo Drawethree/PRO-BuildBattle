@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import net.md_5.bungee.api.ChatColor;
 
 public enum Message {
@@ -260,16 +260,32 @@ public enum Message {
     BUILD_SOMETHING_RELEVANT("messages.build_something_relevant");
 
     private String message;
+    private String path;
 
     Message(String path) {
-        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(path));
+        this.path = path;
+        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(this.path));
     }
 
     public String getChatMessage() {
-        return GameManager.getPrefix() + message;
+        return BBSettings.getPrefix() + message;
+    }
+
+    public static void reloadMessages() {
+        for (Message m : values()) {
+            m.setMessage(ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(m.getPath())));
+        }
+    }
+
+    private void setMessage(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    private String getPath() {
+        return path;
     }
 }

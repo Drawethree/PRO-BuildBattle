@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
@@ -46,8 +46,9 @@ public class BBPlot implements Comparable<BBPlot> {
         this.particles = new ArrayList<>();
         this.reportedBy = null;
         this.team = null;
-        setBlocksInPlot();
-        setChunksInPlot();
+        this.setBlocksInPlot();
+        this.setChunksInPlot();
+        this.restoreBBPlot();
     }
 
     @Override
@@ -77,14 +78,15 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public void restoreBBPlot() {
-        this.team = null;
+        this.removeAllBlocks();
+        this.removeAllParticles();
         this.votePoints = 0;
-        this.particles = new ArrayList<>();
         this.reportedBy = null;
         this.votedPlayers = new HashMap<>();
         this.options = new BBPlotOptions(this);
-        options.setCurrentBiome(PlotBiome.PLAINS, false);
-        changeFloor(GameManager.getDefaultFloorMaterial());
+        this.options.setCurrentBiome(PlotBiome.PLAINS, false);
+        this.team = null;
+        this.changeFloor(BBSettings.getDefaultFloorMaterial());
     }
 
     private void removeAllBlocks() {
@@ -115,25 +117,7 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public boolean isLocationInPlot(Location location) {
-        boolean trueOrNot = false;
-
-        final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
-        final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
-        final int minZ = Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ());
-        final int maxZ = Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ());
-        final int minY = Math.min(minPoint.getBlockY(), maxPoint.getBlockY());
-        final int maxY = Math.max(minPoint.getBlockY(), maxPoint.getBlockY());
-
-        if (location.getWorld().equals(minPoint.getWorld())) {
-            if ((location.getBlockX() >= minX) && (location.getBlockX() <= maxX)) {
-                if ((location.getBlockY() >= minY) && (location.getBlockY() <= maxY)) {
-                    if ((location.getBlockZ() >= minZ) && (location.getBlockZ() <= maxZ)) {
-                        trueOrNot = true;
-                    }
-                }
-            }
-        }
-        return trueOrNot;
+        return blocksInPlot.contains(new Location(location.getWorld(),location.getBlockX(),location.getBlockY(),location.getBlockZ()));
     }
 
     /*public void vote(Player p, Votes item) {
@@ -141,7 +125,7 @@ public class BBPlot implements Comparable<BBPlot> {
             if(item.getWeight() != votedPlayers.get(p)) {
                 votedPlayers.put(p, item.getWeight());
                 p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", item.getPrefix()));
-                if(GameManager.isShowVoteInSubtitle()) {
+                if(BBSettings.isShowVoteInSubtitle()) {
                     p.sendTitle("", item.getPrefix());
                 }
                 p.playSound(p.getLocation(), item.getSound(), 1L,item.getPitch());
@@ -149,12 +133,12 @@ public class BBPlot implements Comparable<BBPlot> {
         } else {
             votedPlayers.put(p, item.getWeight());
             p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", item.getPrefix()));
-            if(GameManager.isShowVoteInSubtitle()) {
+            if(BBSettings.isShowVoteInSubtitle()) {
                 p.sendTitle("", item.getPrefix());
             }
             p.playSound(p.getLocation(), item.getSound(), 1L,item.getPitch());
         }
-        if (GameManager.isScoreboardEnabled()) {
+        if (BBSettings.isScoreboardEnabled()) {
             getArena().updateAllScoreboards(0);
         }
     }
@@ -172,10 +156,6 @@ public class BBPlot implements Comparable<BBPlot> {
         return arena;
     }
 
-    public void addIntoArenaPlots() {
-        arena.getBuildPlots().add(this);
-    }
-
     public String getPlayerVoteString(Player p) {
         if (votedPlayers.containsKey(p)) {
             return Votes.getVoteItemByPoints(votedPlayers.get(p)).getPrefix();
@@ -185,7 +165,7 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public Location getCenter() {
-        double x, y, z = 0;
+        double x, y, z;
         if (minPoint.getX() > maxPoint.getX()) {
             x = maxPoint.getX() + ((minPoint.getX() - maxPoint.getX()) / 2);
         } else {
@@ -211,35 +191,12 @@ public class BBPlot implements Comparable<BBPlot> {
 
     public Location getTeleportExactCenterLocation() {
         Location tpLoc = getCenter();
-        tpLoc.clone().setY(minPoint.getY() + 1);
+        getCenter().clone().setY(minPoint.getY() + 1);
         return tpLoc;
     }
 
-    public Location getTeleportLocation() {
-        Location tploc = getCenter();
-        while (tploc.getBlock().getType() != CompMaterial.AIR.getMaterial() || tploc.clone().add(0, 1, 0).getBlock().getType() != CompMaterial.AIR.getMaterial())
-            tploc = tploc.add(0, 1, 0);
-        boolean enclosed = false;
-        int counter = 0;
-        Location location = tploc.clone();
-        while (counter != 10) {
-            if (!(location.getBlock().getType() == CompMaterial.BARRIER.getMaterial() || location.getBlock().getType() == CompMaterial.AIR.getMaterial())) {
-                enclosed = true;
-                tploc = location;
-                counter = 9;
-            }
-            location.add(0, 1, 0);
-            counter++;
-        }
-        if (enclosed) {
-            while (tploc.getBlock().getType() != CompMaterial.AIR.getMaterial() || tploc.add(0, 1, 0).getBlock().getType() != CompMaterial.AIR.getMaterial()) {
-                tploc = tploc.add(0, 1, 0);
-            }
-        }
-        return tploc;
-    }
-
     public void changeFloor(CompMaterial material) {
+
         if (material == CompMaterial.WATER_BUCKET) material = CompMaterial.WATER;
         if (material == CompMaterial.LAVA_BUCKET) material = CompMaterial.LAVA;
 
@@ -257,22 +214,20 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public void changeFloor(ItemStack item) {
-        CompMaterial m = CompMaterial.fromItemStack(item);
-        changeFloor(m);
+        changeFloor(CompMaterial.fromItemStack(item));
     }
 
     public boolean isInPlotRange(Location location, int added) {
-        boolean trueOrNot = false;
         if (location.getWorld().equals(minPoint.getWorld()) && location.getWorld().equals(maxPoint.getWorld())) {
             if (location.getBlockX() >= minPoint.getBlockX() - added && location.getBlockX() <= maxPoint.getBlockX() + added) {
                 if (location.getBlockY() >= minPoint.getBlockY() - added && location.getBlockY() <= maxPoint.getBlockY() + added) {
                     if (location.getBlockZ() >= minPoint.getBlockZ() - added && location.getBlockZ() <= maxPoint.getBlockZ() + added) {
-                        trueOrNot = true;
+                        return true;
                     }
                 }
             }
         }
-        return trueOrNot;
+        return false;
     }
 
     public Location getMaxPoint() {
@@ -283,25 +238,21 @@ public class BBPlot implements Comparable<BBPlot> {
         return minPoint;
     }
 
-    public CompMaterial getFloorMaterial() {
-        return CompMaterial.fromMaterial(minPoint.getBlock().getType());
-    }
-
     public List<BBPlotParticle> getParticles() {
         return particles;
     }
 
     public void addActiveParticle(Player player, BBPlotParticle particle) {
-        if (particles.size() != GameManager.getMaxParticlesPerPlayer()) {
-            particles.add(particle);
-            particle.start();
+        if (particles.size() != BBSettings.getMaxParticlesPerPlayer()) {
             BBPlayerStats stats = PlayerManager.getInstance().getPlayerStats(player);
             if (stats != null) {
                 stats.setParticlesPlaced(stats.getParticlesPlaced() + 1);
             }
             player.sendMessage(Message.PARTICLE_PLACED.getChatMessage());
+            particle.start();
+            particles.add(particle);
         } else {
-            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replaceAll("%amount%", String.valueOf(GameManager.getMaxParticlesPerPlayer())));
+            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replaceAll("%amount%", String.valueOf(BBSettings.getMaxParticlesPerPlayer())));
         }
     }
 
@@ -311,33 +262,36 @@ public class BBPlot implements Comparable<BBPlot> {
         team.getCaptain().sendMessage(Message.PARTICLE_REMOVED.getChatMessage());
     }
 
-    public void removeAllParticles() {
+    private void removeAllParticles() {
         Iterator it = particles.iterator();
         while (it.hasNext()) {
             BBPlotParticle particle = (BBPlotParticle) it.next();
             particle.stop();
             it.remove();
         }
+        this.particles = new ArrayList<>();
     }
 
     public void resetPlotFromGame() {
-        removeAllBlocks();
-        removeAllParticles();
-        options.setCurrentFloorItem(GameManager.getDefaultFloorMaterial().toItem());
+        this.removeAllBlocks();
+        this.removeAllParticles();
+        options.setCurrentFloorItem(BBSettings.getDefaultFloorMaterial().toItem());
         options.setCurrentWeather(WeatherType.CLEAR, false);
         options.setCurrentTime(BBPlotTime.NOON, false);
         options.setCurrentBiome(PlotBiome.PLAINS, false);
         team.getCaptain().sendMessage(Message.PLOT_CLEARED.getChatMessage());
     }
 
-    public void setBlocksInPlot() {
+    private void setBlocksInPlot() {
         List<Location> locations = new ArrayList<>();
+
         final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
         final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
         final int minZ = Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ());
         final int maxZ = Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ());
         final int minY = Math.min(minPoint.getBlockY(), maxPoint.getBlockY());
         final int maxY = Math.max(minPoint.getBlockY(), maxPoint.getBlockY());
+
         for (int x = minX; x <= maxX; x += 1) {
             for (int y = minY; y <= maxY; y += 1) {
                 for (int z = minZ; z <= maxZ; z += 1) {
@@ -345,8 +299,10 @@ public class BBPlot implements Comparable<BBPlot> {
                 }
             }
         }
+
         this.blocksInPlot = locations;
     }
+
 
     public List<Location> getBlocksInPlot() {
         return blocksInPlot;
@@ -360,7 +316,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.team = team;
     }
 
-    public void teleportTeamToPlot(BBTeam team) {
+    public void teleportTeamToPlot() {
         for (Player p : team.getPlayers()) {
             p.teleport(getTeleportExactCenterLocation());
         }
@@ -370,7 +326,7 @@ public class BBPlot implements Comparable<BBPlot> {
         return chunksInPlot;
     }
 
-    public void setChunksInPlot() {
+    private void setChunksInPlot() {
         List<Chunk> chunks = new ArrayList<>();
         for (Location l : blocksInPlot) {
             final Chunk c = l.getChunk();
@@ -410,9 +366,25 @@ public class BBPlot implements Comparable<BBPlot> {
             randomX = new Random().nextInt(maxX - minX) + minX;
             randomY = new Random().nextInt(maxY - minY) + minY;
             randomZ = new Random().nextInt(maxZ - minZ) + minZ;
-        } while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != CompMaterial.AIR.getMaterial()) && tries < 10);
+        }
+        while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != CompMaterial.AIR.getMaterial()) && tries < 10);
 
         BuildBattle.debug("Returning Location: " + getWorld().getName() + ", " + randomX + ", " + randomY + ", " + randomZ);
         return new Location(getWorld(), randomX, randomY, randomZ);
+    }
+
+
+    public List<Location> getPlotCorners() {
+        List<Location> returnList = new ArrayList<>();
+        Location min = minPoint;
+        Location max = maxPoint;
+        World w = min.getWorld();
+
+        returnList.add(new Location(w, min.getBlockX(), min.getBlockY(), min.getBlockZ()));
+        returnList.add(new Location(w, max.getBlockX(), min.getBlockY(), max.getBlockZ()));
+        returnList.add(new Location(w, min.getBlockX(), min.getBlockY(), max.getBlockZ()));
+        returnList.add(new Location(w, max.getBlockX(), min.getBlockY(), min.getBlockZ()));
+
+        return returnList;
     }
 }

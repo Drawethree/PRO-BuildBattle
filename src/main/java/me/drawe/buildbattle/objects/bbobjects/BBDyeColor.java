@@ -51,15 +51,6 @@ public enum BBDyeColor {
         return null;
     }
 
-    public static BBDyeColor getByMaterial(CompMaterial type) {
-        for(BBDyeColor d : values()) {
-            if(d.getItem().getType() == type.getMaterial()) {
-                return d;
-            }
-        }
-        return null;
-    }
-
     public CompDye getColor() {
         return color;
     }

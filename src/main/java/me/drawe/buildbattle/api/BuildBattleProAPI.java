@@ -7,6 +7,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class BuildBattleProAPI {
@@ -17,7 +18,7 @@ public final class BuildBattleProAPI {
      * @return List of all arenas
      */
     public static List<BBArena> getArenas() {
-        return ArenaManager.getArenas();
+        return new ArrayList<>(ArenaManager.getArenas().values());
     }
 
     /**
@@ -42,6 +43,7 @@ public final class BuildBattleProAPI {
 
     /**
      * Method to get player's team
+     *
      * @param p Player
      * @return BBTeam object
      */

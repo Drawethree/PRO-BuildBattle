@@ -1,11 +1,10 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.MySQLManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public class BBPlayerStats {
 
     public void setWins(int wins) {
         this.wins = wins;
-        if(GameManager.isAsyncSavePlayerData()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
             MySQLManager.getInstance().savePlayerWins(this);
         }
     }
@@ -54,8 +53,8 @@ public class BBPlayerStats {
 
     public void setPlayed(int played) {
         this.played = played;
-        if(GameManager.isAsyncSavePlayerData()) {
-            switch(GameManager.getStatsType()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
+            switch(BBSettings.getStatsType()) {
                 case MYSQL:
                     MySQLManager.getInstance().savePlayerPlayed(this);
                     break;
@@ -72,8 +71,8 @@ public class BBPlayerStats {
 
     public void setMostPoints(int mostPoints) {
         this.mostPoints = mostPoints;
-        if(GameManager.isAsyncSavePlayerData()) {
-            switch(GameManager.getStatsType()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
+            switch(BBSettings.getStatsType()) {
                 case MYSQL:
                     MySQLManager.getInstance().savePlayerMostPoints(this);
                     break;
@@ -90,8 +89,8 @@ public class BBPlayerStats {
 
     public void setBlocksPlaced(int blocksPlaced) {
         this.blocksPlaced = blocksPlaced;
-        if(GameManager.isAsyncSavePlayerData()) {
-            switch(GameManager.getStatsType()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
+            switch(BBSettings.getStatsType()) {
                 case MYSQL:
                     MySQLManager.getInstance().savePlayerBlocksPlaced(this);
                     break;
@@ -108,8 +107,8 @@ public class BBPlayerStats {
 
     public void setParticlesPlaced(int particlesPlaced) {
         this.particlesPlaced = particlesPlaced;
-        if(GameManager.isAsyncSavePlayerData()) {
-            switch(GameManager.getStatsType()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
+            switch(BBSettings.getStatsType()) {
                 case MYSQL:
                     MySQLManager.getInstance().savePlayerParticlesPlaced(this);
                     break;
@@ -126,8 +125,8 @@ public class BBPlayerStats {
 
     public void setSuperVotes(int superVotes) {
         this.superVotes = superVotes;
-        if(GameManager.isAsyncSavePlayerData()) {
-            switch(GameManager.getStatsType()) {
+        if(BBSettings.isAsyncSavePlayerData()) {
+            switch(BBSettings.getStatsType()) {
                 case MYSQL:
                     MySQLManager.getInstance().savePlayerSuperVotes(this);
                     break;

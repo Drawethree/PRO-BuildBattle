@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.bbobjects.BBParticle;
 import me.kangarko.compatbridge.utils.VersionResolver;
 import org.bukkit.Bukkit;
@@ -41,12 +41,12 @@ public class BBPlotParticle {
             @Override
             public void run() {
                 if (VersionResolver.isAtLeast1_13()) {
-                    getLocation().getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, GameManager.getAmountParticleToSpawn(), GameManager.getParticleOffset(), GameManager.getParticleOffset(), GameManager.getParticleOffset());
+                    location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset());
                 } else {
-                    getParticle().getEffect().display((float) GameManager.getParticleOffset(), (float) GameManager.getParticleOffset(), (float) GameManager.getParticleOffset(), 1F, GameManager.getAmountParticleToSpawn(), getLocation(), Bukkit.getOnlinePlayers());
+                    particle.getEffect().display((float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), 1F, BBSettings.getAmountParticleToSpawn(), location, Bukkit.getOnlinePlayers());
                 }
             }
-        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) GameManager.getParticleRefreshTime()*20L);
+        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) BBSettings.getParticleRefreshTime()*20L);
     }
 
     public void stop() {

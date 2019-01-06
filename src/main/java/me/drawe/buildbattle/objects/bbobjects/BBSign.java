@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.GameManager;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
@@ -16,21 +16,18 @@ import org.bukkit.entity.Player;
 public class BBSign {
 
     private BBArena arena;
-    private Location location;
     private Sign sign;
     private Block blockBehind;
 
     public BBSign(BBArena arena, Location loc) {
         this.arena = arena;
-        this.location = loc;
         try {
-            this.sign = (Sign) location.getBlock().getState();
-            this.blockBehind = LocationUtil.getAttachedBlock(getSign().getBlock());
-            getBlockBehind().setType(CompMaterial.WHITE_TERRACOTTA.getMaterial());
-            addIntoArenaSigns();
-            update();
+            this.sign = (Sign) loc.getBlock().getState();
+            this.blockBehind = LocationUtil.getAttachedBlock(sign.getBlock());
+            this.blockBehind.setType(CompMaterial.WHITE_TERRACOTTA.getMaterial());
+            this.update();
         } catch (Exception e) {
-            BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocationXYZ(location) + " §c! Removing from signs.yml...");
+            BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §c! Removing from signs.yml...");
             removeSign(null);
         }
     }
@@ -40,27 +37,23 @@ public class BBSign {
     }
 
     public Location getLocation() {
-        return location;
+        return sign.getLocation();
     }
 
     public void update() {
         if(Bukkit.getPluginManager().isPluginEnabled(BuildBattle.getInstance())) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-                getSign().setLine(0, Message.SIGN_JOIN_FIRST_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()).replaceAll("%mode%", getArena().getGameType().getName()));
-                getSign().setLine(1, Message.SIGN_JOIN_SECOND_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
-                getSign().setLine(2, Message.SIGN_JOIN_THIRD_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
-                getSign().setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(getArena().getTeamSize())).replaceAll("%arena%", getArena().getName()).replaceAll("%gamestate%", getArena().getBBArenaState().getPrefix()).replaceAll("%players%", getArena().getTotalPlayers()));
-                getSign().update(true);
-                if(GameManager.isReplaceBlockBehindSigns()) {
-                    CompatBridge.setTypeAndData(getBlockBehind(), getArena().getBBArenaState().getBlockMaterial(), (byte) getArena().getBBArenaState().getBlockMaterial().getData());
+                sign.setLine(0, Message.SIGN_JOIN_FIRST_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()).replaceAll("%mode%", arena.getGameType().getName()));
+                sign.setLine(1, Message.SIGN_JOIN_SECOND_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
+                sign.setLine(2, Message.SIGN_JOIN_THIRD_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
+                sign.setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
+                sign.update(true);
+                if(BBSettings.isReplaceBlockBehindSigns()) {
+                    CompatBridge.setTypeAndData(blockBehind, arena.getBBArenaState().getBlockMaterial(), (byte) arena.getBBArenaState().getBlockMaterial().getData());
                     //getBlockBehind().setType(getArena().getBBArenaState().getBlockMaterial().getMaterial());
                 }
             }, 20L);
         }
-    }
-
-    public void addIntoArenaSigns() {
-        getArena().getArenaSigns().add(this);
     }
 
     public Sign getSign() {
@@ -68,12 +61,12 @@ public class BBSign {
     }
 
     public void removeSign(Player p) {
-        BuildBattle.getFileManager().getConfig("signs.yml").get().set(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(location), null);
+        BuildBattle.getFileManager().getConfig("signs.yml").get().set(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
         BuildBattle.getFileManager().getConfig("signs.yml").save();
-        getArena().getArenaSigns().remove(this);
-        getBlockBehind().setType(CompMaterial.AIR.getMaterial());
+        arena.getArenaSigns().remove(this);
+        blockBehind.setType(CompMaterial.AIR.getMaterial());
         if(p != null) {
-            p.sendMessage(GameManager.getPrefix() + "§aSign for arena §e" + getArena().getName() + "§a successfully removed!");
+            p.sendMessage(BBSettings.getPrefix() + "§aSign for arena §e" + getArena().getName() + "§a successfully removed!");
         }
     }
 
