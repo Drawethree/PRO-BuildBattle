@@ -91,6 +91,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
+        Inventory clickedInventory = e.getClickedInventory();
         Inventory inv = e.getInventory();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         if (inv != null) {
@@ -202,7 +203,7 @@ public class PlayerListener implements Listener {
             }
         }
         if (a != null) {
-            if (inv != null) {
+            if (clickedInventory != null) {
                 if (e.getSlotType() == InventoryType.SlotType.ARMOR && e.getCursor() != null) {
                     e.setCancelled(true);
                     p.sendMessage(Message.CANNOT_WEAR_ARMOR.getChatMessage());
@@ -221,7 +222,7 @@ public class PlayerListener implements Listener {
                 if (a.getBBArenaState() != BBArenaState.INGAME) {
                     e.setCancelled(true);
                     if (a.getBBArenaState() == BBArenaState.THEME_VOTING) {
-                        if (inv.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
+                        if (clickedInventory.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
                             if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.SIGN.getMaterial() || e.getCurrentItem().getType() == CompMaterial.PAPER.getMaterial())) {
                                 BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                                 if (selectedTheme != null) {
@@ -267,7 +268,7 @@ public class PlayerListener implements Listener {
                         e.setCancelled(true);
                         return;
                     }
-                    if (inv.getTitle().equalsIgnoreCase(Message.GUI_OPTIONS_TITLE.getMessage())) {
+                    if (clickedInventory.getTitle().equalsIgnoreCase(Message.GUI_OPTIONS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -275,7 +276,7 @@ public class PlayerListener implements Listener {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (p.hasPermission("buildbattlepro.changefloor")) {
                                         plot.getOptions().setCurrentFloorItem(e.getCursor());
-                                        inv.setItem(e.getSlot(), plot.getOptions().getCurrentFloorItem());
+                                        clickedInventory.setItem(e.getSlot(), plot.getOptions().getCurrentFloorItem());
                                         e.setCursor(null);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -298,7 +299,7 @@ public class PlayerListener implements Listener {
                                     } else {
                                         plot.getOptions().setCurrentWeather(WeatherType.CLEAR, false);
                                     }
-                                    inv.setItem(e.getSlot(), OptionsManager.getInstance().getWeatherItemStack(plot));
+                                    clickedInventory.setItem(e.getSlot(), OptionsManager.getInstance().getWeatherItemStack(plot));
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                 }
@@ -352,7 +353,7 @@ public class PlayerListener implements Listener {
                                 if (particle != null) {
                                     plot.removeActiveParticle(particle);
                                     if (e.getCurrentItem().getAmount() == 1) {
-                                        inv.remove(e.getCurrentItem());
+                                        clickedInventory.remove(e.getCurrentItem());
                                     } else {
                                         e.getCurrentItem().setAmount(e.getCurrentItem().getAmount() - 1);
                                     }
