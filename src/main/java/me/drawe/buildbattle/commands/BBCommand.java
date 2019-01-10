@@ -13,7 +13,7 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.kangarko.compatbridge.model.CompSound;
+import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;

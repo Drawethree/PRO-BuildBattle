@@ -1,9 +1,9 @@
 name: BuildBattlePro
-version: 5.1.0-BETA
+version: 5.1.2
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 api-version: 1.13
-website: https://www.spigotmc.org/resources/buildbattlepro-1-8-1-12-2.49587/
+website: https://www.spigotmc.org/resources/49587/
 softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, Vault, Multiverse-Core, PointsAPI, Vault, HolographicDisplays, Citizens, LeaderHeads]
 author: TheRealDrawe
 description: BuildBattlePro plugin

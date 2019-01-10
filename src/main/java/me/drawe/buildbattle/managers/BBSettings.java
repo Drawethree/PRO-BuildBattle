@@ -3,7 +3,7 @@ package me.drawe.buildbattle.managers;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

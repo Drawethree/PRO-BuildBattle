@@ -7,7 +7,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.entity.Player;

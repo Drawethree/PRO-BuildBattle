@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.kangarko.compatbridge.utils.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;

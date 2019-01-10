@@ -3,7 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects.arena;
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -50,10 +50,10 @@ public class BBArenaEdit {
     }
 
     public boolean editMinPlayers(ClickType click) {
-        if(click == ClickType.RIGHT) {
+        if (click == ClickType.RIGHT) {
             minPlayers += 1;
-        } else if(click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
-            if(minPlayers - 1 != 0) {
+        } else if (click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
+            if (minPlayers - 1 != 0) {
                 minPlayers -= 1;
             } else {
                 return false;
@@ -69,10 +69,10 @@ public class BBArenaEdit {
     }
 
     public boolean editTeamSize(ClickType click) {
-        if(click == ClickType.RIGHT) {
+        if (click == ClickType.RIGHT) {
             teamSize += 1;
-        } else if(click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
-            if(teamSize - 1 != 0) {
+        } else if (click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
+            if (teamSize - 1 != 0) {
                 teamSize -= 1;
             } else {
                 return false;
@@ -88,10 +88,10 @@ public class BBArenaEdit {
     }
 
     public boolean editGameTime(ClickType click) {
-        if(click == ClickType.RIGHT) {
+        if (click == ClickType.RIGHT) {
             gameTime += 10;
-        } else if(click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
-            if(gameTime - 10 != 0) {
+        } else if (click == ClickType.LEFT || click == ClickType.DOUBLE_CLICK) {
+            if (gameTime - 10 != 0) {
                 gameTime -= 10;
             } else {
                 return false;
@@ -107,7 +107,7 @@ public class BBArenaEdit {
     }
 
     public boolean editGameMode() {
-        if(gameMode == BBGameMode.SOLO) {
+        if (gameMode == BBGameMode.SOLO) {
             gameMode = BBGameMode.TEAM;
         } else {
             gameMode = BBGameMode.SOLO;

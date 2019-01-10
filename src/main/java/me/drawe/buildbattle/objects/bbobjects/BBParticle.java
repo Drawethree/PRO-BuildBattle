@@ -3,7 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.ParticleEffect;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.inventory.ItemStack;
 
 public enum BBParticle {

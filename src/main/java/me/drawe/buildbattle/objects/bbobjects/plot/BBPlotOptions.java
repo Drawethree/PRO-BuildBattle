@@ -6,7 +6,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.ReflectionUtils;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;

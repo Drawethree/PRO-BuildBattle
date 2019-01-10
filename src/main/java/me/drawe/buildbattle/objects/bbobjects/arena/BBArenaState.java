@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.objects.Message;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 
 public enum BBArenaState {
 

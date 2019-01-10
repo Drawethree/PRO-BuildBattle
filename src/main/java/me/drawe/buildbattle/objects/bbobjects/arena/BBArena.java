@@ -11,7 +11,7 @@ import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.utils.*;
-import me.kangarko.compatbridge.model.CompSound;
+import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -472,7 +472,7 @@ public class BBArena {
         PlayerManager.getInstance().setAllPlayersFlying(this);
         PlayerManager.getInstance().removeAllPotionEffects(this);
 
-        setGamemodeToAllPlayers(GameMode.SURVIVAL);
+        setGamemodeToAllPlayers(GameMode.ADVENTURE);
 
         setVotingPlots();
         if (votingPlots == null) {
@@ -542,6 +542,7 @@ public class BBArena {
     }
 
     public void stopArena(String message, boolean forced) {
+
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), message);
 
         switch (bbArenaState) {
@@ -665,6 +666,7 @@ public class BBArena {
             }
 
             PlayerManager.getInstance().restorePlayerData(p);
+            PlayerManager.getPlayersInArenas().remove(p);
 
             if (BBSettings.isUseBungeecord()) {
                 BungeeUtils.connectPlayerToServer(p, BBSettings.getRandomFallbackServer());

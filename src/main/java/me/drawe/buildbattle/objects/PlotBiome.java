@@ -2,8 +2,8 @@ package me.drawe.buildbattle.objects;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.kangarko.compatbridge.model.CompBiome;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompBiome;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.inventory.ItemStack;
 
 public enum PlotBiome {

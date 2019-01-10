@@ -3,8 +3,10 @@ package me.drawe.buildbattle.objects.bbobjects.plot;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.bbobjects.BBParticle;
-import me.kangarko.compatbridge.utils.VersionResolver;
+import me.drawe.buildbattle.utils.ParticleEffect;
+import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +19,7 @@ public class BBPlotParticle {
     private Location location;
     private BukkitTask showParticleTask;
 
-    public BBPlotParticle(BBPlot plot, BBParticle particle, Location loc){
+    public BBPlotParticle(BBPlot plot, BBParticle particle, Location loc) {
         this.particle = particle;
         this.plot = plot;
         this.location = loc;
@@ -41,12 +43,16 @@ public class BBPlotParticle {
             @Override
             public void run() {
                 if (VersionResolver.isAtLeast1_13()) {
-                    location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset());
+                    if (particle.getEffect() == ParticleEffect.REDSTONE) {
+                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), new Particle.DustOptions(Color.RED,1));
+                    } else {
+                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset());
+                    }
                 } else {
                     particle.getEffect().display((float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), 1F, BBSettings.getAmountParticleToSpawn(), location, Bukkit.getOnlinePlayers());
                 }
             }
-        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) BBSettings.getParticleRefreshTime()*20L);
+        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) BBSettings.getParticleRefreshTime() * 20L);
     }
 
     public void stop() {

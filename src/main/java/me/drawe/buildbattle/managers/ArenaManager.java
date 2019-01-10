@@ -10,7 +10,7 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.InventoryUtil;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -111,7 +111,7 @@ public class ArenaManager {
     public BBPlot getBBPlotFromLocation(Location l) {
         for (BBArena a : arenas.values()) {
             for (BBPlot plot : a.getBuildPlots()) {
-                if (plot.getBlocksInPlot().contains(l)) {
+                if (plot.isLocationInPlot(l)) {
                     return plot;
                 }
             }

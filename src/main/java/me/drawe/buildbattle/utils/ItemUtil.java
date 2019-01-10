@@ -8,7 +8,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.BBTheme;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

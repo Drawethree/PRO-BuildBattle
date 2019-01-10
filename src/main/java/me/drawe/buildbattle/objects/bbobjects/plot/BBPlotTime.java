@@ -4,7 +4,7 @@ package me.drawe.buildbattle.objects.bbobjects.plot;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.inventory.ItemStack;
 
 public enum BBPlotTime {

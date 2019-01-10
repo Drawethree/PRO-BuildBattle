@@ -1,8 +1,8 @@
 package me.drawe.buildbattle.objects;
 
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.kangarko.compatbridge.model.CompMaterial;
-import me.kangarko.compatbridge.model.CompSound;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 

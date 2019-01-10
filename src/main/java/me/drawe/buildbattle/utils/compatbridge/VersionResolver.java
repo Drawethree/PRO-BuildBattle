@@ -1,4 +1,4 @@
-package me.kangarko.compatbridge.utils;
+package me.drawe.buildbattle.utils.compatbridge;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;

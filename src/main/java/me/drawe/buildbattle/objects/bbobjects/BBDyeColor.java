@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import me.kangarko.compatbridge.model.CompDye;
-import me.kangarko.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompDye;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.inventory.ItemStack;
 
 

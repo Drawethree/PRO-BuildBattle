@@ -9,8 +9,8 @@ import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.kangarko.compatbridge.model.CompMaterial;
-import me.kangarko.compatbridge.model.CompatBridge;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -117,7 +117,9 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public boolean isLocationInPlot(Location location) {
-        return blocksInPlot.contains(new Location(location.getWorld(),location.getBlockX(),location.getBlockY(),location.getBlockZ()));
+        return (location.getBlockX() >=  Math.min(minPoint.getBlockX(), maxPoint.getBlockX()) && location.getBlockX() <= Math.max(minPoint.getBlockX(), maxPoint.getBlockX()))
+                && (location.getBlockY() >= Math.min(minPoint.getBlockY(), maxPoint.getBlockY()) && location.getBlockY() <= Math.max(minPoint.getBlockY(), maxPoint.getBlockY()))
+                && (location.getBlockZ() >= Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ()) && location.getBlockZ() <= Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ()));
     }
 
     /*public void vote(Player p, Votes item) {

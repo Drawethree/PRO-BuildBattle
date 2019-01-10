@@ -2,8 +2,7 @@ package me.drawe.buildbattle.heads;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.util.ItemStackCreator;
-import me.kangarko.compatbridge.model.CompMaterial;
-import org.bukkit.Material;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
