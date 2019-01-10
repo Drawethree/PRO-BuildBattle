@@ -93,19 +93,30 @@ public class MySQLManager {
     }
 
     public void saveAllPlayerStats() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (BBPlayerStats ps : PlayerManager.getInstance().getPlayerStats().values()) {
-                    if (isUUIDInTable(ps.getUuid())) {
-                        MySQL.update("UPDATE BuildBattlePro_PlayerData SET Played='" + ps.getPlayed() + "', Wins='" + ps.getWins() + "', MostPoints='" + ps.getMostPoints() + "', BlocksPlaced='" + ps.getBlocksPlaced() + "', ParticlesPlaced='" + ps.getParticlesPlaced() + "', SuperVotes='" + ps.getSuperVotes() + "' WHERE UUID='" + ps.getUuid().toString() + "'");
-                    } else {
-                        MySQL.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getPlayed() + "','" + ps.getWins() + "','" + ps.getMostPoints() + "','" + ps.getBlocksPlaced() + "','" + ps.getParticlesPlaced() + "','" + ps.getSuperVotes() + "')");
+        if (BuildBattle.getInstance().isEnabled()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (BBPlayerStats ps : PlayerManager.getInstance().getPlayerStats().values()) {
+                        if (isUUIDInTable(ps.getUuid())) {
+                            MySQL.update("UPDATE BuildBattlePro_PlayerData SET Played='" + ps.getPlayed() + "', Wins='" + ps.getWins() + "', MostPoints='" + ps.getMostPoints() + "', BlocksPlaced='" + ps.getBlocksPlaced() + "', ParticlesPlaced='" + ps.getParticlesPlaced() + "', SuperVotes='" + ps.getSuperVotes() + "' WHERE UUID='" + ps.getUuid().toString() + "'");
+                        } else {
+                            MySQL.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getPlayed() + "','" + ps.getWins() + "','" + ps.getMostPoints() + "','" + ps.getBlocksPlaced() + "','" + ps.getParticlesPlaced() + "','" + ps.getSuperVotes() + "')");
+                        }
                     }
+                    BuildBattle.info("§aBuildBattle player stats saved!");
                 }
-                BuildBattle.info("§aBuildBattle player stats saved!");
+            }.runTaskAsynchronously(BuildBattle.getInstance());
+        } else {
+            for (BBPlayerStats ps : PlayerManager.getInstance().getPlayerStats().values()) {
+                if (isUUIDInTable(ps.getUuid())) {
+                    MySQL.update("UPDATE BuildBattlePro_PlayerData SET Played='" + ps.getPlayed() + "', Wins='" + ps.getWins() + "', MostPoints='" + ps.getMostPoints() + "', BlocksPlaced='" + ps.getBlocksPlaced() + "', ParticlesPlaced='" + ps.getParticlesPlaced() + "', SuperVotes='" + ps.getSuperVotes() + "' WHERE UUID='" + ps.getUuid().toString() + "'");
+                } else {
+                    MySQL.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getPlayed() + "','" + ps.getWins() + "','" + ps.getMostPoints() + "','" + ps.getBlocksPlaced() + "','" + ps.getParticlesPlaced() + "','" + ps.getSuperVotes() + "')");
+                }
             }
-        }.runTaskAsynchronously(BuildBattle.getInstance());
+            BuildBattle.info("§aBuildBattle player stats saved!");
+        }
     }
 
     public void loadAllPlayerStats() {
@@ -174,24 +185,40 @@ public class MySQLManager {
     }
 
     public boolean saveReport(BBBuildReport report) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PreparedStatement statement = MySQL.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
-                try {
-                    statement.setString(1, report.getReportID());
-                    statement.setString(2, report.getReportedPlayersInCommaSeparatedString());
-                    statement.setString(3, report.getReportedBy().toString());
-                    statement.setTimestamp(4, new Timestamp(report.getReportDate().getTime()));
-                    statement.setString(5, report.getSchematicFile().getName());
-                    statement.setString(6, report.getReportStatus().name().toUpperCase());
-                    statement.execute();
-                } catch (SQLException e) {
-                    BuildBattle.severe("An error occurred while saving build report " + report.getReportID() + " into MySQL database !");
-                    e.printStackTrace();
+        if (BuildBattle.getInstance().isEnabled()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PreparedStatement statement = MySQL.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
+                    try {
+                        statement.setString(1, report.getReportID());
+                        statement.setString(2, report.getReportedPlayersInCommaSeparatedString());
+                        statement.setString(3, report.getReportedBy().toString());
+                        statement.setTimestamp(4, new Timestamp(report.getReportDate().getTime()));
+                        statement.setString(5, report.getSchematicFile().getName());
+                        statement.setString(6, report.getReportStatus().name().toUpperCase());
+                        statement.execute();
+                    } catch (SQLException e) {
+                        BuildBattle.severe("An error occurred while saving build report " + report.getReportID() + " into MySQL database !");
+                        e.printStackTrace();
+                    }
                 }
+            }.runTaskAsynchronously(BuildBattle.getInstance());
+        } else {
+            PreparedStatement statement = MySQL.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
+            try {
+                statement.setString(1, report.getReportID());
+                statement.setString(2, report.getReportedPlayersInCommaSeparatedString());
+                statement.setString(3, report.getReportedBy().toString());
+                statement.setTimestamp(4, new Timestamp(report.getReportDate().getTime()));
+                statement.setString(5, report.getSchematicFile().getName());
+                statement.setString(6, report.getReportStatus().name().toUpperCase());
+                statement.execute();
+            } catch (SQLException e) {
+                BuildBattle.severe("An error occurred while saving build report " + report.getReportID() + " into MySQL database !");
+                e.printStackTrace();
             }
-        }.runTaskAsynchronously(BuildBattle.getInstance());
+        }
         return true;
     }
 

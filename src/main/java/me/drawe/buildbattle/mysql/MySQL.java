@@ -47,21 +47,34 @@ public class MySQL {
             e.printStackTrace();
             return;
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    openConnection();
-                    createTables();
-                    BuildBattle.info("§aMySQL Connected !");
-                    MySQLManager.getInstance().loadAllPlayerStats();
-                    MySQLManager.getInstance().loadAllReports();
-                } catch (Exception e) {
-                    BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
-                    e.printStackTrace();
+        if (BuildBattle.getInstance().isEnabled()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        openConnection();
+                        createTables();
+                        BuildBattle.info("§aMySQL Connected !");
+                        MySQLManager.getInstance().loadAllPlayerStats();
+                        MySQLManager.getInstance().loadAllReports();
+                    } catch (Exception e) {
+                        BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
+                        e.printStackTrace();
+                    }
                 }
+            }.runTaskAsynchronously(BuildBattle.getInstance());
+        } else {
+            try {
+                openConnection();
+                createTables();
+                BuildBattle.info("§aMySQL Connected !");
+                MySQLManager.getInstance().loadAllPlayerStats();
+                MySQLManager.getInstance().loadAllReports();
+            } catch (Exception e) {
+                BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
+                e.printStackTrace();
             }
-        }.runTaskAsynchronously(BuildBattle.getInstance());
+        }
     }
 
     public void openConnection() throws SQLException, ClassNotFoundException {
@@ -106,16 +119,24 @@ public class MySQL {
     }
 
     public static void update(String sql) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    connection.prepareStatement(sql).execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (BuildBattle.getInstance().isEnabled()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        connection.prepareStatement(sql).execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+            }.runTaskAsynchronously(BuildBattle.getInstance());
+        } else {
+            try {
+                connection.prepareStatement(sql).execute();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }.runTaskAsynchronously(BuildBattle.getInstance());
+        }
     }
 
     public static PreparedStatement getStatement(String sql) {
