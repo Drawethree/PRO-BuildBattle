@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
                         } else if (e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
-                            currentEdit.getArena().delete(p);
+                            ArenaManager.getInstance().removeArena(p,currentEdit.getArena());
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;

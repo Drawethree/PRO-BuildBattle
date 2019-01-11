@@ -684,7 +684,7 @@ public class BBArena {
     public void saveIntoConfig() {
         BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
         BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".gameTime", gameTime);
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".minPlayers", minPlayers);
+        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".min_players", minPlayers);
         BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".mode", gameMode.name());
         BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".teamSize", teamSize);
 
@@ -747,8 +747,10 @@ public class BBArena {
 
     public void delete(CommandSender sender) {
         stopArena(Message.ARENA_REMOVED.getChatMessage(), true);
+
         BuildBattle.getFileManager().getConfig("arenas.yml").get().set(name, null);
         BuildBattle.getFileManager().getConfig("arenas.yml").save();
+
         sender.sendMessage(Message.ARENA_REMOVED.getChatMessage());
     }
 

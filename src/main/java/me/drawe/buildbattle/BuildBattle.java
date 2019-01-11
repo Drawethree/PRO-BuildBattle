@@ -147,6 +147,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         } else {
             PlayerManager.getInstance().saveAllPlayerStatsToStatsYML();
         }
+
         for (BBArena a : ArenaManager.getArenas().values()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
         }
