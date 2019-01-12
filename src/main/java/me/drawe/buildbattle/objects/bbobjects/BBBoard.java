@@ -52,11 +52,11 @@ public class BBBoard {
     }
 
     public void updateScoreboard(int timeLeft) {
-        switch (getArena().getBBArenaState()) {
+        switch (arena.getBBArenaState()) {
             case LOBBY:
-                add(getArena().getArenaModeInString(), 7);
+                add(arena.getArenaModeInString(), 7);
                 add("&a", 6);
-                add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + getArena().getTotalPlayers(), 5);
+                add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getTotalPlayers(), 5);
                 add("&b", 4);
                 if (timeLeft == 0) {
                     add(Message.SCOREBOARD_STARTING_IN.getMessage().replaceAll("%time%", Message.SCOREBOARD_WAITING.getMessage()), 3);
@@ -67,74 +67,74 @@ public class BBBoard {
                 add(Message.SCOREBOARD_SERVER.getMessage(), 1);
                 break;
             case THEME_VOTING:
-                if(getArena().getGameType() == BBGameMode.SOLO) {
-                    add(getArena().getArenaModeInString(), 11);
+                if(arena.getGameType() == BBGameMode.SOLO) {
+                    add(arena.getArenaModeInString(), 11);
                     add("&a", 10);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
                     add(Time.formatTimeMMSS(timeLeft), 8);
                     add("", 7);
                     add(Message.SCOREBOARD_THEME.getMessage(), 6);
-                    add("&a" + getArena().getTheme(), 5);
+                    add("&a" + arena.getTheme(), 5);
                     add("&b", 4);
-                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + getArena().getPlayers().size(), 3);
+                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size(), 3);
                     add("&c", 2);
                     add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                } else if(getArena().getGameType() == BBGameMode.TEAM){
+                } else if(arena.getGameType() == BBGameMode.TEAM){
                     add(Message.SCOREBOARD_SERVER.getMessage(), 1);
                     add("&d", 2);
                     int index = 2;
-                    if(getArena().getTeamMates(getPlayer()) != null) {
-                        for (Player p : getArena().getTeamMates(getPlayer())) {
+                    if(arena.getTeamMates(getPlayer()) != null) {
+                        for (Player p : arena.getTeamMates(getPlayer())) {
                             index += 1;
                             add("&a" + p.getName(), index);
                         }
                     }
                     add(Message.SCOREBOARD_TEAMMATE.getMessage(), index + 1);
                     add("&c", index + 2);
-                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + getArena().getValidTeams().size(), index +3);
+                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size(), index +3);
                     add("&b", index + 4);
-                    add("&a" + getArena().getTheme(), index + 5);
+                    add("&a" + arena.getTheme(), index + 5);
                     add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
                     add("", index + 7);
                     add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
                     add("&a", index + 10);
-                    add(getArena().getArenaModeInString(), index + 11);
+                    add(arena.getArenaModeInString(), index + 11);
                 }
             case INGAME:
-                if(getArena().getGameType() == BBGameMode.SOLO) {
-                    add(getArena().getArenaModeInString(), 11);
+                if(arena.getGameType() == BBGameMode.SOLO) {
+                    add(arena.getArenaModeInString(), 11);
                     add("&a", 10);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
                     add("&a" + Time.formatTimeMMSS(timeLeft), 8);
                     add("", 7);
                     add(Message.SCOREBOARD_THEME.getMessage(), 6);
-                    add("&a" + getArena().getTheme(), 5);
+                    add("&a" + arena.getTheme(), 5);
                     add("&b", 4);
-                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + getArena().getPlayers().size(), 3);
+                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size(), 3);
                     add("&c", 2);
                     add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                } else if(getArena().getGameType() == BBGameMode.TEAM){
+                } else if(arena.getGameType() == BBGameMode.TEAM){
                     add(Message.SCOREBOARD_SERVER.getMessage(), 1);
                     add("&d", 2);
                     int index = 2;
-                    if(getArena().getTeamMates(getPlayer()) != null) {
-                        for (Player p : getArena().getTeamMates(getPlayer())) {
+                    if(arena.getTeamMates(getPlayer()) != null) {
+                        for (Player p : arena.getTeamMates(getPlayer())) {
                             index += 1;
                             add("&a" + p.getName(), index);
                         }
                     }
                     add(Message.SCOREBOARD_TEAMMATE.getMessage(), index + 1);
                     add("&c", index + 2);
-                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + getArena().getValidTeams().size(), index +3);
+                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size(), index +3);
                     add("&b", index + 4);
-                    add("&a" + getArena().getTheme(), index + 5);
+                    add("&a" + arena.getTheme(), index + 5);
                     add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
                     add("", index + 7);
                     add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
                     add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
                     add("&a", index + 10);
-                    add(getArena().getArenaModeInString(), index + 11);
+                    add(arena.getArenaModeInString(), index + 11);
                 }
                 break;
             case VOTING:

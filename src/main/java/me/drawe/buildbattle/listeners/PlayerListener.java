@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
                         } else if (e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
-                            ArenaManager.getInstance().removeArena(p,currentEdit.getArena());
+                            ArenaManager.getInstance().removeArena(p, currentEdit.getArena());
                             p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
@@ -549,8 +549,6 @@ public class PlayerListener implements Listener {
                         }
                         if (arenaToAutoJoin != null) {
                             arenaToAutoJoin.addPlayer(p);
-                        } else {
-                            p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                         }
                     }
                 }
@@ -697,6 +695,8 @@ public class PlayerListener implements Listener {
         if (a != null) {
             final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
             if (plot != null) {
+                System.out.println(plot.isLocationInPlot(e.getBlockClicked().getLocation()));
+                System.out.println(plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0)));
                 if (!plot.isLocationInPlot(e.getBlockClicked().getLocation()) || !plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0))) {
                     p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                     e.setCancelled(true);
@@ -778,13 +778,14 @@ public class PlayerListener implements Listener {
             if (block.getState() instanceof Sign) {
                 final Sign s = (Sign) e.getBlock().getState();
                 final BBSign bbSign = ArenaManager.getInstance().getArenaSign(s);
-                if (bbSign != null && p.hasPermission("buildbattlepro.create")) {
-                    bbSign.removeSign(p);
-                } else {
-                    e.setCancelled(true);
+                if (bbSign != null) {
+                    if (p.hasPermission("buildbattlepro.create")) {
+                        bbSign.removeSign(p);
+                    } else {
+                        e.setCancelled(true);
+                    }
                 }
             }
-            return;
         }
     }
 

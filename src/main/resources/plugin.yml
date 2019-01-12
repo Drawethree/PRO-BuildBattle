@@ -1,5 +1,5 @@
 name: BuildBattlePro
-version: 5.1.3
+version: 5.1.5
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 api-version: 1.13

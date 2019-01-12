@@ -487,7 +487,7 @@ public class BBArena {
             }
 
             votingCountdown = new BukkitRunnable() {
-                double timeLeft = BBSettings.getVotingTime();
+                int timeLeft = BBSettings.getVotingTime();
                 int index = 0;
 
                 @Override
@@ -512,9 +512,10 @@ public class BBArena {
                         PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
                     }
                     if (currentVotingPlot != null) {
-                        PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), (int) timeLeft);
+                        PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), timeLeft);
+                        updateAllScoreboards(timeLeft);
                         if (timeLeft >= 1)
-                            PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time((int) timeLeft, TimeUnit.SECONDS).toString()));
+                            PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
                     }
                     timeLeft -= 1;
                 }
@@ -743,6 +744,8 @@ public class BBArena {
 
     public void setLobbyLocation(Location lobbyLocation) {
         this.lobbyLocation = lobbyLocation;
+        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
+        BuildBattle.getFileManager().getConfig("arenas.yml").save();
     }
 
     public void delete(CommandSender sender) {

@@ -20,18 +20,22 @@ public class VotingManager {
         if (plot.getVotedPlayers().containsKey(p)) {
             if (vote.getWeight() != plot.getVotedPlayers().get(p)) {
                 p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
+
                 if (BBSettings.isShowVoteInSubtitle()) {
                     p.sendTitle("", vote.getPrefix());
                 }
+
                 p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
 
                 plot.getVotedPlayers().put(p, vote.getWeight());
             }
         } else {
             p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
+
             if (BBSettings.isShowVoteInSubtitle()) {
                 p.sendTitle("", vote.getPrefix());
             }
+
             p.playSound(p.getLocation(), vote.getSound().getSound(), 1L, vote.getPitch());
 
             plot.getVotedPlayers().put(p, vote.getWeight());
