@@ -101,21 +101,21 @@ public class MySQL {
         return null;
     }
 
-    private static void createTables() throws SQLException {
-        connection.prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL)").execute();
-        connection.prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID varchar(100) NOT NULL, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL)").execute();
+    private static void createTables() throws Exception {
+        getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL)").execute();
+        getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID varchar(100) NOT NULL, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL)").execute();
         approveChanges();
     }
 
-    private static void approveChanges() throws SQLException {
+    private static void approveChanges() throws Exception {
         DatabaseMetaData md;
-        md = connection.getMetaData();
+        md = getConnection().getMetaData();
         ResultSet rs = md.getColumns(null, null, "BuildBattlePro_PlayerData", "SuperVotes");
         if (!rs.next()) {
-            connection.prepareStatement("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0").execute();
+            getConnection().prepareStatement("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0").execute();
             BuildBattle.info("§aMySQL detected that your table doesn't have §eSuperVotes §acolumn, adding it automatically!");
         }
-        connection.prepareStatement("DROP TABLE IF EXISTS BuildBattlePro_Reports").execute();
+        getConnection().prepareStatement("DROP TABLE IF EXISTS BuildBattlePro_Reports").execute();
     }
 
     public static void update(String sql) {
@@ -124,7 +124,7 @@ public class MySQL {
                 @Override
                 public void run() {
                     try {
-                        connection.prepareStatement(sql).execute();
+                        getConnection().prepareStatement(sql).execute();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -132,7 +132,7 @@ public class MySQL {
             }.runTaskAsynchronously(BuildBattle.getInstance());
         } else {
             try {
-                connection.prepareStatement(sql).execute();
+                getConnection().prepareStatement(sql).execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -141,7 +141,7 @@ public class MySQL {
 
     public static PreparedStatement getStatement(String sql) {
         try {
-            return connection.prepareStatement(sql);
+            return getConnection().prepareStatement(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -478,7 +478,6 @@ public class BBArena {
         if (votingPlots == null) {
             stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
         } else {
-
             try {
                 this.currentVotingPlot = votingPlots.get(0);
             } catch (Exception e) {

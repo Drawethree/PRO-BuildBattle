@@ -626,7 +626,7 @@ public class PlayerListener implements Listener {
                 BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                 switch (arena.getBBArenaState()) {
                     case VOTING:
-                        plot = arena.getCurrentVotingPlot();
+                        plot = ArenaManager.getInstance().getBBPlotFromLocation(p.getLocation());
                         break;
                     case ENDING:
                         plot = arena.getWinner();
@@ -695,9 +695,7 @@ public class PlayerListener implements Listener {
         if (a != null) {
             final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
             if (plot != null) {
-                System.out.println(plot.isLocationInPlot(e.getBlockClicked().getLocation()));
-                System.out.println(plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0)));
-                if (!plot.isLocationInPlot(e.getBlockClicked().getLocation()) || !plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0))) {
+                if (!plot.isLocationInPlot(e.getBlockClicked().getLocation()) && !plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0))) {
                     p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                     e.setCancelled(true);
                 }
