@@ -97,3 +97,10 @@ teleport_to_main_lobby_on_join: false
 plugin_loading:
   load_plugin_later: false
   load_after: 10
+main_command:
+  name: "buildbattle"
+  description: "Main BuildBattle command"
+  aliases:
+  - "bb"
+  - "bbpro"
+  - "buildbattlepro"

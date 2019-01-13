@@ -20,116 +20,115 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-public class BBCommand implements CommandExecutor {
+public class BBCommand extends BukkitCommand {
 
     private final BuildBattle plugin;
 
-    public BBCommand(BuildBattle buildBattle) {
-        this.plugin = buildBattle;
+    public BBCommand(BuildBattle plugin) {
+        super(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.name"));
+        this.plugin = plugin;
+        this.description = BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.description");
+        this.setAliases(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("buildbattle")) {
-            if (args.length > 0) {
-                String subCommand = args[0].toLowerCase();
-                switch (subCommand) {
-                    case "debug":
-                        debugSubCommand(sender);
-                        break;
-                    case "join":
-                        joinSubCommand(sender, args);
-                        break;
-                    case "leave":
-                        leaveSubCommand(sender, args);
-                        break;
-                    case "create":
-                        createSubCommand(sender, args);
-                        break;
-                    case "delete":
-                        delArenaSubCommand(sender, args);
-                        break;
-                    case "addplot":
-                        addPlotSubCommand(sender, args);
-                        break;
-                    case "setlobby":
-                        setLobbySubCommand(sender, args);
-                        break;
-                    case "setmainlobby":
-                        setMainLobbySubCommand(sender, args);
-                        break;
-                    case "delplot":
-                        delPlotSubCommand(sender, args);
-                        break;
-                    case "supervote":
-                        superVoteSubCommand(sender, args);
-                        break;
-                    case "start":
-                        startSubCommand(sender, args);
-                        break;
-                    case "stop":
-                        stopSubCommand(sender, args);
-                        break;
-                    case "forcestart":
-                        forceStartSubCommand(sender, args);
-                        break;
-                    case "stats":
-                        sendBBStats(sender, args);
-                        break;
-                    case "reload":
-                        reloadSubCommand(sender, args);
-                        break;
-                    case "list":
-                        listArenasSubCommand(sender, args);
-                        break;
-                    case "help":
-                        commandUsage(sender);
-                        break;
-                    case "exportstats":
-                        exportStatsSubCommand(sender, args);
-                        break;
-                    case "lb":
-                        leaderBoardSubCommand(sender, args);
-                        break;
-                    case "version":
-                        versionSubCommand(sender);
-                        break;
-                    case "leaderboard":
-                        leaderBoardSubCommand(sender, args);
-                        break;
-                    case "addnpc":
-                        addFloorNPC(sender, args);
-                        break;
-                    case "delnpc":
-                        delFloorNPC(sender, args);
-                        break;
-                    case "party":
-                        partySubCommand(sender, args);
-                        break;
-                    case "editor":
-                        openEditor(sender);
-                        break;
-                    case "pos":
-                        posSubCommand(sender);
-                        break;
-                    case "reports":
-                        openReports(sender);
-                        break;
-                    default:
-                        pluginInfo(sender);
-                        break;
-
-                }
-            } else {
-                if (sender instanceof Player) {
-                    Player p = (Player) sender;
-                    p.openInventory(ArenaManager.getAllArenasInventory());
-                }
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (args.length > 0) {
+            String subCommand = args[0].toLowerCase();
+            switch (subCommand) {
+                case "debug":
+                    debugSubCommand(sender);
+                    break;
+                case "join":
+                    joinSubCommand(sender, args);
+                    break;
+                case "leave":
+                    leaveSubCommand(sender, args);
+                    break;
+                case "create":
+                    createSubCommand(sender, args);
+                    break;
+                case "delete":
+                    delArenaSubCommand(sender, args);
+                    break;
+                case "addplot":
+                    addPlotSubCommand(sender, args);
+                    break;
+                case "setlobby":
+                    setLobbySubCommand(sender, args);
+                    break;
+                case "setmainlobby":
+                    setMainLobbySubCommand(sender, args);
+                    break;
+                case "delplot":
+                    delPlotSubCommand(sender, args);
+                    break;
+                case "supervote":
+                    superVoteSubCommand(sender, args);
+                    break;
+                case "start":
+                    startSubCommand(sender, args);
+                    break;
+                case "stop":
+                    stopSubCommand(sender, args);
+                    break;
+                case "forcestart":
+                    forceStartSubCommand(sender, args);
+                    break;
+                case "stats":
+                    sendBBStats(sender, args);
+                    break;
+                case "reload":
+                    reloadSubCommand(sender, args);
+                    break;
+                case "list":
+                    listArenasSubCommand(sender, args);
+                    break;
+                case "help":
+                    commandUsage(sender);
+                    break;
+                case "exportstats":
+                    exportStatsSubCommand(sender, args);
+                    break;
+                case "lb":
+                    leaderBoardSubCommand(sender, args);
+                    break;
+                case "version":
+                    versionSubCommand(sender);
+                    break;
+                case "leaderboard":
+                    leaderBoardSubCommand(sender, args);
+                    break;
+                case "addnpc":
+                    addFloorNPC(sender, args);
+                    break;
+                case "delnpc":
+                    delFloorNPC(sender, args);
+                    break;
+                case "party":
+                    partySubCommand(sender, args);
+                    break;
+                case "editor":
+                    openEditor(sender);
+                    break;
+                case "pos":
+                    posSubCommand(sender);
+                    break;
+                case "reports":
+                    openReports(sender);
+                    break;
+                default:
+                    pluginInfo(sender);
+                    break;
+            }
+        } else {
+            if (sender instanceof Player) {
+                Player p = (Player) sender;
+                p.openInventory(ArenaManager.getAllArenasInventory());
             }
         }
         return true;

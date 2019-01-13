@@ -23,10 +23,13 @@ import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+
+import java.lang.reflect.Field;
 
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
 
@@ -71,8 +74,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         BBSettings.loadBBSettings();
         checkForLoadingLater();
 
-        getCommand("buildbattle").setExecutor(new BBCommand(this));
-        getCommand("settheme").setExecutor(new SetThemeCommand(this));
+        registerBBCommands();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 
@@ -84,6 +86,21 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
         Bukkit.getConsoleSender().sendMessage("");
+    }
+
+    private void registerBBCommands() {
+        try {
+
+            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+
+            bukkitCommandMap.setAccessible(true);
+            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+
+            commandMap.register("bb", new BBCommand(this));
+            commandMap.register("settheme", new SetThemeCommand(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void checkForLoadingLater() {
