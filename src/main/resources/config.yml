@@ -104,3 +104,8 @@ main_command:
   - "bb"
   - "bbpro"
   - "buildbattlepro"
+set_theme_command:
+  name: "settheme"
+  description: "Settheme command for BuildBattle"
+  aliases:
+  - "themeset"

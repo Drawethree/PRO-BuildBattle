@@ -26,11 +26,8 @@ import org.bukkit.entity.Player;
 
 public class BBCommand extends BukkitCommand {
 
-    private final BuildBattle plugin;
-
-    public BBCommand(BuildBattle plugin) {
+    public BBCommand() {
         super(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.name"));
-        this.plugin = plugin;
         this.description = BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.description");
         this.setAliases(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
     }
@@ -41,106 +38,81 @@ public class BBCommand extends BukkitCommand {
             String subCommand = args[0].toLowerCase();
             switch (subCommand) {
                 case "debug":
-                    debugSubCommand(sender);
-                    break;
+                    return debugSubCommand(sender);
                 case "join":
-                    joinSubCommand(sender, args);
-                    break;
+                    return joinSubCommand(sender, args);
                 case "leave":
-                    leaveSubCommand(sender, args);
-                    break;
+                    return leaveSubCommand(sender, args);
                 case "create":
-                    createSubCommand(sender, args);
-                    break;
+                    return createSubCommand(sender, args);
                 case "delete":
-                    delArenaSubCommand(sender, args);
-                    break;
+                    return delArenaSubCommand(sender, args);
                 case "addplot":
-                    addPlotSubCommand(sender, args);
-                    break;
+                    return addPlotSubCommand(sender, args);
                 case "setlobby":
-                    setLobbySubCommand(sender, args);
-                    break;
+                    return setLobbySubCommand(sender, args);
                 case "setmainlobby":
-                    setMainLobbySubCommand(sender, args);
-                    break;
+                    return setMainLobbySubCommand(sender, args);
                 case "delplot":
-                    delPlotSubCommand(sender, args);
-                    break;
+                    return delPlotSubCommand(sender, args);
                 case "supervote":
-                    superVoteSubCommand(sender, args);
-                    break;
+                    return superVoteSubCommand(sender, args);
                 case "start":
-                    startSubCommand(sender, args);
-                    break;
+                    return startSubCommand(sender, args);
                 case "stop":
-                    stopSubCommand(sender, args);
-                    break;
+                    return stopSubCommand(sender, args);
                 case "forcestart":
-                    forceStartSubCommand(sender, args);
-                    break;
+                    return forceStartSubCommand(sender, args);
                 case "stats":
-                    sendBBStats(sender, args);
-                    break;
+                    return sendBBStats(sender, args);
                 case "reload":
-                    reloadSubCommand(sender, args);
-                    break;
+                    return reloadSubCommand(sender, args);
                 case "list":
-                    listArenasSubCommand(sender, args);
-                    break;
+                    return listArenasSubCommand(sender, args);
                 case "help":
-                    commandUsage(sender);
-                    break;
+                    return commandUsage(sender);
                 case "exportstats":
-                    exportStatsSubCommand(sender, args);
-                    break;
+                    return exportStatsSubCommand(sender, args);
                 case "lb":
-                    leaderBoardSubCommand(sender, args);
-                    break;
+                    return leaderBoardSubCommand(sender, args);
                 case "version":
-                    versionSubCommand(sender);
-                    break;
+                    return versionSubCommand(sender);
                 case "leaderboard":
-                    leaderBoardSubCommand(sender, args);
-                    break;
+                    return leaderBoardSubCommand(sender, args);
                 case "addnpc":
-                    addFloorNPC(sender, args);
-                    break;
+                    return addFloorNPC(sender, args);
                 case "delnpc":
-                    delFloorNPC(sender, args);
-                    break;
+                    return delFloorNPC(sender, args);
                 case "party":
-                    partySubCommand(sender, args);
-                    break;
+                    return partySubCommand(sender, args);
                 case "editor":
-                    openEditor(sender);
-                    break;
+                    return openEditor(sender);
                 case "pos":
-                    posSubCommand(sender);
-                    break;
+                    return posSubCommand(sender);
                 case "reports":
-                    openReports(sender);
-                    break;
+                    return openReports(sender);
                 default:
-                    pluginInfo(sender);
-                    break;
+                    return pluginInfo(sender);
             }
         } else {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 p.openInventory(ArenaManager.getAllArenasInventory());
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    private void debugSubCommand(CommandSender sender) {
+    private boolean debugSubCommand(CommandSender sender) {
         if (sender.isOp()) {
             sender.sendMessage(BBSettings.getPrefix() + "§aDebug mode >> §e" + BuildBattle.enableDebugMode());
+            return true;
         }
+        return false;
     }
 
-    private void posSubCommand(CommandSender sender) {
+    private boolean posSubCommand(CommandSender sender) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (sender.hasPermission("buildbattlepro.create")) {
@@ -148,14 +120,15 @@ public class BBCommand extends BukkitCommand {
                 sender.sendMessage(BBSettings.getPrefix() + " §aYou were given §ePlot Selector §a!");
                 sender.sendMessage(BBSettings.getPrefix() + " §eLeft-Click §ablock to selection §ePostion 1");
                 sender.sendMessage(BBSettings.getPrefix() + " §eRight-Click §ablock to selection §ePostion 2");
-                return;
+                return true;
             } else {
                 sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         }
+        return false;
     }
 
-    private void delFloorNPC(CommandSender sender, String[] args) {
+    private boolean delFloorNPC(CommandSender sender, String[] args) {
         if (BuildBattle.getInstance().isUseCitizens()) {
             if (sender.hasPermission("buildbattlepro.setup")) {
                 if (args.length == 1) {
@@ -165,12 +138,13 @@ public class BBCommand extends BukkitCommand {
                         if (npc != null) {
                             npc.destroy();
                             p.sendMessage(BBSettings.getPrefix() + " §aChange floor NPC removed!");
+                            return true;
                         } else {
                             p.sendMessage(BBSettings.getPrefix() + " §cThere is no NPC close to your location!");
                         }
                     }
                 } else {
-                    sender.sendMessage("§cUsage >> §e/bb delnpc §8| §7Delete closest Change floor NPC");
+                    sender.sendMessage("§cUsage >> §e/" + getName() + " delnpc §8| §7Delete closest Change floor NPC");
                 }
             } else {
                 sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -178,9 +152,10 @@ public class BBCommand extends BukkitCommand {
         } else {
             sender.sendMessage(BBSettings.getPrefix() + " §cCitizens plugin is not loaded!");
         }
+        return false;
     }
 
-    private void forceStartSubCommand(CommandSender sender, String[] args) {
+    private boolean forceStartSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.admin")) {
             if (args.length == 1) {
                 if (sender instanceof Player) {
@@ -188,6 +163,7 @@ public class BBCommand extends BukkitCommand {
                     BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                     if (a != null) {
                         a.forceStart(sender, true);
+                        return true;
                     } else {
                         p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
                     }
@@ -196,6 +172,7 @@ public class BBCommand extends BukkitCommand {
                 BBArena arena = ArenaManager.getInstance().getArena(args[1]);
                 if (arena != null) {
                     arena.forceStart(sender, true);
+                    return true;
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
@@ -205,6 +182,7 @@ public class BBCommand extends BukkitCommand {
                 if (arena != null) {
                     if (theme != null) {
                         arena.forceStart(sender, theme, true);
+                        return true;
                     } else {
                         sender.sendMessage(BBSettings.getPrefix() + "§cYou must specify theme !");
                     }
@@ -212,22 +190,23 @@ public class BBCommand extends BukkitCommand {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb forcestart  §8| §7Force start arena you are in");
-                sender.sendMessage("§cUsage >> /bb forcestart <arena> §8| §7Force start specific arena");
-                sender.sendMessage("§cUsage >> /bb forcestart <arena> <theme> §8| §7Force start specific arena with specific theme");
+                sender.sendMessage("§cUsage >> /" + getName() + " forcestart  §8| §7Force start arena you are in");
+                sender.sendMessage("§cUsage >> /" + getName() + " forcestart <arena> §8| §7Force start specific arena");
+                sender.sendMessage("§cUsage >> /" + getName() + " forcestart <arena> <theme> §8| §7Force start specific arena with specific theme");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
-
+        return false;
     }
 
-    private void openReports(CommandSender sender) {
+    private boolean openReports(CommandSender sender) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (p.hasPermission("buildbattlepro.manage.reports")) {
                 if (BuildBattle.getWorldEdit() != null) {
                     ReportManager.getInstance().openReports(p, 1);
+                    return true;
                 } else {
                     p.sendMessage(BBSettings.getPrefix() + "§cReports are turned off for version 1.13 and above because there is no stable version of WorldEdit.");
                 }
@@ -235,9 +214,10 @@ public class BBCommand extends BukkitCommand {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         }
+        return false;
     }
 
-    private void superVoteSubCommand(CommandSender sender, String[] args) {
+    private boolean superVoteSubCommand(CommandSender sender, String[] args) {
         // /bb supervote <give/take> <player> <amount>
         if (sender.hasPermission("buildbattlepro.admin")) {
             if (args.length == 4) {
@@ -249,6 +229,7 @@ public class BBCommand extends BukkitCommand {
                         case "give":
                             if (SuperVoteManager.getInstance().giveSuperVote(player, amount)) {
                                 sender.sendMessage(BBSettings.getPrefix() + " §aYou have successfully given §e" + amount + " §asupervote(s) to player §e" + player.getName() + "§a!");
+                                return true;
                             } else {
                                 sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");
                             }
@@ -256,6 +237,7 @@ public class BBCommand extends BukkitCommand {
                         case "take":
                             if (SuperVoteManager.getInstance().takeSuperVote(player, amount)) {
                                 sender.sendMessage(BBSettings.getPrefix() + " §aYou have successfully taken §e" + amount + " §asupervote(s) from player §e" + player.getName() + "§a!");
+                                return true;
                             } else {
                                 sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");
                             }
@@ -268,40 +250,45 @@ public class BBCommand extends BukkitCommand {
                     sender.sendMessage("§e" + args[3] + " §cis not a valid amount !");
                 }
             } else {
-                sender.sendMessage("§cUsage >> §e/bb supervote <give/take> <player> <amount> §8| §7Give/take supervote(s) from/to player");
+                sender.sendMessage("§cUsage >> §e/" + getName() + " supervote <give/take> <player> <amount> §8| §7Give/take supervote(s) from/to player");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
-
+        return false;
     }
 
-    private void pluginInfo(CommandSender sender) {
+    private boolean pluginInfo(CommandSender sender) {
         sender.sendMessage(BBSettings.getPrefix() + " §e" + BuildBattle.getInstance().getDescription().getName() + " v." + BuildBattle.getInstance().getDescription().getVersion() + "§a by §eDrawethree.");
-        sender.sendMessage(BBSettings.getPrefix() + " §aType §e/bb help §afor help.");
+        sender.sendMessage(BBSettings.getPrefix() + " §aType §e/" + getName() + " help §afor help.");
+        return true;
     }
 
-    private void versionSubCommand(CommandSender sender) {
+    private boolean versionSubCommand(CommandSender sender) {
         if (sender.hasPermission("buildbattlepro.admin")) {
             sender.sendMessage(BBSettings.getPrefix() + " §aYou are running §e" + BuildBattle.getInstance().getDescription().getName() + " v." + BuildBattle.getInstance().getDescription().getVersion() + "§a by §eDrawethree.");
+            return true;
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void openEditor(CommandSender sender) {
+    private boolean openEditor(CommandSender sender) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (p.hasPermission("buildbattlepro.create")) {
                 p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
                 p.playSound(p.getLocation(), CompSound.NOTE_PLING.getSound(), 1.0F, 1.0F);
+                return true;
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         }
+        return false;
     }
 
-    private void partySubCommand(CommandSender sender, String[] args) {
+    private boolean partySubCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (BBSettings.isPartiesEnabled()) {
@@ -314,37 +301,38 @@ public class BBCommand extends BukkitCommand {
                             */
                         case "accept":
                             PartyManager.getInstance().manageInvite(p, true);
-                            break;
+                            return true;
                         case "decline":
                             PartyManager.getInstance().manageInvite(p, false);
-                            break;
+                            return true;
                         case "leave":
                             PartyManager.getInstance().leaveParty(p);
-                            break;
+                            return true;
                         case "invite":
                             if (args.length == 3) {
                                 BBParty playerParty = PartyManager.getInstance().getPlayerParty(p);
                                 Player target = Bukkit.getPlayer(args[2]);
                                 PartyManager.getInstance().invitePlayer(p, target, playerParty);
+                                return true;
                             } else {
                                 p.sendMessage(Message.PARTY_INVALID_USAGE.getChatMessage());
                             }
-                            break;
                     }
                 } else {
                     p.sendMessage("§cInvalid usage!");
                     //p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
-                    p.sendMessage("§e/bb party invite <player> " + "§8» " + "§7Invite player to your party");
-                    p.sendMessage("§e/bb party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
-                    p.sendMessage("§e/bb party leave " + "§8» " + "§7Leave your current party");
+                    p.sendMessage("§e/" + getName() + " party invite <player> " + "§8» " + "§7Invite player to your party");
+                    p.sendMessage("§e/" + getName() + " party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
+                    p.sendMessage("§e/" + getName() + " party leave " + "§8» " + "§7Leave your current party");
                 }
             } else {
                 p.sendMessage(Message.PARTIES_NOT_ALLOWED.getChatMessage());
             }
         }
+        return false;
     }
 
-    private void addFloorNPC(CommandSender sender, String[] args) {
+    private boolean addFloorNPC(CommandSender sender, String[] args) {
         if (BuildBattle.getInstance().isUseCitizens()) {
             if (sender.hasPermission("buildbattlepro.setup")) {
                 if (args.length == 1) {
@@ -355,9 +343,10 @@ public class BBCommand extends BukkitCommand {
                         npc.spawn(p.getLocation());
                         npc.setProtected(true);
                         p.sendMessage(BBSettings.getPrefix() + " §aChange floor NPC spawned!");
+                        return true;
                     }
                 } else {
-                    sender.sendMessage("§cUsage >> §e/bb addnpc §8| §7Create Change floor NPC at your location");
+                    sender.sendMessage("§cUsage >> §e/" + getName() + " addnpc §8| §7Create Change floor NPC at your location");
                 }
             } else {
                 sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -365,9 +354,10 @@ public class BBCommand extends BukkitCommand {
         } else {
             sender.sendMessage(BBSettings.getPrefix() + " §cCitizens plugin is not loaded!");
         }
+        return false;
     }
 
-    private void leaderBoardSubCommand(CommandSender sender, String[] args) {
+    private boolean leaderBoardSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.setup")) {
             if (BuildBattle.getInstance().isUseHolographicDisplays()) {
                 if (args.length > 1) {
@@ -376,7 +366,7 @@ public class BBCommand extends BukkitCommand {
                         case "refresh":
                             LeaderboardManager.getInstance().refreshAllLeaderBoards();
                             sender.sendMessage(BBSettings.getPrefix() + " §aLeaderboards refreshed !");
-                            break;
+                            return true;
                         case "create":
                             if (args.length == 3) {
                                 if (sender instanceof Player) {
@@ -385,19 +375,20 @@ public class BBCommand extends BukkitCommand {
                                     try {
                                         LeaderboardType type = LeaderboardType.valueOf(args[2].toUpperCase());
                                         LeaderboardManager.getInstance().createLeaderboard(p, loc, type);
+                                        return true;
                                     } catch (Exception e) {
                                         p.sendMessage("§cInvalid type ! Available types :  §e§lWINS, PLAYED, BLOCKS_PLACED, PARTICLES_PLACED");
-                                        return;
                                     }
                                 }
                             } else {
-                                sender.sendMessage("§cUsage >> /bb lb create <type> §8| §7Create leaderboard with specified type");
+                                sender.sendMessage("§cUsage >> /" + getName() + " lb create <type> §8| §7Create leaderboard with specified type");
                             }
                             break;
                         case "select":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
                                 LeaderboardManager.getInstance().selectLeaderboard(p);
+                                return true;
                             }
                             break;
                         case "delete":
@@ -407,8 +398,9 @@ public class BBCommand extends BukkitCommand {
                                 if (selected != null) {
                                     selected.delete();
                                     p.sendMessage(BBSettings.getPrefix() + " §aHologram at location §e" + LocationUtil.getStringFromLocation(selected.getLocation()) + " §asuccessfully removed!");
+                                    return true;
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/bb lb select §c!");
+                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/" + getName() + " lb select §c!");
                                 }
                             }
                             break;
@@ -418,25 +410,26 @@ public class BBCommand extends BukkitCommand {
                                 Leaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
                                 if (selected != null) {
                                     selected.teleport(p.getLocation());
+                                    return true;
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/bb lb select §c!");
+                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/" + getName() + " lb select §c!");
                                 }
                             }
                             break;
                         default:
-                            sender.sendMessage("§cUsages >> §e/bb lb create <type> §8| §7Create leaderboard with specified type");
-                            sender.sendMessage("         §c>> §e/bb lb select §8| §7Select leaderboard closest to you");
-                            sender.sendMessage("         §c>> §e/bb lb delete §8| §7Deletes selected leaderboard");
-                            sender.sendMessage("         §c>> §e/bb lb teleport §8| §7Teleports selected leaderboard to your position");
-                            sender.sendMessage("         §c>> §e/bb lb refresh §8| §7Refresh all leaderboards");
+                            sender.sendMessage("§cUsages >> §e/" + getName() + " lb create <type> §8| §7Create leaderboard with specified type");
+                            sender.sendMessage("         §c>> §e/" + getName() + " lb select §8| §7Select leaderboard closest to you");
+                            sender.sendMessage("         §c>> §e/" + getName() + " lb delete §8| §7Deletes selected leaderboard");
+                            sender.sendMessage("         §c>> §e/" + getName() + " lb teleport §8| §7Teleports selected leaderboard to your position");
+                            sender.sendMessage("         §c>> §e/" + getName() + " lb refresh §8| §7Refresh all leaderboards");
                             break;
                     }
                 } else {
-                    sender.sendMessage("§cUsages >> §e/bb lb create <type> §8| §7Create leaderboard with specified type");
-                    sender.sendMessage("         §c>> §e/bb lb select §8| §7Select leaderboard closest to you");
-                    sender.sendMessage("         §c>> §e/bb lb delete §8| §7Deletes selected leaderboard");
-                    sender.sendMessage("         §c>> §e/bb lb teleport §8| §7Teleports selected leaderboard to your position");
-                    sender.sendMessage("         §c>> §e/bb lb refresh §8| §7Refresh all leaderboards");
+                    sender.sendMessage("§cUsages >> §e/" + getName() + " lb create <type> §8| §7Create leaderboard with specified type");
+                    sender.sendMessage("         §c>> §e/" + getName() + " lb select §8| §7Select leaderboard closest to you");
+                    sender.sendMessage("         §c>> §e/" + getName() + " lb delete §8| §7Deletes selected leaderboard");
+                    sender.sendMessage("         §c>> §e/" + getName() + " lb teleport §8| §7Teleports selected leaderboard to your position");
+                    sender.sendMessage("         §c>> §e/" + getName() + " lb refresh §8| §7Refresh all leaderboards");
                 }
             } else {
                 sender.sendMessage(BBSettings.getPrefix() + " §cHolographicDisplays plugin is required to manage leaderboards !");
@@ -444,9 +437,10 @@ public class BBCommand extends BukkitCommand {
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void exportStatsSubCommand(CommandSender sender, String[] args) {
+    private boolean exportStatsSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.admin")) {
             if (args.length == 1) {
                 if (BBSettings.getStatsType() == StatsType.MYSQL) {
@@ -461,19 +455,21 @@ public class BBCommand extends BukkitCommand {
                     }
                     BuildBattle.info("§aExport finished. §e" + playersTransfered + "§a players data have been transferred.");
                     sender.sendMessage(BBSettings.getPrefix() + " §2Done! §e" + playersTransfered + "§2 players have been transferred.");
+                    return true;
                 } else {
                     sender.sendMessage(BBSettings.getPrefix() + " §cTo export data, firstly please enable and setup MySQL!");
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb exportstats §8| §7Export players stats from stats.yml into MySQL");
+                sender.sendMessage("§cUsage >> /" + getName() + " exportstats §8| §7Export players stats from stats.yml into MySQL");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
 
-    private void startSubCommand(CommandSender sender, String[] args) {
+    private boolean startSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.start")) {
             if (args.length == 1) {
                 if (sender instanceof Player) {
@@ -481,6 +477,7 @@ public class BBCommand extends BukkitCommand {
                     BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                     if (a != null) {
                         a.forceStart(sender, false);
+                        return true;
                     } else {
                         p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
                     }
@@ -489,6 +486,7 @@ public class BBCommand extends BukkitCommand {
                 BBArena arena = ArenaManager.getInstance().getArena(args[1]);
                 if (arena != null) {
                     arena.forceStart(sender, false);
+                    return true;
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
@@ -498,6 +496,7 @@ public class BBCommand extends BukkitCommand {
                 if (arena != null) {
                     if (theme != null) {
                         arena.forceStart(sender, theme, false);
+                        return true;
                     } else {
                         sender.sendMessage(BBSettings.getPrefix() + "§cYou must specify theme !");
                     }
@@ -505,16 +504,17 @@ public class BBCommand extends BukkitCommand {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb start  §8| §7Start arena you are in");
-                sender.sendMessage("§cUsage >> /bb start <arena> §8| §7Start specific arena");
-                sender.sendMessage("§cUsage >> /bb start <arena> <theme> §8| §7Start specific arena with specific theme");
+                sender.sendMessage("§cUsage >> /" + getName() + " start  §8| §7Start arena you are in");
+                sender.sendMessage("§cUsage >> /" + getName() + " start <arena> §8| §7Start specific arena");
+                sender.sendMessage("§cUsage >> /" + getName() + " start <arena> <theme> §8| §7Start specific arena with specific theme");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void stopSubCommand(CommandSender sender, String[] args) {
+    private boolean stopSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.stop")) {
             if (args.length == 1) {
                 if (sender instanceof Player) {
@@ -522,6 +522,7 @@ public class BBCommand extends BukkitCommand {
                     BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                     if (a != null) {
                         a.forceStop(sender);
+                        return true;
                     } else {
                         p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
                     }
@@ -530,19 +531,21 @@ public class BBCommand extends BukkitCommand {
                 BBArena arena = ArenaManager.getInstance().getArena(args[1]);
                 if (arena != null) {
                     arena.forceStop(sender);
+                    return true;
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb stop §8| §7Force stop arena you are in");
-                sender.sendMessage("§cUsage >> /bb stop <arena> §8| §7Force stop specified arena");
+                sender.sendMessage("§cUsage >> /" + getName() + " stop §8| §7Force stop arena you are in");
+                sender.sendMessage("§cUsage >> /" + getName() + " stop <arena> §8| §7Force stop specified arena");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void sendBBStats(CommandSender sender, String[] args) {
+    private boolean sendBBStats(CommandSender sender, String[] args) {
         if (args.length == 1) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
@@ -559,34 +562,38 @@ public class BBCommand extends BukkitCommand {
                     FancyMessage.sendCenteredMessage(p, Message.STATS_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(ps.getSuperVotes())));
                     p.sendMessage("");
                     FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
+                    return true;
                 } else {
                     p.sendMessage(Message.NOT_PLAYED.getChatMessage());
                 }
             }
         } else {
-            sender.sendMessage("§cUsage >> /bb stats §8| §7Show your BuildBattlePro stats");
+            sender.sendMessage("§cUsage >> /" + getName() + " stats §8| §7Show your BuildBattlePro stats");
         }
+        return false;
     }
 
-    private void delArenaSubCommand(CommandSender sender, String[] args) {
+    private boolean delArenaSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.create")) {
             if (args.length == 2) {
                 BBArena arena = ArenaManager.getInstance().getArena(args[1]);
                 if (arena != null) {
                     ArenaManager.getInstance().removeArena(sender, arena);
+                    return true;
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb delete <arena> §8| §7Deletes arena.");
+                sender.sendMessage("§cUsage >> /" + getName() + " delete <arena> §8| §7Deletes arena.");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
 
-    private void delPlotSubCommand(CommandSender sender, String[] args) {
+    private boolean delPlotSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.create")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
@@ -596,38 +603,41 @@ public class BBCommand extends BukkitCommand {
                         int lastIndex = a.getBuildPlots().size() - 1;
                         if (lastIndex < 0) {
                             p.sendMessage("§e§lBuildBattle Setup §8| §cArena §e" + a.getName() + " §chas no build plots ! Create some !");
-                            return;
                         } else {
                             a.getBuildPlots().remove(lastIndex);
                             a.saveIntoConfig();
                             ArenaManager.getInstance().refreshArenaItem(a);
                             p.sendMessage("§e§lBuildBattle Setup §8| §aYou have successfully removed plot §e" + (lastIndex + 1) + " §afrom arena §e" + a.getName() + " §a!");
+                            return true;
                         }
                     }
                 } else {
-                    sender.sendMessage("§cUsage >> /bb delplot <arena> §8| §7Deletes plot at your current location ");
+                    sender.sendMessage("§cUsage >> /" + getName() + " delplot <arena> §8| §7Deletes plot at your current location ");
                 }
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void createSubCommand(CommandSender sender, String[] args) {
+    private boolean createSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.create")) {
             if (sender instanceof Player) {
                 if (args.length == 3) {
                     String arenaName = args[1];
                     String gameMode = args[2];
                     ArenaManager.getInstance().createArena(sender, arenaName, gameMode);
+                    return true;
                 } else {
-                    sender.sendMessage("§cUsage >> /bb create <name> <solo/team> §8| §7Create an buildbattle arena");
+                    sender.sendMessage("§cUsage >> /" + getName() + " create <name> <solo/team> §8| §7Create an buildbattle arena");
                 }
             }
         }
+        return false;
     }
 
-    private void addPlotSubCommand(CommandSender sender, String[] args) {
+    private boolean addPlotSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.create")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
@@ -652,6 +662,7 @@ public class BBCommand extends BukkitCommand {
                             ArenaManager.getInstance().refreshArenaItem(arena);
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
                             LocationUtil.showCreatedPlot(minPoint, maxPoint, p, 5);
+                            return true;
                             // WORLD EDIT NOT WORKING
                        /*if (sel != null) {
                             BBPlot newPlot = new BBPlot(arena, sel.getMinimumPoint(), sel.getMaximumPoint());
@@ -668,11 +679,11 @@ public class BBCommand extends BukkitCommand {
                             int i = ArenaManager.getInstance().getMissingSelection(p);
                             switch (i) {
                                 case -1:
-                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set positions ! Please set them by §e/bb pos");
+                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set positions ! Please set them by §e/" + getName() + " pos");
                                     break;
                                 case 1:
                                 case 2:
-                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/bb pos");
+                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/" + getName() + " pos");
                                     break;
                             }
                         }
@@ -680,15 +691,16 @@ public class BBCommand extends BukkitCommand {
                         p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));
                     }
                 } else {
-                    sender.sendMessage("§cUsage >> /bb addplot <arena> §8| §7Add a build plot to arena");
+                    sender.sendMessage("§cUsage >> /" + getName() + " addplot <arena> §8| §7Add a build plot to arena");
                 }
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void setLobbySubCommand(CommandSender sender, String[] args) {
+    private boolean setLobbySubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.create")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
@@ -698,116 +710,118 @@ public class BBCommand extends BukkitCommand {
                     if (arena != null) {
                         arena.setLobbyLocation(playerLoc);
                         p.sendMessage("§e§lBuildBattle Setup §8| §aLobby Location for arena §e" + arena.getName() + " §aset !");
+                        return true;
                     } else {
                         p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));
                     }
                 } else {
-                    sender.sendMessage("§cUsage >> /bb setlobby <arena> §8| §7Set Lobby location for arena");
+                    sender.sendMessage("§cUsage >> /" + getName() + " setlobby <arena> §8| §7Set Lobby location for arena");
                 }
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void leaveSubCommand(CommandSender sender, String[] args) {
+    private boolean leaveSubCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
             if (arena != null) {
                 arena.removePlayer(p);
+                return true;
             } else {
                 p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
             }
         }
+        return false;
     }
 
-    private void listArenasSubCommand(CommandSender sender, String[] args) {
+    private boolean listArenasSubCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 1) {
                 p.openInventory(ArenaManager.getAllArenasInventory());
+                return true;
             } else if (args.length == 2) {
                 if (args[1].equalsIgnoreCase("solo")) {
                     p.openInventory(ArenaManager.getSoloArenasInventory());
+                    return true;
                 } else if (args[1].equalsIgnoreCase("team")) {
                     p.openInventory(ArenaManager.getTeamArenasInventory());
+                    return true;
                 } else {
-                    sender.sendMessage("§cUsage >> /bb list <solo/team> §8| §7Show all team/solo arenas and their status");
+                    sender.sendMessage("§cUsage >> /" + getName() + " list <solo/team> §8| §7Show all team/solo arenas and their status");
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb list §8| §7Show all arenas and their status");
-                sender.sendMessage("§cUsage >> /bb list <solo/team> §8| §7Show all team/solo arenas and their status");
+                sender.sendMessage("§cUsage >> /" + getName() + " list §8| §7Show all arenas and their status");
+                sender.sendMessage("§cUsage >> /" + getName() + " list <solo/team> §8| §7Show all team/solo arenas and their status");
             }
         }
+        return false;
     }
 
-    private void reloadSubCommand(CommandSender sender, String[] args) {
+    private boolean reloadSubCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("buildbattlepro.admin")) {
             if (args.length == 1) {
                 BuildBattle.getInstance().reloadPlugin();
                 sender.sendMessage(BBSettings.getPrefix() + " §aPlugin reloaded !");
+                return true;
             } else {
-                sender.sendMessage("§cUsage >> /bb reload §8| §7Reloads plugin");
+                sender.sendMessage("§cUsage >> /" + getName() +" reload §8| §7Reloads plugin");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
+        return false;
     }
 
-    private void commandUsage(CommandSender p) {
+    private boolean commandUsage(CommandSender p) {
         if (p.hasPermission("buildbattlepro.create")) {
             FancyMessage.sendCenteredMessage(p, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Admin Commands");
-            p.sendMessage("§c§lNEW §e/bb pos " + "§8» " + "§7Gives you item to make selection of plot");
-            p.sendMessage("§e/bb create <arena_name> <solo/team> " + "§8» " + "§7Create Arena");
-            p.sendMessage("§e/bb delete <arena_name> " + "§8» " + "§7Remove Arena");
-            p.sendMessage("§e/bb addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selected positions !");
-            p.sendMessage("§e/bb delplot <arena> " + "§8» " + "§7Removes latest added plot in arena");
-            p.sendMessage("§e/bb setlobby <arena> " + "§8» " + "§7Set lobby for Arena");
-            p.sendMessage("§e/bb setmainlobby " + "§e» " + "§7Set main lobby");
-            p.sendMessage("§e/bb forcestart " + "§8» " + "§7Force start Arena you are currently in");
-            p.sendMessage("§e/bb forcestart <arena> " + "§8» " + "§7Force start Arena");
-            p.sendMessage("§e/bb forcestart <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
-            p.sendMessage("§e/bb start " + "§8» " + "§7Start Arena you are currently in");
-            p.sendMessage("§e/bb start <arena> " + "§8» " + "§7Start Arena");
-            p.sendMessage("§e/bb start <arena> <theme> " + "§8» " + "§7Start Arena with specified theme");
-            p.sendMessage("§e/bb stop " + "§8» " + "§7Force stop Arena you are currently in");
-            p.sendMessage("§e/bb stop <arena> " + "§8» " + "§7Force stop Arena");
-            p.sendMessage("§e/bb reload " + "§8» " + "§7Reload plugin");
-            p.sendMessage("§e/bb editor " + "§8» " + "§7Open arena editor");
-            p.sendMessage("§e/bb lb create <type> " + "§8» " + "§7Create leaderboard with specified type");
-            p.sendMessage("§e/bb lb select " + "§8» " + "§7Select leaderboard closest to you");
-            p.sendMessage("§e/bb lb delete " + "§8» " + "§7Deletes selected leaderboard");
-            p.sendMessage("§e/bb lb teleport " + "§8» " + "§7Teleports selected leaderboard to your position");
-            p.sendMessage("§e/bb lb refresh " + "§8» " + "§7Refresh all leaderboards");
-            p.sendMessage("§e/bb supervote <give/take> <player> <amount> " + "§8» " + "§7Give/take supervotes from player");
+            p.sendMessage("§c§lNEW §e/" + getName() + " pos " + "§8» " + "§7Gives you item to make selection of plot");
+            p.sendMessage("§e/" + getName() + " create <arena_name> <solo/team> " + "§8» " + "§7Create Arena");
+            p.sendMessage("§e/" + getName() + " delete <arena_name> " + "§8» " + "§7Remove Arena");
+            p.sendMessage("§e/" + getName() + " addplot <arena_name> " + "§8» " + "§7Add build plot for arena, must have selected positions !");
+            p.sendMessage("§e/" + getName() + " delplot <arena> " + "§8» " + "§7Removes latest added plot in arena");
+            p.sendMessage("§e/" + getName() + " setlobby <arena> " + "§8» " + "§7Set lobby for Arena");
+            p.sendMessage("§e/" + getName() + " setmainlobby " + "§e» " + "§7Set main lobby");
+            p.sendMessage("§e/" + getName() + " forcestart " + "§8» " + "§7Force start Arena you are currently in");
+            p.sendMessage("§e/" + getName() + " forcestart <arena> " + "§8» " + "§7Force start Arena");
+            p.sendMessage("§e/" + getName() + " forcestart <arena> <theme> " + "§8» " + "§7Force start Arena with specified theme");
+            p.sendMessage("§e/" + getName() + " start " + "§8» " + "§7Start Arena you are currently in");
+            p.sendMessage("§e/" + getName() + " start <arena> " + "§8» " + "§7Start Arena");
+            p.sendMessage("§e/" + getName() + " start <arena> <theme> " + "§8» " + "§7Start Arena with specified theme");
+            p.sendMessage("§e/" + getName() + " stop " + "§8» " + "§7Force stop Arena you are currently in");
+            p.sendMessage("§e/" + getName() + " stop <arena> " + "§8» " + "§7Force stop Arena");
+            p.sendMessage("§e/" + getName() + " reload " + "§8» " + "§7Reload plugin");
+            p.sendMessage("§e/" + getName() + " editor " + "§8» " + "§7Open arena editor");
+            p.sendMessage("§e/" + getName() + " lb create <type> " + "§8» " + "§7Create leaderboard with specified type");
+            p.sendMessage("§e/" + getName() + " lb select " + "§8» " + "§7Select leaderboard closest to you");
+            p.sendMessage("§e/" + getName() + " lb delete " + "§8» " + "§7Deletes selected leaderboard");
+            p.sendMessage("§e/" + getName() + " lb teleport " + "§8» " + "§7Teleports selected leaderboard to your position");
+            p.sendMessage("§e/" + getName() + " lb refresh " + "§8» " + "§7Refresh all leaderboards");
+            p.sendMessage("§e/" + getName() + " supervote <give/take> <player> <amount> " + "§8» " + "§7Give/take supervotes from player");
             p.sendMessage("§e/settheme <theme> " + "§8» " + "§7Force-set theme for your current arena");
-            p.sendMessage("§e/bb exportstats " + "§8» " + "§7Export players stats from stats.yml into MySQL");
-            FancyMessage.sendCenteredMessage(p, "§6✪§e§lBuildBattlePro§6✪ §8- §6Player Commands");
-            p.sendMessage("§e/bb join " + "§8» " + "§7Automatic join to first available Arena");
-            p.sendMessage("§e/bb join <arena> " + "§8» " + "§7Join specific Arena");
-            p.sendMessage("§e/bb leave " + "§8» " + "§7Leave Arena");
-            p.sendMessage("§e/bb list " + "§8» " + "§7Open GUI with all arenas");
-            p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
-            p.sendMessage("§e/bb party invite <player> " + "§8» " + "§7Invite player to your party");
-            p.sendMessage("§e/bb party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
-            p.sendMessage("§e/bb party leave " + "§8» " + "§7Leave your current party");
-            return;
-        } else {
-            FancyMessage.sendCenteredMessage(p, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Player Commands");
-            p.sendMessage("§e/bb join " + "§8» " + "§7Automatic join to first available Arena");
-            p.sendMessage("§e/bb join <arena> " + "§8» " + "§7Join specific Arena");
-            p.sendMessage("§e/bb join <team/solo> " + "§8» " + "§7Automatic join to first available solo/team arena");
-            p.sendMessage("§e/bb leave " + "§8» " + "§7Leave Arena");
-            p.sendMessage("§e/bb list " + "§8» " + "§7Open GUI with all arenas");
-            p.sendMessage("§e/bb party create " + "§8» " + "§7Create party");
-            p.sendMessage("§e/bb party invite <player> " + "§8» " + "§7Invite player to your party");
-            p.sendMessage("§e/bb party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
-            p.sendMessage("§e/bb party leave " + "§8» " + "§7Leave your current party");
+            p.sendMessage("§e/"+ getName() + " exportstats " + "§8» " + "§7Export players stats from stats.yml into MySQL");
         }
+        if (p.hasPermission("buildbattlepro.player")) {
+            FancyMessage.sendCenteredMessage(p, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Player Commands");
+            p.sendMessage("§e/" + getName() + " join " + "§8» " + "§7Automatic join to first available Arena");
+            p.sendMessage("§e/" + getName() + " join <arena> " + "§8» " + "§7Join specific Arena");
+            p.sendMessage("§e/" + getName() + " join <team/solo> " + "§8» " + "§7Automatic join to first available solo/team arena");
+            p.sendMessage("§e/" + getName() + " leave " + "§8» " + "§7Leave Arena");
+            p.sendMessage("§e/" + getName() + " list " + "§8» " + "§7Open GUI with all arenas");
+            p.sendMessage("§e/" + getName() + " party create " + "§8» " + "§7Create party");
+            p.sendMessage("§e/" + getName() + " party invite <player> " + "§8» " + "§7Invite player to your party");
+            p.sendMessage("§e/" + getName() + " party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
+            p.sendMessage("§e/" + getName() + " party leave " + "§8» " + "§7Leave your current party");
+        }
+        return true;
     }
 
-    private void joinSubCommand(CommandSender sender, String[] args) {
+    private boolean joinSubCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 2) {
@@ -817,6 +831,7 @@ public class BBCommand extends BukkitCommand {
                     if (arena != null) {
                         if (playerArena == null) {
                             arena.addPlayer(p);
+                            return true;
                         } else {
                             p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
                         }
@@ -829,6 +844,7 @@ public class BBCommand extends BukkitCommand {
                     if (arena != null) {
                         if (playerArena == null) {
                             arena.addPlayer(p);
+                            return true;
                         } else {
                             p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
                         }
@@ -841,6 +857,7 @@ public class BBCommand extends BukkitCommand {
                     if (argArena != null) {
                         if (playerArena == null) {
                             argArena.addPlayer(p);
+                            return true;
                         } else {
                             p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replaceAll("%arena%", playerArena.getName()));
                         }
@@ -854,6 +871,7 @@ public class BBCommand extends BukkitCommand {
                 if (arena != null) {
                     if (playerArena == null) {
                         arena.addPlayer(p);
+                        return true;
                     } else {
                         p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage());
                     }
@@ -862,20 +880,23 @@ public class BBCommand extends BukkitCommand {
                 }
             }
         }
+        return false;
     }
 
-    private void setMainLobbySubCommand(CommandSender sender, String[] args) {
+    private boolean setMainLobbySubCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 1) {
                 if (p.hasPermission("buildbattlepro.create")) {
                     BBSettings.setMainLobbyLocation(p);
+                    return true;
                 } else {
                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                 }
             } else {
-                sender.sendMessage("§cUsage >> /bb setmainlobby §8| §7Show the main lobby location");
+                sender.sendMessage("§cUsage >> /" + getName() + " setmainlobby §8| §7Show the main lobby location");
             }
         }
+        return false;
     }
 }

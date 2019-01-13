@@ -27,8 +27,9 @@ public class BBSign {
             this.blockBehind.setType(CompMaterial.WHITE_TERRACOTTA.getMaterial());
             this.update();
         } catch (Exception e) {
-            BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §c! Removing from signs.yml...");
-            removeSign(null);
+            BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §c!");
+            BuildBattle.getFileManager().getConfig("signs.yml").get().set(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(loc), null);
+            BuildBattle.getFileManager().getConfig("signs.yml").save();
         }
     }
 
@@ -41,14 +42,14 @@ public class BBSign {
     }
 
     public void update() {
-        if(Bukkit.getPluginManager().isPluginEnabled(BuildBattle.getInstance())) {
+        if (Bukkit.getPluginManager().isPluginEnabled(BuildBattle.getInstance())) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
                 sign.setLine(0, Message.SIGN_JOIN_FIRST_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()).replaceAll("%mode%", arena.getGameType().getName()));
                 sign.setLine(1, Message.SIGN_JOIN_SECOND_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
                 sign.setLine(2, Message.SIGN_JOIN_THIRD_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
                 sign.setLine(3, Message.SIGN_JOIN_FOURTH_LINE.getMessage().replaceAll("%teamsize%", String.valueOf(arena.getTeamSize())).replaceAll("%arena%", arena.getName()).replaceAll("%gamestate%", arena.getBBArenaState().getPrefix()).replaceAll("%players%", arena.getTotalPlayers()));
                 sign.update(true);
-                if(BBSettings.isReplaceBlockBehindSigns()) {
+                if (BBSettings.isReplaceBlockBehindSigns()) {
                     CompatBridge.setTypeAndData(blockBehind, arena.getBBArenaState().getBlockMaterial(), (byte) arena.getBBArenaState().getBlockMaterial().getData());
                     //getBlockBehind().setType(getArena().getBBArenaState().getBlockMaterial().getMaterial());
                 }
@@ -65,7 +66,7 @@ public class BBSign {
         BuildBattle.getFileManager().getConfig("signs.yml").save();
         arena.getArenaSigns().remove(this);
         blockBehind.setType(CompMaterial.AIR.getMaterial());
-        if(p != null) {
+        if (p != null) {
             p.sendMessage(BBSettings.getPrefix() + "§aSign for arena §e" + getArena().getName() + "§a successfully removed!");
         }
     }

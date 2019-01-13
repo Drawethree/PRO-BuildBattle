@@ -7,10 +7,6 @@ website: https://www.spigotmc.org/resources/49587/
 softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, Vault, Multiverse-Core, PointsAPI, Vault, HolographicDisplays, Citizens, LeaderHeads]
 author: TheRealDrawe
 description: BuildBattlePro plugin
-commands:
- buildbattle:
-  aliases: [bb]
- settheme:
 permissions:
   buildbattlepro.*:
     description: Gives access to all BuildBattle commands

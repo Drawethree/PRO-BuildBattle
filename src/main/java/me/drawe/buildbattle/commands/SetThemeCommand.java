@@ -6,17 +6,14 @@ import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-public class SetThemeCommand extends Command {
+public class SetThemeCommand extends BukkitCommand {
 
-    private final BuildBattle plugin;
-
-    public SetThemeCommand(BuildBattle buildBattle) {
+    public SetThemeCommand() {
         super(BuildBattle.getFileManager().getConfig("config.yml").get().getString("set_theme_command.name"));
-        this.plugin = buildBattle;
         this.description = BuildBattle.getFileManager().getConfig("config.yml").get().getString("set_theme_command.description");
         this.setAliases(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("set_theme_command.aliases"));
     }
@@ -34,33 +31,30 @@ public class SetThemeCommand extends Command {
                             if (a.isMinimumPlayersRequirementMet()) {
                                 if (a.getBBArenaState() == BBArenaState.LOBBY) {
                                     a.startGame(theme, true);
+                                    return true;
                                 } else if (a.getBBArenaState() == BBArenaState.THEME_VOTING) {
                                     a.startGame(theme, false);
+                                    return true;
                                 } else {
                                     p.sendMessage(Message.CANNOT_SET_THEME.getChatMessage());
-                                    return false;
                                 }
                             } else {
                                 p.sendMessage(Message.NOT_ENOUGH_PLAYERS.getChatMessage());
                             }
                         } else {
                             p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
-                            return false;
                         }
                     } else {
                         p.sendMessage(Message.THEME_BLACKLISTED.getChatMessage());
-                        return false;
                     }
                 } else {
-                    p.sendMessage("§cUsage >> /settheme <theme> §8| §7Set theme for current arena");
-                    return false;
+                    p.sendMessage("§cUsage >> /" + getName() + " <theme> §8| §7Set theme for current arena");
                 }
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
-                return false;
             }
         }
-        return true;
+        return false;
     }
 
 }

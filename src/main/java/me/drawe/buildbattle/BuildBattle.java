@@ -96,8 +96,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
-            commandMap.register("bb", new BBCommand(this));
-            commandMap.register("settheme", new SetThemeCommand(this));
+            commandMap.register("bb", new BBCommand());
+            commandMap.register("settheme", new SetThemeCommand());
         } catch (Exception e) {
             e.printStackTrace();
         }

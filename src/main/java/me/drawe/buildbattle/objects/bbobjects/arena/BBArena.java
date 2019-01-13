@@ -114,7 +114,6 @@ public class BBArena {
                 BuildBattle.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             BuildBattle.warning("§cLooks like arena §e" + name + " §c have no plots ! Please set them.");
         }
         return list;
@@ -126,7 +125,10 @@ public class BBArena {
             if (BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name) != null) {
                 for (String sign : BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name).getKeys(false)) {
                     final Location signLoc = LocationUtil.getLocationFromString(sign);
-                    list.add(new BBSign(this, signLoc));
+                    final BBSign bbSign = new BBSign(this, signLoc);
+                    if (bbSign.getLocation() != null) {
+                        list.add(bbSign);
+                    }
                 }
             }
         } catch (Exception e) {
