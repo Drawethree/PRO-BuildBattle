@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="BuildBattlePro">
-    <output-path>$PROJECT_DIR$/../../BuildBattlePro</output-path>
+    <output-path>$PROJECT_DIR$/../../../My Spigot Plugins/BuildBattlePro</output-path>
     <root id="archive" name="BuildBattlePro.jar">
       <element id="module-output" name="BuildBattlePro" />
     </root>
