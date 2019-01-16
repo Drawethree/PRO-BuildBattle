@@ -11,14 +11,14 @@ import org.bukkit.entity.Player;
 public class BBReportsSubCommand extends BBSubCommand {
 
     public BBReportsSubCommand() {
-        super("reports", "Command to manage build reports.", true);
+        super("reports", "Command to manage build reports.","buildbattlepro.manage.reports", true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (p.hasPermission("buildbattlepro.manage.reports")) {
+            if (p.hasPermission(getPermissionRequired())) {
                 if (BuildBattle.getWorldEdit() != null) {
                     ReportManager.getInstance().openReports(p, 1);
                     return true;

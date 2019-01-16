@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class BBListSubCommand extends BBSubCommand {
 
     public BBListSubCommand() {
-        super("list", "Command to list arenas in GUI.", false);
+        super("list", "Command to list arenas in GUI.", "buildbattlepro.join",false);
     }
 
     @Override

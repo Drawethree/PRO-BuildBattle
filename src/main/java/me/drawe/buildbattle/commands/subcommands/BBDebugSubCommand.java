@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 public class BBDebugSubCommand extends BBSubCommand {
 
     public BBDebugSubCommand() {
-        super("debug", "Turn on/off debug mode.", true);
+        super("debug", "Turn on/off debug mode.", "", true);
     }
 
     @Override

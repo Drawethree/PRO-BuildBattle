@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 public class BBCreateSubCommand extends BBSubCommand{
 
     public BBCreateSubCommand() {
-        super("create", "Command to create an arena.", true);
+        super("create", "Command to create an arena.", "buildbattlepro.create",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.create")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (sender instanceof Player) {
                 if (args.length == 2) {
                     String arenaName = args[0];

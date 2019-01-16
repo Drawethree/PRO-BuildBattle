@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class BBPartySubCommand extends BBSubCommand {
 
     public BBPartySubCommand() {
-        super("party", "Command to manage party.", false);
+        super("party", "Command to manage party.", "buildbattlepro.party",false);
     }
 
     @Override

@@ -9,12 +9,12 @@ import org.bukkit.command.CommandSender;
 public class BBVersionSubCommand extends BBSubCommand {
 
     public BBVersionSubCommand() {
-        super("version", "Command to show current plugin's version.", true);
+        super("version", "Command to show current plugin's version.", "buildbattlepro.admin",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.admin")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             sender.sendMessage(BBSettings.getPrefix() + " §aYou are running §e" + BuildBattle.getInstance().getDescription().getName() + " v." + BuildBattle.getInstance().getDescription().getVersion() + "§a by §eDrawethree.");
             return true;
         } else {

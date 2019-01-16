@@ -9,12 +9,12 @@ import org.bukkit.command.CommandSender;
 public class BBDeleteSubCommand extends BBSubCommand {
 
     public BBDeleteSubCommand() {
-        super("delete", "Command to delete an arena.", true);
+        super("delete", "Command to delete an arena.", "buildbattlepro.create",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.create")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 1) {
                 BBArena arena = ArenaManager.getInstance().getArena(args[0]);
                 if (arena != null) {

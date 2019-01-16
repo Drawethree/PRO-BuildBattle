@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 public class BBExportStatsSubCommand extends BBSubCommand {
 
     public BBExportStatsSubCommand() {
-        super("exportstats", "Command to export stats from stats.yml to MySQL.", true);
+        super("exportstats", "Command to export stats from stats.yml to MySQL.", "buildbattlepro.admin", true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.admin")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 0) {
                 if (BBSettings.getStatsType() == StatsType.MYSQL) {
                     BuildBattle.info("§cUser §e" + sender.getName() + " §chas requested exporting players stats to MySQL!");

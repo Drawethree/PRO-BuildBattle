@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 public class BBPosSubCommand extends BBSubCommand {
 
     public BBPosSubCommand() {
-        super("pos", "Command to manage selection of plots.", true);
+        super("pos", "Command to manage selection of plots.", "buildbattlepro.create",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (sender.hasPermission("buildbattlepro.create")) {
+            if (sender.hasPermission(getPermissionRequired())) {
                 p.getInventory().addItem(ArenaManager.posSelectorItem);
                 sender.sendMessage(BBSettings.getPrefix() + " §aYou were given §ePlot Selector §a!");
                 sender.sendMessage(BBSettings.getPrefix() + " §eLeft-Click §ablock to selection §ePostion 1");

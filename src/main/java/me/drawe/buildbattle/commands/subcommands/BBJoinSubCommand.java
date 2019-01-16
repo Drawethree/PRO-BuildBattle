@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class BBJoinSubCommand extends BBSubCommand {
 
     public BBJoinSubCommand() {
-        super("join", "Command to join arena", false);
+        super("join", "Command to join arena", "buildbattlepro.join", false);
     }
 
     @Override

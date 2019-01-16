@@ -9,12 +9,12 @@ import org.bukkit.command.CommandSender;
 public class BBReloadSubCommand extends BBSubCommand {
 
     public BBReloadSubCommand() {
-        super("reload", "Command to reload plugin.", true);
+        super("reload", "Command to reload plugin.","buildbattlepro.admin", true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.admin")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 1) {
                 BuildBattle.getInstance().reloadPlugin();
                 sender.sendMessage(BBSettings.getPrefix() + " §aPlugin reloaded !");

@@ -12,12 +12,12 @@ import org.bukkit.entity.Player;
 public class BBForceStartSubCommand extends BBSubCommand {
 
     public BBForceStartSubCommand() {
-        super("forcestart", "Command to force start a game.", true);
+        super("forcestart", "Command to force start a game.", "buildbattlepro.admin",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.admin")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;

@@ -15,12 +15,12 @@ import org.bukkit.entity.Player;
 public class BBLeaderBoardSubCommand extends BBSubCommand {
 
     public BBLeaderBoardSubCommand() {
-        super("leaderboard", "Command to manage leaderboards.", true);
+        super("leaderboard", "Command to manage leaderboards.", "buildbattlepro.setup",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.setup")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (BuildBattle.getInstance().isUseHolographicDisplays()) {
                 if (args.length > 0) {
                     String subCommand = args[0].toLowerCase();

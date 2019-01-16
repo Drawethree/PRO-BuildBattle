@@ -11,13 +11,13 @@ import org.bukkit.command.CommandSender;
 public class BBSuperVoteSubCommand extends BBSubCommand {
 
     public BBSuperVoteSubCommand() {
-        super("supervote", "Command to manage super votes.", true);
+        super("supervote", "Command to manage super votes.", "buildbattlepro.admin",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         // /bb supervote <give/take> <player> <amount>
-        if (sender.hasPermission("buildbattlepro.admin")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 3) {
                 try {
                     String action = args[0].toLowerCase();

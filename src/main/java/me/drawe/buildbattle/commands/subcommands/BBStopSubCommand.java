@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 public class BBStopSubCommand extends BBSubCommand {
 
     public BBStopSubCommand() {
-        super("stop", "Command to stop a game.", true);
+        super("stop", "Command to stop a game.", "buildbattlepro.stop",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.stop")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;

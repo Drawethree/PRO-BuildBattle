@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class BBSetMainLobbySubCommand extends BBSubCommand {
 
     public BBSetMainLobbySubCommand() {
-        super("setmainlobby", "Command to set main lobby.", true);
+        super("setmainlobby", "Command to set main lobby.", "buildbattlepro.create", true);
     }
 
     @Override
@@ -17,7 +17,7 @@ public class BBSetMainLobbySubCommand extends BBSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 1) {
-                if (p.hasPermission("buildbattlepro.create")) {
+                if (p.hasPermission(getPermissionRequired())) {
                     BBSettings.setMainLobbyLocation(p);
                     return true;
                 } else {

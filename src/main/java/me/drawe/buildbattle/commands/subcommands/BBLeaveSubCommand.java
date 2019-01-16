@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class BBLeaveSubCommand extends BBSubCommand {
 
     public BBLeaveSubCommand() {
-        super("leave", "Leave arena command.", false);
+        super("leave", "Leave arena command.", "buildbattlepro.join", false);
     }
 
     @Override

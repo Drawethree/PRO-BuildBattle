@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 public class BBSetLobbySubCommand extends BBSubCommand {
 
     public BBSetLobbySubCommand() {
-        super("setlobby", "Command to set arena lobby.", true);
+        super("setlobby", "Command to set arena lobby.","buildbattlepro.create", true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.create")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 if (args.length == 2) {

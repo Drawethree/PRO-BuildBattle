@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 public class BBDelPlotSubCommand extends BBSubCommand {
 
     public BBDelPlotSubCommand() {
-        super("delplot", "Deletes plot at your current location", true);
+        super("delplot", "Deletes plot at your current location", "buildbattlepro.create",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (sender.hasPermission("buildbattlepro.create")) {
+        if (sender.hasPermission(getPermissionRequired())) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 if (args.length == 2) {

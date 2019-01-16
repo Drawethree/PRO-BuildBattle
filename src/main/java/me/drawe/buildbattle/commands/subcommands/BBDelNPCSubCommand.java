@@ -12,13 +12,13 @@ import org.bukkit.entity.Player;
 public class BBDelNPCSubCommand extends BBSubCommand {
 
     public BBDelNPCSubCommand() {
-        super("delnpc", "Command to remove floor change NPC.", true);
+        super("delnpc", "Command to remove floor change NPC.", "buildbattlepro.setup",true);
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (BuildBattle.getInstance().isUseCitizens()) {
-            if (sender.hasPermission("buildbattlepro.setup")) {
+            if (sender.hasPermission(getPermissionRequired())) {
                 if (args.length == 0) {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;

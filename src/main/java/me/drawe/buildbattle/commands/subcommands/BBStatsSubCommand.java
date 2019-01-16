@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class BBStatsSubCommand extends BBSubCommand {
 
     public BBStatsSubCommand() {
-        super("stats", "Command to show your stats.", false);
+        super("stats", "Command to show your stats.", "buildbattlepro.player",false);
     }
 
     @Override
