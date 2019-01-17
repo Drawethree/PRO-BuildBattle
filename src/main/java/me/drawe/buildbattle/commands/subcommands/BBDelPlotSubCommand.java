@@ -18,8 +18,8 @@ public class BBDelPlotSubCommand extends BBSubCommand {
         if (sender.hasPermission(getPermissionRequired())) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                if (args.length == 2) {
-                    BBArena a = ArenaManager.getInstance().getArena(args[1]);
+                if (args.length == 1) {
+                    BBArena a = ArenaManager.getInstance().getArena(args[0]);
                     if (a != null) {
                         int lastIndex = a.getBuildPlots().size() - 1;
                         if (lastIndex < 0) {
@@ -31,6 +31,8 @@ public class BBDelPlotSubCommand extends BBSubCommand {
                             p.sendMessage("§e§lBuildBattle Setup §8| §aYou have successfully removed plot §e" + (lastIndex + 1) + " §afrom arena §e" + a.getName() + " §a!");
                             return true;
                         }
+                    } else {
+                        sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
                     }
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " delplot <arena> §8| §7Deletes plot at your current location ");

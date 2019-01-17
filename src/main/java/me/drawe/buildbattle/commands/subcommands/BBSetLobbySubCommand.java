@@ -19,15 +19,15 @@ public class BBSetLobbySubCommand extends BBSubCommand {
         if (sender.hasPermission(getPermissionRequired())) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                if (args.length == 2) {
-                    BBArena arena = ArenaManager.getInstance().getArena(args[1]);
+                if (args.length == 1) {
+                    BBArena arena = ArenaManager.getInstance().getArena(args[0]);
                     Location playerLoc = p.getLocation();
                     if (arena != null) {
                         arena.setLobbyLocation(playerLoc);
                         p.sendMessage("§e§lBuildBattle Setup §8| §aLobby Location for arena §e" + arena.getName() + " §aset !");
                         return true;
                     } else {
-                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));
+                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
                     }
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " setlobby <arena> §8| §7Set Lobby location for arena");

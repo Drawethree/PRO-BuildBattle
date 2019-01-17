@@ -69,7 +69,7 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                             }
                         }
                     } else {
-                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[1]));
+                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
                     }
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " addplot <arena> §8| §7Add a build plot to arena");

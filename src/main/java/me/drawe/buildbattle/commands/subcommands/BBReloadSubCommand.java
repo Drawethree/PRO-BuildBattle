@@ -15,12 +15,12 @@ public class BBReloadSubCommand extends BBSubCommand {
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender.hasPermission(getPermissionRequired())) {
-            if (args.length == 1) {
+            if (args.length == 0) {
                 BuildBattle.getInstance().reloadPlugin();
                 sender.sendMessage(BBSettings.getPrefix() + " §aPlugin reloaded !");
                 return true;
             } else {
-                sender.sendMessage("§cUsage >> /" + cmd.getName() +" reload §8| §7Reloads plugin");
+                sender.sendMessage("§cUsage >> /" + cmd.getName() + " reload §8| §7Reloads plugin");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());

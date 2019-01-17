@@ -57,7 +57,7 @@ public class BBJoinSubCommand extends BBSubCommand {
                             p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replaceAll("%arena%", playerArena.getName()));
                         }
                     } else {
-                        p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
+                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
                     }
                 }
             } else {

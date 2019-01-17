@@ -16,7 +16,7 @@ public class BBSetMainLobbySubCommand extends BBSubCommand {
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (args.length == 1) {
+            if (args.length == 0) {
                 if (p.hasPermission(getPermissionRequired())) {
                     BBSettings.setMainLobbyLocation(p);
                     return true;

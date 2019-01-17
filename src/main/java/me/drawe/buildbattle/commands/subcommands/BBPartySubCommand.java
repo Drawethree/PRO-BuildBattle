@@ -20,8 +20,8 @@ public class BBPartySubCommand extends BBSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (BBSettings.isPartiesEnabled()) {
-                if (args.length > 1) {
-                    String subCommand = args[1].toLowerCase();
+                if (args.length > 0) {
+                    String subCommand = args[0].toLowerCase();
                     switch (subCommand) {
                         /*case "create":
                             PartyManager.getInstance().createParty(p);
@@ -37,9 +37,9 @@ public class BBPartySubCommand extends BBSubCommand {
                             PartyManager.getInstance().leaveParty(p);
                             return true;
                         case "invite":
-                            if (args.length == 3) {
+                            if (args.length == 2) {
                                 BBParty playerParty = PartyManager.getInstance().getPlayerParty(p);
-                                Player target = Bukkit.getPlayer(args[2]);
+                                Player target = Bukkit.getPlayer(args[1]);
                                 PartyManager.getInstance().invitePlayer(p, target, playerParty);
                                 return true;
                             } else {

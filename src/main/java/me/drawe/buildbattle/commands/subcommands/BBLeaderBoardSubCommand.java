@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class BBLeaderBoardSubCommand extends BBSubCommand {
 
     public BBLeaderBoardSubCommand() {
-        super("leaderboard", "Command to manage leaderboards.", "buildbattlepro.setup",true);
+        super("lb", "Command to manage leaderboards.", "buildbattlepro.setup",true);
     }
 
     @Override

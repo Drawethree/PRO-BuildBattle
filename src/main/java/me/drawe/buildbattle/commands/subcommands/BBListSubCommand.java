@@ -15,14 +15,14 @@ public class BBListSubCommand extends BBSubCommand {
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (args.length == 1) {
+            if (args.length == 0) {
                 p.openInventory(ArenaManager.getAllArenasInventory());
                 return true;
-            } else if (args.length == 2) {
-                if (args[1].equalsIgnoreCase("solo")) {
+            } else if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("solo")) {
                     p.openInventory(ArenaManager.getSoloArenasInventory());
                     return true;
-                } else if (args[1].equalsIgnoreCase("team")) {
+                } else if (args[0].equalsIgnoreCase("team")) {
                     p.openInventory(ArenaManager.getTeamArenasInventory());
                     return true;
                 } else {

@@ -18,7 +18,7 @@ public class BBStartSubCommand extends BBSubCommand {
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender.hasPermission(getPermissionRequired())) {
-            if (args.length == 1) {
+            if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     BBArena a = PlayerManager.getInstance().getPlayerArena(p);
@@ -29,17 +29,17 @@ public class BBStartSubCommand extends BBSubCommand {
                         p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());
                     }
                 }
-            } else if (args.length == 2) {
-                BBArena arena = ArenaManager.getInstance().getArena(args[1]);
+            } else if (args.length == 1) {
+                BBArena arena = ArenaManager.getInstance().getArena(args[0]);
                 if (arena != null) {
                     arena.forceStart(sender, false);
                     return true;
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
-            } else if (args.length == 3) {
-                BBArena arena = ArenaManager.getInstance().getArena(args[1]);
-                String theme = args[2];
+            } else if (args.length == 2) {
+                BBArena arena = ArenaManager.getInstance().getArena(args[0]);
+                String theme = args[1];
                 if (arena != null) {
                     if (theme != null) {
                         arena.forceStart(sender, theme, false);
