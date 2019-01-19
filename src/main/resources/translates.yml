@@ -166,7 +166,7 @@ stats:
   particles_placed: "&aParticles Placed: &e%particles%"
   super_votes: "&aSuper Votes: &e%super_votes%"
 voting:
-  none: "&fNONE"
+  none: "&f&oNONE"
   very_bad: "&4VERY BAD"
   bad: "&cBAD"
   ok: "&eOK"

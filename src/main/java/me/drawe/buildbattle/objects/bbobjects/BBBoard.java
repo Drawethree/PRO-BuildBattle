@@ -3,6 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.Time;
@@ -29,6 +30,7 @@ public class BBBoard {
     private List<Team> teams;
     private List<Integer> removed;
     private Set<String> updated;
+    private int currentLine;
 
     public BBBoard(BBArena arena, Player p) {
         this.arena = arena;
@@ -41,125 +43,174 @@ public class BBBoard {
         this.updated = Collections.synchronizedSet(new HashSet<>());
     }
 
-    public void add(String text, Integer score) {
+    public void add(String text) {
+        this.currentLine -= 1;
+
         text = ChatColor.translateAlternateColorCodes('&', text);
 
-        if (remove(score, text, false) || !scores.containsValue(score)) {
+        if (remove(currentLine, text, false) || !scores.containsValue(currentLine)) {
             updated.add(text);
         }
 
-        scores.put(text, score);
+        scores.put(text, currentLine);
     }
 
-    public void updateScoreboard(int timeLeft) {
+    /*public void updateScoreboard(int timeLeft) {
+        this.currentLine = 16;
+
         switch (arena.getBBArenaState()) {
+
             case LOBBY:
-                add(arena.getArenaModeInString(), 7);
-                add("&a", 6);
-                add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getTotalPlayers(), 5);
-                add("&b", 4);
-                if (timeLeft == 0) {
-                    add(Message.SCOREBOARD_STARTING_IN.getMessage().replaceAll("%time%", Message.SCOREBOARD_WAITING.getMessage()), 3);
-                } else {
-                    add(Message.SCOREBOARD_STARTING_IN.getMessage().replaceAll("%time%", String.valueOf(timeLeft)), 3);
-                }
-                add("&c", 2);
-                add(Message.SCOREBOARD_SERVER.getMessage(), 1);
+                sendBoard(BBSettings.getLobbyScoreboardTitle(), BBSettings.getLobbyScoreboardLines(), timeLeft, BBSettings.getLobbyTime());
                 break;
-            case THEME_VOTING:
-                if(arena.getGameType() == BBGameMode.SOLO) {
-                    add(arena.getArenaModeInString(), 11);
-                    add("&a", 10);
-                    add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
-                    add(Time.formatTimeMMSS(timeLeft), 8);
-                    add("", 7);
-                    add(Message.SCOREBOARD_THEME.getMessage(), 6);
-                    add("&a" + arena.getTheme(), 5);
-                    add("&b", 4);
-                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size(), 3);
-                    add("&c", 2);
-                    add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                } else if(arena.getGameType() == BBGameMode.TEAM){
-                    add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                    add("&d", 2);
-                    int index = 2;
-                    if(arena.getTeamMates(getPlayer()) != null) {
-                        for (Player p : arena.getTeamMates(getPlayer())) {
-                            index += 1;
-                            add("&a" + p.getName(), index);
-                        }
-                    }
-                    add(Message.SCOREBOARD_TEAMMATE.getMessage(), index + 1);
-                    add("&c", index + 2);
-                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size(), index +3);
-                    add("&b", index + 4);
-                    add("&a" + arena.getTheme(), index + 5);
-                    add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
-                    add("", index + 7);
-                    add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
-                    add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
-                    add("&a", index + 10);
-                    add(arena.getArenaModeInString(), index + 11);
-                }
             case INGAME:
-                if(arena.getGameType() == BBGameMode.SOLO) {
-                    add(arena.getArenaModeInString(), 11);
-                    add("&a", 10);
-                    add(Message.SCOREBOARD_TIME_LEFT.getMessage(), 9);
-                    add("&a" + Time.formatTimeMMSS(timeLeft), 8);
-                    add("", 7);
-                    add(Message.SCOREBOARD_THEME.getMessage(), 6);
-                    add("&a" + arena.getTheme(), 5);
-                    add("&b", 4);
-                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size(), 3);
-                    add("&c", 2);
-                    add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                } else if(arena.getGameType() == BBGameMode.TEAM){
-                    add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                    add("&d", 2);
-                    int index = 2;
-                    if(arena.getTeamMates(getPlayer()) != null) {
-                        for (Player p : arena.getTeamMates(getPlayer())) {
-                            index += 1;
-                            add("&a" + p.getName(), index);
-                        }
-                    }
-                    add(Message.SCOREBOARD_TEAMMATE.getMessage(), index + 1);
-                    add("&c", index + 2);
-                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size(), index +3);
-                    add("&b", index + 4);
-                    add("&a" + arena.getTheme(), index + 5);
-                    add(Message.SCOREBOARD_THEME.getMessage(), index + 6);
-                    add("", index + 7);
-                    add("&a" + Time.formatTimeMMSS(timeLeft), index + 8);
-                    add(Message.SCOREBOARD_TIME_LEFT.getMessage(), index + 9);
-                    add("&a", index + 10);
-                    add(arena.getArenaModeInString(), index + 11);
-                }
+                sendBoard(BBSettings.getIngameScoreboardTitle(), BBSettings.getIngameScoreboardLines(), timeLeft, arena.getGameTime());
                 break;
             case VOTING:
-                add(Message.SCOREBOARD_SERVER.getMessage(), 1);
-                add("&d", 2);
-                add(getArena().getCurrentVotingPlot().getPlayerVoteString(getPlayer()), 3);
-                add(Message.SCOREBOARD_YOUR_VOTE.getMessage(), 4);
-                add("&c", 5);
-                int index = 5;
-                if(getArena().getTeamMates(getPlayer()) != null) {
-                    for (Player p : getArena().getCurrentVotingPlot().getTeam().getPlayers()) {
-                        index += 1;
-                        add("&a" + p.getName(), index);
+                sendBoard(BBSettings.getBuyingScoreboardTitle(), BBSettings.getBuyingScoreboardLines(), timeLeft, BBSettings.getVotingTime());
+                break;
+            case THEME_VOTING:
+                sendBoard(BBSettings.getDeathmatchScoreboardTitle(), BBSettings.getDeathmatchScoreboardLines(), timeLeft, BBSettings.getThemeVotingTime());
+                break;
+            case ENDING:
+                sendBoard(BBSettings.getDeathmatchScoreboardTitle(), BBSettings.getDeathmatchScoreboardLines(), timeLeft, BBSettings.getEndTime());
+                break;
+        }
+        update();
+        send(getPlayer());
+    }*/
+
+
+    /*private void sendBoard(String title, List<String> lines, int timeLeft, int baseTime) {
+        setTitle(replacePlaceholders(title, timeLeft, baseTime));
+        for (String line : lines) {
+            if (line.contains("%players_locations%")) {
+                for (int i = 0; i < GDSettings.getAmountOfPlayersInScoreboard(); i++) {
+                    try {
+                        final Player p = arena.getPlayers().get(i);
+
+                        if (p.equals(player)) {
+                            add(Message.SCOREBOARD_PLAYER_FORMAT.getMessage().replaceAll("%player%", ChatColor.UNDERLINE + p.getName() + ChatColor.RESET).replaceAll("%location%", String.valueOf(p.getLocation().getBlockY() - arena.getCurrentMap().getEndLine())));
+                        } else {
+                            add(Message.SCOREBOARD_PLAYER_FORMAT.getMessage().replaceAll("%player%", p.getName()).replaceAll("%location%", String.valueOf(p.getLocation().getBlockY() - arena.getCurrentMap().getEndLine())));
+                        }
+                    } catch (Exception e) {
+                        break;
                     }
                 }
-                if(getArena().getGameType() == BBGameMode.SOLO) {
-                    add(Message.SCOREBOARD_BUILDER.getMessage(), index + 1);
-                } else if(getArena().getGameType() == BBGameMode.TEAM) {
-                    add(Message.SCOREBOARD_BUILDERS.getMessage(), index + 1);
+                continue;
+            }
+            add(replacePlaceholders(line, timeLeft, baseTime));
+        }
+    }*/
+
+    /*private String replacePlaceholders(String line, int timeLeft, int baseTime) {
+        line = line
+                .replaceAll("%timeleft%", Time.formatTimeMMSS(timeLeft, baseTime))
+                .replaceAll("%players%", String.valueOf(arena.getPlayers().size()))
+                .replaceAll("%player_coins%", String.valueOf(arena.getPlayerCoins().get(player)))
+                .replaceAll("%map_name%", arena.getCurrentMapName())
+                .replaceAll("%map_current%", String.valueOf(arena.getCurrentPlayedMap()))
+                .replaceAll("%maps_played%", String.valueOf(arena.getPlayedMaps()))
+                .replaceAll("%player_kills%", String.valueOf(arena.getDeathMatch().getPlayerKills(player)))
+                .replaceAll("%remaining_players%", String.valueOf(arena.getDeathMatch().getAlivePlayers().size()));
+
+        if (GetDownPro.isUsePlaceholderAPI()) {
+            line = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, line);
+        }
+        if (GetDownPro.isUseMVdWPlaceholderAPI()) {
+            line = PlaceholderAPI.replacePlaceholders(player, line);
+        }
+        return line;
+    }*/
+
+    public void updateScoreboard(int timeLeft) {
+        this.currentLine = 16;
+
+        switch (arena.getBBArenaState()) {
+            case LOBBY:
+                add(arena.getArenaModeInString());
+                add("&a");
+                add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getTotalPlayers());
+                add("&b");
+                if (timeLeft == 0) {
+                    add(Message.SCOREBOARD_STARTING_IN.getMessage().replaceAll("%time%", Message.SCOREBOARD_WAITING.getMessage()));
+                } else {
+                    add(Message.SCOREBOARD_STARTING_IN.getMessage().replaceAll("%time%", String.valueOf(timeLeft)));
                 }
-                add("&b", index + 2);
-                add("&a" + getArena().getTheme(), index + 3);
-                add(Message.SCOREBOARD_THEME.getMessage(), index + 4);
-                add("&a", index + 5);
-                add(getArena().getArenaModeInString(), index + 6);
+                add("&c");
+                add(Message.SCOREBOARD_SERVER.getMessage());
+                break;
+            case THEME_VOTING:
+                add(arena.getArenaModeInString());
+                add("&a");
+                add(Message.SCOREBOARD_TIME_LEFT.getMessage());
+                add(Time.formatTimeMMSS(timeLeft, (int) BBSettings.getThemeVotingTime()));
+                add("");
+                add(Message.SCOREBOARD_THEME.getMessage());
+                add("&a" + arena.getTheme());
+                add("&b");
+                if(arena.getGameType() == BBGameMode.SOLO) {
+                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size());
+                    add("&c");
+                } else if(arena.getGameType() == BBGameMode.TEAM) {
+                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size());
+                    add("&c");
+                    add(Message.SCOREBOARD_TEAMMATE.getMessage());
+                    if (arena.getTeamMates(getPlayer()) != null) {
+                        for (Player p : arena.getTeamMates(getPlayer())) {
+                            add("&a" + p.getName());
+                        }
+                    }
+                    add("&d");
+                }
+                add(Message.SCOREBOARD_SERVER.getMessage());
+                break;
+            case INGAME:
+                add(arena.getArenaModeInString());
+                add("&a");
+                add(Message.SCOREBOARD_TIME_LEFT.getMessage());
+                add("&a" + Time.formatTimeMMSS(timeLeft, arena.getGameTime()));
+                add("");
+                add(Message.SCOREBOARD_THEME.getMessage());
+                add("&a" + arena.getTheme());
+                add("&b");
+                if(arena.getGameType() == BBGameMode.SOLO) {
+                    add(Message.SCOREBOARD_PLAYERS.getMessage() + " §a" + arena.getPlayers().size());
+                    add("&c");
+                } else if(arena.getGameType() == BBGameMode.TEAM){
+                    add(Message.SCOREBOARD_TEAMS.getMessage() + " §a" + arena.getValidTeams().size());
+                    add("&c");
+                    add(Message.SCOREBOARD_TEAMMATE.getMessage());
+                    if(arena.getTeamMates(getPlayer()) != null) {
+                        for (Player p : arena.getTeamMates(getPlayer())) {
+                            add("&a" + p.getName());
+                        }
+                    }
+                }
+                add(Message.SCOREBOARD_SERVER.getMessage());
+                break;
+            case VOTING:
+                add(arena.getArenaModeInString());
+                add("&a");
+                add(Message.SCOREBOARD_THEME.getMessage());
+                add("&a" + arena.getTheme());
+                add("&b");
+                if(arena.getGameType() == BBGameMode.SOLO) {
+                    add(Message.SCOREBOARD_BUILDER.getMessage());
+                } else if(arena.getGameType() == BBGameMode.TEAM) {
+                    add(Message.SCOREBOARD_BUILDERS.getMessage());
+                }
+                if(arena.getTeamMates(getPlayer()) != null) {
+                    for (Player p : arena.getCurrentVotingPlot().getTeam().getPlayers()) {
+                        add("&a" + p.getName());
+                    }
+                }
+                add("&c");
+                add(Message.SCOREBOARD_YOUR_VOTE.getMessage());
+                add(arena.getCurrentVotingPlot().getPlayerVoteString(getPlayer()));
+                add("&d");
+                add(Message.SCOREBOARD_SERVER.getMessage());
                 break;
         }
         update();

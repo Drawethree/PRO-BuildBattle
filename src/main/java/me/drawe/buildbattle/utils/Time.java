@@ -1,6 +1,5 @@
 package me.drawe.buildbattle.utils;
 
-import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 
 import java.text.SimpleDateFormat;
@@ -219,15 +218,15 @@ public class Time {
 
     }
 
-    public static String formatTimeMMSS(int secs) {
+    public static String formatTimeMMSS(int secs, int defaultTime) {
         int minutes = (secs % 3600) / 60;
         int seconds = secs % 60;
 
         String timeString = String.format("%02d:%02d", minutes, seconds);
 
-        if(secs > BBSettings.getDefaultGameTime() / 2) {
+        if(secs > defaultTime / 2) {
             return "§a" + timeString;
-        } else if(secs > BBSettings.getDefaultGameTime() / 10) {
+        } else if(secs > (defaultTime / 2) / 2) {
             return "§e" + timeString;
         } else {
             return "§c" + timeString;
