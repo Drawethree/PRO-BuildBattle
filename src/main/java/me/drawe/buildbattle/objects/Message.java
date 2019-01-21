@@ -25,21 +25,6 @@ public enum Message {
     WEATHER_CHANGED("messages.weather_changed"),
     FLOOR_DENY_CHANGE("messages.floor_deny_change"),
     NOT_PLAYED("messages.not_played"),
-    SCOREBOARD_TITLE("scoreboard.in-game.title"),
-    SCOREBOARD_TIME_LEFT("scoreboard.in-game.time_left"),
-    SCOREBOARD_THEME("scoreboard.in-game.theme"),
-    SCOREBOARD_BUILDER("scoreboard.in-game.builder"),
-    SCOREBOARD_YOUR_VOTE("scoreboard.in-game.your_vote"),
-    SCOREBOARD_PLAYERS("scoreboard.in-game.players"),
-    SCOREBOARD_MIN_PLAYERS("scoreboard.in-game.min_players"),
-    SCOREBOARD_SERVER("scoreboard.in-game.server"),
-    SCOREBOARD_BUILDERS("scoreboard.in-game.builders"),
-    SCOREBOARD_TEAM_MODE("scoreboard.in-game.team_mode"),
-    SCOREBOARD_SOLO_MODE("scoreboard.in-game.solo_mode"),
-    SCOREBOARD_TEAMS("scoreboard.in-game.teams"),
-    SCOREBOARD_TEAMMATE("scoreboard.in-game.teammate"),
-    SCOREBOARD_STARTING_IN("scoreboard.in-game.starting_in"),
-    SCOREBOARD_WAITING("scoreboard.in-game.waiting"),
     SCOREBOARD_MAIN_LOBBY_TITLE("scoreboard.main-lobby.title"),
     SCOREBOARD_MAIN_LOBBY_PLAYED("scoreboard.main-lobby.played"),
     SCOREBOARD_MAIN_LOBBY_WINS("scoreboard.main-lobby.wins"),
@@ -257,14 +242,18 @@ public enum Message {
     GUI_BIOMES_RIVER_DISPLAYNAME("gui.biomes.items.river.displayname"),
     GUI_BIOMES_MUSHROOM_DISPLAYNAME("gui.biomes.items.mushroom.displayname"),
     GUI_BIOMES_WARM_OCEAN_DISPLAYNAME("gui.biomes.items.warm_ocean.displayname"),
-    BUILD_SOMETHING_RELEVANT("messages.build_something_relevant");
+    BUILD_SOMETHING_RELEVANT("messages.build_something_relevant"),
+    SCOREBOARD_WAITING("scoreboard.waiting"),
+    SCOREBOARD_SOLO_MODE("scoreboard.solo_mode"),
+    SCOREBOARD_TEAM_MODE("scoreboard.team_mode"),
+    SCOREBOARD_NO_TEAMMATES("scoreboard.no_teammates");
 
     private String message;
     private String path;
 
     Message(String path) {
         this.path = path;
-        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(this.path));
+        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(path));
     }
 
     public String getChatMessage() {

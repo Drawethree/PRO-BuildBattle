@@ -646,8 +646,7 @@ public class PlayerListener implements Listener {
     public void onTeleport(final PlayerTeleportEvent e) {
         final Player p = e.getPlayer();
         final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if (a != null && (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)) {
-            e.setCancelled(true);
+        if ((a != null) && ((e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))) {
             e.setCancelled(true);
         }
     }
@@ -879,36 +878,35 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChatIngame(final AsyncPlayerChatEvent e) {
-        if (BBSettings.isArenaChat() || BBSettings.isTeamChat()) {
-            final Player p = e.getPlayer();
-            final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-            if (a != null) {
-                if (a.getGameType() == BBGameMode.TEAM) {
-                    if (BBSettings.isTeamChat()) {
-                        e.getRecipients().clear();
-                        if (e.getMessage().charAt(0) == '!') {
-                            e.setMessage(e.getMessage().substring(1, e.getMessage().length()));
-                            for (Player p1 : a.getPlayers()) {
-                                e.getRecipients().add(p1);
-                            }
-                        } else {
-                            e.getRecipients().add(p);
-                            for (Player p1 : a.getTeamMates(p)) {
-                                e.getRecipients().add(p1);
-                            }
-                        }
-                    } else if (BBSettings.isArenaChat()) {
-                        e.getRecipients().clear();
+        if(e.isCancelled()) return;
+        final Player p = e.getPlayer();
+        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        if (a != null) {
+            if (a.getGameType() == BBGameMode.TEAM) {
+                if (BBSettings.isTeamChat()) {
+                    e.getRecipients().clear();
+                    if (e.getMessage().charAt(0) == '!') {
+                        e.setMessage(e.getMessage().substring(1));
                         for (Player p1 : a.getPlayers()) {
+                            e.getRecipients().add(p1);
+                        }
+                    } else {
+                        e.getRecipients().add(p);
+                        for (Player p1 : a.getTeamMates(p)) {
                             e.getRecipients().add(p1);
                         }
                     }
-                } else {
-                    if (BBSettings.isArenaChat()) {
-                        e.getRecipients().clear();
-                        for (Player p1 : a.getPlayers()) {
-                            e.getRecipients().add(p1);
-                        }
+                } else if (BBSettings.isArenaChat()) {
+                    e.getRecipients().clear();
+                    for (Player p1 : a.getPlayers()) {
+                        e.getRecipients().add(p1);
+                    }
+                }
+            } else {
+                if (BBSettings.isArenaChat()) {
+                    e.getRecipients().clear();
+                    for (Player p1 : a.getPlayers()) {
+                        e.getRecipients().add(p1);
                     }
                 }
             }

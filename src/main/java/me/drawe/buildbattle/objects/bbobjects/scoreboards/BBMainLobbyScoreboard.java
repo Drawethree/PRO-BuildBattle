@@ -1,9 +1,10 @@
-package me.drawe.buildbattle.objects.bbobjects;
+package me.drawe.buildbattle.objects.bbobjects.scoreboards;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -14,7 +15,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BBMainLobbyBoard {
+public class BBMainLobbyScoreboard {
 
     private static Map<String, OfflinePlayer> cache = new HashMap<>();
 
@@ -27,7 +28,7 @@ public class BBMainLobbyBoard {
     private List<Integer> removed;
     private Set<String> updated;
 
-    public BBMainLobbyBoard(Player p, BBPlayerStats stats) {
+    public BBMainLobbyScoreboard(Player p, BBPlayerStats stats) {
         this.player = p;
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         this.title = ChatColor.translateAlternateColorCodes('&', Message.SCOREBOARD_MAIN_LOBBY_TITLE.getMessage());

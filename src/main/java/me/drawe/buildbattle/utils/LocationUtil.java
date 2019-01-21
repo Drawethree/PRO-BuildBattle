@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationUtil {
-
     public static Location getLocationFromConfig(String configName, String path) {
         try {
             String locString = BuildBattle.getFileManager().getConfig(configName).get().getString(path);
@@ -34,7 +33,7 @@ public class LocationUtil {
 
     public static String getStringFromLocation(Location l) {
         if (l != null) {
-            return l.getWorld().getName() + "//" + l.getBlockX() + "//" + l.getBlockY() + "//" + l.getBlockZ() + "//" + l.getYaw() + "//" + l.getPitch();
+            return l.getWorld().getName() + "//" + l.getX() + "//" + l.getY() + "//" + l.getZ() + "//" + l.getYaw() + "//" + l.getPitch();
         } else {
             return null;
         }

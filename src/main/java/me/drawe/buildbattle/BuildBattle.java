@@ -177,6 +177,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         reloadAllConfigs();
         BBSettings.loadBBSettings();
         Message.reloadMessages();
+        OptionsManager.reloadItemsAndInventories();
         ArenaManager.getInstance().loadArenas();
         PlayerManager.getInstance().loadAllPlayerStats();
 
@@ -348,6 +349,14 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     public static boolean enableDebugMode() {
         BuildBattle.debug = !BuildBattle.debug;
         return BuildBattle.debug;
+    }
+
+    public static boolean isUsePlaceholderAPI() {
+        return usePlaceholderAPI;
+    }
+
+    public static boolean isUseMVdWPlaceholderAPI() {
+        return useMVdWPlaceholderAPI;
     }
 }
 

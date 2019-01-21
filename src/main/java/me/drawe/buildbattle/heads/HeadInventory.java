@@ -1,14 +1,15 @@
 package me.drawe.buildbattle.heads;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
 
 /**
  * This class contains the attributes, contructors and methods of a
@@ -64,7 +65,12 @@ public class HeadInventory {
     }
 
     public static void loadHeads() {
-        instance = new HeadInventory();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                instance = new HeadInventory();
+            }
+        }.runTaskAsynchronously(BuildBattle.getInstance());
     }
 
     /**

@@ -62,10 +62,10 @@ public class PlayerData {
         getPlayer().getInventory().setArmorContents(armor);
         getPlayer().getInventory().setContents(contents);
         getPlayer().setGameMode(gameMode);
-        getPlayer().teleport(location);
         getPlayer().setLevel(level);
         getPlayer().setExp(exp);
         getPlayer().setAllowFlight(allowFlight);
+        getPlayer().teleport(location);
     }
 
     public int getLevel() {

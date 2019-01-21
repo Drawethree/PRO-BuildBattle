@@ -50,9 +50,31 @@ public class OptionsManager {
     private static String reportsInventoryTitle = "Build Reports Page: ";
 
     private OptionsManager() {
+
     }
 
     static {
+        loadColorsInventory();
+        loadPatternsInventory();
+        loadParticlesInventory();
+        loadBiomesInventory();
+    }
+
+    public static void reloadItemsAndInventories() {
+
+        backItem = ItemUtil.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.back_item.lore")), null, null);
+        reportItem = ItemUtil.create(CompMaterial.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.report_item.lore")), null, null);
+        clearPlotItem = ItemUtil.create(CompMaterial.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null, null);
+        removeParticlesItem = ItemUtil.create(CompMaterial.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null, null);
+        particlesItem = ItemUtil.create(CompMaterial.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particles_item.lore")), null, null);
+        biomesItem = ItemUtil.create(CompMaterial.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null, null);
+        headsItem = ItemUtil.create(CompMaterial.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.heads_item.lore")), null, null);
+        leaveItem = ItemUtil.create(CompMaterial.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.leave_item.lore")), null, null);
+        optionsItem = ItemUtil.create(CompMaterial.NETHER_STAR, 1, Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.options_item.lore")), null, null);
+        teamsItem = ItemUtil.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("items.teams_item.lore")), null, null);
+        timeItem = ItemUtil.create(CompMaterial.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.time_item.lore")), null, null);
+        bannerCreatorItem = ItemUtil.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null, null);
+
         loadColorsInventory();
         loadPatternsInventory();
         loadParticlesInventory();
@@ -194,14 +216,14 @@ public class OptionsManager {
 
     public void openOptionsInventory(Player p, BBPlot plot) {
         Inventory optionsInv = Bukkit.createInventory(null, 9, Message.GUI_OPTIONS_TITLE.getMessage());
-        if (BBSettings.isEnableHeadsOption()) optionsInv.setItem(0, headsItem);
-        if (BBSettings.isEnableChangeFloorOption()) optionsInv.setItem(1, plot.getOptions().getCurrentFloorItem());
-        if (BBSettings.isEnableTimeOption()) optionsInv.setItem(2, timeItem);
-        if (BBSettings.isEnableParticleOption()) optionsInv.setItem(3, particlesItem);
-        if (BBSettings.isEnabledWeatherOption()) optionsInv.setItem(4, getWeatherItemStack(plot));
-        if (BBSettings.isEnableBiomeOption()) optionsInv.setItem(5, biomesItem);
-        if (BBSettings.isEnableBannerCreatorOption()) optionsInv.setItem(6, bannerCreatorItem);
-        if (BBSettings.isEnableClearPlotOption()) optionsInv.setItem(7, clearPlotItem);
+        if (BBSettings.isEnableHeadsOption()) optionsInv.addItem( headsItem);
+        if (BBSettings.isEnableChangeFloorOption()) optionsInv.addItem(plot.getOptions().getCurrentFloorItem());
+        if (BBSettings.isEnableTimeOption()) optionsInv.addItem(timeItem);
+        if (BBSettings.isEnableParticleOption()) optionsInv.addItem(particlesItem);
+        if (BBSettings.isEnabledWeatherOption()) optionsInv.addItem(getWeatherItemStack(plot));
+        if (BBSettings.isEnableBiomeOption()) optionsInv.addItem(biomesItem);
+        if (BBSettings.isEnableBannerCreatorOption()) optionsInv.addItem(bannerCreatorItem);
+        if (BBSettings.isEnableClearPlotOption()) optionsInv.addItem(clearPlotItem);
         p.openInventory(optionsInv);
     }
 

@@ -54,6 +54,7 @@ public class BBSettings {
     private static boolean reportsEnabled = true;
     private static boolean removePlayersAfterGame = true;
     private static boolean votingForThemes = true;
+    private static boolean superVotesEnabled = true;
     private static boolean changeMOTD = false;
     private static boolean pointsApiRewards = false;
     private static boolean vaultRewards = false;
@@ -831,6 +832,7 @@ public class BBSettings {
             setAutomaticGrow(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.automatic_grow"));
             setThemesToVote(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themesToVote"));
             setVotingForThemes(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.enabled"));
+            setSuperVotesEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.super_votes_enabled"));
             setPrefix(BuildBattle.getFileManager().getConfig("config.yml").get().getString("prefix"));
             setEndCommands(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("arena.end_command"));
             setArenaChat(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
@@ -899,7 +901,6 @@ public class BBSettings {
     public static void setMainLobbyLocation(Player p) {
         try {
             Location pLoc = p.getLocation();
-            String locString = LocationUtil.getStringFromLocation(pLoc);
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby", null);
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.world", pLoc.getWorld().getName());
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.x", pLoc.getX());
@@ -907,7 +908,7 @@ public class BBSettings {
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.z", pLoc.getZ());
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.pitch", pLoc.getPitch());
             BuildBattle.getFileManager().getConfig("config.yml").set("main_lobby.yaw", pLoc.getYaw()).save();
-            p.sendMessage("§e§lBuildBattle Setup §8| §aMain lobby location set to §e" + locString);
+            p.sendMessage("§e§lBuildBattle Setup §8| §aMain lobby location set to §e" + LocationUtil.getStringFromLocationXYZ(pLoc));
             mainLobbyLocation = pLoc;
         } catch (Exception e) {
             p.sendMessage("§e§lBuildBattle Setup §8| §cOops ! Something went wrong while setting main lobby ! Check console please.");
@@ -953,5 +954,13 @@ public class BBSettings {
 
     private static void setLoadAfter(int loadAfter) {
         BBSettings.loadAfter = loadAfter;
+    }
+
+    public static boolean isSuperVotesEnabled() {
+        return superVotesEnabled;
+    }
+
+    private static void setSuperVotesEnabled(boolean superVotesEnabled) {
+        BBSettings.superVotesEnabled = superVotesEnabled;
     }
 }

@@ -21,7 +21,7 @@ public class BBThemeVoting {
 
     private Inventory voteInventory;
     private List<BBTheme> themesVoted;
-    private HashMap<Player,BBTheme> votedPlayers;
+    private HashMap<Player, BBTheme> votedPlayers;
     private BBTheme winner;
     private BBArena arena;
 
@@ -29,18 +29,18 @@ public class BBThemeVoting {
         this.arena = a;
         this.votedPlayers = new HashMap<>();
         this.themesVoted = getRandomThemesToVote();
-        voteInventory = Bukkit.createInventory(null, BBSettings.getThemesToVote()*9, Message.GUI_THEME_VOTING_TITLE.getMessage());
+        voteInventory = Bukkit.createInventory(null, BBSettings.getThemesToVote() * 9, Message.GUI_THEME_VOTING_TITLE.getMessage());
         this.winner = null;
-        for(BBTheme theme : themesVoted) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()) , null,null));
-            voteInventory.setItem(theme.getSlotInInventory()+1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""),null,null));
+        for (BBTheme theme : themesVoted) {
+            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()), null, null));
+            voteInventory.setItem(theme.getSlotInInventory() + 1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""), null, null));
         }
     }
 
     private void resetInventory() {
-        for(BBTheme theme : themesVoted) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()) , null,null));
-            voteInventory.setItem(theme.getSlotInInventory()+1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""),null,null));
+        for (BBTheme theme : themesVoted) {
+            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()), null, null));
+            voteInventory.setItem(theme.getSlotInInventory() + 1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""), null, null));
         }
     }
 
@@ -57,9 +57,9 @@ public class BBThemeVoting {
         }
         int slot = 0;
         Random ran = new Random();
-        while(returnList.size() != BBSettings.getThemesToVote()) {
+        while (returnList.size() != BBSettings.getThemesToVote()) {
             String theme = themes.get(ran.nextInt(themes.size()));
-            BBTheme bbTheme = new BBTheme(theme,0,slot);
+            BBTheme bbTheme = new BBTheme(theme, 0, slot);
             returnList.add(bbTheme);
             themes.remove(theme);
             slot = slot + 9;
@@ -72,31 +72,32 @@ public class BBThemeVoting {
     }
 
     public void openThemeVoting(Player p) {
-        int superVotesAmount = 0;
-
-        BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(p);
-        if(pStats != null) {
-            superVotesAmount = pStats.getSuperVotes();
-        }
-
         Inventory openInv = Bukkit.createInventory(null, voteInventory.getSize(), voteInventory.getTitle());
 
         openInv.setContents(voteInventory.getContents());
 
-        for(BBTheme theme : themesVoted) {
-            openInv.setItem(theme.getSlotInInventory() + 8, ItemUtil.getSuperVoteItem(superVotesAmount,theme));
+        if (BBSettings.isSuperVotesEnabled()) {
+            int superVotesAmount = 0;
+
+            BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(p);
+            if (pStats != null) {
+                superVotesAmount = pStats.getSuperVotes();
+            }
+            for (BBTheme theme : themesVoted) {
+                openInv.setItem(theme.getSlotInInventory() + 8, ItemUtil.getSuperVoteItem(superVotesAmount, theme));
+            }
         }
 
         p.openInventory(openInv);
     }
 
     public void updateVoting(int timeLeft) {
-        for(BBTheme theme : themesVoted) {
-            if(votedPlayers.size() == 0) {
+        for (BBTheme theme : themesVoted) {
+            if (votedPlayers.size() == 0) {
                 theme.setPercentage(0);
             } else {
                 double divided = (double) theme.getVotes() / getVotedPlayers().size();
-                int percentage = (int) (divided*100);
+                int percentage = (int) (divided * 100);
                 theme.setPercentage(percentage);
             }
 
@@ -107,26 +108,26 @@ public class BBThemeVoting {
 
             int numberOfGreens = 0;
             int percentage = theme.getPercentage();
-            int onePart = 100 / 6;
+            int onePart = BBSettings.isSuperVotesEnabled() ? 100 / 6 : 100 / 7;
 
-            while(percentage - onePart >= 0) {
+            while (percentage - onePart >= 0) {
                 numberOfGreens = numberOfGreens + 1;
                 percentage = percentage - onePart;
             }
 
-            for(int i = theme.getSlotInInventory() + 2;i < theme.getSlotInInventory() + 8;i++) {
-                if(numberOfGreens > 0) {
-                    voteInventory.setItem(i, ItemUtil.create(CompMaterial.LIME_STAINED_GLASS_PANE, 1,theme.getPercentage() + "%", ItemUtil.makeLore(""), null,null));
+            for (int i = theme.getSlotInInventory() + 2; i < theme.getSlotInInventory() + 9; i++) {
+                if (numberOfGreens > 0) {
+                    voteInventory.setItem(i, ItemUtil.create(CompMaterial.LIME_STAINED_GLASS_PANE, 1, theme.getPercentage() + "%", ItemUtil.makeLore(""), null, null));
                     numberOfGreens = numberOfGreens - 1;
                 } else {
-                    voteInventory.setItem(i, ItemUtil.create(CompMaterial.RED_STAINED_GLASS_PANE, 1, theme.getPercentage() + "%", ItemUtil.makeLore(""), null,null));
+                    voteInventory.setItem(i, ItemUtil.create(CompMaterial.RED_STAINED_GLASS_PANE, 1, theme.getPercentage() + "%", ItemUtil.makeLore(""), null, null));
                 }
             }
         }
         arena.getPlayers().forEach(player -> openThemeVoting(player));
     }
 
-    public HashMap<Player,BBTheme> getVotedPlayers() {
+    public HashMap<Player, BBTheme> getVotedPlayers() {
         return votedPlayers;
     }
 
@@ -136,8 +137,8 @@ public class BBThemeVoting {
 
     public void setWinner() {
         BBTheme voteWinner = null;
-        for(BBTheme theme : themesVoted) {
-            if(voteWinner == null) {
+        for (BBTheme theme : themesVoted) {
+            if (voteWinner == null) {
                 voteWinner = theme;
             } else {
                 if (theme.getPercentage() > voteWinner.getPercentage()) {
@@ -149,8 +150,8 @@ public class BBThemeVoting {
     }
 
     public BBTheme getThemeBySlot(int slot) {
-        for(BBTheme theme : themesVoted) {
-            if(theme.getSlotInInventory() == slot || theme.getSlotInInventory() + 8 == slot) {
+        for (BBTheme theme : themesVoted) {
+            if (theme.getSlotInInventory() == slot || theme.getSlotInInventory() + 8 == slot) {
                 return theme;
             }
         }

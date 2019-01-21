@@ -39,7 +39,7 @@ public class Leaderboard {
             updateTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (hologram == null) {
+                    if (hologram == null || hologram.isDeleted()) {
                         cancel();
                         return;
                     }
@@ -87,13 +87,14 @@ public class Leaderboard {
     }
 
     public void teleport(Location loc) {
-        getHologram().teleport(loc);
+        hologram.teleport(loc);
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", getType().name());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", getAmountToDisplay());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".refresh-time", getRefreshTime());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".location", LocationUtil.getStringFromLocation(loc));
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", type.name());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", amountToDisplay);
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".refresh-time", refreshTime);
         BuildBattle.getFileManager().getConfig("leaderboards.yml").save();
-        setLocation(loc);
+        this.location = loc;
     }
 
     public Location getLocation() {
@@ -114,7 +115,7 @@ public class Leaderboard {
 
     public String getFormattedFormat(BBPlayerStats stats, int position, LeaderboardType type) {
         String returnString = type.getLineFormat().
-                replaceAll("%position%", String.valueOf(position + ".")).
+                replaceAll("%position%", position + ".").
                 replaceAll("%player%", stats.getOfflinePlayer().getName());
         switch (type) {
             case WINS:

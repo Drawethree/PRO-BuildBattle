@@ -7,11 +7,11 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlayerData;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.Votes;
-import me.drawe.buildbattle.objects.bbobjects.BBMainLobbyBoard;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
+import me.drawe.buildbattle.objects.bbobjects.scoreboards.BBMainLobbyScoreboard;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
@@ -56,9 +56,9 @@ public class PlayerManager {
     }
 
     public void setMainLobbyScoreboard(Player... players) {
-        BBMainLobbyBoard sb;
+        BBMainLobbyScoreboard sb;
         for (Player p : players) {
-            sb = new BBMainLobbyBoard(p, getPlayerStats(p));
+            sb = new BBMainLobbyScoreboard(p, getPlayerStats(p));
             sb.send(p);
         }
     }

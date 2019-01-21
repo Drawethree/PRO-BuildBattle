@@ -7,7 +7,6 @@ public enum BBGameMode {
     SOLO(1, Message.GAMEMODE_SOLO.getMessage()),
     TEAM(2, Message.GAMEMODE_TEAMS.getMessage());
 
-
     int defaultTeamSize;
     String name;
 

@@ -143,7 +143,7 @@ public class BBTeam {
             }
         }
         if (str.isEmpty()) {
-            return Message.GUI_TEAM_ITEMS_NOBODY.getMessage();
+            return Message.SCOREBOARD_NO_TEAMMATES.getMessage();
         } else {
             return str.substring(0, str.length() - 1);
         }

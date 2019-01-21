@@ -47,6 +47,7 @@ arena:
     enabled: true
     themeVotingTime: 15
     themesToVote: 5
+    super_votes_enabled: true
   fair_vote:
     enabled: true
   endTime: 10

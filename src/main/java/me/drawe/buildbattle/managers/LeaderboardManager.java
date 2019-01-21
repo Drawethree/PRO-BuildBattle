@@ -34,17 +34,15 @@ public class LeaderboardManager {
     }
 
     public void loadAllLeaderboards() {
+        selectedLeaderboards = new HashMap<>();
         activeLeaderboards = new ArrayList<>();
         if (BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getConfigurationSection("leaderboards") != null) {
             for (String location : BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getConfigurationSection("leaderboards").getKeys(false)) {
-                final Location loc = LocationUtil.getLocationFromString(location);
+
+                final Location loc = LocationUtil.getLocationFromConfig("leaderboards.yml", "leaderboards." + location + ".location") == null ? LocationUtil.getLocationFromString(location) : LocationUtil.getLocationFromConfig("leaderboards.yml", "leaderboards." + location + ".location");
                 final LeaderboardType type = LeaderboardType.valueOf(BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getString("leaderboards." + location + ".type"));
                 final int playersToDisplay = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getInt("leaderboards." + location + ".player-amount");
                 double refreshTime = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getDouble("leaderboards." + location + ".refresh-time");
-                if (refreshTime < 10) {
-                    BuildBattle.warning("§cRefresh-Time cannot be lower than 10 minutes ! Setting it to 10 minutes");
-                    refreshTime = 10;
-                }
                 activeLeaderboards.add(new Leaderboard(loc, type, playersToDisplay, refreshTime));
                 BuildBattle.info("§aLeaderboard at location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §aloaded!");
             }
@@ -87,15 +85,17 @@ public class LeaderboardManager {
 
     public void createLeaderboard(Player creator, Location loc, LeaderboardType type) {
         Leaderboard leaderboard = new Leaderboard(loc, type, 10, 30);
-        creator.sendMessage(BBSettings.getPrefix() + " §aLeaderboard with type §e" + type.name() + " §acreated at location §e" + LocationUtil.getStringFromLocationXYZ(leaderboard.getLocation()) + "§a!");
+        creator.sendMessage(BBSettings.getPrefix() + " §aLeaderboard with type §e" + type.name() + " §acreated!");
         activeLeaderboards.add(leaderboard);
         saveLeaderboardIntoConfig(leaderboard);
     }
 
     private void saveLeaderboardIntoConfig(Leaderboard l) {
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(l.getLocation()) + ".type", l.getType().name());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(l.getLocation()) + ".player-amount", l.getAmountToDisplay());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(l.getLocation()) + ".refresh-time", l.getRefreshTime());
+        final String configPath = LocationUtil.getStringFromLocationXYZ(l.getLocation());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".location", LocationUtil.getStringFromLocation(l.getLocation()));
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".type", l.getType().name());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".player-amount", l.getAmountToDisplay());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".refresh-time", l.getRefreshTime());
         BuildBattle.getFileManager().getConfig("leaderboards.yml").save();
     }
 }

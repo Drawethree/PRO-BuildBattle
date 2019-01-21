@@ -31,6 +31,12 @@ public enum BBPlotTime {
         this.time = time;
     }
 
+    public static void reloadPlotTimes() {
+        for(BBPlotTime plotTime : values()) {
+
+        }
+    }
+
     public int getTime() {
         return time;
     }
