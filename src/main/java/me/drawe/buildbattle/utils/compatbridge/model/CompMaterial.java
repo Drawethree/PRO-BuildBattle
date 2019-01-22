@@ -1380,12 +1380,22 @@ public enum CompMaterial {
     }
 
     public static boolean isFlower(Material type) {
-        String n = type.toString();
-        return n.endsWith("_FLOWER") || n.equalsIgnoreCase("LILYPAD") || n.equalsIgnoreCase("VINE");
+        final String n = type.toString();
+        return n.endsWith("_FLOWER") || n.contains("LILY_PAD") || n.contains("VINE") || n.contains("WATER_LILY");
+    }
+
+    public static boolean isMushroom(Material type) {
+        final String n = type.toString();
+        return n.endsWith("_MUSHROOM") || n.endsWith("MUSHROOM");
     }
 
     public static boolean isBed(Material type) {
-        String n = type.toString();
-        return n.endsWith("_BED") || n.equalsIgnoreCase("BED");
+        final String n = type.toString();
+        return n.endsWith("_BED") || n.contains("BED");
+    }
+
+    public static boolean isChorus(Material type) {
+        final String n = type.toString();
+        return n.contains("CHORUS");
     }
 }

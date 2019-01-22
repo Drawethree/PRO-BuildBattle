@@ -218,11 +218,12 @@ public class BBArena {
 
         players.remove(p);
         playerBoards.remove(p);
+        PlayerManager.getPlayersInArenas().remove(p);
+
 
         updateAllSigns();
         ArenaManager.getInstance().refreshArenaItem(this);
 
-        PlayerManager.getPlayersInArenas().remove(p);
 
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
 
@@ -674,6 +675,7 @@ public class BBArena {
             }
 
             PlayerManager.getInstance().restorePlayerData(p);
+
             if (BBSettings.getMainLobbyLocation() != null) {
                 PlayerManager.getInstance().teleportToMainLobby(p);
             }

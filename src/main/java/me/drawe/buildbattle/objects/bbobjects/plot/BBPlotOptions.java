@@ -25,7 +25,6 @@ public class BBPlotOptions {
     private PlotBiome currentBiome;
     private CompMaterial currentFloorMaterial;
 
-
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
         this.currentFloorItem = ItemUtil.create(BBSettings.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
@@ -103,6 +102,8 @@ public class BBPlotOptions {
                 || CompMaterial.isSapling(currentFloorItem.getType())
                 || CompMaterial.isPressurePlate(currentFloorItem.getType())
                 || CompMaterial.isBed(currentFloorItem.getType())
+                || CompMaterial.isMushroom(currentFloorItem.getType())
+                || CompMaterial.isChorus(currentFloorItem.getType())
                 || currentFloorItem.getType() == CompMaterial.LADDER.getMaterial()
                 || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial());
     }

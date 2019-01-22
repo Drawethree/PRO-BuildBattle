@@ -55,6 +55,8 @@ public class PlayerData {
 
     public void restorePlayerData() {
         getPlayer().getInventory().clear();
+        getPlayer().resetPlayerWeather();
+        getPlayer().resetPlayerTime();
         getPlayer().getActivePotionEffects().forEach(e -> getPlayer().removePotionEffect(e.getType()));
         getPlayer().setMaxHealth(20);
         getPlayer().setHealth(getPlayer().getMaxHealth());
