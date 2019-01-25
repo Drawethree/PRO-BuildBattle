@@ -218,13 +218,12 @@ public class BBArena {
 
         players.remove(p);
         playerBoards.remove(p);
-        PlayerManager.getPlayersInArenas().remove(p);
 
 
         updateAllSigns();
         ArenaManager.getInstance().refreshArenaItem(this);
 
-
+        PlayerManager.getPlayersInArenas().remove(p);
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
 
         if (bbArenaState == BBArenaState.LOBBY) {
