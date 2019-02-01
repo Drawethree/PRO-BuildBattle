@@ -1025,7 +1025,7 @@ public class BBArena {
             Player p = players.get(i);
             if (!p.hasPermission("buildbattlepro.joinfull")) {
                 return p;
-            }
+        }
         }
         return null;
     }

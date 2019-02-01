@@ -634,7 +634,7 @@ public class PlayerListener implements Listener {
                 }
                 if (plot != null) {
                     if ((BBSettings.isRestrictPlayerMovement() && !plot.isLocationInPlot(e.getTo())) || (BBSettings.isRestrictOnlyPlayerYMovement() && plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY())) {
-                        e.setTo(e.getFrom());
+                        p.setVelocity(plot.getCenter().toVector().subtract(p.getLocation().toVector()).normalize());
                     }
                 }
             }
@@ -878,7 +878,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChatIngame(final AsyncPlayerChatEvent e) {
-        if(e.isCancelled()) return;
+        if (e.isCancelled()) return;
         final Player p = e.getPlayer();
         final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         if (a != null) {

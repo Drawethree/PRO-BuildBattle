@@ -15,11 +15,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocationUtil {
+
+    public static void knockbackPlayer(Player p, Location from) {
+        final Location loc1 = p.getLocation();
+
+        final double deltaX = from.getX() - loc1.getX();//Get X Delta
+        final double deltaZ = from.getZ() - loc1.getZ();//Get Z delta
+
+        final Vector vec = new Vector(deltaX, 0, deltaZ);//Create new vector
+        vec.normalize();//Normalize it so we don't shoot the player into oblivion
+        p.setVelocity(vec.multiply(5 / (Math.sqrt(Math.pow(deltaX, 2.0) + Math.pow(deltaZ, 2.0)))));
+    }
+
     public static Location getLocationFromConfig(String configName, String path) {
         try {
             String locString = BuildBattle.getFileManager().getConfig(configName).get().getString(path);

@@ -22,9 +22,9 @@ public class BBAddNPCSubCommand extends BBSubCommand {
             if (sender.hasPermission(getPermissionRequired())) {
                 if (args.length == 0) {
                     if (sender instanceof Player) {
-                        Player p = (Player) sender;
-                        NPCRegistry registry = CitizensAPI.getNPCRegistry();
-                        NPC npc = registry.createNPC(BBSettings.getFloorChangeNPCtype(), Message.CHANGE_FLOOR_NPC_NAME.getMessage());
+                        final Player p = (Player) sender;
+                        final NPCRegistry registry = CitizensAPI.getNPCRegistry();
+                        final NPC npc = registry.createNPC(BBSettings.getFloorChangeNPCtype(), Message.CHANGE_FLOOR_NPC_NAME.getMessage());
                         npc.spawn(p.getLocation());
                         npc.setProtected(true);
                         p.sendMessage(BBSettings.getPrefix() + " §aChange floor NPC spawned!");
