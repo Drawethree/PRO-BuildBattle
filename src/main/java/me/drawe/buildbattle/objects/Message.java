@@ -246,7 +246,8 @@ public enum Message {
     SCOREBOARD_WAITING("scoreboard.waiting"),
     SCOREBOARD_SOLO_MODE("scoreboard.solo_mode"),
     SCOREBOARD_TEAM_MODE("scoreboard.team_mode"),
-    SCOREBOARD_NO_TEAMMATES("scoreboard.no_teammates");
+    SCOREBOARD_NO_TEAMMATES("scoreboard.no_teammates"),
+    NOT_ENOUGH_PLAYERS_TO_START("messages.not_enough_players_to_start");
 
     private String message;
     private String path;

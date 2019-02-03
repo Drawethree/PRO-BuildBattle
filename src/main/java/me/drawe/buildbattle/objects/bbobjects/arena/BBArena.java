@@ -208,6 +208,7 @@ public class BBArena {
         PlayerManager.getInstance().removeScoreboard(p);
 
         PlayerManager.getInstance().restorePlayerData(p);
+
         if (BBSettings.getMainLobbyLocation() != null) {
             PlayerManager.getInstance().teleportToMainLobby(p);
         }
@@ -219,18 +220,13 @@ public class BBArena {
         players.remove(p);
         playerBoards.remove(p);
 
-
         updateAllSigns();
         ArenaManager.getInstance().refreshArenaItem(this);
 
         PlayerManager.getPlayersInArenas().remove(p);
         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
 
-        if (bbArenaState == BBArenaState.LOBBY) {
-            if (players.size() < minPlayers) {
-                stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
-            }
-        } else {
+        if (bbArenaState != BBArenaState.LOBBY) {
             if (players.size() <= teamSize) {
                 stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
             }
@@ -300,7 +296,7 @@ public class BBArena {
                         if (BBSettings.isVotingForThemes()) {
                             startThemeVoting();
                         } else {
-                            switch (getGameType()) {
+                            switch (gameMode) {
                                 case SOLO:
                                     startGame(BBSettings.getRandomSoloTheme(), true);
                                     break;
@@ -316,7 +312,7 @@ public class BBArena {
                         PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     }
                 } else {
-                    PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.NOT_ENOUGH_PLAYERS.getChatMessage());
+                    PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
                     updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
                     lobbyCountdown.cancel();
                     return;
@@ -539,9 +535,9 @@ public class BBArena {
             p.setPlayerWeather(plot.getOptions().getCurrentWeather());
         }
         if (plot.getTeam().getPlayers().size() == 1) {
-            PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
+            PlayerManager.getInstance().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         } else {
-            PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
+            PlayerManager.getInstance().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         }
     }
 
@@ -551,7 +547,7 @@ public class BBArena {
 
     public void stopArena(String message, boolean forced) {
 
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), message);
+        PlayerManager.getInstance().broadcastToAllPlayersInArena(this, message);
 
         switch (bbArenaState) {
             case LOBBY:
@@ -791,7 +787,7 @@ public class BBArena {
                     }
                 }
             } else {
-                sender.sendMessage(Message.NOT_ENOUGH_PLAYERS.getChatMessage());
+                sender.sendMessage(Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
             }
         } else {
             sender.sendMessage(Message.ARENA_ALREADY_STARTED.getChatMessage());
@@ -867,7 +863,7 @@ public class BBArena {
                 }
                 startGame(theme, true);
             } else {
-                sender.sendMessage(Message.NOT_ENOUGH_PLAYERS.getChatMessage());
+                sender.sendMessage(Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
             }
         } else {
             sender.sendMessage(Message.ARENA_ALREADY_STARTED.getChatMessage());
@@ -1025,7 +1021,7 @@ public class BBArena {
             Player p = players.get(i);
             if (!p.hasPermission("buildbattlepro.joinfull")) {
                 return p;
-        }
+            }
         }
         return null;
     }

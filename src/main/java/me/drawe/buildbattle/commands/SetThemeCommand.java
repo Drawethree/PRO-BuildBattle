@@ -39,7 +39,7 @@ public class SetThemeCommand extends BukkitCommand {
                                     p.sendMessage(Message.CANNOT_SET_THEME.getChatMessage());
                                 }
                             } else {
-                                p.sendMessage(Message.NOT_ENOUGH_PLAYERS.getChatMessage());
+                                p.sendMessage(Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
                             }
                         } else {
                             p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());

@@ -1,5 +1,6 @@
 messages:
-  not_enough_players: "&cThere are not enough players to start game !"
+  not_enough_players: "&cThere are not enough players!"
+  not_enough_players_to_start: "&cThere are not enough players to start game!"
   no_players: "&cThere must be at least 1 player to start the game !"
   game_starts_in: "&cGame starts in %time%"
   game_ends_in: "&c%time% left"
