@@ -248,6 +248,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
                     }
                     return "0";
                 });
+        for (BBArena arena : ArenaManager.getArenas().values()) {
+            PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_status_" + arena.getName(),
+                    placeholderReplaceEvent -> arena.getBBArenaState().getPrefix());
+        }
     }
 
     private void loadAllConfigs() {

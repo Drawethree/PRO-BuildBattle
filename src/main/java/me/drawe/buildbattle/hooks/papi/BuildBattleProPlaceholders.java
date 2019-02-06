@@ -2,8 +2,10 @@ package me.drawe.buildbattle.hooks.papi;
 
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
 
 public class BuildBattleProPlaceholders extends EZPlaceholderHook {
@@ -53,10 +55,17 @@ public class BuildBattleProPlaceholders extends EZPlaceholderHook {
                     return String.valueOf(0);
                 }
             case "super_votes":
-                if(stats != null) {
+                if (stats != null) {
                     return String.valueOf(stats.getSuperVotes());
                 } else {
                     return String.valueOf(0);
+                }
+            default:
+                if (identifier.contains("status")) {
+                    final BBArena arena = ArenaManager.getInstance().getArena(identifier.replaceAll("status_", ""));
+                    if (arena != null) {
+                        return arena.getBBArenaState().getPrefix();
+                    }
                 }
         }
         return null;
