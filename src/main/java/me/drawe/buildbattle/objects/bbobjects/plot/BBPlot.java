@@ -117,7 +117,7 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public boolean isLocationInPlot(Location location) {
-        return (location.getBlockX() >=  Math.min(minPoint.getBlockX(), maxPoint.getBlockX()) && location.getBlockX() <= Math.max(minPoint.getBlockX(), maxPoint.getBlockX()))
+        return (location.getBlockX() >= Math.min(minPoint.getBlockX(), maxPoint.getBlockX()) && location.getBlockX() <= Math.max(minPoint.getBlockX(), maxPoint.getBlockX()))
                 && (location.getBlockY() >= Math.min(minPoint.getBlockY(), maxPoint.getBlockY()) && location.getBlockY() <= Math.max(minPoint.getBlockY(), maxPoint.getBlockY()))
                 && (location.getBlockZ() >= Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ()) && location.getBlockZ() <= Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ()));
     }
@@ -220,10 +220,18 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public boolean isInPlotRange(Location location, int added) {
-        if (location.getWorld().equals(minPoint.getWorld()) && location.getWorld().equals(maxPoint.getWorld())) {
-            if (location.getBlockX() >= minPoint.getBlockX() - added && location.getBlockX() <= maxPoint.getBlockX() + added) {
-                if (location.getBlockY() >= minPoint.getBlockY() - added && location.getBlockY() <= maxPoint.getBlockY() + added) {
-                    if (location.getBlockZ() >= minPoint.getBlockZ() - added && location.getBlockZ() <= maxPoint.getBlockZ() + added) {
+        if (location.getWorld().equals(minPoint.getWorld())) {
+
+            final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
+            final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
+            final int minZ = Math.min(minPoint.getBlockZ(), maxPoint.getBlockZ());
+            final int maxZ = Math.max(minPoint.getBlockZ(), maxPoint.getBlockZ());
+            final int minY = Math.min(minPoint.getBlockY(), maxPoint.getBlockY());
+            final int maxY = Math.max(minPoint.getBlockY(), maxPoint.getBlockY());
+
+            if ((location.getBlockX() >= minX - added) && (location.getBlockX() <= maxX + added)) {
+                if ((location.getBlockY() >= minY - added) && (location.getBlockY() <= maxY + added)) {
+                    if ((location.getBlockZ() >= minZ - added) && (location.getBlockZ() <= maxZ + added)) {
                         return true;
                     }
                 }
