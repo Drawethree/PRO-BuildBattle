@@ -70,6 +70,7 @@ public class BBSettings {
     private static boolean replaceBlockBehindSigns = true;
     private static boolean fairVote = true;
     private static boolean giveRewardsAfterGameEnds = true;
+    private static boolean winFireworksEnabled = true;
     //PLOT OPTIONS
     private static boolean enableClearPlotOption = true;
     private static boolean enableBannerCreatorOption = true;
@@ -844,6 +845,7 @@ public class BBSettings {
             setParticleOffset(BuildBattle.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.offset"));
             setFireworkAmount(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.amount_per_corner"));
             setFireworkWaves(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.firework_waves"));
+            setWinFireworksEnabled(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.win_fireworks.enabled"));
             setAmountParticleToSpawn(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("arena.particles.amount_to_spawn"));
             setPartyMaxPlayers(BuildBattle.getFileManager().getConfig("config.yml").get().getInt("parties.max_players"));
             setAnnounceNewMostPoints(BuildBattle.getFileManager().getConfig("config.yml").get().getBoolean("arena.announce_new_most_points"));
@@ -962,5 +964,13 @@ public class BBSettings {
 
     private static void setSuperVotesEnabled(boolean superVotesEnabled) {
         BBSettings.superVotesEnabled = superVotesEnabled;
+    }
+
+    public static boolean isWinFireworksEnabled() {
+        return winFireworksEnabled;
+    }
+
+    private static void setWinFireworksEnabled(boolean winFireworksEnabled) {
+        BBSettings.winFireworksEnabled = winFireworksEnabled;
     }
 }

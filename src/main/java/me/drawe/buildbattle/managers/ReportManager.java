@@ -5,7 +5,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.events.BBReportEvent;
+import me.drawe.buildbattle.events.misc.BBReportEvent;
 import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;

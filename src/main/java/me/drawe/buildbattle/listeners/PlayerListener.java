@@ -811,7 +811,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onTntExplode(final EntityExplodeEvent e) {
         final BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
-        System.out.println("Plot je " + plot);
         if (plot != null) {
             e.setCancelled(true);
             e.getEntity().getLocation().getBlock().setType(CompMaterial.AIR.getMaterial());

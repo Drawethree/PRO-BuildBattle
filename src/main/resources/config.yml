@@ -82,6 +82,7 @@ arena:
     amount_to_spawn: 1
     refresh_time: 0.5
   win_fireworks:
+    enabled: true
     firework_waves: 3
     amount_per_corner: 5
   allowed_commands:

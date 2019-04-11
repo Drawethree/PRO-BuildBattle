@@ -5,24 +5,32 @@ import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class BBCommandRewards implements BBReward {
 
-    public static String firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getString("rewards.Command.first_place");
-    public static String secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getString("rewards.Command.second_place");
-    public static String thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getString("rewards.Command.third_place");
+    private static List<String> firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.first_place");
+    private static List<String> secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.second_place");
+    private static List<String> thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.third_place");
 
     @Override
     public void giveReward(BBTeam team, int placement) {
+        List<String> rewardsGiven = null;
         switch (placement) {
             case 1:
-                for(Player p : team.getPlayers()) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), firstPlace.replaceAll("%player%", p.getName()));
+                rewardsGiven = firstPlace;
                 break;
             case 2:
-                for(Player p : team.getPlayers()) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), secondPlace.replaceAll("%player%", p.getName()));
+                rewardsGiven = secondPlace;
                 break;
             case 3:
-                for(Player p : team.getPlayers()) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), thirdPlace.replaceAll("%player%", p.getName()));
+                rewardsGiven = thirdPlace;
                 break;
+        }
+        if(rewardsGiven != null) {
+            for (Player p : team.getPlayers())
+                for (String cmd : rewardsGiven)
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", p.getName()));
         }
     }
 }

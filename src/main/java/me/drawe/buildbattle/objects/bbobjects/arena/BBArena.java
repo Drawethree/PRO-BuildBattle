@@ -1,10 +1,10 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.events.BBGameEndEvent;
-import me.drawe.buildbattle.events.BBGameStartEvent;
-import me.drawe.buildbattle.events.BBGameStateSwitchEvent;
-import me.drawe.buildbattle.events.BBPlayerGameJoinEvent;
+import me.drawe.buildbattle.events.game.BBGameEndEvent;
+import me.drawe.buildbattle.events.game.BBGameStartEvent;
+import me.drawe.buildbattle.events.game.BBGameStateSwitchEvent;
+import me.drawe.buildbattle.events.game.BBPlayerGameJoinEvent;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
@@ -575,19 +575,11 @@ public class BBArena {
                 break;
         }
 
-        this.winner = null;
-        this.currentVotingPlot = null;
-        this.theme = null;
-        this.resetAllPlots();
-        this.resetAllTeams();
-
-
-        if (BBSettings.isVotingForThemes()) {
-            themeVoting.reset();
-        }
-
         if (forced || BBSettings.isRemovePlayersAfterGame()) {
             kickAllPlayers();
+            if (BBSettings.isGiveRewardsAfterGameEnds()) {
+                RewardManager.getInstance().giveRewards(this);
+            }
         } else {
             updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
             PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
@@ -600,6 +592,16 @@ public class BBArena {
             if (players.size() >= minPlayers) {
                 startLobby();
             }
+        }
+
+        this.winner = null;
+        this.currentVotingPlot = null;
+        this.theme = null;
+        this.resetAllPlots();
+        this.resetAllTeams();
+
+        if (BBSettings.isVotingForThemes()) {
+            themeVoting.reset();
         }
 
         setBBArenaState(BBArenaState.LOBBY);
@@ -810,6 +812,9 @@ public class BBArena {
     }
 
     private void spawnWinnerFireworks() {
+        if (!BBSettings.isWinFireworksEnabled()) {
+            return;
+        }
         if (winner != null) {
             new BukkitRunnable() {
                 int times = 0;

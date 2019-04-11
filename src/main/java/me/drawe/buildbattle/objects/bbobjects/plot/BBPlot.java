@@ -313,6 +313,10 @@ public class BBPlot implements Comparable<BBPlot> {
         this.blocksInPlot = locations;
     }
 
+    public void explode() {
+        getCenter().getWorld().createExplosion(getCenter().getX(),getCenter().getY(),getCenter().getZ(),10f,false,false);
+    }
+
 
     public List<Location> getBlocksInPlot() {
         return blocksInPlot;

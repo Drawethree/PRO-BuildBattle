@@ -6,23 +6,24 @@ import org.bukkit.entity.Player;
 
 public class BBVaultRewards implements BBReward {
 
-    public static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.first_place");
-    public static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.second_place");
-    public static int thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.third_place");
+    private static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.first_place");
+    private static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.second_place");
+    private static int thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.third_place");
 
     @Override
     public void giveReward(BBTeam team, int placement) {
+        int rewardGiven = 0;
         switch (placement) {
             case 1:
-                for(Player p : team.getPlayers()) BuildBattle.getEconomy().depositPlayer(p, firstPlace);
+                rewardGiven = firstPlace;
                 break;
             case 2:
-                for(Player p : team.getPlayers()) BuildBattle.getEconomy().depositPlayer(p, secondPlace);
+                rewardGiven = secondPlace;
                 break;
             case 3:
-                for(Player p : team.getPlayers()) BuildBattle.getEconomy().depositPlayer(p, thirdPlace);
+                rewardGiven = thirdPlace;
                 break;
         }
-
+        for(Player p : team.getPlayers()) BuildBattle.getEconomy().depositPlayer(p, rewardGiven);
     }
 }
