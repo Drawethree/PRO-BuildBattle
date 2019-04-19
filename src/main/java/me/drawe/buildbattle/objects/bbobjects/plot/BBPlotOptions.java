@@ -7,6 +7,7 @@ import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.ReflectionUtils;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -43,27 +44,20 @@ public class BBPlotOptions {
     }
 
     public void setCurrentFloorItem(ItemStack currentFloorItem) {
-        if (currentFloorItem.getType().isBlock()) {
+        if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial() || currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
             if (!isItemValidForChange(currentFloorItem)) {
                 for (Player p : plot.getTeam().getPlayers())
                     p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
                 return;
-            } else {
-                this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
-                this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
-                plot.changeFloor(currentFloorItem);
-                for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
             }
-        } else if (currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
+
             this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
             this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
-            plot.changeFloor(CompMaterial.WATER);
-            for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
-        } else if (currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial()) {
-            this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
-            this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
-            plot.changeFloor(CompMaterial.LAVA);
-            for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+            plot.changeFloor(currentFloorItem);
+            for (Player p : plot.getTeam().getPlayers()) {
+                p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+                p.playSound(p.getLocation(), CompSound.NOTE_PLING.getSound(), 1, 2.0F);
+            }
         } else {
             for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
         }

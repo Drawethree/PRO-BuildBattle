@@ -37,6 +37,7 @@ public class BBBannerCreator {
         this.selectedColor = color;
         OptionsManager.getInstance().openPatternsInventory(this);
     }
+
     public void addPattern(PatternType type) {
         BannerMeta meta = (BannerMeta) createdBanner.getItemMeta();
         meta.addPattern(new Pattern(selectedColor.getDye(), type));

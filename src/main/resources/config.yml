@@ -32,9 +32,12 @@ rewards:
     third_place: 10
   Command:
     enabled: false
-    first_place: 'give %player% 264 3'
-    second_place: 'give %player% 264 2'
-    third_place: 'give %player% 264 1'
+    first_place:
+      - 'give %player% 264 3'
+    second_place:
+      - 'give %player% 264 2'
+    third_place:
+      - 'give %player% 264 1'
 auto-restart:
   enabled: false
   games-needed: 10
