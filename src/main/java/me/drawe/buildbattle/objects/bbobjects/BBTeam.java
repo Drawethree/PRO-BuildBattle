@@ -2,7 +2,6 @@ package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.entity.Player;
@@ -16,7 +15,6 @@ public class BBTeam {
     private int maxPlayers;
     private int ID;
     private List<Player> players;
-    private BBPlot assignedPlot;
     private BBArena arena;
     private ItemStack statusItemstack;
 
@@ -25,7 +23,6 @@ public class BBTeam {
         this.arena = arena;
         this.maxPlayers = arena.getTeamSize();
         this.players = new ArrayList<>();
-        this.assignedPlot = null;
         this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
     }
 
@@ -33,9 +30,6 @@ public class BBTeam {
         return players;
     }
 
-    public BBPlot getAssignedPlot() {
-        return assignedPlot;
-    }
 
     public Player getCaptain() {
         return players.get(0);
@@ -43,7 +37,6 @@ public class BBTeam {
 
     public void resetTeam() {
         this.players = new ArrayList<>();
-        this.assignedPlot = null;
         this.updateStatusItemStack();
     }
 
