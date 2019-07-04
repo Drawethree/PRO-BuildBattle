@@ -1,29 +1,25 @@
 package me.drawe.buildbattle.hooks.papi;
 
-import me.clip.placeholderapi.external.EZPlaceholderHook;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
-public class BuildBattleProPlaceholders extends EZPlaceholderHook {
-
-    private BuildBattle ourPlugin;
-
-    public BuildBattleProPlaceholders(BuildBattle ourPlugin) {
-        super(ourPlugin, "buildbattlepro");
-        this.ourPlugin = ourPlugin;
-    }
+public class BuildBattleProPlaceholders extends PlaceholderExpansion {
 
     @Override
-    public String onPlaceholderRequest(Player p, String identifier) {
+    public String onRequest(OfflinePlayer p, String params) {
+
         BBPlayerStats stats = PlayerManager.getInstance().getPlayerStats(p);
+
         if (p == null) {
             return "";
         }
-        switch (identifier) {
+
+        switch (params) {
             case "wins":
                 if (stats != null) {
                     return String.valueOf(stats.getWins());
@@ -61,13 +57,33 @@ public class BuildBattleProPlaceholders extends EZPlaceholderHook {
                     return String.valueOf(0);
                 }
             default:
-                if (identifier.contains("status")) {
-                    final BBArena arena = ArenaManager.getInstance().getArena(identifier.replaceAll("status_", ""));
+                if (params.contains("status")) {
+                    final BBArena arena = ArenaManager.getInstance().getArena(params.replaceAll("status_", ""));
                     if (arena != null) {
                         return arena.getBBArenaState().getPrefix();
                     }
                 }
         }
         return null;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "buildbattlepro";
+    }
+
+    @Override
+    public String getAuthor() {
+        return "TheRealDrawe";
+    }
+
+    @Override
+    public String getVersion() {
+        return BuildBattle.getInstance().getServer().getVersion();
+    }
+
+    @Override
+    public boolean canRegister() {
+        return true;
     }
 }

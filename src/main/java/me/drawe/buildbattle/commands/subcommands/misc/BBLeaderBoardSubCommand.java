@@ -3,7 +3,7 @@ package me.drawe.buildbattle.commands.subcommands.misc;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.leaderboards.Leaderboard;
+import me.drawe.buildbattle.leaderboards.BBLeaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.LeaderboardManager;
@@ -57,10 +57,10 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                         case "delete":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                Leaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
+                                BBLeaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
                                 if (selected != null) {
                                     selected.delete();
-                                    p.sendMessage(BBSettings.getPrefix() + " §aHologram at location §e" + LocationUtil.getStringFromLocation(selected.getLocation()) + " §asuccessfully removed!");
+                                    p.sendMessage(BBSettings.getPrefix() + " §aHologram at location §e" + LocationUtil.getStringFromLocation(selected.getHologram().getLocation()) + " §asuccessfully removed!");
                                     return true;
                                 } else {
                                     p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/" + cmd.getName() + " lb select §c!");
@@ -70,7 +70,7 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                         case "teleport":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                Leaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
+                                BBLeaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
                                 if (selected != null) {
                                     selected.teleport(p.getLocation());
                                     return true;

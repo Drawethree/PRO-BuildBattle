@@ -5,8 +5,8 @@ import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -24,7 +24,7 @@ public class BBSign {
         try {
             this.sign = (Sign) loc.getBlock().getState();
             this.blockBehind = LocationUtil.getAttachedBlock(sign.getBlock());
-            this.blockBehind.setType(CompMaterial.WHITE_TERRACOTTA.getMaterial());
+            this.blockBehind.setType(XMaterial.WHITE_TERRACOTTA.parseMaterial());
             this.update();
         } catch (Exception e) {
             BuildBattle.warning("§cThere is no sign for arena §e" + arena.getName() + "§c in location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §c!");
@@ -65,7 +65,7 @@ public class BBSign {
         BuildBattle.getFileManager().getConfig("signs.yml").get().set(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
         BuildBattle.getFileManager().getConfig("signs.yml").save();
         arena.getArenaSigns().remove(this);
-        blockBehind.setType(CompMaterial.AIR.getMaterial());
+        blockBehind.setType(XMaterial.AIR.parseMaterial());
         if (p != null) {
             p.sendMessage(BBSettings.getPrefix() + "§aSign for arena §e" + getArena().getName() + "§a successfully removed!");
         }

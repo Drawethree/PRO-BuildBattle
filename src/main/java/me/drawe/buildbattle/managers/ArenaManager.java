@@ -10,7 +10,7 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.InventoryUtil;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class ArenaManager {
 
-    public static final ItemStack posSelectorItem = ItemUtil.create(CompMaterial.STICK, 1, "&ePlot Selector", ItemUtil.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"), true);
+    public static final ItemStack posSelectorItem = ItemUtil.create(XMaterial.STICK, 1, "&ePlot Selector", ItemUtil.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"), true);
 
     private static ArenaManager ourInstance = new ArenaManager();
     private static HashMap<String, BBArena> arenas = new HashMap<>();

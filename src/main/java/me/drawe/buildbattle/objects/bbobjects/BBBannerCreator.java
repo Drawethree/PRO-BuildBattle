@@ -6,7 +6,7 @@ import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.compatbridge.model.CompDye;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class BBBannerCreator {
 
     public BBBannerCreator(Player p) {
         this.player = p;
-        this.createdBanner = ItemUtil.create(CompMaterial.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BBSettings.getFinalBannerLore()), null,null);
+        this.createdBanner = ItemUtil.create(XMaterial.WHITE_BANNER,1, Message.FINAL_BANNER_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BBSettings.getFinalBannerLore()), null,null);
         this.selectedColor = CompDye.WHITE;
     }
 

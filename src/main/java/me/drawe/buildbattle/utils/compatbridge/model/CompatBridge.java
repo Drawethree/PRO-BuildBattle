@@ -62,8 +62,8 @@ public final class CompatBridge {
      * @param mat
      * @param data
      */
-    public static void setTypeAndData(Block block, CompMaterial mat, byte data) {
-        setTypeAndData(block, mat.getMaterial(), data);
+    public static void setTypeAndData(Block block, XMaterial mat, byte data) {
+        setTypeAndData(block, mat.parseMaterial(), data);
     }
 
     /**

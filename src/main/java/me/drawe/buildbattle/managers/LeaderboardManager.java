@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.leaderboards.Leaderboard;
+import me.drawe.buildbattle.leaderboards.BBLeaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
 import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
@@ -14,8 +14,8 @@ import java.util.List;
 public class LeaderboardManager {
 
     private static LeaderboardManager ourInstance = new LeaderboardManager();
-    private static List<Leaderboard> activeLeaderboards;
-    private static HashMap<Player, Leaderboard> selectedLeaderboards = new HashMap<>();
+    private static List<BBLeaderboard> activeLeaderboards;
+    private static HashMap<Player, BBLeaderboard> selectedLeaderboards = new HashMap<>();
 
     private LeaderboardManager() {
     }
@@ -25,11 +25,11 @@ public class LeaderboardManager {
         return ourInstance;
     }
 
-    public static List<Leaderboard> getActiveLeaderboards() {
+    public static List<BBLeaderboard> getActiveLeaderboards() {
         return activeLeaderboards;
     }
 
-    public static HashMap<Player, Leaderboard> getSelectedLeaderboards() {
+    public static HashMap<Player, BBLeaderboard> getSelectedLeaderboards() {
         return selectedLeaderboards;
     }
 
@@ -43,16 +43,16 @@ public class LeaderboardManager {
                 final LeaderboardType type = LeaderboardType.valueOf(BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getString("leaderboards." + location + ".type"));
                 final int playersToDisplay = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getInt("leaderboards." + location + ".player-amount");
                 double refreshTime = BuildBattle.getFileManager().getConfig("leaderboards.yml").get().getDouble("leaderboards." + location + ".refresh-time");
-                activeLeaderboards.add(new Leaderboard(loc, type, playersToDisplay, refreshTime));
+                activeLeaderboards.add(new BBLeaderboard(loc, type, playersToDisplay, refreshTime));
                 BuildBattle.info("§aLeaderboard at location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §aloaded!");
             }
         }
     }
 
     public void selectLeaderboard(Player p) {
-        Leaderboard selected = getClosestLeaderboard(p);
+        BBLeaderboard selected = getClosestLeaderboard(p);
         if (selected != null) {
-            p.sendMessage(BBSettings.getPrefix() + " §aYou have selected Leaderboard with type §e" + selected.getType().name() + "§a at location §e" + LocationUtil.getStringFromLocationXYZ(selected.getLocation()));
+            p.sendMessage(BBSettings.getPrefix() + " §aYou have selected BBLeaderboard with type §e" + selected.getType().name() + "§a at location §e" + LocationUtil.getStringFromLocationXYZ(selected.getHologram().getLocation()));
             selectedLeaderboards.put(p, selected);
         } else {
             p.sendMessage(BBSettings.getPrefix() + " §cThere is not leaderboard close to you !");
@@ -60,20 +60,20 @@ public class LeaderboardManager {
     }
 
     public void refreshAllLeaderBoards() {
-        for (Leaderboard l : activeLeaderboards) {
+        for (BBLeaderboard l : activeLeaderboards) {
             l.update();
         }
     }
 
-    private Leaderboard getClosestLeaderboard(Player p) {
-        Leaderboard selected = null;
-        for (Leaderboard l : activeLeaderboards) {
-            if (p.getWorld().equals(l.getLocation().getWorld())) {
-                if (l.getLocation().distance(p.getLocation()) <= 5) {
+    private BBLeaderboard getClosestLeaderboard(Player p) {
+        BBLeaderboard selected = null;
+        for (BBLeaderboard l : activeLeaderboards) {
+            if (p.getWorld().equals(l.getHologram().getLocation().getWorld())) {
+                if (l.getHologram().getLocation().distance(p.getLocation()) <= 5) {
                     if (selected == null) {
                         selected = l;
                     } else {
-                        if (selected.getLocation().distance(p.getLocation()) > l.getLocation().distance(p.getLocation())) {
+                        if (selected.getHologram().getLocation().distance(p.getLocation()) > l.getHologram().getLocation().distance(p.getLocation())) {
                             selected = l;
                         }
                     }
@@ -84,15 +84,15 @@ public class LeaderboardManager {
     }
 
     public void createLeaderboard(Player creator, Location loc, LeaderboardType type) {
-        Leaderboard leaderboard = new Leaderboard(loc, type, 10, 30);
+        BBLeaderboard leaderboard = new BBLeaderboard(loc, type, 10, 30);
         creator.sendMessage(BBSettings.getPrefix() + " §aLeaderboard with type §e" + type.name() + " §acreated!");
         activeLeaderboards.add(leaderboard);
         saveLeaderboardIntoConfig(leaderboard);
     }
 
-    private void saveLeaderboardIntoConfig(Leaderboard l) {
-        final String configPath = LocationUtil.getStringFromLocationXYZ(l.getLocation());
-        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".location", LocationUtil.getStringFromLocation(l.getLocation()));
+    private void saveLeaderboardIntoConfig(BBLeaderboard l) {
+        final String configPath = LocationUtil.getStringFromLocationXYZ(l.getHologram().getLocation());
+        BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".location", LocationUtil.getStringFromLocation(l.getHologram().getLocation()));
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".type", l.getType().name());
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".player-amount", l.getAmountToDisplay());
         BuildBattle.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".refresh-time", l.getRefreshTime());

@@ -8,7 +8,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.BBTheme;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -68,8 +68,9 @@ public class ItemUtil {
     /*
      * Easy creating an itemstack
      */
-    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels) {
-        ItemStack item = material.toItem(amount);
+    public static ItemStack create(XMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels) {
+        ItemStack item = material.parseItem();
+        item.setAmount(amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -83,8 +84,9 @@ public class ItemUtil {
         return item;
     }
 
-    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, boolean glow) {
-        ItemStack item = material.toItem(amount);
+    public static ItemStack create(XMaterial material, int amount, String displayName, List<String> lore, boolean glow) {
+        ItemStack item = material.parseItem();
+        item.setAmount(amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
@@ -138,7 +140,7 @@ public class ItemUtil {
 
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(BBSettings.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
+        return create(XMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(BBSettings.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
@@ -171,8 +173,9 @@ public class ItemUtil {
         return reportLore;
     }
 
-    public static ItemStack create(CompMaterial m, int i, String s) {
-        ItemStack item = m.toItem(i);
+    public static ItemStack create(XMaterial m, int i, String s) {
+        ItemStack item = m.parseItem();
+        item.setAmount(i);
         ItemMeta meta = item.getItemMeta();
         if (s != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', s));
@@ -188,7 +191,7 @@ public class ItemUtil {
         item.setItemMeta(meta);
     }
 
-    public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore) {
+    public static ItemStack create(XMaterial material, int amount, String displayName, List<String> lore) {
         return create(material,amount,displayName,lore,null,null);
     }
 }

@@ -7,7 +7,7 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -39,7 +39,7 @@ public class NPCListener implements Listener {
         if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
             BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
             if(plot != null) {
-                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != CompMaterial.AIR.getMaterial())) {
+                if((p.getItemInHand() != null) && (p.getItemInHand().getType() != XMaterial.AIR.parseMaterial())) {
                     if (p.hasPermission("buildbattlepro.changefloor")) {
                         plot.getOptions().setCurrentFloorItem(p.getItemInHand());
                     } else {

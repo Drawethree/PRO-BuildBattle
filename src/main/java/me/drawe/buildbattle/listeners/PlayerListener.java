@@ -17,9 +17,9 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -41,6 +41,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
@@ -93,9 +94,10 @@ public class PlayerListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         Inventory clickedInventory = e.getClickedInventory();
         Inventory inv = e.getInventory();
+        InventoryView invView = e.getView();
         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
         if (inv != null) {
-            if (inv.getTitle().equalsIgnoreCase(ArenaManager.getAllArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(ArenaManager.getTeamArenasInventory().getTitle()) || inv.getTitle().equalsIgnoreCase(ArenaManager.getSoloArenasInventory().getTitle())) {
+            if (invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
                     BBArena clickedArena = ArenaManager.getInstance().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
@@ -117,7 +119,7 @@ public class PlayerListener implements Listener {
                         p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                     }
                 }
-            } else if (inv.getTitle().contains("Editing Arena: ")) {
+            } else if (invView.getTitle().contains("Editing Arena: ")) {
                 e.setCancelled(true);
                 BBArenaEdit currentEdit = ArenaManager.getInstance().getArenaEdit(inv);
                 if (currentEdit != null) {
@@ -154,12 +156,12 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            } else if (inv.getTitle().contains(OptionsManager.getReportsInventoryTitle())) {
+            } else if (invView.getTitle().contains(OptionsManager.getReportsInventoryTitle())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem().isSimilar(GUIItem.NEXT_PAGE.getItemStack())) {
-                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(inv));
+                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.PREV_PAGE.getItemStack())) {
-                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getPrevPage(inv));
+                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getPrevPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.CLOSE_GUI.getItemStack())) {
                     p.closeInventory();
                 } else if (!e.getCurrentItem().isSimilar(GUIItem.FILL_ITEM.getItemStack())) {
@@ -180,12 +182,12 @@ public class PlayerListener implements Listener {
                                 } else {
                                     clickedReport.setReportStatus(BBReportStatus.PENDING);
                                 }
-                                ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(inv));
+                                ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(invView));
                                 break;
                             case MIDDLE:
                                 if (ReportManager.getInstance().deleteReport(clickedReport)) {
                                     p.sendMessage(BBSettings.getPrefix() + "§aReport deleted !");
-                                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(inv));
+                                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(invView));
                                 } else {
                                     p.sendMessage(BBSettings.getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
                                     p.closeInventory();
@@ -216,8 +218,8 @@ public class PlayerListener implements Listener {
                 }
                 if (a.getBBArenaState() != BBArenaState.INGAME) {
                     e.setCancelled(true);
-                    if (a.getBBArenaState() == BBArenaState.THEME_VOTING && clickedInventory.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
-                        if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.SIGN.getMaterial() || e.getCurrentItem().getType() == CompMaterial.PAPER.getMaterial())) {
+                    if (a.getBBArenaState() == BBArenaState.THEME_VOTING && invView.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
+                        if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == XMaterial.OAK_SIGN.parseMaterial() || e.getCurrentItem().getType() == XMaterial.PAPER.parseMaterial())) {
                             BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                             if (selectedTheme != null) {
                                 if (selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
@@ -240,8 +242,8 @@ public class PlayerListener implements Listener {
                             }
                         }
                     } else if (a.getBBArenaState() == BBArenaState.LOBBY) {
-                        if (inv.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.LIME_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.RED_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.YELLOW_TERRACOTTA.getMaterial())) {
+                        if (invView.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
+                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == XMaterial.LIME_TERRACOTTA.parseMaterial() || e.getCurrentItem().getType() == XMaterial.RED_TERRACOTTA.parseMaterial() || e.getCurrentItem().getType() == XMaterial.YELLOW_TERRACOTTA.parseMaterial())) {
                                 BBTeam team = a.getTeamByItemStack(e.getCurrentItem());
                                 BBTeam playerTeam = a.getPlayerTeam(p);
                                 if (team != null) {
@@ -260,7 +262,7 @@ public class PlayerListener implements Listener {
                         e.setCancelled(true);
                         return;
                     }
-                    if (clickedInventory.getTitle().equalsIgnoreCase(Message.GUI_OPTIONS_TITLE.getMessage())) {
+                    if (invView.getTitle().equalsIgnoreCase(Message.GUI_OPTIONS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -306,7 +308,7 @@ public class PlayerListener implements Listener {
                                 p.openInventory(OptionsManager.getBiomesInventory());
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLES_TITLE.getMessage())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PARTICLES_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -321,7 +323,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(OptionsManager.getBiomesInventory().getTitle())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_BIOMES_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -336,7 +338,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -352,7 +354,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_TIME_TITLE.getMessage())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_TIME_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
@@ -366,7 +368,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().contains(Message.GUI_HEADS_TITLE.getMessage())) {
+                    } else if (invView.getTitle().contains(Message.GUI_HEADS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         Inventory inventory = e.getClickedInventory();
                         HeadInventory headInventory = HeadInventory.getInstance();
@@ -400,7 +402,7 @@ public class PlayerListener implements Listener {
                                                 }
                                             } else {
                                                 if (head != null) {
-                                                    if (head.getData().getItemType() != CompMaterial.AIR.getMaterial()) {
+                                                    if (head.getData().getItemType() != XMaterial.AIR.parseMaterial()) {
                                                         p.getInventory().addItem(head);
                                                         p.closeInventory();
                                                     }
@@ -412,7 +414,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_COLORS_TITLE.getMessage())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_COLORS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
@@ -432,14 +434,14 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    } else if (inv.getTitle().equalsIgnoreCase(Message.GUI_PATTERNS_TITLE.getMessage())) {
+                    } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PATTERNS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == CompMaterial.WHITE_BANNER.getMaterial() && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
+                                    if (e.getCurrentItem().getType() == XMaterial.WHITE_BANNER.parseMaterial() && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
                                         BannerMeta meta = (BannerMeta) e.getCurrentItem().getItemMeta();
                                         bannerCreator.addPattern(meta.getPatterns().get(0).getPattern());
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -462,7 +464,7 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
-            if ((e.getItem() != null) && (e.getItem().getType() == CompMaterial.COMPASS.getMaterial())) {
+            if ((e.getItem() != null) && (e.getItem().getType() == XMaterial.COMPASS.parseMaterial())) {
                 e.setCancelled(true);
                 return;
             }
@@ -667,7 +669,7 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (BBSettings.isAutomaticGrow() && (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial())) {
+                        if (BBSettings.isAutomaticGrow() && (e.getBlock().getType() == XMaterial.WHEAT_SEEDS.parseMaterial() || e.getBlock().getType() == XMaterial.MELON_STEM.parseMaterial() || e.getBlock().getType() == XMaterial.PUMPKIN_STEM.parseMaterial())) {
                             CompatBridge.setData(e.getBlock(), (byte) 4);
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {
@@ -755,6 +757,7 @@ public class PlayerListener implements Listener {
         final Location loc = e.getBlock().getLocation();
         final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         final Block block = e.getBlock();
+
         if (arena != null) {
             switch (arena.getBBArenaState()) {
                 case LOBBY:
@@ -813,7 +816,7 @@ public class PlayerListener implements Listener {
         final BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
         if (plot != null) {
             e.setCancelled(true);
-            e.getEntity().getLocation().getBlock().setType(CompMaterial.AIR.getMaterial());
+            e.getEntity().getLocation().getBlock().setType(XMaterial.AIR.parseMaterial());
             e.blockList().clear();
         }
     }
@@ -861,7 +864,7 @@ public class PlayerListener implements Listener {
             if (plot != null) {
                 for (BlockState blockState : e.getBlocks()) {
                     if (!plot.isLocationInPlot(blockState.getLocation()))
-                        blockState.setType(CompMaterial.AIR.getMaterial());
+                        blockState.setType(XMaterial.AIR.parseMaterial());
                 }
             }
         }

@@ -266,7 +266,7 @@ categories:
         description: Crafting Table
   color:
     icon:
-      material: ROSE_RED
+      material: BUCKET
     description: Colors
     heads:
       cy1337:

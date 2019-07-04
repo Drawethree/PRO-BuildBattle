@@ -131,7 +131,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         }
         if (usePlaceholderAPI) {
             info("§aSuccessfully hooked into §ePlaceholderAPI §a!");
-            new BuildBattleProPlaceholders(this).hook();
+            new BuildBattleProPlaceholders().register();
         }
         if (useMVdWPlaceholderAPI) {
             info("§aSuccessfully hooked into §eMVdWPlaceholderAPI §a!");

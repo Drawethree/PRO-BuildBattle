@@ -15,6 +15,7 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -181,7 +182,7 @@ public class ReportManager {
     }
 
 
-    public int getNextPage(Inventory inv) {
+    public int getNextPage(InventoryView inv) {
         try {
             return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) + 1;
         } catch (Exception e) {
@@ -189,7 +190,7 @@ public class ReportManager {
         }
     }
 
-    public int getCurrentPage(Inventory inv) {
+    public int getCurrentPage(InventoryView inv) {
         try {
             return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), ""));
         } catch (Exception e) {
@@ -197,7 +198,7 @@ public class ReportManager {
         }
     }
 
-    public int getPrevPage(Inventory inv) {
+    public int getPrevPage(InventoryView inv) {
         try {
             return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) - 1;
         } catch (Exception e) {

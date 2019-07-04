@@ -3,7 +3,7 @@ package me.drawe.buildbattle.objects.bbobjects;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.ItemUtil;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -100,13 +100,13 @@ public class BBTeam {
         return players.size() == 0;
     }
 
-    public CompMaterial getStatusMaterial() {
+    public XMaterial getStatusMaterial() {
         if(isFull()) {
-            return CompMaterial.RED_TERRACOTTA;
+            return XMaterial.RED_TERRACOTTA;
         } else if(isEmpty()) {
-            return CompMaterial.LIME_TERRACOTTA;
+            return XMaterial.LIME_TERRACOTTA;
         } else {
-            return CompMaterial.YELLOW_TERRACOTTA;
+            return XMaterial.YELLOW_TERRACOTTA;
         }
     }
 

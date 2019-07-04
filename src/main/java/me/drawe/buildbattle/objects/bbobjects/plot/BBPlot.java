@@ -9,8 +9,8 @@ import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -101,8 +101,8 @@ public class BBPlot implements Comparable<BBPlot> {
             for (int y = minY + 1; y <= maxY; y += 1) {
                 for (int z = minZ; z <= maxZ; z += 1) {
                     final Location tmpblock = new Location(getWorld(), x, y, z);
-                    if (tmpblock.getBlock().getType() != CompMaterial.AIR.getMaterial()) {
-                        tmpblock.getBlock().setType(CompMaterial.AIR.getMaterial());
+                    if (tmpblock.getBlock().getType() != XMaterial.AIR.parseMaterial()) {
+                        tmpblock.getBlock().setType(XMaterial.AIR.parseMaterial());
                     }
                     for (Entity e : tmpblock.getWorld().getNearbyEntities(tmpblock, 3, 3, 3)) {
                         if (e.getType() != EntityType.PLAYER) {
@@ -197,10 +197,10 @@ public class BBPlot implements Comparable<BBPlot> {
         return tpLoc;
     }
 
-    public void changeFloor(CompMaterial material) {
+    public void changeFloor(XMaterial material) {
 
-        if (material == CompMaterial.WATER_BUCKET) material = CompMaterial.WATER;
-        if (material == CompMaterial.LAVA_BUCKET) material = CompMaterial.LAVA;
+        if (material == XMaterial.WATER_BUCKET) material = XMaterial.WATER;
+        if (material == XMaterial.LAVA_BUCKET) material = XMaterial.LAVA;
 
         final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
         final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
@@ -216,7 +216,7 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public void changeFloor(ItemStack item) {
-        changeFloor(CompMaterial.fromItemStack(item));
+        changeFloor(XMaterial.matchXMaterial(item));
     }
 
     public boolean isInPlotRange(Location location, int added) {
@@ -285,7 +285,7 @@ public class BBPlot implements Comparable<BBPlot> {
     public void resetPlotFromGame() {
         this.removeAllBlocks();
         this.removeAllParticles();
-        options.setCurrentFloorItem(BBSettings.getDefaultFloorMaterial().toItem());
+        options.setCurrentFloorItem(BBSettings.getDefaultFloorMaterial().parseItem());
         options.setCurrentWeather(WeatherType.CLEAR, false);
         options.setCurrentTime(BBPlotTime.NOON, false);
         options.setCurrentBiome(PlotBiome.PLAINS, false);
@@ -381,7 +381,7 @@ public class BBPlot implements Comparable<BBPlot> {
             randomY = new Random().nextInt(maxY - minY) + minY;
             randomZ = new Random().nextInt(maxZ - minZ) + minZ;
         }
-        while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != CompMaterial.AIR.getMaterial()) && tries < 10);
+        while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != XMaterial.AIR.parseMaterial()) && tries < 10);
 
         BuildBattle.debug("Returning Location: " + getWorld().getName() + ", " + randomX + ", " + randomY + ", " + randomZ);
         return new Location(getWorld(), randomX, randomY, randomZ);

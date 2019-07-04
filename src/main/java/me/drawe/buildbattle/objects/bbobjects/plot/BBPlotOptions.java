@@ -6,8 +6,8 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.ReflectionUtils;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -24,12 +24,12 @@ public class BBPlotOptions {
     private WeatherType currentWeather;
     private BBPlotTime currentTime;
     private PlotBiome currentBiome;
-    private CompMaterial currentFloorMaterial;
+    private XMaterial currentFloorMaterial;
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
         this.currentFloorItem = ItemUtil.create(BBSettings.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
-        this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
+        this.currentFloorMaterial = XMaterial.matchXMaterial(currentFloorItem.getType());
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
         this.currentBiome = PlotBiome.FOREST;
@@ -44,14 +44,14 @@ public class BBPlotOptions {
     }
 
     public void setCurrentFloorItem(ItemStack currentFloorItem) {
-        if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial() || currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
+        if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == XMaterial.LAVA_BUCKET.parseMaterial() || currentFloorItem.getType() == XMaterial.WATER_BUCKET.parseMaterial()) {
             if (!isItemValidForChange(currentFloorItem)) {
                 for (Player p : plot.getTeam().getPlayers())
                     p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
                 return;
             }
 
-            this.currentFloorMaterial = CompMaterial.fromItemStack(currentFloorItem);
+            this.currentFloorMaterial = XMaterial.matchXMaterial(currentFloorItem);
             this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
             plot.changeFloor(currentFloorItem);
             for (Player p : plot.getTeam().getPlayers()) {
@@ -89,17 +89,15 @@ public class BBPlotOptions {
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        return !(CompMaterial.isLongGrass(currentFloorItem.getType())
-                || CompMaterial.isButton(currentFloorItem.getType())
-                || CompMaterial.isFlower(currentFloorItem.getType())
-                || CompMaterial.isDoublePlant(currentFloorItem.getType())
-                || CompMaterial.isSapling(currentFloorItem.getType())
-                || CompMaterial.isPressurePlate(currentFloorItem.getType())
-                || CompMaterial.isBed(currentFloorItem.getType())
-                || CompMaterial.isMushroom(currentFloorItem.getType())
-                || CompMaterial.isChorus(currentFloorItem.getType())
-                || currentFloorItem.getType() == CompMaterial.LADDER.getMaterial()
-                || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial());
+        return !(XMaterial.isLongGrass(currentFloorItem.getType())
+                || XMaterial.isButton(currentFloorItem.getType())
+                || XMaterial.isFlower(currentFloorItem.getType())
+                || XMaterial.isPressurePlate(currentFloorItem.getType())
+                || XMaterial.isBed(currentFloorItem.getType())
+                || XMaterial.isMushroom(currentFloorItem.getType())
+                || XMaterial.isChorus(currentFloorItem.getType())
+                || currentFloorItem.getType() == XMaterial.LADDER.parseMaterial()
+                || currentFloorItem.getType() == XMaterial.CACTUS.parseMaterial());
     }
 
 

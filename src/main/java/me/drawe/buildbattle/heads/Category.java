@@ -2,7 +2,7 @@ package me.drawe.buildbattle.heads;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.util.ItemStackCreator;
-import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +48,7 @@ public class Category {
         List<ItemStack> heads = new ArrayList<>();
         try {
             String categoryName = BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
-            CompMaterial material = CompMaterial.fromString(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
+            XMaterial material = XMaterial.matchXMaterial(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
             this.icon = ItemStackCreator.createItem(material, 1, "&e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();
