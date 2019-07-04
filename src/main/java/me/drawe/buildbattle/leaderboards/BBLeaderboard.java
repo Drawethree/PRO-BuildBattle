@@ -3,6 +3,7 @@ package me.drawe.buildbattle.leaderboards;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.managers.LeaderboardManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
@@ -44,7 +45,7 @@ public class BBLeaderboard {
 
     public void update() {
 
-        if (!BuildBattle.getInstance().isUseHolographicDisplays() || this.hologram == null || this.hologram.isDeleted()) {
+        if (!BBHook.getHook("HolographicDisplays") || this.hologram == null || this.hologram.isDeleted()) {
             return;
         }
 

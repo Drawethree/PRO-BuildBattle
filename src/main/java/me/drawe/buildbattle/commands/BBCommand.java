@@ -14,14 +14,18 @@ import me.drawe.buildbattle.commands.subcommands.stats.BBExportStatsSubCommand;
 import me.drawe.buildbattle.commands.subcommands.stats.BBStatsSubCommand;
 import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.utils.FancyMessage;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 
-public class BBCommand extends BukkitCommand {
+public class BBCommand extends BukkitCommand implements TabCompleter {
 
 
     public static final TreeMap<String, BBSubCommand> subCommands = new TreeMap<>();
@@ -103,5 +107,10 @@ public class BBCommand extends BukkitCommand {
                 p.sendMessage("§e/" + getName() + subCommand.getDescription());
             }
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return new ArrayList<>(subCommands.keySet());
     }
 }

@@ -1,28 +1,23 @@
 package me.drawe.buildbattle;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
 import me.drawe.buildbattle.heads.HeadInventory;
-import me.drawe.buildbattle.hooks.leaderheads.*;
-import me.drawe.buildbattle.hooks.papi.BuildBattleProPlaceholders;
-import me.drawe.buildbattle.listeners.NPCListener;
+import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
 import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
-import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.MetricsLite;
 import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -39,11 +34,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private static Economy econ = null;
     private static MetricsLite metrics = null;
     private static boolean debug = false;
-    private static boolean useHolographicDisplays = false;
-    private static boolean useLeaderHeads = false;
-    private static boolean usePlaceholderAPI = false;
-    private static boolean useMVdWPlaceholderAPI = false;
-    private static boolean useCitizens = false;
 
     public static BuildBattle getInstance() {
         return instance;
@@ -115,38 +105,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void hook() {
-        useCitizens = Bukkit.getPluginManager().isPluginEnabled("Citizens");
-        useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
-        useLeaderHeads = Bukkit.getPluginManager().isPluginEnabled("LeaderHeads");
-        usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
-        useMVdWPlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI");
-
-        if (useCitizens) {
-            info("§aSuccessfully hooked into §eCitizens §a!");
-            Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(this), this);
-        }
-        if (useHolographicDisplays) {
-            info("§aSuccessfully hooked into §eHolographicDisplays §a!");
-            LeaderboardManager.getInstance().loadAllLeaderboards();
-        }
-        if (usePlaceholderAPI) {
-            info("§aSuccessfully hooked into §ePlaceholderAPI §a!");
-            new BuildBattleProPlaceholders().register();
-        }
-        if (useMVdWPlaceholderAPI) {
-            info("§aSuccessfully hooked into §eMVdWPlaceholderAPI §a!");
-            registerMvdWPlaceholders();
-        }
-        if (useLeaderHeads) {
-            info("§aSuccessfully hooked into §eLeaderHeads §a!");
-            new BuildBattleWins();
-            new BuildBattlePlayed();
-            new BuildBattleBlocksPlaced();
-            new BuildBattleMostPoints();
-            new BuildBattleSuperVotes();
-            new BuildBattleParticlesPlaced();
-        }
-
+        BBHook.attemptHooks();
         loadWorldEdit();
         metrics = new MetricsLite(this);
     }
@@ -181,7 +140,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         ArenaManager.getInstance().loadArenas();
         PlayerManager.getInstance().loadAllPlayerStats();
 
-        if (useHolographicDisplays) {
+        if (BBHook.getHook("HolographicDisplays")) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
                 h.delete();
             }
@@ -191,67 +150,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
         Bukkit.getConsoleSender().sendMessage("");
-    }
-
-    private void registerMvdWPlaceholders() {
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_wins",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getWins());
-                    }
-                    return "0";
-                });
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_played",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getPlayed());
-                    }
-                    return "0";
-                });
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_most_points",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getMostPoints());
-                    }
-                    return "0";
-                });
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_blocks_placed",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getBlocksPlaced());
-                    }
-                    return "0";
-                });
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_particles_placed",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getParticlesPlaced());
-                    }
-                    return "0";
-                });
-        PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_super_votes",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(offlinePlayer);
-                    if (pStats != null) {
-                        return String.valueOf(pStats.getSuperVotes());
-                    }
-                    return "0";
-                });
-        for (BBArena arena : ArenaManager.getArenas().values()) {
-            PlaceholderAPI.registerPlaceholder(this, "buildbattlepro_status_" + arena.getName(),
-                    placeholderReplaceEvent -> arena.getBBArenaState().getPrefix());
-        }
     }
 
     private void loadAllConfigs() {
@@ -326,14 +224,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         return true;
     }
 
-    public boolean isUseHolographicDisplays() {
-        return useHolographicDisplays;
-    }
-
-    public boolean isUseCitizens() {
-        return useCitizens;
-    }
-
     public static void info(String message) {
         Bukkit.getConsoleSender().sendMessage(BBSettings.getPrefix() + message);
     }
@@ -353,14 +243,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     public static boolean enableDebugMode() {
         BuildBattle.debug = !BuildBattle.debug;
         return BuildBattle.debug;
-    }
-
-    public static boolean isUsePlaceholderAPI() {
-        return usePlaceholderAPI;
-    }
-
-    public static boolean isUseMVdWPlaceholderAPI() {
-        return useMVdWPlaceholderAPI;
     }
 }
 

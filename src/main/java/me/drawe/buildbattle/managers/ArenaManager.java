@@ -104,6 +104,7 @@ public class ArenaManager {
     public void removeArena(CommandSender sender, BBArena arena) {
         arena.delete(sender);
         arenas.remove(arena.getName());
+
         reloadAllArenasInventory();
         reloadArenaEditors();
     }

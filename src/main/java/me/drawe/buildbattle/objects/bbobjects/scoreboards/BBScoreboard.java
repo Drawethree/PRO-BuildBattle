@@ -4,7 +4,7 @@ import be.maximvdw.placeholderapi.PlaceholderAPI;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
@@ -119,10 +119,10 @@ public abstract class BBScoreboard {
                 .replaceAll("%builders%", arena.getCurrentVotingPlot() == null ? "" : arena.getCurrentVotingPlot().getTeam().getPlayersInCommaSeparatedString())
                 .replaceAll("%player_vote%", arena.getCurrentVotingPlot() == null ? "" : String.valueOf(arena.getCurrentVotingPlot().getPlayerVoteString(player)));
 
-        if (BuildBattle.isUsePlaceholderAPI()) {
+        if (BBHook.getHook("PlaceholderAPI")) {
             line = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, line);
         }
-        if (BuildBattle.isUseMVdWPlaceholderAPI()) {
+        if (BBHook.getHook("MVdWPlaceholderAPI")) {
             line = PlaceholderAPI.replacePlaceholders(player, line);
         }
         return line;

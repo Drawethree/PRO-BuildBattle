@@ -1,8 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.npc;
 
-import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
+import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import net.citizensnpcs.api.CitizensAPI;
@@ -19,7 +19,7 @@ public class BBAddNPCSubCommand extends BBSubCommand {
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
-        if (BuildBattle.getInstance().isUseCitizens()) {
+        if (BBHook.getHook("Citizens")) {
             if (sender.hasPermission(getPermissionRequired())) {
                 if (args.length == 0) {
                     if (sender instanceof Player) {

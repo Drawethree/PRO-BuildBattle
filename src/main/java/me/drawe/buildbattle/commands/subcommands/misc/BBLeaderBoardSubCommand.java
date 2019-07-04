@@ -1,8 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.misc;
 
-import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
+import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.leaderboards.BBLeaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
 import me.drawe.buildbattle.managers.BBSettings;
@@ -22,7 +22,7 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender.hasPermission(getPermissionRequired())) {
-            if (BuildBattle.getInstance().isUseHolographicDisplays()) {
+            if (BBHook.getHook("HolographicDisplays")) {
                 if (args.length > 0) {
                     String subCommand = args[0].toLowerCase();
                     switch (subCommand) {
