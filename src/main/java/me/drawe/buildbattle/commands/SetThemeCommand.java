@@ -23,8 +23,8 @@ public class SetThemeCommand extends BukkitCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (p.hasPermission("buildbattlepro.settheme")) {
-                if (args.length == 1) {
-                    String theme = args[0];
+                if (args.length > 0) {
+                    String theme = this.getThemeFromArguments(args);
                     if (BBSettings.isThemeOK(theme)) {
                         BBArena a = PlayerManager.getInstance().getPlayerArena(p);
                         if (a != null) {
@@ -55,6 +55,10 @@ public class SetThemeCommand extends BukkitCommand {
             }
         }
         return false;
+    }
+
+    private String getThemeFromArguments(String[] args) {
+        return String.join(" ", args);
     }
 
 }
