@@ -1,28 +1,28 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.utils.compatbridge.model.CompDye;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.inventory.ItemStack;
 
 
 public enum BBDyeColor {
 
-    BLACK(0, CompDye.BLACK, XMaterial.INK_SAC.parseItem()),
-    BLUE(1, CompDye.BLUE,  XMaterial.LAPIS_LAZULI.parseItem()),
-    BROWN(2, CompDye.BROWN,  XMaterial.COCOA_BEANS.parseItem()),
-    CYAN(3, CompDye.CYAN,  XMaterial.CYAN_DYE.parseItem()),
-    GRAY(4, CompDye.GRAY,  XMaterial.GRAY_DYE.parseItem()),
-    GREEN(5, CompDye.GREEN,  XMaterial.GREEN_DYE.parseItem()),
-    LIGHT_BLUE(6, CompDye.LIGHT_BLUE,  XMaterial.LIGHT_BLUE_DYE.parseItem()),
-    LIGHT_GRAY(7, CompDye.LIGHT_GRAY,  XMaterial.LIGHT_GRAY_DYE.parseItem()),
-    LIME(8, CompDye.LIME,  XMaterial.LIME_DYE.parseItem()),
-    MAGENTA(9, CompDye.MAGENTA,  XMaterial.MAGENTA_DYE.parseItem()),
-    ORANGE(10, CompDye.ORANGE,  XMaterial.ORANGE_DYE.parseItem()),
-    PINK(11, CompDye.PINK,  XMaterial.PINK_DYE.parseItem()),
-    PURPLE(12, CompDye.PURPLE,  XMaterial.PURPLE_DYE.parseItem()),
-    RED(13, CompDye.RED,  XMaterial.POPPY.parseItem()),
-    WHITE(14, CompDye.WHITE,  XMaterial.BONE_MEAL.parseItem()),
-    YELLOW(15, CompDye.YELLOW,  XMaterial.DANDELION.parseItem());
+    BLACK(0, CompDye.BLACK, CompMaterial.INK_SAC.toItem()),
+    BLUE(1, CompDye.BLUE,  CompMaterial.LAPIS_LAZULI.toItem()),
+    BROWN(2, CompDye.BROWN,  CompMaterial.COCOA_BEANS.toItem()),
+    CYAN(3, CompDye.CYAN,  CompMaterial.CYAN_DYE.toItem()),
+    GRAY(4, CompDye.GRAY,  CompMaterial.GRAY_DYE.toItem()),
+    GREEN(5, CompDye.GREEN,  CompMaterial.GREEN_DYE.toItem()),
+    LIGHT_BLUE(6, CompDye.LIGHT_BLUE,  CompMaterial.LIGHT_BLUE_DYE.toItem()),
+    LIGHT_GRAY(7, CompDye.LIGHT_GRAY,  CompMaterial.LIGHT_GRAY_DYE.toItem()),
+    LIME(8, CompDye.LIME,  CompMaterial.LIME_DYE.toItem()),
+    MAGENTA(9, CompDye.MAGENTA,  CompMaterial.MAGENTA_DYE.toItem()),
+    ORANGE(10, CompDye.ORANGE,  CompMaterial.ORANGE_DYE.toItem()),
+    PINK(11, CompDye.PINK,  CompMaterial.PINK_DYE.toItem()),
+    PURPLE(12, CompDye.PURPLE,  CompMaterial.PURPLE_DYE.toItem()),
+    RED(13, CompDye.RED,  CompMaterial.POPPY.toItem()),
+    WHITE(14, CompDye.WHITE,  CompMaterial.BONE_MEAL.toItem()),
+    YELLOW(15, CompDye.YELLOW,  CompMaterial.DANDELION.toItem());
 
     private byte data;
     private ItemStack item;

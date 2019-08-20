@@ -3,7 +3,7 @@ package me.drawe.buildbattle.managers;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.utils.LocationUtil;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,7 +23,7 @@ public class BBSettings {
     private static List<String> restricedBlocks = new ArrayList<>();
     private static List<String> fallbackServers = new ArrayList<>();
     private static List<String> allowedCommands = new ArrayList<>();
-    private static XMaterial defaultFloorMaterial = XMaterial.BIRCH_PLANKS;
+    private static CompMaterial defaultFloorMaterial = CompMaterial.BIRCH_PLANKS;
     private static String prefix = "§8[§eBuildBattlePro§8]§r ";
     private static int lobbyTime = 30;
     private static int defaultGameTime = 300;
@@ -117,7 +117,7 @@ public class BBSettings {
         return defaultGameTime;
     }
 
-    private static void setDefaultFloorMaterial(XMaterial defaultFloorMaterial) {
+    private static void setDefaultFloorMaterial(CompMaterial defaultFloorMaterial) {
         if (defaultFloorMaterial != null) {
             BBSettings.defaultFloorMaterial = defaultFloorMaterial;
         } else {
@@ -161,7 +161,7 @@ public class BBSettings {
         return restricedBlocks;
     }
 
-    public static XMaterial getDefaultFloorMaterial() {
+    public static CompMaterial getDefaultFloorMaterial() {
         return defaultFloorMaterial;
     }
 

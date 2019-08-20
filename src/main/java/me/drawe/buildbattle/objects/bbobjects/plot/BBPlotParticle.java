@@ -4,7 +4,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.bbobjects.BBParticle;
 import me.drawe.buildbattle.utils.ParticleEffect;
-import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -42,7 +42,7 @@ public class BBPlotParticle {
 
             @Override
             public void run() {
-                if (VersionResolver.isAtLeast1_13()) {
+                if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
                     if (particle.getEffect() == ParticleEffect.REDSTONE) {
                         location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), new Particle.DustOptions(Color.RED,1));
                     } else {

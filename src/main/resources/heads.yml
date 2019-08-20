@@ -10,8 +10,6 @@ categories:
         description: Chicken Head
       MHF_Cow:
         description: Cow Head
-      MHF_Enderman:
-        description: Enderman Head
       MHF_Ghast:
         description: Ghast Head
       MHF_Herobrine:
@@ -115,7 +113,7 @@ categories:
         description: Bread
   symbol:
     icon:
-      material: SIGN
+      material: OAK_SIGN
     description: Symbols
     heads:
       MHF_ArrowDown:
@@ -132,7 +130,7 @@ categories:
         description: Question
   block:
     icon:
-      material: GRASS
+      material: BRICKS
     description: Blocks
     heads:
       MHF_Chest:

@@ -1,12 +1,21 @@
 package me.drawe.buildbattle.utils.compatbridge.model;
 
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 /**
- * Wrapper for *SOME* sound names. You can expand this at your need.
+ * Version independent Spigot sounds.
+ *
+ * Enum mapping to sound names for different
+ * minecraft versions.
+ *
+ * Source: https://gist.github.com/NiklasEi/7bd0ffd136f8459df0940e4501d47a8a
+ * @author NiklasEi
  */
 public enum CompSound {
-
     AMBIENCE_CAVE("AMBIENCE_CAVE", "AMBIENT_CAVE"),
     AMBIENCE_RAIN("AMBIENCE_RAIN", "WEATHER_RAIN"),
     AMBIENCE_THUNDER("AMBIENCE_THUNDER", "ENTITY_LIGHTNING_THUNDER", "ENTITY_LIGHTNING_BOLT_THUNDER"),
@@ -45,7 +54,7 @@ public enum CompSound {
     NOTE_BASS_GUITAR("NOTE_BASS_GUITAR", "BLOCK_NOTE_GUITAR", "BLOCK_NOTE_BLOCK_GUITAR", "BLOCK_NOTE_BASS" /* 1.10 doesn't know guitar... */),
     NOTE_SNARE_DRUM("NOTE_SNARE_DRUM", "BLOCK_NOTE_SNARE", "BLOCK_NOTE_BLOCK_SNARE"),
     NOTE_PLING("NOTE_PLING", "BLOCK_NOTE_PLING", "BLOCK_NOTE_BLOCK_PLING"),
-    ORB_PICKUP("ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP"),
+    ORB_PICKUP("ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP"),
     PISTON_EXTEND("PISTON_EXTEND", "BLOCK_PISTON_EXTEND"),
     PISTON_RETRACT("PISTON_RETRACT", "BLOCK_PISTON_CONTRACT"),
     PORTAL("PORTAL", "BLOCK_PORTAL_AMBIENT"),
@@ -200,14 +209,51 @@ public enum CompSound {
     VILLAGER_HIT("VILLAGER_HIT", "ENTITY_VILLAGER_HURT"),
     VILLAGER_IDLE("VILLAGER_IDLE", "ENTITY_VILLAGER_AMBIENT"),
     VILLAGER_NO("VILLAGER_NO", "ENTITY_VILLAGER_NO"),
-    VILLAGER_YES("VILLAGER_YES", "ENTITY_VILLAGER_YES");
+    VILLAGER_YES("VILLAGER_YES", "ENTITY_VILLAGER_YES"),
+
+    // New sounds
+    BLOCK_DISPENSER_LAUNCH("LEVEL_UP", "DISPENSER_LAUNCH", "BLOCK_DISPENSER_LAUNCH"),
+    ENTITY_ITEMFRAME_BREAK("STEP_WOOL", "BLOCK_CLOTH_STEP", "BLOCK_WOOL_STEP", "ENTITY_ITEMFRAME_BREAK")
+    ;
 
     private String[] versionDependentNames;
-    private Sound sound;
+    private org.bukkit.Sound cached = null;
 
     CompSound(String... versionDependentNames) {
         this.versionDependentNames = versionDependentNames;
-        this.sound = parseSound();
+
+        // Assume most servers use the latest version so reverse for performance
+        ArrayUtils.reverse(this.versionDependentNames);
+    }
+
+    /**
+     * Plays a sound for the given player
+     *
+     * @param player
+     * @param volume
+     * @param pitch
+     */
+    public final void play(Player player, float volume, float pitch) {
+        try {
+            player.playSound(player.getLocation(), getSound(), volume, pitch);
+        } catch (final Throwable t) {
+            // Fail-through
+        }
+    }
+
+    /**
+     * Plays a sound on a specific location
+     *
+     * @param loc
+     * @param volume
+     * @param pitch
+     */
+    public final void play(Location loc, float volume, float pitch) {
+        try {
+            loc.getWorld().playSound(loc, getSound(), volume, pitch);
+        } catch (final Throwable t) {
+            // Fail-through
+        }
     }
 
     /**
@@ -216,19 +262,50 @@ public enum CompSound {
      * Caches sound on first call
      * @return corresponding {@link org.bukkit.Sound}
      */
+    public final Sound getSound() {
+        if (cached != null) return cached;
 
-    private Sound parseSound() {
-        for (String name : this.versionDependentNames) {
+        for (final String name : versionDependentNames)
             try {
-                return Sound.valueOf(name);
-            } catch (IllegalArgumentException e) {
+                return cached = org.bukkit.Sound.valueOf(name);
+            } catch (final IllegalArgumentException ex) {
                 // try next
             }
-        }
-        throw new IllegalArgumentException("Found no valid sound name for " + this.name());
+
+        return getFallback();
     }
 
-    public Sound getSound() {
-        return sound;
+    /**
+     * Returns the level up sound for compatibility
+     *
+     * @return the level up sound
+     */
+    public static final Sound getFallback() {
+        return Sound.valueOf(MinecraftVersion.atLeast(MinecraftVersion.V.v1_9) ? "ENTITY_PLAYER_LEVELUP" : "LEVEL_UP");
+    }
+
+    /**
+     * Converts the string to a valid bukkit Sound
+     *
+     * @param soundName
+     * @return
+     */
+    public static final Sound convert(String soundName) {
+        CompSound sound = null;
+
+        // Test if we can convert it directly
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_9))
+            try {
+                return Sound.valueOf(soundName.toUpperCase());
+            } catch (final IllegalArgumentException ex) {
+            }
+
+        // If not, try to find the corresponding new sound
+        for (final CompSound compSound : values())
+            for (final String name : compSound.versionDependentNames)
+                if (name.equalsIgnoreCase(soundName))
+                    sound = compSound;
+
+        return sound != null ? sound.getSound() : getFallback();
     }
 }

@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -10,6 +10,8 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
@@ -121,7 +123,7 @@ public class LocationUtil {
                     cancel();
                 } else {
                     for (Location l : getHollowCube(l1, l2)) {
-                        if (VersionResolver.isAtLeast1_13()) {
+                        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
                             l.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, getCenter(l), 1);
                         } else {
                             ParticleEffect.VILLAGER_HAPPY.display(0f, 0f, 0f, 0f, 1, getCenter(l), p);
@@ -146,13 +148,19 @@ public class LocationUtil {
         return d;
     }
 
-    public static Block getAttachedBlock(Block b) {
-        MaterialData m = b.getState().getData();
-        BlockFace face = BlockFace.DOWN;
-        if (m instanceof Attachable) {
-            face = ((Attachable) m).getAttachedFace();
+    public static Block getAttachedBlock(Sign b) {
+        if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_14)) {
+            MaterialData m = b.getData();
+            BlockFace face = BlockFace.DOWN;
+            if (m instanceof Attachable) {
+                face = ((Attachable) m).getAttachedFace();
+            }
+            return b.getBlock().getRelative(face);
+        } else {
+            WallSign signData = (WallSign) b.getBlockData();
+            BlockFace attached = signData.getFacing().getOppositeFace();
+            return b.getBlock().getRelative(attached);
         }
-        return b.getRelative(face);
     }
 
     public static NPC getClosestNPC(Player p) {

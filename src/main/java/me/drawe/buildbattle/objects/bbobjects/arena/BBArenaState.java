@@ -1,20 +1,20 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.objects.Message;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 
 public enum BBArenaState {
 
-    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), XMaterial.LIME_TERRACOTTA),
-    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), XMaterial.RED_TERRACOTTA),
-    INGAME(Message.GAMESTATE_INGAME.getMessage(), XMaterial.RED_TERRACOTTA),
-    VOTING(Message.GAMESTATE_VOTING.getMessage(), XMaterial.RED_TERRACOTTA),
-    ENDING(Message.GAMESTATE_ENDING.getMessage(), XMaterial.YELLOW_TERRACOTTA);
+    LOBBY(Message.GAMESTATE_LOBBY.getMessage(), CompMaterial.LIME_TERRACOTTA),
+    THEME_VOTING(Message.GAMESTATE_THEME_VOTING.getMessage(), CompMaterial.RED_TERRACOTTA),
+    INGAME(Message.GAMESTATE_INGAME.getMessage(), CompMaterial.RED_TERRACOTTA),
+    VOTING(Message.GAMESTATE_VOTING.getMessage(), CompMaterial.RED_TERRACOTTA),
+    ENDING(Message.GAMESTATE_ENDING.getMessage(), CompMaterial.YELLOW_TERRACOTTA);
 
     private String prefix;
-    private XMaterial blockMaterial;
+    private CompMaterial blockMaterial;
 
-    BBArenaState(String s, XMaterial data) {
+    BBArenaState(String s, CompMaterial data) {
         this.prefix = s;
         this.blockMaterial = data;
     }
@@ -23,7 +23,7 @@ public enum BBArenaState {
         return prefix;
     }
 
-    public XMaterial getBlockMaterial() {
+    public CompMaterial getBlockMaterial() {
         return blockMaterial;
     }
 }

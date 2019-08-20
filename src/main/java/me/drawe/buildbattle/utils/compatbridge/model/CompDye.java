@@ -2,6 +2,9 @@ package me.drawe.buildbattle.utils.compatbridge.model;
 
 import org.bukkit.DyeColor;
 
+/**
+ * Wrapper for {@link DyeColor}
+ */
 public enum CompDye {
 
     WHITE,
@@ -21,13 +24,28 @@ public enum CompDye {
     RED,
     BLACK;
 
+    /**
+     * The legacy name
+     */
     private final String legacyName;
+
+    /**
+     * The current DyeColor class
+     */
     private final DyeColor dye;
 
+    /**
+     * Make a new CompDye without a legacy name
+     */
     private CompDye() {
         this(null);
     }
 
+    /**
+     * Make a new CompDye with a legacy name
+     *
+     * @param name
+     */
     private CompDye(String name) {
         this.legacyName = name;
 
@@ -46,14 +64,26 @@ public enum CompDye {
         this.dye = color;
     }
 
-    public DyeColor getDye() {
-        return dye;
-    }
+    // ------------------------------------------------------------------------------------
+    // Static access
+    // ------------------------------------------------------------------------------------
 
+    /**
+     * Make new compatible dye from wool data
+     *
+     * @param data
+     * @return
+     */
     public static final CompDye fromWoolData(byte data) {
         return fromDye(DyeColor.getByWoolData(data));
     }
 
+    /**
+     * Make new compatible dye from name
+     *
+     * @param name
+     * @return
+     */
     public static final CompDye fromName(String name) {
         for (final CompDye comp : values())
             if (comp.toString().equalsIgnoreCase(name) || comp.legacyName.equalsIgnoreCase(name))
@@ -62,6 +92,12 @@ public enum CompDye {
         throw new RuntimeException("Could not get CompDye from name: " + name);
     }
 
+    /**
+     * Make new compatible dye from bukkit dye
+     *
+     * @param dye
+     * @return
+     */
     public static final CompDye fromDye(DyeColor dye) {
         for (final CompDye comp : values())
             if (comp.getDye() == dye)
@@ -69,4 +105,7 @@ public enum CompDye {
 
         throw new RuntimeException("Could not get CompDye from DyeColor." + dye.toString());
     }
-}
+
+    public DyeColor getDye() {
+        return dye;
+    }}

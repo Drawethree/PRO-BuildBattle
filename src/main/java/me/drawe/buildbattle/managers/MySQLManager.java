@@ -8,7 +8,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.utils.Time;
-import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -140,7 +140,7 @@ public class MySQLManager {
     }
 
     public void loadAllReports() {
-        if(VersionResolver.isAtLeast1_13()) {
+        if(MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)){
             return;
         }
         ReportManager.buildReports = new ArrayList<>();

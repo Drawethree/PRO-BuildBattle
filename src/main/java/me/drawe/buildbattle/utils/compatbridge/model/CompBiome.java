@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.utils.compatbridge.model;
 
-import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.block.Biome;
 
 public enum CompBiome {
@@ -91,14 +91,14 @@ public enum CompBiome {
     }
 
     private static Biome parseBiome(CompBiome b) {
-        if (VersionResolver.isAtLeast1_13()) {
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
             return Biome.valueOf(b.v1_13);
-        } else if(VersionResolver.isAtLeast1_12() && b.v1_12 != null) {
+        } else if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_12) && b.v1_12 != null) {
             return Biome.valueOf(b.v1_12);
-        } else if(VersionResolver.isAtLeast1_9() && b.v1_9 != null) {
+        } else if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_9) && b.v1_9 != null) {
             return Biome.valueOf(b.v1_9);
         } else {
-            if(VersionResolver.isAtLeast1_8() && b.v1_8_8 != null) {
+            if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_8) && b.v1_8_8 != null) {
                 try {
                     return Biome.valueOf(b.v1_8_8);
                 } catch (IllegalArgumentException e) {

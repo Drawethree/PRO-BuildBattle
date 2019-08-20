@@ -6,8 +6,8 @@ import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.ReflectionUtils;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -24,87 +24,77 @@ public class BBPlotOptions {
     private WeatherType currentWeather;
     private BBPlotTime currentTime;
     private PlotBiome currentBiome;
-    private XMaterial currentFloorMaterial;
+    private CompMaterial currentFloorMaterial;
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
         this.currentFloorItem = ItemUtil.create(BBSettings.getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
-        this.currentFloorMaterial = XMaterial.matchXMaterial(currentFloorItem.getType());
+        this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
         this.currentBiome = PlotBiome.FOREST;
     }
 
-    public BBPlot getPlot() {
-        return plot;
-    }
-
-    public ItemStack getCurrentFloorItem() {
-        return currentFloorItem;
-    }
-
-    public void setCurrentFloorItem(ItemStack currentFloorItem) {
-        if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == XMaterial.LAVA_BUCKET.parseMaterial() || currentFloorItem.getType() == XMaterial.WATER_BUCKET.parseMaterial()) {
+    public void setCurrentFloorItem(Player changer, ItemStack currentFloorItem) {
+        if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial() || currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
             if (!isItemValidForChange(currentFloorItem)) {
-                for (Player p : plot.getTeam().getPlayers())
-                    p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
-                return;
+                if(changer != null) {
+                    changer.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+                    return;
+                }
             }
 
-            this.currentFloorMaterial = XMaterial.matchXMaterial(currentFloorItem);
+            this.currentFloorMaterial = CompMaterial.fromItem(currentFloorItem);
             this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
             plot.changeFloor(currentFloorItem);
-            for (Player p : plot.getTeam().getPlayers()) {
-                p.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
-                p.playSound(p.getLocation(), CompSound.NOTE_PLING.getSound(), 1, 2.0F);
+            if(changer != null) {
+                changer.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
+                changer.playSound(changer.getLocation(), CompSound.NOTE_PLING.getSound(), 1, 2.0F);
             }
+
         } else {
-            for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+            if(changer != null) {
+                changer.sendMessage(Message.FLOOR_DENY_CHANGE.getChatMessage());
+            }
         }
     }
 
-    public WeatherType getCurrentWeather() {
-        return currentWeather;
-    }
-
-    public void setCurrentWeather(WeatherType currentWeather, boolean broadcast) {
+    public void setCurrentWeather(Player changer, WeatherType currentWeather, boolean broadcast) {
         this.currentWeather = currentWeather;
-        if (broadcast) {
-            for (Player p : plot.getTeam().getPlayers())
-                p.sendMessage(Message.WEATHER_CHANGED.getChatMessage().replaceAll("%weather%", currentWeather.name()));
+        if (broadcast && changer != null) {
+            changer.sendMessage(Message.WEATHER_CHANGED.getChatMessage().replaceAll("%weather%", currentWeather.name()));
         }
         for (Player p : plot.getTeam().getPlayers()) p.setPlayerWeather(currentWeather);
     }
 
-    public BBPlotTime getCurrentTime() {
-        return currentTime;
-    }
-
-    public void setCurrentTime(BBPlotTime currentTime, boolean broadcast) {
+    public void setCurrentTime(Player changer, BBPlotTime currentTime, boolean broadcast) {
         this.currentTime = currentTime;
         for (Player p : plot.getTeam().getPlayers()) p.setPlayerTime(currentTime.getTime(), false);
-        if (broadcast) {
-            for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.TIME_CHANGED.getChatMessage().replaceAll("%time%", currentTime.getName()));
+        if (broadcast && changer != null) {
+            changer.sendMessage(Message.TIME_CHANGED.getChatMessage().replaceAll("%time%", currentTime.getName()));
         }
     }
 
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
-        return !(XMaterial.isLongGrass(currentFloorItem.getType())
-                || XMaterial.isButton(currentFloorItem.getType())
-                || XMaterial.isFlower(currentFloorItem.getType())
-                || XMaterial.isPressurePlate(currentFloorItem.getType())
-                || XMaterial.isBed(currentFloorItem.getType())
-                || XMaterial.isMushroom(currentFloorItem.getType())
-                || XMaterial.isChorus(currentFloorItem.getType())
-                || currentFloorItem.getType() == XMaterial.LADDER.parseMaterial()
-                || currentFloorItem.getType() == XMaterial.CACTUS.parseMaterial());
+        return !(CompMaterial.isLongGrass(currentFloorItem.getType())
+                || CompMaterial.isDoublePlant(currentFloorItem.getType())
+                || CompMaterial.isFlower(currentFloorItem.getType())
+                || CompMaterial.isCarpet(currentFloorItem.getType())
+                || CompMaterial.isSapling(currentFloorItem.getType())
+                || CompMaterial.isWoodButton(currentFloorItem.getType())
+                || currentFloorItem.getType() == CompMaterial.LADDER.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.VINE.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.CHORUS_FLOWER.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.CHORUS_PLANT.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.CAMPFIRE.getMaterial()
+                || currentFloorItem.getType() == CompMaterial.CACTUS.getMaterial());
     }
 
 
-    public void setCurrentBiome(PlotBiome currentBiome, boolean broadcast) {
+    public void setCurrentBiome(Player changer, PlotBiome currentBiome, boolean broadcast) {
         this.currentBiome = currentBiome;
-        if (broadcast) {
-            for (Player p : plot.getTeam().getPlayers()) p.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
+        if (broadcast && changer != null) {
+            changer.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
         }
         for (Location l : plot.getBlocksInPlot()) {
             l.getBlock().setBiome(currentBiome.getBiome().getBiome());
@@ -126,5 +116,21 @@ public class BBPlotOptions {
 
     public PlotBiome getCurrentBiome() {
         return currentBiome;
+    }
+
+    public BBPlot getPlot() {
+        return plot;
+    }
+
+    public ItemStack getCurrentFloorItem() {
+        return currentFloorItem;
+    }
+
+    public BBPlotTime getCurrentTime() {
+        return currentTime;
+    }
+
+    public WeatherType getCurrentWeather() {
+        return currentWeather;
     }
 }

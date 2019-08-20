@@ -485,7 +485,7 @@ public class BBArena {
             try {
                 this.currentVotingPlot = votingPlots.get(0);
             } catch (Exception e) {
-                endGame();
+                stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
                 return;
             }
 
@@ -545,7 +545,7 @@ public class BBArena {
         return players.size() == getMaxPlayers();
     }
 
-    public void stopArena(String message, boolean forced) {
+    public void stopArena(String message, boolean removePlayers) {
 
         PlayerManager.getInstance().broadcastToAllPlayersInArena(this, message);
 
@@ -575,7 +575,7 @@ public class BBArena {
                 break;
         }
 
-        if (forced || BBSettings.isRemovePlayersAfterGame()) {
+        if (removePlayers || BBSettings.isRemovePlayersAfterGame()) {
             kickAllPlayers();
             if (BBSettings.isGiveRewardsAfterGameEnds()) {
                 RewardManager.getInstance().giveRewards(this);
@@ -630,7 +630,7 @@ public class BBArena {
             if (!teams.isEmpty()) {
                 plot.setTeam(teams.get(0));
                 plot.teleportTeamToPlot();
-                plot.getOptions().setCurrentTime(BBPlotTime.NOON, false);
+                plot.getOptions().setCurrentTime(null,BBPlotTime.NOON, false);
             } else {
                 break;
             }

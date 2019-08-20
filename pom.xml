@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>5.4.1-BETA</version>
+    <version>5.4.2-BETA</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -135,6 +135,12 @@
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

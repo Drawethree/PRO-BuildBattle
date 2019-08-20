@@ -2,7 +2,7 @@ package me.drawe.buildbattle.heads;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.util.ItemStackCreator;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +48,7 @@ public class Category {
         List<ItemStack> heads = new ArrayList<>();
         try {
             String categoryName = BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
-            XMaterial material = XMaterial.matchXMaterial(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
+            CompMaterial material = CompMaterial.fromString(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
             this.icon = ItemStackCreator.createItem(material, 1, "&e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();
@@ -59,8 +59,10 @@ public class Category {
                 ItemStack playerhead = ItemStackCreator.createPlayerhead(1, "&r" + displayName, new String[]{"&9Skull (" + categoryName + ")"}, playerName);
                 heads.add(playerhead);
             }
+
         } catch (Exception e) {
-            BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
+            e.printStackTrace();
+            //BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
         }
 
         int amountOfPages = (int) Math.ceil((heads.size() + 1) / 45.0);

@@ -17,9 +17,9 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.LocationUtil;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -219,7 +219,7 @@ public class PlayerListener implements Listener {
                 if (a.getBBArenaState() != BBArenaState.INGAME) {
                     e.setCancelled(true);
                     if (a.getBBArenaState() == BBArenaState.THEME_VOTING && invView.getTitle().equalsIgnoreCase(Message.GUI_THEME_VOTING_TITLE.getMessage())) {
-                        if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == XMaterial.OAK_SIGN.parseMaterial() || e.getCurrentItem().getType() == XMaterial.PAPER.parseMaterial())) {
+                        if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.OAK_SIGN.getMaterial() || e.getCurrentItem().getType() == CompMaterial.PAPER.getMaterial())) {
                             BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                             if (selectedTheme != null) {
                                 if (selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
@@ -243,7 +243,7 @@ public class PlayerListener implements Listener {
                         }
                     } else if (a.getBBArenaState() == BBArenaState.LOBBY) {
                         if (invView.getTitle().equalsIgnoreCase(Message.GUI_TEAMS_TITLE.getMessage())) {
-                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == XMaterial.LIME_TERRACOTTA.parseMaterial() || e.getCurrentItem().getType() == XMaterial.RED_TERRACOTTA.parseMaterial() || e.getCurrentItem().getType() == XMaterial.YELLOW_TERRACOTTA.parseMaterial())) {
+                            if (e.getCurrentItem() != null && (e.getCurrentItem().getType() == CompMaterial.LIME_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.RED_TERRACOTTA.getMaterial() || e.getCurrentItem().getType() == CompMaterial.YELLOW_TERRACOTTA.getMaterial())) {
                                 BBTeam team = a.getTeamByItemStack(e.getCurrentItem());
                                 BBTeam playerTeam = a.getPlayerTeam(p);
                                 if (team != null) {
@@ -263,13 +263,15 @@ public class PlayerListener implements Listener {
                         return;
                     }
                     if (invView.getTitle().equalsIgnoreCase(Message.GUI_OPTIONS_TITLE.getMessage())) {
-                        e.setCancelled(true);
+                        if (clickedInventory.equals(invView.getTopInventory()) || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                            e.setCancelled(true);
+                        }
                         BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
-                        if (plot != null) {
+                        if (plot != null && e.getCurrentItem() != null) {
                             if (e.getCurrentItem().isSimilar(plot.getOptions().getCurrentFloorItem())) {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (p.hasPermission("buildbattlepro.changefloor")) {
-                                        plot.getOptions().setCurrentFloorItem(e.getCursor());
+                                        plot.getOptions().setCurrentFloorItem(p, e.getCursor());
                                         clickedInventory.setItem(e.getSlot(), plot.getOptions().getCurrentFloorItem());
                                         e.setCursor(null);
                                     } else {
@@ -289,9 +291,9 @@ public class PlayerListener implements Listener {
                             } else if (e.getCurrentItem().isSimilar(OptionsManager.getInstance().getWeatherItemStack(plot))) {
                                 if (p.hasPermission("buildbattlepro.changeweather")) {
                                     if (plot.getOptions().getCurrentWeather() == WeatherType.CLEAR) {
-                                        plot.getOptions().setCurrentWeather(WeatherType.DOWNFALL, false);
+                                        plot.getOptions().setCurrentWeather(p, WeatherType.DOWNFALL, false);
                                     } else {
-                                        plot.getOptions().setCurrentWeather(WeatherType.CLEAR, false);
+                                        plot.getOptions().setCurrentWeather(p, WeatherType.CLEAR, false);
                                     }
                                     clickedInventory.setItem(e.getSlot(), OptionsManager.getInstance().getWeatherItemStack(plot));
                                 } else {
@@ -331,7 +333,7 @@ public class PlayerListener implements Listener {
                                 PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem());
                                 if (selectedBiome != null) {
                                     if (p.hasPermission("buildbattlepro.changebiome")) {
-                                        plot.getOptions().setCurrentBiome(selectedBiome, true);
+                                        plot.getOptions().setCurrentBiome(p, selectedBiome, true);
                                     } else {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                     }
@@ -361,7 +363,7 @@ public class PlayerListener implements Listener {
                             BBPlotTime selectedTime = BBPlotTime.getTimeFromItemStack(e.getCurrentItem(), e.getSlot());
                             if (selectedTime != null) {
                                 if (p.hasPermission("buildbattlepro.changetime")) {
-                                    plot.getOptions().setCurrentTime(selectedTime, true);
+                                    plot.getOptions().setCurrentTime(p, selectedTime, true);
                                     OptionsManager.getInstance().openTimeInventory(p, plot);
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
@@ -402,7 +404,7 @@ public class PlayerListener implements Listener {
                                                 }
                                             } else {
                                                 if (head != null) {
-                                                    if (head.getData().getItemType() != XMaterial.AIR.parseMaterial()) {
+                                                    if (head.getData().getItemType() != CompMaterial.AIR.getMaterial()) {
                                                         p.getInventory().addItem(head);
                                                         p.closeInventory();
                                                     }
@@ -441,7 +443,7 @@ public class PlayerListener implements Listener {
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
-                                    if (e.getCurrentItem().getType() == XMaterial.WHITE_BANNER.parseMaterial() && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
+                                    if (e.getCurrentItem().getType() == CompMaterial.WHITE_BANNER.getMaterial() && (!e.getCurrentItem().equals(bannerCreator.getCreatedBanner()))) {
                                         BannerMeta meta = (BannerMeta) e.getCurrentItem().getItemMeta();
                                         bannerCreator.addPattern(meta.getPatterns().get(0).getPattern());
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
@@ -464,7 +466,7 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
         if (arena != null) {
-            if ((e.getItem() != null) && (e.getItem().getType() == XMaterial.COMPASS.parseMaterial())) {
+            if ((e.getItem() != null) && (e.getItem().getType() == CompMaterial.COMPASS.getMaterial())) {
                 e.setCancelled(true);
                 return;
             }
@@ -669,7 +671,7 @@ public class PlayerListener implements Listener {
                 case INGAME:
                     BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (BBSettings.isAutomaticGrow() && (e.getBlock().getType() == XMaterial.WHEAT_SEEDS.parseMaterial() || e.getBlock().getType() == XMaterial.MELON_STEM.parseMaterial() || e.getBlock().getType() == XMaterial.PUMPKIN_STEM.parseMaterial())) {
+                        if (BBSettings.isAutomaticGrow() && (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial())) {
                             CompatBridge.setData(e.getBlock(), (byte) 4);
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {
@@ -816,7 +818,7 @@ public class PlayerListener implements Listener {
         final BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
         if (plot != null) {
             e.setCancelled(true);
-            e.getEntity().getLocation().getBlock().setType(XMaterial.AIR.parseMaterial());
+            e.getEntity().getLocation().getBlock().setType(CompMaterial.AIR.getMaterial());
             e.blockList().clear();
         }
     }
@@ -864,7 +866,7 @@ public class PlayerListener implements Listener {
             if (plot != null) {
                 for (BlockState blockState : e.getBlocks()) {
                     if (!plot.isLocationInPlot(blockState.getLocation()))
-                        blockState.setType(XMaterial.AIR.parseMaterial());
+                        blockState.setType(CompMaterial.AIR.getMaterial());
                 }
             }
         }
@@ -881,9 +883,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChatIngame(final AsyncPlayerChatEvent e) {
-        if (e.isCancelled()) return;
+
+        if (e.isCancelled())
+            return;
+
         final Player p = e.getPlayer();
         final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+
         if (a != null) {
             if (a.getGameType() == BBGameMode.TEAM) {
                 if (BBSettings.isTeamChat()) {
@@ -971,6 +977,18 @@ public class PlayerListener implements Listener {
         if (plot != null) {
             for (Block block : e.getBlocks()) {
                 if (!plot.isInPlotRange(block.getLocation(), -1) && plot.isLocationInPlot(e.getBlock().getLocation())) {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPistonRetractEvent(final BlockPistonRetractEvent e) {
+        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        if (plot != null) {
+            for (Block block : e.getBlocks()) {
+                if (!plot.isLocationInPlot(block.getLocation())) {
                     e.setCancelled(true);
                 }
             }

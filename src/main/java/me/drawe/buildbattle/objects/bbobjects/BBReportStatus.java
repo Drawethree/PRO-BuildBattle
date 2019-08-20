@@ -1,17 +1,17 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
-import me.drawe.buildbattle.utils.compatbridge.model.XMaterial;
+import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.ChatColor;
 
 public enum BBReportStatus {
 
-    PENDING(XMaterial.YELLOW_TERRACOTTA, ChatColor.YELLOW),
-    SOLVED(XMaterial.LIME_TERRACOTTA, ChatColor.GREEN);
+    PENDING(CompMaterial.YELLOW_TERRACOTTA, ChatColor.YELLOW),
+    SOLVED(CompMaterial.LIME_TERRACOTTA, ChatColor.GREEN);
 
     private ChatColor statusColor;
-    private XMaterial statusMaterial;
+    private CompMaterial statusMaterial;
 
-    BBReportStatus(XMaterial i, ChatColor c) {
+    BBReportStatus(CompMaterial i, ChatColor c) {
         this.statusMaterial = i;
         this.statusColor = c;
     }
@@ -20,7 +20,7 @@ public enum BBReportStatus {
         return statusColor;
     }
 
-    public XMaterial getStatusMaterial() {
+    public CompMaterial getStatusMaterial() {
         return statusMaterial;
     }
 }

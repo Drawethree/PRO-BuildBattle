@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.utils.compatbridge.model;
 
-import me.drawe.buildbattle.utils.compatbridge.VersionResolver;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,7 +42,7 @@ public final class CompatBridge {
      * @return
      */
     public static FallingBlock spawnFallingBlock(World w, Location l, Material mat, byte data) {
-        if (VersionResolver.isAtLeast1_13())
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
             return w.spawnFallingBlock(l, Bukkit.getUnsafe().fromLegacy(mat, data));
         else {
             try {
@@ -62,8 +62,8 @@ public final class CompatBridge {
      * @param mat
      * @param data
      */
-    public static void setTypeAndData(Block block, XMaterial mat, byte data) {
-        setTypeAndData(block, mat.parseMaterial(), data);
+    public static void setTypeAndData(Block block, CompMaterial mat, byte data) {
+        setTypeAndData(block, mat.getMaterial(), data);
     }
 
     /**
@@ -85,7 +85,7 @@ public final class CompatBridge {
      * @param data
      */
     public static void setTypeAndData(Block block, Material mat, byte data, boolean physics) {
-        if (VersionResolver.isAtLeast1_13()) {
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
             block.setType(mat);
             block.setBlockData( Bukkit.getUnsafe().fromLegacy(mat, data), physics );
 
