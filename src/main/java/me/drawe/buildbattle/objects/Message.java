@@ -1,7 +1,6 @@
 package me.drawe.buildbattle.objects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
 import net.md_5.bungee.api.ChatColor;
 
 public enum Message {
@@ -247,23 +246,28 @@ public enum Message {
     SCOREBOARD_SOLO_MODE("scoreboard.solo_mode"),
     SCOREBOARD_TEAM_MODE("scoreboard.team_mode"),
     SCOREBOARD_NO_TEAMMATES("scoreboard.no_teammates"),
-    NOT_ENOUGH_PLAYERS_TO_START("messages.not_enough_players_to_start");
+    NOT_ENOUGH_PLAYERS_TO_START("messages.not_enough_players_to_start"),
+    ALREADY_SPECTATING("messages.already_spectating"),
+    SPECTATING_ARENA("messages.spectating_arena"),
+    FIRST_LEAVE_ARENA("messages.first_leave_arena_to_spectate"),
+    NO_LONGER_SPECTATING_ARENA("messages.no_longer_spectating"),
+    NOT_SPECTATING("messages.not_spectating");
 
     private String message;
     private String path;
 
     Message(String path) {
         this.path = path;
-        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(path));
+        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString(path));
     }
 
     public String getChatMessage() {
-        return BBSettings.getPrefix() + message;
+        return BuildBattle.getInstance().getSettings().getPrefix() + message;
     }
 
     public static void reloadMessages() {
         for (Message m : values()) {
-            m.setMessage(ChatColor.translateAlternateColorCodes('&', BuildBattle.getFileManager().getConfig("translates.yml").get().getString(m.getPath())));
+            m.setMessage(ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString(m.getPath())));
         }
     }
 

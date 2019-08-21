@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 
 public class BBVaultRewards implements BBReward {
 
-    private static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.first_place");
-    private static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.second_place");
-    private static int thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.third_place");
+    private static int firstPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.first_place");
+    private static int secondPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.second_place");
+    private static int thirdPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.Vault.third_place");
 
     @Override
     public void giveReward(BBTeam team, int placement) {
@@ -24,6 +24,6 @@ public class BBVaultRewards implements BBReward {
                 rewardGiven = thirdPlace;
                 break;
         }
-        for(Player p : team.getPlayers()) BuildBattle.getEconomy().depositPlayer(p, rewardGiven);
+        for(Player p : team.getPlayers()) BuildBattle.getInstance().getEcon().depositPlayer(p, rewardGiven);
     }
 }

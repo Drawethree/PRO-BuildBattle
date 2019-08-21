@@ -1,11 +1,10 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.events.game.BBGameEndEvent;
-import me.drawe.buildbattle.events.game.BBGameStartEvent;
-import me.drawe.buildbattle.events.game.BBGameStateSwitchEvent;
-import me.drawe.buildbattle.events.game.BBPlayerGameJoinEvent;
-import me.drawe.buildbattle.managers.*;
+import me.drawe.buildbattle.api.events.game.BBGameEndEvent;
+import me.drawe.buildbattle.api.events.game.BBGameStartEvent;
+import me.drawe.buildbattle.api.events.game.BBGameStateSwitchEvent;
+import me.drawe.buildbattle.api.events.game.BBPlayerGameJoinEvent;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
@@ -26,8 +25,9 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BBArena {
+public class BBArena implements Spectetable<Player> {
 
+    private BuildBattle plugin;
     private String name;
     private int minPlayers;
     private int gameTime;
@@ -54,14 +54,17 @@ public class BBArena {
     private BukkitTask themeVotingCountdown;
 
     private Inventory teamsInventory;
+    private List<Player> spectators;
+    private Inventory spectateInventory;
 
     //LOADING
-    public BBArena(String name) {
+    public BBArena(BuildBattle plugin, String name) {
+        this.plugin = plugin;
         this.name = name;
-        this.minPlayers = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(name + ".min_players");
-        this.gameTime = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(name + ".gameTime");
-        this.gameMode = BBGameMode.valueOf(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(name + ".mode"));
-        this.teamSize = BuildBattle.getFileManager().getConfig("arenas.yml").get().getInt(name + ".teamSize");
+        this.minPlayers = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".min_players");
+        this.gameTime = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".gameTime");
+        this.gameMode = BBGameMode.valueOf(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".mode"));
+        this.teamSize = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".teamSize");
         this.lobbyLocation = LocationUtil.getLocationFromConfig("arenas.yml", name + ".lobbyLocation");
         this.players = new ArrayList<>();
         this.buildPlots = loadArenaPlots();
@@ -74,14 +77,15 @@ public class BBArena {
         this.playerBoards = new HashMap<>();
         this.setupTeams();
         this.setupTeamInventory();
-        this.arenaEdit = new BBArenaEdit(this);
+        this.arenaEdit = new BBArenaEdit(plugin,this);
     }
 
     //CREATING
-    public BBArena(String name, BBGameMode gameMode) {
+    public BBArena(BuildBattle plugin, String name, BBGameMode gameMode) {
+        this.plugin = plugin;
         this.name = name;
         this.minPlayers = 2;
-        this.gameTime = BBSettings.getDefaultGameTime();
+        this.gameTime = plugin.getSettings().getDefaultGameTime();
         this.gameMode = gameMode;
         this.players = new ArrayList<>();
         this.buildPlots = new ArrayList<>();
@@ -102,20 +106,20 @@ public class BBArena {
         this.setupTeams();
         this.setupTeamInventory();
         this.saveIntoConfig();
-        this.arenaEdit = new BBArenaEdit(this);
+        this.arenaEdit = new BBArenaEdit(plugin, this);
     }
 
     private List<BBPlot> loadArenaPlots() {
         List<BBPlot> list = new ArrayList<>();
         try {
-            for (String plot : BuildBattle.getFileManager().getConfig("arenas.yml").get().getConfigurationSection(name + ".plots").getKeys(false)) {
-                final Location minPoint = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".min"));
-                final Location maxPoint = LocationUtil.getLocationFromString(BuildBattle.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".max"));
+            for (String plot : plugin.getFileManager().getConfig("arenas.yml").get().getConfigurationSection(name + ".plots").getKeys(false)) {
+                final Location minPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".min"));
+                final Location maxPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".max"));
                 list.add(new BBPlot(this, minPoint, maxPoint));
-                BuildBattle.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
+                plugin.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
             }
         } catch (Exception e) {
-            BuildBattle.warning("§cLooks like arena §e" + name + " §c have no plots ! Please set them.");
+            plugin.warning("§cLooks like arena §e" + name + " §c have no plots ! Please set them.");
         }
         return list;
     }
@@ -123,8 +127,8 @@ public class BBArena {
     private List<BBSign> loadArenaSigns() {
         List<BBSign> list = new ArrayList<>();
         try {
-            if (BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name) != null) {
-                for (String sign : BuildBattle.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name).getKeys(false)) {
+            if (plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name) != null) {
+                for (String sign : plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name).getKeys(false)) {
                     final Location signLoc = LocationUtil.getLocationFromString(sign);
                     final BBSign bbSign = new BBSign(this, signLoc);
                     if (bbSign.getLocation() != null) {
@@ -133,7 +137,7 @@ public class BBArena {
                 }
             }
         } catch (Exception e) {
-            BuildBattle.severe("§cAn exception occurred while trying loading signs for arena §e" + name + "§c!");
+            plugin.severe("§cAn exception occurred while trying loading signs for arena §e" + name + "§c!");
             e.printStackTrace();
         }
         return list;
@@ -195,36 +199,37 @@ public class BBArena {
 
     private void leaveCommands(Player p) {
 
-        BBTeam team = PlayerManager.getInstance().getPlayerTeam(this, p);
+        BBTeam team = plugin.getPlayerManager().getPlayerTeam(this, p);
         if (team != null) {
             team.leaveTeam(p);
         }
 
-        BBParty party = PartyManager.getInstance().getPlayerParty(p);
+        BBParty party = plugin.getPartyManager().getPlayerParty(p);
         if (party != null) {
-            PartyManager.getInstance().leaveParty(p);
+            plugin.getPartyManager().leaveParty(p);
         }
 
-        PlayerManager.getInstance().removeScoreboard(p);
+        plugin.getPlayerManager().removeScoreboard(p);
 
-        PlayerManager.getInstance().restorePlayerData(p);
+        plugin.getPlayerManager().restorePlayerData(p);
 
-        if (BBSettings.getMainLobbyLocation() != null) {
-            PlayerManager.getInstance().teleportToMainLobby(p);
+        if (this.plugin.getSettings().getMainLobbyLocation() != null) {
+            plugin.getPlayerManager().teleportToMainLobby(p);
         }
 
-        if (BBSettings.isUseBungeecord()) {
-            BungeeUtils.connectPlayerToServer(p, BBSettings.getRandomFallbackServer());
+        if (this.plugin.getSettings().isUseBungeecord()) {
+            BungeeUtils.connectPlayerToServer(p, this.plugin.getSettings().getRandomFallbackServer());
         }
 
         players.remove(p);
         playerBoards.remove(p);
 
         updateAllSigns();
-        ArenaManager.getInstance().refreshArenaItem(this);
+        this.refreshSpectateInventory();
+        plugin.getArenaManager().refreshArenaItem(this);
 
-        PlayerManager.getPlayersInArenas().remove(p);
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+        plugin.getPlayerManager().getPlayersInArenas().remove(p);
+        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
 
         if (bbArenaState != BBArenaState.LOBBY) {
             if (players.size() <= teamSize) {
@@ -233,16 +238,26 @@ public class BBArena {
         }
     }
 
+    private void refreshSpectateInventory() {
+        if (spectateInventory == null) {
+            return;
+        }
+        spectateInventory.clear();
+        for (Player p : this.players) {
+            spectateInventory.addItem(ItemUtil.createPlayerHead(p));
+        }
+    }
+
     private void joinCommands(Player p) {
 
-        BBParty party = PartyManager.getInstance().getPlayerParty(p);
+        BBParty party = plugin.getPartyManager().getPlayerParty(p);
 
         if ((party != null) && (party.isCreator(p))) {
             party.joinGame(this);
         }
 
-        PlayerManager.getInstance().createNewPlayerData(p);
-        PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
+        plugin.getPlayerManager().createNewPlayerData(p);
+        plugin.getPlayerManager().createPlayerStatsIfNotExists(p);
 
         p.teleport(lobbyLocation.clone().add(0, 0.5, 0));
         p.getInventory().clear();
@@ -254,20 +269,22 @@ public class BBArena {
         players.add(p);
         playerBoards.put(p, BBScoreboard.getActualScoreboard(this));
 
+
         if (gameMode == BBGameMode.TEAM) {
-            p.getInventory().setItem(0, OptionsManager.getTeamsItem());
+            p.getInventory().setItem(0, plugin.getOptionsManager().getTeamsItem());
         }
 
-        p.getInventory().setItem(8, OptionsManager.getLeaveItem());
+        p.getInventory().setItem(8, plugin.getOptionsManager().getLeaveItem());
 
-        updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
+        updateAllScoreboards(this.plugin.getSettings().getLobbyTime(), this.plugin.getSettings().getLobbyTime());
 
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(this, Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+        plugin.getPlayerManager().broadcastToAllPlayersInArena(this, Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
 
-        ArenaManager.getInstance().refreshArenaItem(this);
+        this.refreshSpectateInventory();
+        plugin.getArenaManager().refreshArenaItem(this);
         updateAllSigns();
 
-        PlayerManager.getPlayersInArenas().put(p, this);
+        plugin.getPlayerManager().getPlayersInArenas().put(p, this);
     }
 
     public BBTeam getFreeBBTeamForParty(BBParty party) {
@@ -287,37 +304,37 @@ public class BBArena {
     private void startLobby() {
         setBBArenaState(BBArenaState.LOBBY);
         lobbyCountdown = new BukkitRunnable() {
-            int countdown = BBSettings.getLobbyTime();
+            int countdown = plugin.getSettings().getLobbyTime();
 
             @Override
             public void run() {
                 if (isMinimumPlayersRequirementMet()) {
                     if (countdown == 0) {
-                        if (BBSettings.isVotingForThemes()) {
+                        if (plugin.getSettings().isVotingForThemes()) {
                             startThemeVoting();
                         } else {
                             switch (gameMode) {
                                 case SOLO:
-                                    startGame(BBSettings.getRandomSoloTheme(), true);
+                                    startGame(plugin.getSettings().getRandomSoloTheme(), true);
                                     break;
                                 case TEAM:
-                                    startGame(BBSettings.getRandomTeamTheme(), true);
+                                    startGame(plugin.getSettings().getRandomTeamTheme(), true);
                                     break;
                             }
                         }
                         cancel();
                         return;
                     } else if (countdown % 15 == 0 || countdown < 6) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.ORB_PICKUP);
-                        PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
+                        plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.ORB_PICKUP);
+                        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     }
                 } else {
-                    PlayerManager.getInstance().broadcastToAllPlayersInArena(getArenaInstance(), Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
-                    updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
+                    plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
+                    updateAllScoreboards(plugin.getSettings().getLobbyTime(), plugin.getSettings().getLobbyTime());
                     lobbyCountdown.cancel();
                     return;
                 }
-                updateAllScoreboards(countdown, BBSettings.getLobbyTime());
+                updateAllScoreboards(countdown, plugin.getSettings().getLobbyTime());
                 countdown--;
             }
         }.runTaskTimer(BuildBattle.getInstance(), 0L, 20L);
@@ -326,13 +343,13 @@ public class BBArena {
     private void startThemeVoting() {
         setBBArenaState(BBArenaState.THEME_VOTING);
         setPlotsToTeams();
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(getArenaInstance());
+        plugin.getPlayerManager().clearInventoryAllPlayersInArena(getArenaInstance());
         themeVotingCountdown = new BukkitRunnable() {
-            int countdown = (int) BBSettings.getThemeVotingTime();
+            int countdown = (int) plugin.getSettings().getThemeVotingTime();
 
             @Override
             public void run() {
-                updateAllScoreboards(countdown, (int) BBSettings.getThemeVotingTime());
+                updateAllScoreboards(countdown, (int) plugin.getSettings().getThemeVotingTime());
                 if (countdown == 0) {
                     themeVoting.setWinner();
                     startGame(themeVoting.getWinner().getName());
@@ -355,12 +372,12 @@ public class BBArena {
         setBBArenaState(BBArenaState.INGAME);
         this.theme = theme;
         setVotingPlots();
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
+        plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
         setGamemodeToAllPlayers(GameMode.CREATIVE);
-        PlayerManager.getInstance().addPlayedToAllPlayers(this);
-        OptionsManager.getInstance().giveAllPlayersItem(this, OptionsManager.getOptionsItem(), 8);
-        PlayerManager.getInstance().sendStartMessageToAllPlayers(this);
-        PlayerManager.getInstance().closeInventoryAllPlayersInArena(this);
+        plugin.getPlayerManager().addPlayedToAllPlayers(this);
+        plugin.getOptionsManager().giveAllPlayersItem(this, plugin.getOptionsManager().getOptionsItem(), 8);
+        plugin.getPlayerManager().sendStartMessageToAllPlayers(this);
+        plugin.getPlayerManager().closeInventoryAllPlayersInArena(this);
 
         gameCountdown = new BukkitRunnable() {
             int countdown = gameTime;
@@ -373,8 +390,8 @@ public class BBArena {
                     cancel();
                     return;
                 } else if ((countdown % 60 == 0 && countdown >= 60 && countdown != gameTime) || (countdown % 30 == 0 && countdown < 60) || (countdown < 11)) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
-                    PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
+                    plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
+                    plugin.getPlayerManager().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 }
                 updateAllScoreboards(countdown, getGameTime());
                 countdown--;
@@ -397,12 +414,12 @@ public class BBArena {
             setPlotsToTeams();
         }
         setVotingPlots();
-        PlayerManager.getInstance().addPlayedToAllPlayers(this);
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
+        plugin.getPlayerManager().addPlayedToAllPlayers(this);
+        plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
         setGamemodeToAllPlayers(GameMode.CREATIVE);
-        OptionsManager.getInstance().giveAllPlayersItem(this, OptionsManager.getOptionsItem(), 8);
-        PlayerManager.getInstance().sendStartMessageToAllPlayers(this);
-        PlayerManager.getInstance().closeInventoryAllPlayersInArena(this);
+        plugin.getOptionsManager().giveAllPlayersItem(this, plugin.getOptionsManager().getOptionsItem(), 8);
+        plugin.getPlayerManager().sendStartMessageToAllPlayers(this);
+        plugin.getPlayerManager().closeInventoryAllPlayersInArena(this);
 
         gameCountdown = new BukkitRunnable() {
             int countdown = gameTime;
@@ -415,8 +432,8 @@ public class BBArena {
                     cancel();
                     return;
                 } else if ((countdown % 60 == 0 && countdown >= 60 && countdown != gameTime) || (countdown % 30 == 0 && countdown < 60) || (countdown < 11)) {
-                    PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
-                    PlayerManager.getInstance().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
+                    plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
+                    plugin.getPlayerManager().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 }
                 updateAllScoreboards(countdown, getGameTime());
                 countdown--;
@@ -435,30 +452,30 @@ public class BBArena {
         calculateResults();
         this.winner = votingPlots.get(0);
         teleportAllPlayersToPlot(winner);
-        updateAllScoreboards(0, BBSettings.getEndTime());
+        updateAllScoreboards(0, plugin.getSettings().getEndTime());
 
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
-        PlayerManager.getInstance().addWinsToWinner(this);
-        PlayerManager.getInstance().sendResultsToAllPlayers(this);
-        PlayerManager.getInstance().setAllPlayersMostPoints(this);
+        plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
+        plugin.getPlayerManager().addWinsToWinner(this);
+        plugin.getPlayerManager().sendResultsToAllPlayers(this);
+        plugin.getPlayerManager().setAllPlayersMostPoints(this);
 
         spawnWinnerFireworks();
 
-        if (BBSettings.isEndCommandValid()) {
+        if (plugin.getSettings().isEndCommandValid()) {
             runEndCommands();
         }
-        if (!BBSettings.isGiveRewardsAfterGameEnds()) {
-            RewardManager.getInstance().giveRewards(this);
+        if (!plugin.getSettings().isGiveRewardsAfterGameEnds()) {
+            plugin.getRewardManager().giveRewards(this);
         }
 
-        ArenaManager.setTotalPlayedGames(ArenaManager.getTotalPlayedGames() + 1);
+        plugin.getArenaManager().setTotalPlayedGames(plugin.getArenaManager().getTotalPlayedGames() + 1);
         endCountdown = new BukkitRunnable() {
 
             @Override
             public void run() {
                 stopArena(Message.ARENA_ENDED.getChatMessage(), false);
             }
-        }.runTaskLater(BuildBattle.getInstance(), BBSettings.getEndTime() * 20L);
+        }.runTaskLater(BuildBattle.getInstance(), plugin.getSettings().getEndTime() * 20L);
 
         BuildBattle.getInstance().getServer().getPluginManager().callEvent(new BBGameEndEvent(getArenaInstance(), getWinner().getTeam()));
     }
@@ -471,10 +488,10 @@ public class BBArena {
     private void startVotingCountdown() {
         setBBArenaState(BBArenaState.VOTING);
 
-        PlayerManager.getInstance().sendTitleToAllPlayersInArena(this, Message.TITLE_VOTING.getMessage(), Message.SUBTITLE_VOTING.getMessage());
-        PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
-        PlayerManager.getInstance().setAllPlayersFlying(this);
-        PlayerManager.getInstance().removeAllPotionEffects(this);
+        plugin.getPlayerManager().sendTitleToAllPlayersInArena(this, Message.TITLE_VOTING.getMessage(), Message.SUBTITLE_VOTING.getMessage());
+        plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
+        plugin.getPlayerManager().setAllPlayersFlying(this);
+        plugin.getPlayerManager().removeAllPotionEffects(this);
 
         setGamemodeToAllPlayers(GameMode.ADVENTURE);
 
@@ -490,35 +507,35 @@ public class BBArena {
             }
 
             votingCountdown = new BukkitRunnable() {
-                int timeLeft = BBSettings.getVotingTime();
+                int timeLeft = plugin.getSettings().getVotingTime();
                 int index = 0;
 
                 @Override
                 public void run() {
-                    if (timeLeft == BBSettings.getVotingTime()) {
+                    if (timeLeft == plugin.getSettings().getVotingTime()) {
                         teleportAllPlayersToPlot(currentVotingPlot);
-                        updateAllScoreboards(timeLeft, BBSettings.getVotingTime());
-                        PlayerManager.getInstance().giveVoteItemsAllPlayers(getArenaInstance());
+                        updateAllScoreboards(timeLeft, plugin.getSettings().getVotingTime());
+                        plugin.getPlayerManager().giveVoteItemsAllPlayers(getArenaInstance());
                     }
                     if (timeLeft == 0) {
                         currentVotingPlot.setFinalPoints();
                         try {
                             index += 1;
                             currentVotingPlot = votingPlots.get(index);
-                            timeLeft = BBSettings.getVotingTime();
+                            timeLeft = plugin.getSettings().getVotingTime();
                         } catch (Exception e) {
                             cancel();
                             endGame();
                         }
                         return;
                     } else if (timeLeft < 6) {
-                        PlayerManager.getInstance().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
+                        plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
                     }
                     if (currentVotingPlot != null) {
-                        PlayerManager.getInstance().setLevelsToAllPlayers(getArenaInstance(), timeLeft);
-                        updateAllScoreboards(timeLeft, BBSettings.getVotingTime());
+                        plugin.getPlayerManager().setLevelsToAllPlayers(getArenaInstance(), timeLeft);
+                        updateAllScoreboards(timeLeft, plugin.getSettings().getVotingTime());
                         if (timeLeft >= 1)
-                            PlayerManager.getInstance().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
+                            plugin.getPlayerManager().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
                     }
                     timeLeft -= 1;
                 }
@@ -535,9 +552,9 @@ public class BBArena {
             p.setPlayerWeather(plot.getOptions().getCurrentWeather());
         }
         if (plot.getTeam().getPlayers().size() == 1) {
-            PlayerManager.getInstance().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
+            plugin.getPlayerManager().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDER.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         } else {
-            PlayerManager.getInstance().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
+            plugin.getPlayerManager().sendTitleToAllPlayersInArena(this, Message.VOTING_BUILDERS.getMessage(), plot.getTeam().getPlayersInCommaSeparatedString());
         }
     }
 
@@ -547,13 +564,13 @@ public class BBArena {
 
     public void stopArena(String message, boolean removePlayers) {
 
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(this, message);
+        plugin.getPlayerManager().broadcastToAllPlayersInArena(this, message);
 
         switch (bbArenaState) {
             case LOBBY:
                 if (lobbyCountdown != null) {
                     lobbyCountdown.cancel();
-                    updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
+                    updateAllScoreboards(plugin.getSettings().getLobbyTime(), plugin.getSettings().getLobbyTime());
                     return;
                 }
                 break;
@@ -575,20 +592,20 @@ public class BBArena {
                 break;
         }
 
-        if (removePlayers || BBSettings.isRemovePlayersAfterGame()) {
+        if (removePlayers || plugin.getSettings().isRemovePlayersAfterGame()) {
             kickAllPlayers();
-            if (BBSettings.isGiveRewardsAfterGameEnds()) {
-                RewardManager.getInstance().giveRewards(this);
+            if (plugin.getSettings().isGiveRewardsAfterGameEnds()) {
+                plugin.getRewardManager().giveRewards(this);
             }
         } else {
-            updateAllScoreboards(BBSettings.getLobbyTime(), BBSettings.getLobbyTime());
-            PlayerManager.getInstance().clearInventoryAllPlayersInArena(this);
-            PlayerManager.getInstance().teleportAllPlayersToLobby(getArenaInstance());
+            updateAllScoreboards(plugin.getSettings().getLobbyTime(), plugin.getSettings().getLobbyTime());
+            plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
+            plugin.getPlayerManager().teleportAllPlayersToLobby(getArenaInstance());
             setGamemodeToAllPlayers(GameMode.ADVENTURE);
             if (gameMode == BBGameMode.TEAM) {
-                PlayerManager.getInstance().giveAllPlayersTeamsItem(getArenaInstance());
+                plugin.getPlayerManager().giveAllPlayersTeamsItem(getArenaInstance());
             }
-            PlayerManager.getInstance().giveAllPlayersLeaveItem(getArenaInstance());
+            plugin.getPlayerManager().giveAllPlayersLeaveItem(getArenaInstance());
             if (players.size() >= minPlayers) {
                 startLobby();
             }
@@ -600,7 +617,7 @@ public class BBArena {
         this.resetAllPlots();
         this.resetAllTeams();
 
-        if (BBSettings.isVotingForThemes()) {
+        if (plugin.getSettings().isVotingForThemes()) {
             themeVoting.reset();
         }
 
@@ -630,7 +647,7 @@ public class BBArena {
             if (!teams.isEmpty()) {
                 plot.setTeam(teams.get(0));
                 plot.teleportTeamToPlot();
-                plot.getOptions().setCurrentTime(null,BBPlotTime.NOON, false);
+                plot.getOptions().setCurrentTime(null, BBPlotTime.NOON, false);
             } else {
                 break;
             }
@@ -666,20 +683,21 @@ public class BBArena {
         while (it.hasNext()) {
             Player p = (Player) it.next();
 
-            if (BBSettings.isScoreboardEnabled()) {
+            if (plugin.getSettings().isScoreboardEnabled()) {
                 playerBoards.remove(p);
                 p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
 
-            PlayerManager.getInstance().restorePlayerData(p);
+            plugin.getPlayerManager().restorePlayerData(p);
 
-            if (BBSettings.getMainLobbyLocation() != null) {
-                PlayerManager.getInstance().teleportToMainLobby(p);
+            if (plugin.getSettings().getMainLobbyLocation() != null) {
+                plugin.getPlayerManager().teleportToMainLobby(p);
             }
-            PlayerManager.getPlayersInArenas().remove(p);
 
-            if (BBSettings.isUseBungeecord()) {
-                BungeeUtils.connectPlayerToServer(p, BBSettings.getRandomFallbackServer());
+            plugin.getPlayerManager().getPlayersInArenas().remove(p);
+
+            if (plugin.getSettings().isUseBungeecord()) {
+                BungeeUtils.connectPlayerToServer(p, plugin.getSettings().getRandomFallbackServer());
             }
             it.remove();
         }
@@ -692,19 +710,19 @@ public class BBArena {
     }
 
     public void saveIntoConfig() {
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".gameTime", gameTime);
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".min_players", minPlayers);
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".mode", gameMode.name());
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".teamSize", teamSize);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".gameTime", gameTime);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".min_players", minPlayers);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".mode", gameMode.name());
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".teamSize", teamSize);
 
         for (BBPlot plot : buildPlots) {
-            BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
-            BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
+            plugin.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
+            plugin.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
         }
 
-        BuildBattle.info("§aArena §e" + name + " §asuccessfully saved into config !");
-        BuildBattle.getFileManager().getConfig("arenas.yml").save();
+        plugin.info("§aArena §e" + name + " §asuccessfully saved into config !");
+        plugin.getFileManager().getConfig("arenas.yml").save();
     }
 
     public String getTheme() {
@@ -736,7 +754,7 @@ public class BBArena {
         this.bbArenaState = newState;
         this.updateAllSigns();
         this.resetAllScoreboards();
-        ArenaManager.getInstance().refreshArenaItem(this);
+        plugin.getArenaManager().refreshArenaItem(this);
     }
 
     public BBArena getArenaInstance() {
@@ -753,15 +771,15 @@ public class BBArena {
 
     public void setLobbyLocation(Location lobbyLocation) {
         this.lobbyLocation = lobbyLocation;
-        BuildBattle.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
-        BuildBattle.getFileManager().getConfig("arenas.yml").save();
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
+        plugin.getFileManager().getConfig("arenas.yml").save();
     }
 
     public void delete(CommandSender sender) {
         stopArena(Message.ARENA_REMOVED.getChatMessage(), true);
 
-        BuildBattle.getFileManager().getConfig("arenas.yml").get().set(name, null);
-        BuildBattle.getFileManager().getConfig("arenas.yml").save();
+        plugin.getFileManager().getConfig("arenas.yml").get().set(name, null);
+        plugin.getFileManager().getConfig("arenas.yml").save();
 
         sender.sendMessage(Message.ARENA_REMOVED.getChatMessage());
     }
@@ -776,15 +794,15 @@ public class BBArena {
                 if (lobbyCountdown != null) {
                     lobbyCountdown.cancel();
                 }
-                if (BBSettings.isVotingForThemes()) {
+                if (plugin.getSettings().isVotingForThemes()) {
                     startThemeVoting();
                 } else {
                     switch (gameMode) {
                         case TEAM:
-                            startGame(BBSettings.getRandomTeamTheme(), true);
+                            startGame(plugin.getSettings().getRandomTeamTheme(), true);
                             break;
                         case SOLO:
-                            startGame(BBSettings.getRandomSoloTheme(), true);
+                            startGame(plugin.getSettings().getRandomSoloTheme(), true);
                             break;
                     }
                 }
@@ -805,14 +823,14 @@ public class BBArena {
     }
 
     private void calculateResults() {
-        if (BBSettings.isFairVote())
-            VotingManager.getInstance().checkVotes(this);
+        if (plugin.getSettings().isFairVote())
+            plugin.getVotingManager().checkVotes(this);
         Collections.sort(votingPlots);
         Collections.reverse(votingPlots);
     }
 
     private void spawnWinnerFireworks() {
-        if (!BBSettings.isWinFireworksEnabled()) {
+        if (!plugin.getSettings().isWinFireworksEnabled()) {
             return;
         }
         if (winner != null) {
@@ -821,13 +839,13 @@ public class BBArena {
 
                 @Override
                 public void run() {
-                    if (times >= BBSettings.getFireworkWaves()) {
+                    if (times >= plugin.getSettings().getFireworkWaves()) {
                         cancel();
                         return;
                     } else {
                         try {
                             for (Location l : winner.getPlotCorners()) {
-                                for (int i = 0; i < BBSettings.getFireworkAmount(); i++) {
+                                for (int i = 0; i < plugin.getSettings().getFireworkAmount(); i++) {
                                     FireworkUtil.spawnRandomFirework(LocationUtil.getCenter(l));
                                 }
                             }
@@ -876,7 +894,7 @@ public class BBArena {
     }
 
     private void updateAllScoreboards(int timeleft, int baseTime) {
-        if (BBSettings.isScoreboardEnabled()) {
+        if (plugin.getSettings().isScoreboardEnabled()) {
             for (Player p : playerBoards.keySet()) {
                 playerBoards.get(p).updateScoreboard(p, this, timeleft, baseTime);
             }
@@ -966,7 +984,7 @@ public class BBArena {
     }
 
     private void runEndCommands() {
-        for (String cmd : BBSettings.getEndCommands()) {
+        for (String cmd : plugin.getSettings().getEndCommands()) {
             for (Player p : players) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", p.getName()));
             }
@@ -1033,5 +1051,57 @@ public class BBArena {
 
     public BBArenaEdit getArenaEdit() {
         return arenaEdit;
+    }
+
+    @Override
+    public List<Player> getSpectators() {
+        return spectators;
+    }
+
+    @Override
+    public void spectate(Player player) {
+        if (spectators == null) {
+            spectateInventory = Bukkit.createInventory(null, ItemUtil.getInventorySizeBasedOnList(this.players), "Spectating Arena: " + this.name);
+            for (Player p : this.players) {
+                spectateInventory.addItem(ItemUtil.createPlayerHead(p));
+            }
+            spectators = new ArrayList<>();
+        }
+
+        if (spectators.contains(player)) {
+            player.sendMessage(Message.ALREADY_SPECTATING.getChatMessage());
+            return;
+        }
+
+        player.getInventory().setItem(0, SPECTATE_ITEM);
+        player.getInventory().setItem(8, QUIT_SPECTATE_ITEM);
+        player.updateInventory();
+
+        player.sendMessage(Message.SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
+        spectators.add(player);
+    }
+
+    @Override
+    public void unspectate(Player player) {
+        if (spectators == null) {
+            return;
+        }
+
+        if (!spectators.contains(player)) {
+            player.sendMessage(Message.NOT_SPECTATING.getChatMessage());
+            return;
+        }
+
+        player.getInventory().remove(Spectetable.SPECTATE_ITEM);
+        player.getInventory().remove(Spectetable.QUIT_SPECTATE_ITEM);
+        player.updateInventory();
+
+        player.sendMessage(Message.NO_LONGER_SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
+        spectators.remove(player);
+    }
+
+    @Override
+    public Inventory getSpectateInventory() {
+        return spectateInventory;
     }
 }

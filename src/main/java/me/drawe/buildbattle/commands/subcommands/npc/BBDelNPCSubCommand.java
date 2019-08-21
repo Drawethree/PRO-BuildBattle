@@ -1,9 +1,9 @@
 package me.drawe.buildbattle.commands.subcommands.npc;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawe.buildbattle.hooks.BBHook;
-import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.LocationUtil;
 import net.citizensnpcs.api.npc.NPC;
@@ -12,8 +12,11 @@ import org.bukkit.entity.Player;
 
 public class BBDelNPCSubCommand extends BBSubCommand {
 
-    public BBDelNPCSubCommand() {
+    private BuildBattle plugin;
+
+    public BBDelNPCSubCommand(BuildBattle plugin) {
         super("delnpc", " delnpc §8» §7Command to remove floor change NPC", "buildbattlepro.setup",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -26,10 +29,10 @@ public class BBDelNPCSubCommand extends BBSubCommand {
                         NPC npc = LocationUtil.getClosestNPC(p);
                         if (npc != null) {
                             npc.destroy();
-                            p.sendMessage(BBSettings.getPrefix() + " §aChange floor NPC removed!");
+                            p.sendMessage(plugin.getSettings().getPrefix() + " §aChange floor NPC removed!");
                             return true;
                         } else {
-                            p.sendMessage(BBSettings.getPrefix() + " §cThere is no NPC close to your location!");
+                            p.sendMessage(plugin.getSettings().getPrefix() + " §cThere is no NPC close to your location!");
                         }
                     }
                 } else {
@@ -39,7 +42,7 @@ public class BBDelNPCSubCommand extends BBSubCommand {
                 sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         } else {
-            sender.sendMessage(BBSettings.getPrefix() + " §cCitizens plugin is not loaded!");
+            sender.sendMessage(plugin.getSettings().getPrefix() + " §cCitizens plugin is not loaded!");
         }
         return false;
     }

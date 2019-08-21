@@ -36,7 +36,7 @@ public abstract class BBHook {
 
     public void hook() {
         if(Bukkit.getPluginManager().isPluginEnabled(this.pluginName)) {
-            BuildBattle.info("§aSuccessfully hooked into §e" + this.pluginName + " §a!");
+            BuildBattle.getInstance().info("§aSuccessfully hooked into §e" + this.pluginName + " §a!");
             this.enabled = true;
             this.runHookAction();
         }

@@ -1,7 +1,9 @@
 package me.drawe.buildbattle.leaderboards;
 
+import lombok.Getter;
 import me.drawe.buildbattle.objects.Message;
 
+@Getter
 public enum LeaderboardType {
 
     WINS("%wins%", Message.LEADERBOARDS_WINS_TITLE.getMessage(), Message.LEADERBOARDS_WINS_FORMAT.getMessage()),
@@ -19,15 +21,4 @@ public enum LeaderboardType {
         this.lineFormat = lineFormat;
     }
 
-    public String getPlaceholder() {
-        return placeholder;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getLineFormat() {
-        return lineFormat;
-    }
 }

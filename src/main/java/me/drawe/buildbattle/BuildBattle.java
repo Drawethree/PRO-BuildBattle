@@ -3,6 +3,9 @@ package me.drawe.buildbattle;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import lombok.Getter;
+import me.drawe.buildbattle.api.BuildBattleProAPI;
+import me.drawe.buildbattle.api.BuildBattleProAPIImpl;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.SetThemeCommand;
 import me.drawe.buildbattle.heads.HeadInventory;
@@ -10,6 +13,7 @@ import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
 import me.drawe.buildbattle.managers.*;
+import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
@@ -26,53 +30,72 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.lang.reflect.Field;
 
+@Getter
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
 
+
     private static BuildBattle instance;
-    private static FileManager fileManager;
-    private static WorldEditPlugin worldEdit;
-    private static Economy econ = null;
-    private static MetricsLite metrics = null;
-    private static boolean debug = false;
+    private static BuildBattleProAPI API;
+    private boolean debug = false;
 
-    public static BuildBattle getInstance() {
-        return instance;
-    }
-
-    public static WorldEditPlugin getWorldEdit() {
-        return worldEdit;
-    }
-
-    public static FileManager getFileManager() {
-        return fileManager;
-    }
-
-    public static Economy getEconomy() {
-        return econ;
-    }
+    private FileManager fileManager;
+    private ArenaManager arenaManager;
+    private BannerCreatorManager bannerCreatorManager;
+    private LeaderboardManager leaderboardManager;
+    private MySQLManager mySQLManager;
+    private OptionsManager optionsManager;
+    private PartyManager partyManager;
+    private PlayerManager playerManager;
+    private ReportManager reportManager;
+    private RewardManager rewardManager;
+    private SuperVoteManager superVoteManager;
+    private VotingManager votingManager;
+    private BBSettings settings;
+    private WorldEditPlugin worldEdit;
+    private Economy econ;
+    private MetricsLite metrics;
+    private HeadInventory headInventory;
 
     @Override
     public void onEnable() {
         instance = this;
-        fileManager = new FileManager(this);
+        API = new BuildBattleProAPIImpl(instance);
+
+        this.fileManager = new FileManager(this);
+        this.loadAllConfigs();
+        this.settings.loadSettings();
+
+        this.checkForLoadingLater();
+
+        this.arenaManager = new ArenaManager(this);
+        this.bannerCreatorManager = new BannerCreatorManager(this);
+        this.leaderboardManager = new LeaderboardManager(this);
+        this.mySQLManager = new MySQLManager(this);
+        this.optionsManager = new OptionsManager(this);
+        this.partyManager = new PartyManager(this);
+        this.playerManager = new PlayerManager(this);
+        this.rewardManager = new RewardManager(this);
+        this.reportManager = new ReportManager(this);
+        this.superVoteManager = new SuperVoteManager(this);
+        this.votingManager = new VotingManager(this);
+        this.settings = new BBSettings(this);
 
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
         Bukkit.getConsoleSender().sendMessage("");
 
-        loadAllConfigs();
-        BBSettings.loadBBSettings();
-        checkForLoadingLater();
 
-        registerBBCommands();
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-        getServer().getPluginManager().registerEvents(new ServerListener(this), this);
+        this.registerBBCommands();
+        this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 
-        OptionsManager.getInstance();
-        ArenaManager.getInstance().loadArenas();
-        PlayerManager.getInstance().loadAllPlayerStats();
-        HeadInventory.loadHeads();
-        hook();
+        this.arenaManager.loadArenas();
+        this.headInventory = new HeadInventory(this);
+        this.hook();
+
+        if (this.settings.getStatsType() == StatsType.MYSQL) {
+            MySQL.getInstance().connect();
+        }
 
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
@@ -87,18 +110,18 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
-            commandMap.register("bb", new BBCommand());
-            commandMap.register("settheme", new SetThemeCommand());
+            commandMap.register("bb", new BBCommand(this));
+            commandMap.register("settheme", new SetThemeCommand(this));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void checkForLoadingLater() {
-        if (BBSettings.isLoadPluginLater()) {
-            warning("§cPlugin will be loaded after §e" + BBSettings.getLoadAfter() + "s !");
+        if (this.settings.isLoadPluginLater()) {
+            warning("§cPlugin will be loaded after §e" + this.settings.getLoadAfter() + "s !");
             try {
-                Thread.sleep(BBSettings.getLoadAfter() * 1000);
+                Thread.sleep(this.settings.getLoadAfter() * 1000);
             } catch (InterruptedException e) {
                 warning("§cSomething has interrupted loading plugin later. Loading it now.");
             }
@@ -107,45 +130,45 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private void hook() {
         BBHook.attemptHooks();
-        loadWorldEdit();
-        metrics = new MetricsLite(this);
+        this.loadWorldEdit();
+        this.metrics = new MetricsLite(this);
+    }
+
+    public static BuildBattle getInstance() {
+        if(instance == null) {
+            instance = new BuildBattle();
+        }
+        return instance;
     }
 
 
     public void reloadPlugin() {
-        //DISABLING
-        if (BBSettings.getStatsType() == StatsType.MYSQL) {
-            try {
-                MySQLManager.getInstance().saveAllPlayerStats();
-            } catch (Exception e) {
-                severe("§cAn exception occurred while trying to close MySQL connection !");
-                e.printStackTrace();
-            }
-        } else {
-            PlayerManager.getInstance().saveAllPlayerStatsToStatsYML();
+
+        for (Player p : this.playerManager.getSpectators().keySet()) {
+            this.playerManager.unspectate(p);
         }
 
-        for (BBArena a : ArenaManager.getArenas().values()) {
+        for (BBArena a : this.arenaManager.getArenas().values()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
         }
+
 
         //ENABLING
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
         Bukkit.getConsoleSender().sendMessage("");
 
-        reloadAllConfigs();
-        BBSettings.loadBBSettings();
+        this.reloadAllConfigs();
+        this.settings.loadSettings();
         Message.reloadMessages();
-        OptionsManager.reloadItemsAndInventories();
-        ArenaManager.getInstance().loadArenas();
-        PlayerManager.getInstance().loadAllPlayerStats();
+        this.optionsManager.reloadItemsAndInventories();
+        this.arenaManager.loadArenas();
 
         if (BBHook.getHook("HolographicDisplays")) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
                 h.delete();
             }
-            LeaderboardManager.getInstance().loadAllLeaderboards();
+            this.leaderboardManager.loadAllLeaderboards();
         }
 
         Bukkit.getConsoleSender().sendMessage("");
@@ -180,34 +203,27 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onDisable() {
-        if (BBSettings.getStatsType() == StatsType.MYSQL) {
-            try {
-                MySQLManager.getInstance().saveAllPlayerStats();
-            } catch (Exception e) {
-                severe("§cAn exception occurred while trying to close MySQL connection !");
-                e.printStackTrace();
-            }
-        } else {
-            PlayerManager.getInstance().saveAllPlayerStatsToStatsYML();
+        for (Player p : this.playerManager.getSpectators().keySet()) {
+            this.playerManager.unspectate(p);
         }
-        for (BBArena a : ArenaManager.getArenas().values()) {
+        for (BBArena a : this.arenaManager.getArenas().values()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
         }
     }
 
     private void loadWorldEdit() {
         if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
-            warning("§cWorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
+            this.warning("§cWorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
             return;
         }
 
-        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+        this.worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
-        if (worldEdit == null) {
-            warning("§cWorldEdit dependency not found ! Report features will be disabled !");
+        if (this.worldEdit == null) {
+            this.warning("§cWorldEdit dependency not found ! Report features will be disabled !");
         } else {
-            info("§aSuccessfully hooked into §eWorldEdit §a!");
-            ReportManager.getInstance().loadAllReports();
+            this.info("§aSuccessfully hooked into §eWorldEdit §a!");
+            this.getReportManager().loadAllReports();
         }
     }
 
@@ -217,33 +233,37 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        econ = rsp.getProvider();
+        this.econ = rsp.getProvider();
         return true;
     }
 
-    public static void info(String message) {
-        Bukkit.getConsoleSender().sendMessage(BBSettings.getPrefix() + message);
+    public void info(String message) {
+        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + message);
     }
 
-    public static void debug(String message) {
-        if (debug) instance.getLogger().info("[DEBUG] " + message);
+    public void debug(String message) {
+        if (this.debug) Bukkit.getLogger().info("[DEBUG] " + message);
     }
 
-    public static void severe(String message) {
-        instance.getLogger().severe(message);
+    public void severe(String message) {
+        Bukkit.getLogger().severe(message);
     }
 
-    public static void warning(String message) {
-        Bukkit.getConsoleSender().sendMessage(BBSettings.getPrefix() + "§4[Warning] §r" + message);
+    public void warning(String message) {
+        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + "§4[Warning] §r" + message);
     }
 
-    public static boolean enableDebugMode() {
-        BuildBattle.debug = !BuildBattle.debug;
-        return BuildBattle.debug;
+    public boolean enableDebugMode() {
+        this.debug = !this.debug;
+        return this.debug;
+    }
+
+    public static BuildBattleProAPI getAPI() {
+        return API;
     }
 }
 

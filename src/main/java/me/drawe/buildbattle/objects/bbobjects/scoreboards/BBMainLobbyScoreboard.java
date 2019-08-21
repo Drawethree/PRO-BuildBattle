@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -45,12 +46,12 @@ public class BBMainLobbyScoreboard {
         add("&1", 2);
         add(Message.SCOREBOARD_MAIN_LOBBY_SERVER.getMessage(), 1);
         if(stats != null) {
-            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replaceAll("%played%", String.valueOf(stats.getPlayed())), 13);
-            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replaceAll("%wins%", String.valueOf(stats.getWins())), 11);
-            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(stats.getMostPoints())), 9);
-            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(stats.getBlocksPlaced())), 7);
-            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(stats.getParticlesPlaced())), 5);
-            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(stats.getSuperVotes())), 3);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replaceAll("%played%", String.valueOf(stats.getStat(BBStat.PLAYED))), 13);
+            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replaceAll("%wins%", String.valueOf(stats.getStat(BBStat.WINS))), 11);
+            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(stats.getStat(BBStat.MOST_POINTS))), 9);
+            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(stats.getStat(BBStat.BLOCKS_PLACED))), 7);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(stats.getStat(BBStat.PARTICLES_PLACED))), 5);
+            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(stats.getStat(BBStat.SUPER_VOTES))), 3);
         } else {
             add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replaceAll("%played%", String.valueOf(0)), 13);
             add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replaceAll("%wins%", String.valueOf(0)), 11);

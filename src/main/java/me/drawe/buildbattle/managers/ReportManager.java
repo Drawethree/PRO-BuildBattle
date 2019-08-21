@@ -4,8 +4,9 @@ import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.events.misc.BBReportEvent;
+import me.drawe.buildbattle.api.events.misc.BBReportEvent;
 import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
@@ -28,48 +29,47 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 public class ReportManager {
-    private static ReportManager ourInstance = new ReportManager();
-    public static List<BBBuildReport> buildReports;
-    public static final DateFormat reportDateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-    public static final String reportsDirectoryName = "reports_schematics";
-    private static int maxReportsPerInv = 45;
 
-    private ReportManager() {
+    private final DateFormat reportDateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+    private final String reportsDirectoryName = "reports_schematics";
+    private int maxReportsPerInv = 45;
 
+    private BuildBattle plugin;
+    private List<BBBuildReport> buildReports;
+
+    public ReportManager(BuildBattle plugin) {
+        this.plugin = plugin;
     }
 
-    public static ReportManager getInstance() {
-        return ourInstance;
-    }
-
-    public static List<BBBuildReport> getBuildReports() {
-        return buildReports;
+    public String getReportsDirectoryName() {
+        return reportsDirectoryName;
     }
 
     public void loadAllReports() {
-        if (BBSettings.getStatsType() == StatsType.FLATFILE) {
-            loadAllReportsFromConfig();
+        if (this.plugin.getSettings().getStatsType() == StatsType.FLATFILE) {
+            this.loadAllReportsFromConfig();
         }
     }
 
     private void loadAllReportsFromConfig() {
-        buildReports = new ArrayList<>();
-        for (String s : BuildBattle.getFileManager().getConfig("reports.yml").get().getKeys(false)) {
+        this.buildReports = new ArrayList<>();
+        for (String s : this.plugin.getFileManager().getConfig("reports.yml").get().getKeys(false)) {
             final List<UUID> reportedPlayers = new ArrayList<>();
-            BuildBattle.getFileManager().getConfig("reports.yml").get().getStringList(s + ".reported_players").forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
+            this.plugin.getFileManager().getConfig("reports.yml").get().getStringList(s + ".reported_players").forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
 
-            final UUID reportedBy = UUID.fromString(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".reported_by"));
+            final UUID reportedBy = UUID.fromString(this.plugin.getFileManager().getConfig("reports.yml").get().getString(s + ".reported_by"));
 
             Date date = null;
             try {
-                date = reportDateformat.parse(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".date"));
+                date = reportDateformat.parse(this.plugin.getFileManager().getConfig("reports.yml").get().getString(s + ".date"));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            final File schematic = new File(new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName), BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".schematic_name"));
-            final BBReportStatus status = BBReportStatus.valueOf(BuildBattle.getFileManager().getConfig("reports.yml").get().getString(s + ".status").toUpperCase());
+            final File schematic = new File(new File(this.plugin.getDataFolder(), reportsDirectoryName), this.plugin.getFileManager().getConfig("reports.yml").get().getString(s + ".schematic_name"));
+            final BBReportStatus status = BBReportStatus.valueOf(this.plugin.getFileManager().getConfig("reports.yml").get().getString(s + ".status").toUpperCase());
             final BBBuildReport report = new BBBuildReport(s, reportedPlayers, reportedBy, schematic, date, status);
             buildReports.add(report);
         }
@@ -119,7 +119,7 @@ public class ReportManager {
 
     private File createSchematic(Player player, String reportID, BBPlot plot) {
         try {
-            File dir = new File(BuildBattle.getInstance().getDataFolder(), reportsDirectoryName);
+            File dir = new File(this.plugin.getDataFolder(), reportsDirectoryName);
             File schematic = new File(dir, reportID + ".schematic");
             if (!dir.exists())
                 dir.mkdirs();
@@ -167,15 +167,15 @@ public class ReportManager {
 
     public boolean saveReportIntoConfig(BBBuildReport report) {
         try {
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".reported_players", report.getReportedPlayersStringList());
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".reported_by", report.getReportedBy().toString());
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".date", reportDateformat.format(report.getReportDate()));
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".schematic_name", report.getSchematicFile().getName());
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".status", report.getReportStatus().name().toUpperCase());
-            BuildBattle.getFileManager().getConfig("reports.yml").save();
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".reported_players", report.getReportedPlayersStringList());
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".reported_by", report.getReportedBy().toString());
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".date", reportDateformat.format(report.getReportDate()));
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".schematic_name", report.getSchematicFile().getName());
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID() + ".status", report.getReportStatus().name().toUpperCase());
+            this.plugin.getFileManager().getConfig("reports.yml").save();
             return true;
         } catch (Exception e) {
-            BuildBattle.severe("An exception occurred while saving report " + report.getReportID() + " into reports.yml !");
+            this.plugin.severe("An exception occurred while saving report " + report.getReportID() + " into reports.yml !");
             e.printStackTrace();
         }
         return false;
@@ -184,7 +184,7 @@ public class ReportManager {
 
     public int getNextPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) + 1;
+            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) + 1;
         } catch (Exception e) {
             return 0;
         }
@@ -192,7 +192,7 @@ public class ReportManager {
 
     public int getCurrentPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), ""));
+            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), ""));
         } catch (Exception e) {
             return 0;
         }
@@ -200,7 +200,7 @@ public class ReportManager {
 
     public int getPrevPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(OptionsManager.getReportsInventoryTitle(), "")) - 1;
+            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) - 1;
         } catch (Exception e) {
             return 0;
         }
@@ -209,7 +209,7 @@ public class ReportManager {
     public void openReports(Player p, int page) {
         if (page > 0) {
             if (getBuildReports().size() >= (page * maxReportsPerInv) - 45) {
-                Inventory inv = Bukkit.createInventory(null, 54, OptionsManager.getReportsInventoryTitle() + page);
+                Inventory inv = Bukkit.createInventory(null, 54, this.plugin.getOptionsManager().getReportsInventoryTitle() + page);
                 for (int i = page * maxReportsPerInv - 45; i < page * maxReportsPerInv; i++) {
                     try {
                         inv.addItem(getBuildReports().get(i).getReportInventoryItem());
@@ -233,7 +233,7 @@ public class ReportManager {
 
     public boolean deleteReportFromConfig(BBBuildReport report) {
         try {
-            BuildBattle.getFileManager().getConfig("reports.yml").set(report.getReportID(), null).save();
+            this.plugin.getFileManager().getConfig("reports.yml").set(report.getReportID(), null).save();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

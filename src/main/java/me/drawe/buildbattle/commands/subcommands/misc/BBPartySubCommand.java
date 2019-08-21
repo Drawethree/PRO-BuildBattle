@@ -1,9 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.misc;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PartyManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBParty;
 import org.bukkit.Bukkit;
@@ -12,32 +11,35 @@ import org.bukkit.entity.Player;
 
 public class BBPartySubCommand extends BBSubCommand {
 
-    public BBPartySubCommand() {
+    private BuildBattle plugin;
+
+    public BBPartySubCommand(BuildBattle plugin) {
         super("party", " party §8» §7Command to manage parties", "buildbattlepro.party",false);
+        this.plugin = plugin;
     }
 
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (BBSettings.isPartiesEnabled()) {
+            if (plugin.getSettings().isPartiesEnabled()) {
                 if (args.length > 0) {
                     String subCommand = args[0].toLowerCase();
                     switch (subCommand) {
                         case "accept":
-                            PartyManager.getInstance().manageInvite(p, true);
+                            plugin.getPartyManager().manageInvite(p, true);
                             return true;
                         case "decline":
-                            PartyManager.getInstance().manageInvite(p, false);
+                            plugin.getPartyManager().manageInvite(p, false);
                             return true;
                         case "leave":
-                            PartyManager.getInstance().leaveParty(p);
+                            plugin.getPartyManager().leaveParty(p);
                             return true;
                         case "invite":
                             if (args.length == 2) {
-                                BBParty playerParty = PartyManager.getInstance().getPlayerParty(p);
+                                BBParty playerParty = plugin.getPartyManager().getPlayerParty(p);
                                 Player target = Bukkit.getPlayer(args[1]);
-                                PartyManager.getInstance().invitePlayer(p, target, playerParty);
+                                plugin.getPartyManager().invitePlayer(p, target, playerParty);
                                 return true;
                             } else {
                                 p.sendMessage(Message.PARTY_INVALID_USAGE.getChatMessage());

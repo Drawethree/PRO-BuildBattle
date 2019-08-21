@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.events.misc;
+package me.drawe.buildbattle.api.events.misc;
 
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import org.bukkit.entity.Player;

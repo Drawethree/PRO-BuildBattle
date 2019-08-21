@@ -11,20 +11,16 @@ import java.util.Iterator;
 
 public class PartyManager {
 
-    private static PartyManager ourInstance = new PartyManager();
-    private static HashMap<Player, BBParty> invitedPlayers = new HashMap<>();
-    private static HashMap<Player, BBParty> playersInParties = new HashMap<>();
+    private HashMap<Player, BBParty> invitedPlayers = new HashMap<>();
+    private HashMap<Player, BBParty> playersInParties = new HashMap<>();
 
+    private BuildBattle plugin;
 
-    private PartyManager() {
-
+    public PartyManager(BuildBattle plugin) {
+        this.plugin = plugin;
     }
 
-    public static PartyManager getInstance() {
-        return ourInstance;
-    }
-
-    public static HashMap<Player, BBParty> getPlayersInParties() {
+    public HashMap<Player, BBParty> getPlayersInParties() {
         return playersInParties;
     }
 
@@ -32,7 +28,7 @@ public class PartyManager {
         if (creator.hasPermission("buildbattlepro.party")) {
             if (getPlayerParty(creator) == null) {
                 BBParty party = new BBParty(creator);
-                playersInParties.put(creator, party);
+                this.playersInParties.put(creator, party);
                 return party;
             } else {
                 creator.sendMessage(Message.PARTY_CREATE_FAILED.getChatMessage());
@@ -44,15 +40,15 @@ public class PartyManager {
     }
 
     public void manageInvite(Player p, boolean join) {
-        if (invitedPlayers.containsKey(p)) {
-            BBParty party = invitedPlayers.get(p);
+        if (this.invitedPlayers.containsKey(p)) {
+            BBParty party = this.invitedPlayers.get(p);
             if (join) {
                 party.joinPlayer(p);
-                playersInParties.put(p, party);
+                this.playersInParties.put(p, party);
             } else {
                 p.sendMessage(Message.PARTY_INVITE_DECLINE.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
             }
-            invitedPlayers.remove(p);
+            this.invitedPlayers.remove(p);
         } else {
             p.sendMessage(Message.PARTY_NO_PENDING_INVITES.getChatMessage());
         }
@@ -64,7 +60,7 @@ public class PartyManager {
                 if (party != null) {
                     if (party.isCreator(whoInvited)) {
                         if (!party.isFull()) {
-                            if (!invitedPlayers.containsKey(p)) {
+                            if (!this.invitedPlayers.containsKey(p)) {
                                 if (getPlayerParty(p) == null) {
                                     doInviteCommands(p, party);
                                 } else {
@@ -82,7 +78,7 @@ public class PartyManager {
                 } else {
                     BBParty createdParty = createParty(whoInvited);
                     if (createdParty != null) {
-                        doInviteCommands(p, createdParty);
+                        this.doInviteCommands(p, createdParty);
                     }
                 }
             } else {
@@ -101,7 +97,7 @@ public class PartyManager {
         p.sendMessage(Message.PARTY_ACCEPT_INFO.getChatMessage());
         p.sendMessage(Message.PARTY_DECLINE_INFO.getChatMessage());
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             if (invitedPlayers.containsKey(p)) {
                 invitedPlayers.remove(p);
                 p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
@@ -109,7 +105,7 @@ public class PartyManager {
         }, 20 * 180L);
     }
 
-    public static HashMap<Player, BBParty> getInvitedPlayers() {
+    public HashMap<Player, BBParty> getInvitedPlayers() {
         return invitedPlayers;
     }
 
@@ -138,11 +134,11 @@ public class PartyManager {
     }
 
     public int getMaxPlayersInParty(Player creator) {
-        for (int i = 100; i > BBSettings.getPartyMaxPlayers(); i--) {
+        for (int i = 100; i > this.plugin.getSettings().getPartyMaxPlayers(); i--) {
             if (creator.hasPermission("buildbattlepro.party.size." + i)) {
                 return i;
             }
         }
-        return BBSettings.getPartyMaxPlayers();
+        return this.plugin.getSettings().getPartyMaxPlayers();
     }
 }

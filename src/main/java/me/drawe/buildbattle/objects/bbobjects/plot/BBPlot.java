@@ -1,12 +1,11 @@
 package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
@@ -27,6 +26,7 @@ public class BBPlot implements Comparable<BBPlot> {
     private BBTeam team;
     private Location minPoint;
     private Location maxPoint;
+    private BuildBattle plugin;
     private BBArena arena;
     private BBPlotOptions options;
     private int votePoints;
@@ -36,7 +36,8 @@ public class BBPlot implements Comparable<BBPlot> {
     private List<Chunk> chunksInPlot;
     private UUID reportedBy;
 
-    public BBPlot(BBArena arena, Location minPoint, Location maxPoint) {
+    public BBPlot(BuildBattle plugin, BBArena arena, Location minPoint, Location maxPoint) {
+        this.plugin = plugin;
         this.arena = arena;
         this.minPoint = minPoint;
         this.maxPoint = maxPoint;
@@ -86,7 +87,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.options = new BBPlotOptions(this);
         this.options.setCurrentBiome(null, PlotBiome.PLAINS, false);
         this.team = null;
-        this.changeFloor(BBSettings.getDefaultFloorMaterial());
+        this.changeFloor(plugin.getSettings().getDefaultFloorMaterial());
     }
 
     private void removeAllBlocks() {
@@ -253,16 +254,16 @@ public class BBPlot implements Comparable<BBPlot> {
     }
 
     public void addActiveParticle(Player player, BBPlotParticle particle) {
-        if (particles.size() != BBSettings.getMaxParticlesPerPlayer()) {
-            BBPlayerStats stats = PlayerManager.getInstance().getPlayerStats(player);
+        if (particles.size() != plugin.getSettings().getMaxParticlesPerPlayer()) {
+            BBPlayerStats stats = plugin.getPlayerManager().getPlayerStats(player);
             if (stats != null) {
-                stats.setParticlesPlaced(stats.getParticlesPlaced() + 1);
+                stats.setStat(BBStat.PARTICLES_PLACED, (Integer) stats.getStat(BBStat.PARTICLES_PLACED) + 1);
             }
             player.sendMessage(Message.PARTICLE_PLACED.getChatMessage());
             particle.start();
             particles.add(particle);
         } else {
-            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replaceAll("%amount%", String.valueOf(BBSettings.getMaxParticlesPerPlayer())));
+            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replaceAll("%amount%", String.valueOf(plugin.getSettings().getMaxParticlesPerPlayer())));
         }
     }
 
@@ -285,7 +286,7 @@ public class BBPlot implements Comparable<BBPlot> {
     public void resetPlotFromGame() {
         this.removeAllBlocks();
         this.removeAllParticles();
-        options.setCurrentFloorItem(null, BBSettings.getDefaultFloorMaterial().toItem());
+        options.setCurrentFloorItem(null, plugin.getSettings().getDefaultFloorMaterial().toItem());
         options.setCurrentWeather(null, WeatherType.CLEAR, false);
         options.setCurrentTime(null, BBPlotTime.NOON, false);
         options.setCurrentBiome(null, PlotBiome.PLAINS, false);
@@ -373,17 +374,17 @@ public class BBPlot implements Comparable<BBPlot> {
         int randomY;
         int randomZ;
 
-        BuildBattle.debug("Generating random location..");
+        plugin.debug("Generating random location..");
         do {
             tries++;
-            BuildBattle.debug("Attempt no." + tries);
+            plugin.debug("Attempt no." + tries);
             randomX = new Random().nextInt(maxX - minX) + minX;
             randomY = new Random().nextInt(maxY - minY) + minY;
             randomZ = new Random().nextInt(maxZ - minZ) + minZ;
         }
         while ((getWorld().getBlockAt(randomX, randomY, randomZ).getType() != CompMaterial.AIR.getMaterial()) && tries < 10);
 
-        BuildBattle.debug("Returning Location: " + getWorld().getName() + ", " + randomX + ", " + randomY + ", " + randomZ);
+        plugin.debug("Returning Location: " + getWorld().getName() + ", " + randomX + ", " + randomY + ", " + randomZ);
         return new Location(getWorld(), randomX, randomY, randomZ);
     }
 

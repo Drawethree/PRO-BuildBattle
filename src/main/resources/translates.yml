@@ -114,6 +114,11 @@ messages:
   party_not_allowed: "&cParties are not allowed on this server!"
   party_full: "&cYour party is full !"
   party_cant_invite_yourself: "&cYou can't invite yourself !"
+  already_spectating: "&cYou are already spectating this arena!"
+  spectating_arena: "&aYou are now spectating arena &e%arena%!"
+  first_leave_arena_to_spectate: "&cPlease first leave your current arena in order to spectate!"
+  no_longer_spectating: "&aYou left the spectator mode."
+  not_spectating: "&cYou are not spectating this arena!"
 ordinals:
   st: "st"
   nd: "nd"

@@ -1,7 +1,6 @@
 package me.drawe.buildbattle.utils;
 
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.ReportManager;
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
 import me.drawe.buildbattle.objects.bbobjects.BBReportStatus;
@@ -13,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -91,7 +91,7 @@ public class ItemUtil {
         }
         meta.setLore(colorizeLore(lore));
         item.setItemMeta(meta);
-        if(glow) {
+        if (glow) {
             addGlowEffect(item);
         }
         return item;
@@ -138,7 +138,7 @@ public class ItemUtil {
 
 
     public static ItemStack getSuperVoteItem(int amountOfSuperVotes, BBTheme theme) {
-        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(BBSettings.getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
+        return create(CompMaterial.PAPER, 1, Message.GUI_THEME_VOTING_INVENTORY_SUPER_VOTE_DISPLAYNAME.getMessage(), convertSuperVoteLore(BuildBattle.getInstance().getSettings().getSuperVoteLore(), theme, amountOfSuperVotes), null, null);
     }
 
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
@@ -161,7 +161,7 @@ public class ItemUtil {
         reportLore.add("§eReported by: §f" + reportedBy.getName());
         reportLore.add("§eReported players:");
         report.getReportedPlayers().forEach(uuid -> reportLore.add(" §f- " + Bukkit.getOfflinePlayer(uuid).getName()));
-        reportLore.add("§eDate: §f" + ReportManager.reportDateformat.format(report.getReportDate()));
+        reportLore.add("§eDate: §f" + BuildBattle.getInstance().getReportManager().getReportDateformat().format(report.getReportDate()));
         reportLore.add("§eSchematic name: §f" + report.getSchematicFile().getName());
         reportLore.add("§eStatus: " + report.getReportStatus().getStatusColor() + report.getReportStatus().name().toUpperCase());
         reportLore.add("");
@@ -189,6 +189,10 @@ public class ItemUtil {
     }
 
     public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore) {
-        return create(material,amount,displayName,lore,null,null);
+        return create(material, amount, displayName, lore, null, null);
+    }
+
+    public static ItemStack createPlayerHead(Player p) {
+        return create(CompMaterial.PLAYER_HEAD, 1, p.getName());
     }
 }

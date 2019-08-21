@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.hooks.leaderheads;
 
-import me.drawe.buildbattle.managers.PlayerManager;
+import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import me.robin.leaderheads.datacollectors.OnlineDataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import org.bukkit.entity.Player;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 
 public class BuildBattleParticlesPlaced extends OnlineDataCollector {
+
 
     public BuildBattleParticlesPlaced() {
         super(
@@ -22,6 +24,6 @@ public class BuildBattleParticlesPlaced extends OnlineDataCollector {
 
     @Override
     public Double getScore(Player player) {
-        return PlayerManager.getInstance().getPlayerStats(player) == null ? 0 :Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getParticlesPlaced());
+        return BuildBattle.getInstance().getPlayerManager().getPlayerStat(BBStat.PARTICLES_PLACED, player);
     }
 }

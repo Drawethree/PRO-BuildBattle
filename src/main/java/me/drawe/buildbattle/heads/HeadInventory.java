@@ -1,12 +1,10 @@
 package me.drawe.buildbattle.heads;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.OptionsManager;
 import me.drawe.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -23,54 +21,29 @@ public class HeadInventory {
     /* Attributes */
     private final Inventory MAIN_PAGE;
     private final ArrayList<Category> CATEGORIES;
-
-    /* Instance */
-    private static HeadInventory instance;
+    private final BuildBattle plugin;
 
     /**
      * Constructor for a HeadInventory object. This constructor makes a new main
      * GUI that contains the categories.
      */
-    private HeadInventory() {
+    public HeadInventory(BuildBattle plugin) {
+        this.plugin = plugin;
         this.MAIN_PAGE = Bukkit.createInventory(null, 9, Message.GUI_HEADS_TITLE.getMessage());
         this.CATEGORIES = new ArrayList<>();
         try {
-            ConfigurationSection section = BuildBattle.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
+            ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
             int i = 0;
             for (String name : section.getKeys(false)) {
-                Category category = new Category(name);
+                Category category = new Category(plugin,name);
                 CATEGORIES.add(category);
                 MAIN_PAGE.setItem(i, category.getIcon());
                 i++;
                 }
-            MAIN_PAGE.setItem(8, OptionsManager.getBackItem());
+            MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
         } catch (Exception e) {
-            BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
+            plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
         }
-    }
-
-    /**
-     * This method returns the instance of HeadInventory. This is the main
-     * inventory containing all the categories and pages containing heads. If
-     * the instance has not yet been initialized, it will initialize a new
-     * HeadInventory object as the instance.
-     *
-     * @return The HeadInventory object that has been initialized.
-     */
-    public static HeadInventory getInstance() {
-        if (instance == null) {
-            instance = new HeadInventory();
-        }
-        return instance;
-    }
-
-    public static void loadHeads() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                instance = new HeadInventory();
-            }
-        }.runTaskAsynchronously(BuildBattle.getInstance());
     }
 
     /**
@@ -103,7 +76,7 @@ public class HeadInventory {
         try {
             return CATEGORIES.get(index);
         } catch (IndexOutOfBoundsException ex) {
-            BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cCategory index is out of bounds.", ex);
+            plugin.getLogger().log(Level.SEVERE, "§cCategory index is out of bounds.", ex);
             return null;
         }
     }
@@ -117,16 +90,16 @@ public class HeadInventory {
         MAIN_PAGE.clear();
         CATEGORIES.clear();
         try {
-            ConfigurationSection section = BuildBattle.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
+            ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
             int i = 0;
             for (String name : section.getKeys(false)) {
-                Category category = new Category(name);
+                Category category = new Category(plugin,name);
                 CATEGORIES.add(category);
                 MAIN_PAGE.setItem(i, category.getIcon());
                 i++;
             }
         } catch (Exception e) {
-            BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
+            plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
         }
     }
 

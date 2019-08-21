@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.managers;
 
+import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
@@ -27,27 +28,31 @@ import java.util.List;
 
 public class ArenaManager {
 
-    public static final ItemStack posSelectorItem = ItemUtil.create(CompMaterial.STICK, 1, "&ePlot Selector", ItemUtil.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"), true);
+    private BuildBattle plugin;
 
-    private static ArenaManager ourInstance = new ArenaManager();
-    private static HashMap<String, BBArena> arenas = new HashMap<>();
-    private static HashMap<Player, Location[]> playerBBPos = new HashMap<>();
-    private static int totalPlayedGames = 0;
-    private static Inventory editArenasInventory;
-    private static Inventory allArenasInventory;
-    private static Inventory soloArenasInventory;
-    private static Inventory teamArenasInventory;
+    @Getter
+    private final ItemStack posSelectorItem = ItemUtil.create(CompMaterial.STICK, 1, "&ePlot Selector", ItemUtil.makeLore("&aLeft-Click &7block to select &aPosition 1", "&aRight-Click &7block to select &aPostion 2"), true);
 
-    private ArenaManager() {
-    }
+    private HashMap<String, BBArena> arenas;
+    private HashMap<Player, Location[]> playerBBPos;
 
-    public static ArenaManager getInstance() {
-        return ourInstance;
+    private int totalPlayedGames = 0;
+
+    private Inventory editArenasInventory;
+    private Inventory allArenasInventory;
+    private Inventory soloArenasInventory;
+    private Inventory teamArenasInventory;
+
+
+    public ArenaManager(BuildBattle plugin) {
+        this.plugin = plugin;
+        this.arenas = new HashMap<>();
+        this.playerBBPos = new HashMap<>();
     }
 
     private int getArenasAmount(BBGameMode gm) {
         int returnVal = 0;
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             if (a.getGameType() == gm) {
                 returnVal += 1;
             }
@@ -55,44 +60,39 @@ public class ArenaManager {
         return returnVal;
     }
 
-    public static HashMap<String, BBArena> getArenas() {
-        return arenas;
+    public HashMap<String, BBArena> getArenas() {
+        return this.arenas;
     }
 
-    public static int getTotalPlayedGames() {
-        return totalPlayedGames;
+    public int getTotalPlayedGames() {
+        return this.totalPlayedGames;
     }
 
-    public static void setTotalPlayedGames(int totalPlayedGames) {
-        ArenaManager.totalPlayedGames = totalPlayedGames;
-        if (BBSettings.isAutoRestarting()) {
-            if (totalPlayedGames == BBSettings.getAutoRestartGamesRequired()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), BBSettings.getAutoRestartCommand());
-                    }
-                }, BBSettings.getEndTime() * 20L);
+    public void setTotalPlayedGames(int totalPlayedGames) {
+        this.totalPlayedGames = totalPlayedGames;
+        if (this.plugin.getSettings().isAutoRestarting()) {
+            if (totalPlayedGames == this.plugin.getSettings().getAutoRestartGamesRequired()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getSettings().getAutoRestartCommand()), this.plugin.getSettings().getEndTime() * 20L);
             }
         }
     }
 
-    public static HashMap<Player, Location[]> getPlayerBBPos() {
-        return playerBBPos;
+    public HashMap<Player, Location[]> getPlayerBBPos() {
+        return this.playerBBPos;
     }
 
     public Inventory getEditArenasInventory() {
-        return editArenasInventory;
+        return this.editArenasInventory;
     }
 
     public void createArena(CommandSender sender, String name, String gamemode) {
         if (!existsArena(name)) {
             try {
                 BBGameMode bbGameMode = BBGameMode.valueOf(gamemode.toUpperCase());
-                arenas.put(name, new BBArena(name, bbGameMode));
+                this.arenas.put(name, new BBArena(name, bbGameMode));
                 sender.sendMessage("§e§lBuildBattle Setup §8| §aYou have successfully created arena §e" + name + " §8[§e" + bbGameMode.name() + "§8]§a!");
-                reloadAllArenasInventory();
-                reloadArenaEditors();
+                this.reloadAllArenasInventory();
+                this.reloadArenaEditors();
             } catch (Exception e) {
                 sender.sendMessage("§e§lBuildBattle Setup §8| §cInvalid arena type ! Valid types: §esolo, team");
             }
@@ -103,15 +103,15 @@ public class ArenaManager {
 
     public void removeArena(CommandSender sender, BBArena arena) {
         arena.delete(sender);
-        arenas.remove(arena.getName());
+        this.arenas.remove(arena.getName());
 
-        reloadAllArenasInventory();
-        reloadArenaEditors();
+        this.reloadAllArenasInventory();
+        this.reloadArenaEditors();
     }
 
 
     public BBPlot getBBPlotFromLocation(Location l) {
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             for (BBPlot plot : a.getBuildPlots()) {
                 if (plot.isLocationInPlot(l)) {
                     return plot;
@@ -122,7 +122,7 @@ public class ArenaManager {
     }
 
     public BBPlot getBBPlotFromNearbyLocation(Location l) {
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             for (BBPlot plot : a.getBuildPlots()) {
                 if (plot.isInPlotRange(l, 5)) {
                     return plot;
@@ -143,7 +143,7 @@ public class ArenaManager {
 
 
     public boolean existsArena(String answer) {
-        for (BBArena arena : arenas.values()) {
+        for (BBArena arena : this.arenas.values()) {
             if (arena.getName().equalsIgnoreCase(answer)) {
                 return true;
             }
@@ -152,7 +152,7 @@ public class ArenaManager {
     }
 
     public BBSign getArenaSign(Sign s) {
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             for (BBSign sign : a.getArenaSigns()) {
                 if (sign.getSign().equals(s)) {
                     return sign;
@@ -167,7 +167,7 @@ public class ArenaManager {
     }
 
     public BBArenaEdit getArenaEdit(Inventory inv) {
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             if (a.getArenaEdit().getEditInventory().equals(inv)) {
                 return a.getArenaEdit();
             }
@@ -177,13 +177,13 @@ public class ArenaManager {
 
     public BBArena getArenaToAutoJoin(BBGameMode gamemode) {
         if (gamemode == null) {
-            for (BBArena a : arenas.values()) {
+            for (BBArena a : this.arenas.values()) {
                 if ((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
                     return a;
                 }
             }
         } else {
-            for (BBArena a : arenas.values()) {
+            for (BBArena a : this.arenas.values()) {
                 if (a.getGameType() == gamemode) {
                     if ((a.getBBArenaState() == BBArenaState.LOBBY) && (!a.isFull())) {
                         return a;
@@ -196,49 +196,49 @@ public class ArenaManager {
 
     public void loadArenas() {
         try {
-            arenas = new HashMap<>();
-            for (String name : BuildBattle.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
-                arenas.put(name, new BBArena(name));
-                BuildBattle.info("§aArena §e" + name + " §aloaded !");
+            this.arenas = new HashMap<>();
+            for (String name : this.plugin.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
+                this.arenas.put(name, new BBArena(name));
+                plugin.info("§aArena §e" + name + " §aloaded !");
             }
         } catch (Exception e) {
-            BuildBattle.severe("§cAn exception occurred while trying loading arenas !");
+            plugin.severe("§cAn exception occurred while trying loading arenas !");
             e.printStackTrace();
         }
-        loadAllArenasInventory();
-        loadArenaEditors();
+        this.loadAllArenasInventory();
+        this.loadArenaEditors();
     }
 
 
     public void reloadArenaEditors() {
-        List<HumanEntity> viewers = editArenasInventory.getViewers();
+        List<HumanEntity> viewers = this.editArenasInventory.getViewers();
 
-        loadArenaEditors();
+        this.loadArenaEditors();
 
         for (HumanEntity e : new ArrayList<>(viewers)) {
-            e.openInventory(editArenasInventory);
+            e.openInventory(this.editArenasInventory);
         }
     }
 
     public void loadArenaEditors() {
-        editArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(arenas.values().size()), "Arena Editor");
-        for (BBArena a : arenas.values()) {
-            editArenasInventory.addItem(a.getArenaEdit().getArenaEditItemStack());
+        this.editArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(this.arenas.values().size()), "Arena Editor");
+        for (BBArena a : this.arenas.values()) {
+            this.editArenasInventory.addItem(a.getArenaEdit().getArenaEditItemStack());
         }
     }
 
     private void reloadAllArenasInventory() {
-        List<HumanEntity> viewers = allArenasInventory.getViewers();
+        List<HumanEntity> viewers = this.allArenasInventory.getViewers();
 
         loadAllArenasInventory();
 
         for (HumanEntity e : new ArrayList<>(viewers)) {
-            e.openInventory(allArenasInventory);
+            e.openInventory(this.allArenasInventory);
         }
     }
 
     public void refreshArenaItem(BBArena a) {
-        for (ItemStack item : allArenasInventory.getContents()) {
+        for (ItemStack item : this.allArenasInventory.getContents()) {
             if (item != null && item.hasItemMeta()) {
                 if (item.getItemMeta().getDisplayName().equals(a.getName())) {
                     ItemStack replacement = a.getArenaStatusItem();
@@ -249,7 +249,7 @@ public class ArenaManager {
             }
         }
         if (a.getGameType() == BBGameMode.SOLO) {
-            for (ItemStack item : soloArenasInventory.getContents()) {
+            for (ItemStack item : this.soloArenasInventory.getContents()) {
                 if (item != null && item.hasItemMeta()) {
                     if (item.getItemMeta().getDisplayName().equals(a.getName())) {
                         ItemStack replacement = a.getArenaStatusItem();
@@ -260,7 +260,7 @@ public class ArenaManager {
                 }
             }
         } else {
-            for (ItemStack item : teamArenasInventory.getContents()) {
+            for (ItemStack item : this.teamArenasInventory.getContents()) {
                 if (item != null && item.hasItemMeta()) {
                     if (item.getItemMeta().getDisplayName().equals(a.getName())) {
                         ItemStack replacement = a.getArenaStatusItem();
@@ -274,23 +274,23 @@ public class ArenaManager {
     }
 
     private void loadAllArenasInventory() {
-        allArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(arenas.values().size()), Message.GUI_ARENA_LIST_TITLE.getMessage());
-        teamArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
-        soloArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
+        this.allArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(arenas.values().size()), Message.GUI_ARENA_LIST_TITLE.getMessage());
+        this.teamArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
+        this.soloArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
 
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             if (a.getGameType() == BBGameMode.SOLO) {
-                soloArenasInventory.addItem(a.getArenaStatusItem());
+                this.soloArenasInventory.addItem(a.getArenaStatusItem());
             } else {
-                teamArenasInventory.addItem(a.getArenaStatusItem());
+                this.teamArenasInventory.addItem(a.getArenaStatusItem());
             }
-            allArenasInventory.addItem(a.getArenaStatusItem());
+            this.allArenasInventory.addItem(a.getArenaStatusItem());
         }
 
     }
 
     public BBArenaEdit getArenaEdit(ItemStack currentItem) {
-        for (BBArena a : arenas.values()) {
+        for (BBArena a : this.arenas.values()) {
             if (a.getArenaEdit().getArenaEditItemStack().equals(currentItem)) {
                 return a.getArenaEdit();
             }
@@ -300,40 +300,40 @@ public class ArenaManager {
 
     public void setPos(Player p, Block clickedBlock, int pos) {
         Location[] poses;
-        if (playerBBPos.containsKey(p)) {
-            poses = playerBBPos.get(p);
+        if (this.playerBBPos.containsKey(p)) {
+            poses = this.playerBBPos.get(p);
         } else {
             poses = new Location[2];
         }
         poses[pos - 1] = clickedBlock.getLocation();
-        playerBBPos.put(p, poses);
-        p.sendMessage(BBSettings.getPrefix() + "§aPosition §e" + pos + "§a set to §eWorld:" + clickedBlock.getLocation().getWorld().getName() + ", X:" + clickedBlock.getLocation().getBlockX() + ", Y:" + clickedBlock.getLocation().getBlockY() + ", Z:" + clickedBlock.getLocation().getBlockZ());
+        this.playerBBPos.put(p, poses);
+        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aPosition §e" + pos + "§a set to §eWorld:" + clickedBlock.getLocation().getWorld().getName() + ", X:" + clickedBlock.getLocation().getBlockX() + ", Y:" + clickedBlock.getLocation().getBlockY() + ", Z:" + clickedBlock.getLocation().getBlockZ());
     }
 
     public boolean hasSelectionReady(Player p) {
-        return (playerBBPos.get(p) != null) && (playerBBPos.get(p)[0] != null) && (playerBBPos.get(p)[1] != null);
+        return (this.playerBBPos.get(p) != null) && (this.playerBBPos.get(p)[0] != null) && (this.playerBBPos.get(p)[1] != null);
     }
 
     public int getMissingSelection(Player p) {
-        if (playerBBPos.get(p) == null) {
+        if (this.playerBBPos.get(p) == null) {
             return -1;
-        } else if (playerBBPos.get(p)[0] == null) {
+        } else if (this.playerBBPos.get(p)[0] == null) {
             return 1;
-        } else if (playerBBPos.get(p)[1] == null) {
+        } else if (this.playerBBPos.get(p)[1] == null) {
             return 2;
         }
         return -1;
     }
 
-    public static Inventory getAllArenasInventory() {
+    public Inventory getAllArenasInventory() {
         return allArenasInventory;
     }
 
-    public static Inventory getSoloArenasInventory() {
+    public  Inventory getSoloArenasInventory() {
         return soloArenasInventory;
     }
 
-    public static Inventory getTeamArenasInventory() {
+    public Inventory getTeamArenasInventory() {
         return teamArenasInventory;
     }
 }

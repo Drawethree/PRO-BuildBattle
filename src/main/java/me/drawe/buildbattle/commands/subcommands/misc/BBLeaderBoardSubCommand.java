@@ -1,12 +1,11 @@
 package me.drawe.buildbattle.commands.subcommands.misc;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.leaderboards.BBLeaderboard;
 import me.drawe.buildbattle.leaderboards.LeaderboardType;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.LeaderboardManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
@@ -15,8 +14,11 @@ import org.bukkit.entity.Player;
 
 public class BBLeaderBoardSubCommand extends BBSubCommand {
 
-    public BBLeaderBoardSubCommand() {
+    private BuildBattle plugin;
+
+    public BBLeaderBoardSubCommand(BuildBattle plugin) {
         super("lb", " lb §8» §7Command to manage leaderboards", "buildbattlepro.setup",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -27,8 +29,8 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                     String subCommand = args[0].toLowerCase();
                     switch (subCommand) {
                         case "refresh":
-                            LeaderboardManager.getInstance().refreshAllLeaderBoards();
-                            sender.sendMessage(BBSettings.getPrefix() + " §aLeaderboards refreshed !");
+                            plugin.getLeaderboardManager().refreshAllLeaderBoards();
+                            sender.sendMessage(plugin.getSettings().getPrefix() + " §aLeaderboards refreshed !");
                             return true;
                         case "create":
                             if (args.length == 2) {
@@ -37,7 +39,7 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                                     Location loc = p.getLocation();
                                     try {
                                         LeaderboardType type = LeaderboardType.valueOf(args[1].toUpperCase());
-                                        LeaderboardManager.getInstance().createLeaderboard(p, loc, type);
+                                        plugin.getLeaderboardManager().createLeaderboard(p, loc, type);
                                         return true;
                                     } catch (Exception e) {
                                         p.sendMessage("§cInvalid type ! Available types :  §e§lWINS, PLAYED, BLOCKS_PLACED, PARTICLES_PLACED");
@@ -50,32 +52,32 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                         case "select":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                LeaderboardManager.getInstance().selectLeaderboard(p);
+                                plugin.getLeaderboardManager().selectLeaderboard(p);
                                 return true;
                             }
                             break;
                         case "delete":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                BBLeaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
+                                BBLeaderboard selected = plugin.getLeaderboardManager().getSelectedLeaderboards().get(p);
                                 if (selected != null) {
                                     selected.delete();
-                                    p.sendMessage(BBSettings.getPrefix() + " §aHologram at location §e" + LocationUtil.getStringFromLocation(selected.getHologram().getLocation()) + " §asuccessfully removed!");
+                                    p.sendMessage(plugin.getSettings().getPrefix() + " §aHologram at location §e" + LocationUtil.getStringFromLocation(selected.getHologram().getLocation()) + " §asuccessfully removed!");
                                     return true;
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/" + cmd.getName() + " lb select §c!");
+                                    p.sendMessage(plugin.getSettings().getPrefix() + " §cPlease select a hologram near you by §e/" + cmd.getName() + " lb select §c!");
                                 }
                             }
                             break;
                         case "teleport":
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                BBLeaderboard selected = LeaderboardManager.getSelectedLeaderboards().get(p);
+                                BBLeaderboard selected = plugin.getLeaderboardManager().getSelectedLeaderboards().get(p);
                                 if (selected != null) {
                                     selected.teleport(p.getLocation());
                                     return true;
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + " §cPlease select a hologram near you by §e/" + cmd.getName() + " lb select §c!");
+                                    p.sendMessage(plugin.getSettings().getPrefix() + " §cPlease select a hologram near you by §e/" + cmd.getName() + " lb select §c!");
                                 }
                             }
                             break;
@@ -87,7 +89,7 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                     usage(cmd,sender);
                 }
             } else {
-                sender.sendMessage(BBSettings.getPrefix() + " §cHolographicDisplays plugin is required to manage leaderboards !");
+                sender.sendMessage(plugin.getSettings().getPrefix() + " §cHolographicDisplays plugin is required to manage leaderboards !");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());

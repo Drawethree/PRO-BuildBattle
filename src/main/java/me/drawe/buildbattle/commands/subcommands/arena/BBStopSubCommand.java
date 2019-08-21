@@ -1,9 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.arena;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.command.CommandSender;
@@ -11,8 +10,11 @@ import org.bukkit.entity.Player;
 
 public class BBStopSubCommand extends BBSubCommand {
 
-    public BBStopSubCommand() {
+    private BuildBattle plugin;
+
+    public BBStopSubCommand(BuildBattle plugin) {
         super("stop", " stop [<arena>] §8» §7Stop Arena", "buildbattlepro.stop",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class BBStopSubCommand extends BBSubCommand {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                    BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                     if (a != null) {
                         a.forceStop(sender);
                         return true;
@@ -30,7 +32,7 @@ public class BBStopSubCommand extends BBSubCommand {
                     }
                 }
             } else if (args.length == 1) {
-                BBArena arena = ArenaManager.getInstance().getArena(args[0]);
+                BBArena arena = this.plugin.getArenaManager().getArena(args[0]);
                 if (arena != null) {
                     arena.forceStop(sender);
                     return true;

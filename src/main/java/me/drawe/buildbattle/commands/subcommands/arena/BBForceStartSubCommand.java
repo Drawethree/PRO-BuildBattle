@@ -1,10 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.arena;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.command.CommandSender;
@@ -12,8 +10,11 @@ import org.bukkit.entity.Player;
 
 public class BBForceStartSubCommand extends BBSubCommand {
 
-    public BBForceStartSubCommand() {
+    private BuildBattle plugin;
+
+    public BBForceStartSubCommand(BuildBattle plugin) {
         super("forcestart", " forcestart [<arena>] [<theme>] §8» §7Force start Arena", "buildbattlepro.admin",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -22,7 +23,7 @@ public class BBForceStartSubCommand extends BBSubCommand {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                    BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                     if (a != null) {
                         a.forceStart(sender, true);
                         return true;
@@ -31,7 +32,7 @@ public class BBForceStartSubCommand extends BBSubCommand {
                     }
                 }
             } else if (args.length == 1) {
-                BBArena arena = ArenaManager.getInstance().getArena(args[0]);
+                BBArena arena = this.plugin.getArenaManager().getArena(args[0]);
                 if (arena != null) {
                     arena.forceStart(sender, true);
                     return true;
@@ -39,14 +40,14 @@ public class BBForceStartSubCommand extends BBSubCommand {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                 }
             } else if (args.length == 2) {
-                BBArena arena = ArenaManager.getInstance().getArena(args[0]);
+                BBArena arena = this.plugin.getArenaManager().getArena(args[0]);
                 String theme = args[1];
                 if (arena != null) {
                     if (theme != null) {
                         arena.forceStart(sender, theme, true);
                         return true;
                     } else {
-                        sender.sendMessage(BBSettings.getPrefix() + "§cYou must specify theme !");
+                        sender.sendMessage(this.plugin.getSettings().getPrefix() + "§cYou must specify theme !");
                     }
                 } else {
                     sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());

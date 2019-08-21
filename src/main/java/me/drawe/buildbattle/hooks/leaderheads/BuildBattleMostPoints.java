@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.hooks.leaderheads;
 
-import me.drawe.buildbattle.managers.PlayerManager;
+import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import me.robin.leaderheads.datacollectors.OnlineDataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import org.bukkit.entity.Player;
@@ -22,6 +23,6 @@ public class BuildBattleMostPoints extends OnlineDataCollector {
 
     @Override
     public Double getScore(Player player) {
-        return PlayerManager.getInstance().getPlayerStats(player) == null ? 0 :Double.valueOf(PlayerManager.getInstance().getPlayerStats(player).getMostPoints());
+        return BuildBattle.getInstance().getPlayerManager().getPlayerStat(BBStat.MOST_POINTS, player);
     }
 }

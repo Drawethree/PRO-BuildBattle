@@ -3,7 +3,6 @@ package me.drawe.buildbattle.listeners;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.heads.Category;
 import me.drawe.buildbattle.heads.HeadInventory;
-import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
@@ -12,6 +11,7 @@ import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaEdit;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
+import me.drawe.buildbattle.objects.bbobjects.arena.Spectetable;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
@@ -55,8 +55,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPreJoin(final AsyncPlayerPreLoginEvent e) {
-        if (BBSettings.isUseBungeecord() && BBSettings.isAutoJoinPlayers()) {
-            final BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
+        if (this.plugin.getSettings().isUseBungeecord() && this.plugin.getSettings().isAutoJoinPlayers()) {
+            final BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
             if (arena == null) {
                 e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
                 e.setKickMessage(Message.NO_EMPTY_ARENA.getChatMessage());
@@ -68,23 +68,25 @@ public class PlayerListener implements Listener {
     public void onJoin(final PlayerJoinEvent e) {
         final Player p = e.getPlayer();
 
-        if (BBSettings.isCreateStatsOnServerJoin()) {
-            PlayerManager.getInstance().createPlayerStatsIfNotExists(p);
+        this.plugin.getPlayerManager().loadPlayerData(p);
+
+        if (this.plugin.getSettings().isCreateStatsOnServerJoin()) {
+            this.plugin.getPlayerManager().createPlayerStatsIfNotExists(p);
         }
 
-        if (BBSettings.isUseBungeecord() && BBSettings.isAutoJoinPlayers()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-                final BBArena arena = ArenaManager.getInstance().getArenaToAutoJoin(null);
+        if (this.plugin.getSettings().isUseBungeecord() && this.plugin.getSettings().isAutoJoinPlayers()) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+                final BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
                 if (arena != null) {
                     arena.addPlayer(p);
                 } else {
                     p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
-                    BungeeUtils.connectPlayerToServer(p, BBSettings.getRandomFallbackServer());
+                    BungeeUtils.connectPlayerToServer(p, this.plugin.getSettings().getRandomFallbackServer());
                 }
             }, 1L);
-        } else if (BBSettings.getMainLobbyLocation() != null && BBSettings.isTeleportToMainLobbyOnJoin()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-                PlayerManager.getInstance().teleportToMainLobby(p);
+        } else if (this.plugin.getSettings().getMainLobbyLocation() != null && this.plugin.getSettings().isTeleportToMainLobbyOnJoin()) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+                this.plugin.getPlayerManager().teleportToMainLobby(p);
             }, 1L);
         }
     }
@@ -95,12 +97,19 @@ public class PlayerListener implements Listener {
         Inventory clickedInventory = e.getClickedInventory();
         Inventory inv = e.getInventory();
         InventoryView invView = e.getView();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+
         if (inv != null) {
+            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == CompMaterial.PLAYER_HEAD.getMaterial() && this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+                Player target = Bukkit.getPlayer(e.getCurrentItem().getItemMeta().getDisplayName());
+                p.teleport(target.getLocation());
+                p.closeInventory();
+                return;
+            }
             if (invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
-                    BBArena clickedArena = ArenaManager.getInstance().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
+                    BBArena clickedArena = this.plugin.getArenaManager().getArena(e.getCurrentItem().getItemMeta().getDisplayName());
                     if (a == null) {
                         if (clickedArena != null) {
                             clickedArena.addPlayer(p);
@@ -110,10 +119,10 @@ public class PlayerListener implements Listener {
                     }
                 }
                 return;
-            } else if (inv.equals(ArenaManager.getInstance().getEditArenasInventory())) {
+            } else if (inv.equals(this.plugin.getArenaManager().getEditArenasInventory())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null) {
-                    BBArenaEdit clickedEdit = ArenaManager.getInstance().getArenaEdit(e.getCurrentItem());
+                    BBArenaEdit clickedEdit = this.plugin.getArenaManager().getArenaEdit(e.getCurrentItem());
                     if (clickedEdit != null) {
                         p.openInventory(clickedEdit.getEditInventory());
                         p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
@@ -121,7 +130,7 @@ public class PlayerListener implements Listener {
                 }
             } else if (invView.getTitle().contains("Editing Arena: ")) {
                 e.setCancelled(true);
-                BBArenaEdit currentEdit = ArenaManager.getInstance().getArenaEdit(inv);
+                BBArenaEdit currentEdit = this.plugin.getArenaManager().getArenaEdit(inv);
                 if (currentEdit != null) {
                     if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
                         boolean edited = false;
@@ -133,18 +142,18 @@ public class PlayerListener implements Listener {
                             edited = currentEdit.editMinPlayers(e.getClick());
                         } else if (e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
                             edited = currentEdit.editTeamSize(e.getClick());
-                        } else if (e.getCurrentItem().equals(OptionsManager.getSaveItem())) {
+                        } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getSaveItem())) {
                             currentEdit.saveOptions();
                             p.playSound(p.getLocation(), CompSound.LEVEL_UP.getSound(), 1.0F, 1.0F);
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                            p.openInventory(this.plugin.getArenaManager().getEditArenasInventory());
                             return;
-                        } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                        } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getBackItem())) {
+                            p.openInventory(this.plugin.getArenaManager().getEditArenasInventory());
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
-                        } else if (e.getCurrentItem().equals(OptionsManager.getDeleteArenaItem())) {
-                            ArenaManager.getInstance().removeArena(p, currentEdit.getArena());
-                            p.openInventory(ArenaManager.getInstance().getEditArenasInventory());
+                        } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getDeleteArenaItem())) {
+                            this.plugin.getArenaManager().removeArena(p, currentEdit.getArena());
+                            p.openInventory(this.plugin.getArenaManager().getEditArenasInventory());
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
                         }
@@ -156,23 +165,23 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            } else if (invView.getTitle().contains(OptionsManager.getReportsInventoryTitle())) {
+            } else if (invView.getTitle().contains(this.plugin.getOptionsManager().getReportsInventoryTitle())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem().isSimilar(GUIItem.NEXT_PAGE.getItemStack())) {
-                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getNextPage(invView));
+                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getNextPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.PREV_PAGE.getItemStack())) {
-                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getPrevPage(invView));
+                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getPrevPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.CLOSE_GUI.getItemStack())) {
                     p.closeInventory();
                 } else if (!e.getCurrentItem().isSimilar(GUIItem.FILL_ITEM.getItemStack())) {
-                    BBBuildReport clickedReport = ReportManager.getInstance().getReport(e.getCurrentItem());
+                    BBBuildReport clickedReport = this.plugin.getReportManager().getReport(e.getCurrentItem());
                     if (clickedReport != null) {
                         switch (e.getClick()) {
                             case LEFT:
                                 if (clickedReport.selectSchematic(p)) {
-                                    p.sendMessage(BBSettings.getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
                                 }
                                 p.closeInventory();
                                 break;
@@ -182,14 +191,14 @@ public class PlayerListener implements Listener {
                                 } else {
                                     clickedReport.setReportStatus(BBReportStatus.PENDING);
                                 }
-                                ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(invView));
+                                this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getCurrentPage(invView));
                                 break;
                             case MIDDLE:
-                                if (ReportManager.getInstance().deleteReport(clickedReport)) {
-                                    p.sendMessage(BBSettings.getPrefix() + "§aReport deleted !");
-                                    ReportManager.getInstance().openReports(p, ReportManager.getInstance().getCurrentPage(invView));
+                                if (this.plugin.getReportManager().deleteReport(clickedReport)) {
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aReport deleted !");
+                                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getCurrentPage(invView));
                                 } else {
-                                    p.sendMessage(BBSettings.getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
                                     p.closeInventory();
                                 }
                                 break;
@@ -207,11 +216,11 @@ public class PlayerListener implements Listener {
                     return;
                 }
                 if (e.getCurrentItem() != null) {
-                    if (e.getCurrentItem().isSimilar(OptionsManager.getBackItem())) {
+                    if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getBackItem())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
-                            OptionsManager.getInstance().openOptionsInventory(p, plot);
+                            this.plugin.getOptionsManager().openOptionsInventory(p, plot);
                         }
                         return;
                     }
@@ -223,8 +232,8 @@ public class PlayerListener implements Listener {
                             BBTheme selectedTheme = a.getThemeVoting().getThemeBySlot(e.getSlot());
                             if (selectedTheme != null) {
                                 if (selectedTheme.isSuperVoteSlotClicked(e.getSlot())) {
-                                    if (SuperVoteManager.getInstance().hasSuperVote(p)) {
-                                        SuperVoteManager.getInstance().takeSuperVote(p, 1);
+                                    if (this.plugin.getSuperVoteManager().hasSuperVote(p)) {
+                                        this.plugin.getSuperVoteManager().takeSuperVote(p, 1);
                                         a.getThemeVoting().superVote(p, selectedTheme);
                                         return;
                                     } else {
@@ -258,7 +267,7 @@ public class PlayerListener implements Listener {
                         }
                     }
                 } else {
-                    if (e.getCurrentItem() != null && e.getCurrentItem().isSimilar(OptionsManager.getOptionsItem())) {
+                    if (e.getCurrentItem() != null && e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getOptionsItem())) {
                         e.setCancelled(true);
                         return;
                     }
@@ -266,7 +275,7 @@ public class PlayerListener implements Listener {
                         if (clickedInventory.equals(invView.getTopInventory()) || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                             e.setCancelled(true);
                         }
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null && e.getCurrentItem() != null) {
                             if (e.getCurrentItem().isSimilar(plot.getOptions().getCurrentFloorItem())) {
                                 if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
@@ -278,45 +287,45 @@ public class PlayerListener implements Listener {
                                         p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                     }
                                 }
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getHeadsItem())) {
-                                p.openInventory(HeadInventory.getInstance().getMainPage());
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBannerCreatorItem())) {
-                                BBBannerCreator bbBannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getHeadsItem())) {
+                                p.openInventory(plugin.getHeadInventory().getMainPage());
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getBannerCreatorItem())) {
+                                BBBannerCreator bbBannerCreator = this.plugin.getBannerCreatorManager().getBannerCreator(p);
                                 if (bbBannerCreator == null) {
-                                    bbBannerCreator = BannerCreatorManager.getInstance().addBannerCreator(p);
+                                    bbBannerCreator = this.plugin.getBannerCreatorManager().addBannerCreator(p);
                                 }
-                                OptionsManager.getInstance().openColorsInventory(bbBannerCreator);
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
-                                p.openInventory(OptionsManager.getBiomesInventory());
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getInstance().getWeatherItemStack(plot))) {
+                                this.plugin.getOptionsManager().openColorsInventory(bbBannerCreator);
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getBiomesItem())) {
+                                p.openInventory(this.plugin.getOptionsManager().getBiomesInventory());
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getWeatherItemStack(plot))) {
                                 if (p.hasPermission("buildbattlepro.changeweather")) {
                                     if (plot.getOptions().getCurrentWeather() == WeatherType.CLEAR) {
                                         plot.getOptions().setCurrentWeather(p, WeatherType.DOWNFALL, false);
                                     } else {
                                         plot.getOptions().setCurrentWeather(p, WeatherType.CLEAR, false);
                                     }
-                                    clickedInventory.setItem(e.getSlot(), OptionsManager.getInstance().getWeatherItemStack(plot));
+                                    clickedInventory.setItem(e.getSlot(), this.plugin.getOptionsManager().getWeatherItemStack(plot));
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                 }
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getParticlesItem())) {
-                                p.openInventory(OptionsManager.getParticlesInventory());
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getTimeItem())) {
-                                OptionsManager.getInstance().openTimeInventory(p, plot);
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getClearPlotItem())) {
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getParticlesItem())) {
+                                p.openInventory(this.plugin.getOptionsManager().getParticlesInventory());
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getTimeItem())) {
+                                this.plugin.getOptionsManager().openTimeInventory(p, plot);
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getClearPlotItem())) {
                                 plot.resetPlotFromGame();
                                 p.closeInventory();
-                            } else if (e.getCurrentItem().isSimilar(OptionsManager.getBiomesItem())) {
-                                p.openInventory(OptionsManager.getBiomesInventory());
+                            } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getBiomesItem())) {
+                                p.openInventory(this.plugin.getOptionsManager().getBiomesInventory());
                             }
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PARTICLES_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (e.getCurrentItem() != null) {
-                                if (e.getCurrentItem().isSimilar(OptionsManager.getRemoveParticlesItem())) {
-                                    OptionsManager.getInstance().openActiveParticlesMenu(p, plot);
+                                if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getRemoveParticlesItem())) {
+                                    this.plugin.getOptionsManager().openActiveParticlesMenu(p, plot);
                                     return;
                                 } else {
                                     if (!p.getInventory().contains(e.getCurrentItem())) {
@@ -327,7 +336,7 @@ public class PlayerListener implements Listener {
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_BIOMES_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (e.getCurrentItem() != null) {
                                 PlotBiome selectedBiome = PlotBiome.getBiomeFromItemStack(e.getCurrentItem());
@@ -342,10 +351,10 @@ public class PlayerListener implements Listener {
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PARTICLE_LIST_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().hasLore()) {
-                                BBPlotParticle particle = OptionsManager.getInstance().getPlotParticleFromLore(plot, e.getCurrentItem().getItemMeta().getLore());
+                                BBPlotParticle particle = this.plugin.getOptionsManager().getPlotParticleFromLore(plot, e.getCurrentItem().getItemMeta().getLore());
                                 if (particle != null) {
                                     plot.removeActiveParticle(particle);
                                     if (e.getCurrentItem().getAmount() == 1) {
@@ -358,13 +367,13 @@ public class PlayerListener implements Listener {
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_TIME_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             BBPlotTime selectedTime = BBPlotTime.getTimeFromItemStack(e.getCurrentItem(), e.getSlot());
                             if (selectedTime != null) {
                                 if (p.hasPermission("buildbattlepro.changetime")) {
                                     plot.getOptions().setCurrentTime(p, selectedTime, true);
-                                    OptionsManager.getInstance().openTimeInventory(p, plot);
+                                    this.plugin.getOptionsManager().openTimeInventory(p, plot);
                                 } else {
                                     p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                                 }
@@ -373,7 +382,7 @@ public class PlayerListener implements Listener {
                     } else if (invView.getTitle().contains(Message.GUI_HEADS_TITLE.getMessage())) {
                         e.setCancelled(true);
                         Inventory inventory = e.getClickedInventory();
-                        HeadInventory headInventory = HeadInventory.getInstance();
+                        HeadInventory headInventory = plugin.getHeadInventory();
                         ItemStack head = e.getCurrentItem();
 
                         if (inventory != null) {
@@ -418,8 +427,8 @@ public class PlayerListener implements Listener {
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_COLORS_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBBannerCreator bannerCreator = this.plugin.getBannerCreatorManager().getBannerCreator(p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
@@ -430,16 +439,16 @@ public class PlayerListener implements Listener {
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
                                         bannerCreator.giveItem();
                                         p.closeInventory();
-                                    } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
-                                        OptionsManager.getInstance().openOptionsInventory(p, plot);
+                                    } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getBackItem())) {
+                                        this.plugin.getOptionsManager().openOptionsInventory(p, plot);
                                     }
                                 }
                             }
                         }
                     } else if (invView.getTitle().equalsIgnoreCase(Message.GUI_PATTERNS_TITLE.getMessage())) {
                         e.setCancelled(true);
-                        BBBannerCreator bannerCreator = BannerCreatorManager.getInstance().getBannerCreator(p);
-                        BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                        BBBannerCreator bannerCreator = this.plugin.getBannerCreatorManager().getBannerCreator(p);
+                        BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                         if (plot != null) {
                             if (bannerCreator != null) {
                                 if (e.getCurrentItem() != null) {
@@ -449,8 +458,8 @@ public class PlayerListener implements Listener {
                                     } else if (e.getCurrentItem().equals(bannerCreator.getCreatedBanner())) {
                                         bannerCreator.giveItem();
                                         p.closeInventory();
-                                    } else if (e.getCurrentItem().equals(OptionsManager.getBackItem())) {
-                                        OptionsManager.getInstance().openOptionsInventory(p, plot);
+                                    } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getBackItem())) {
+                                        this.plugin.getOptionsManager().openOptionsInventory(p, plot);
                                     }
                                 }
                             }
@@ -463,8 +472,20 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onVote(PlayerInteractEvent e) {
+
         Player p = e.getPlayer();
-        BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
+        BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
+        Spectetable<Player> spectating = this.plugin.getPlayerManager().getSpectators().get(p);
+
+        if (spectating != null && e.getItem() != null) {
+            if (e.getItem().equals(Spectetable.SPECTATE_ITEM)) {
+                spectating.openSpectateInventory(p);
+            } else if (e.getItem().equals(Spectetable.QUIT_SPECTATE_ITEM)) {
+                this.plugin.getPlayerManager().unspectate(p);
+            }
+            return;
+        }
+
         if (arena != null) {
             if ((e.getItem() != null) && (e.getItem().getType() == CompMaterial.COMPASS.getMaterial())) {
                 e.setCancelled(true);
@@ -472,8 +493,8 @@ public class PlayerListener implements Listener {
             }
             if (arena.getBBArenaState() == BBArenaState.VOTING) {
                 if (e.getItem() != null) {
-                    if (e.getItem().isSimilar(OptionsManager.getReportItem())) {
-                        ReportManager.getInstance().attemptReport(arena.getCurrentVotingPlot(), p);
+                    if (e.getItem().isSimilar(this.plugin.getOptionsManager().getReportItem())) {
+                        this.plugin.getReportManager().attemptReport(arena.getCurrentVotingPlot(), p);
                         return;
                     }
                     Votes vote = Votes.getVoteByItemStack(e.getItem());
@@ -481,7 +502,7 @@ public class PlayerListener implements Listener {
                         BBPlot currentPlot = arena.getCurrentVotingPlot();
                         if (currentPlot != null) {
                             if (!currentPlot.getTeam().getPlayers().contains(p)) {
-                                VotingManager.getInstance().vote(p, vote, currentPlot);
+                                this.plugin.getVotingManager().vote(p, vote, currentPlot);
                                 e.setCancelled(true);
                             } else {
                                 p.sendMessage(Message.CANT_VOTE_FOR_YOUR_PLOT.getChatMessage());
@@ -490,12 +511,12 @@ public class PlayerListener implements Listener {
                     }
                 }
             } else if (arena.getBBArenaState() == BBArenaState.INGAME) {
-                BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+                BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
                 if (plot != null) {
                     if (e.getItem() != null) {
-                        if (e.getItem().isSimilar(OptionsManager.getOptionsItem())) {
+                        if (e.getItem().isSimilar(this.plugin.getOptionsManager().getOptionsItem())) {
                             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                                OptionsManager.getInstance().openOptionsInventory(p, plot);
+                                this.plugin.getOptionsManager().openOptionsInventory(p, plot);
                             }
                         } else if (BBParticle.getBBParticle(e.getItem()) != null) {
                             e.setCancelled(true);
@@ -515,10 +536,10 @@ public class PlayerListener implements Listener {
             } else if (arena.getBBArenaState() == BBArenaState.LOBBY) {
                 if (e.getItem() != null) {
                     if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        if (e.getItem().isSimilar(OptionsManager.getLeaveItem())) {
+                        if (e.getItem().isSimilar(this.plugin.getOptionsManager().getLeaveItem())) {
                             e.setCancelled(true);
                             arena.removePlayer(p);
-                        } else if (e.getItem().isSimilar(OptionsManager.getTeamsItem())) {
+                        } else if (e.getItem().isSimilar(this.plugin.getOptionsManager().getTeamsItem())) {
                             e.setCancelled(true);
                             p.openInventory(arena.getTeamsInventory());
                         }
@@ -527,29 +548,29 @@ public class PlayerListener implements Listener {
             }
         } else {
             if (e.getClickedBlock() != null) {
-                if (e.getItem() != null && e.getItem().isSimilar(ArenaManager.posSelectorItem)) {
+                if (e.getItem() != null && e.getItem().isSimilar(this.plugin.getArenaManager().getPosSelectorItem())) {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         e.setCancelled(true);
-                        ArenaManager.getInstance().setPos(p, e.getClickedBlock(), 2);
+                        this.plugin.getArenaManager().setPos(p, e.getClickedBlock(), 2);
                     } else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         e.setCancelled(true);
-                        ArenaManager.getInstance().setPos(p, e.getClickedBlock(), 1);
+                        this.plugin.getArenaManager().setPos(p, e.getClickedBlock(), 1);
                     }
                     return;
                 }
                 if (e.getClickedBlock().getState() instanceof Sign && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Sign s = (Sign) e.getClickedBlock().getState();
-                    BBSign arenaSign = ArenaManager.getInstance().getArenaSign(s);
+                    BBSign arenaSign = this.plugin.getArenaManager().getArenaSign(s);
                     if (arenaSign != null) {
                         arenaSign.getArena().addPlayer(p);
                     } else {
                         BBArena arenaToAutoJoin = null;
                         if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(null);
+                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(null);
                         } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.SOLO);
+                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(BBGameMode.SOLO);
                         } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_TEAM_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = ArenaManager.getInstance().getArenaToAutoJoin(BBGameMode.TEAM);
+                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(BBGameMode.TEAM);
                         }
                         if (arenaToAutoJoin != null) {
                             arenaToAutoJoin.addPlayer(p);
@@ -568,9 +589,9 @@ public class PlayerListener implements Listener {
         for (Entity ent1 : ent.getNearbyEntities(5, 5, 5)) {
             if (ent1 instanceof Player) {
                 final Player p = (Player) ent1;
-                final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                 if (a != null) {
-                    final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                    final BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                     if (plot != null) {
                         if (!plot.isLocationInPlot(loc)) {
                             e.setCancelled(true);
@@ -585,21 +606,23 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onQuit(final PlayerQuitEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
         if (a != null) {
             a.removePlayer(p);
         }
+        this.plugin.getPlayerManager().unspectate(p);
+        this.plugin.getPlayerManager().unloadPlayerData(p);
     }
 
     @EventHandler
     public void onVehicleMove(final VehicleMoveEvent e) {
-        if (BBSettings.isRestrictPlayerMovement()) {
+        if (this.plugin.getSettings().isRestrictPlayerMovement()) {
             final Vehicle v = e.getVehicle();
             if (v.getPassenger() instanceof Player) {
                 final Player p = (Player) v.getPassenger();
-                final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                 if (a != null) {
-                    final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+                    final BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
                     if (!plot.isLocationInPlot(e.getTo())) {
                         v.teleport(e.getFrom());
                         p.sendMessage(Message.CANT_LEAVE_PLOT.getChatMessage());
@@ -611,7 +634,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onIgnite(final BlockIgniteEvent e) {
-        for (BBArena a : ArenaManager.getArenas().values()) {
+        for (BBArena a : this.plugin.getArenaManager().getArenas().values()) {
             if (a.getLobbyLocation() != null) {
                 if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
                     e.setCancelled(true);
@@ -623,21 +646,21 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onMove(final PlayerMoveEvent e) {
-        if (BBSettings.isRestrictPlayerMovement() || BBSettings.isRestrictOnlyPlayerYMovement()) {
+        if (this.plugin.getSettings().isRestrictPlayerMovement() || this.plugin.getSettings().isRestrictOnlyPlayerYMovement()) {
             final Player p = e.getPlayer();
-            final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
+            final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
             if (arena != null && arena.getBBArenaState() != BBArenaState.LOBBY) {
-                BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+                BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
                 switch (arena.getBBArenaState()) {
                     case VOTING:
-                        plot = ArenaManager.getInstance().getBBPlotFromLocation(p.getLocation());
+                        plot = this.plugin.getArenaManager().getBBPlotFromLocation(p.getLocation());
                         break;
                     case ENDING:
                         plot = arena.getWinner();
                         break;
                 }
                 if (plot != null) {
-                    if ((BBSettings.isRestrictPlayerMovement() && !plot.isLocationInPlot(e.getTo())) || (BBSettings.isRestrictOnlyPlayerYMovement() && plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY())) {
+                    if ((this.plugin.getSettings().isRestrictPlayerMovement() && !plot.isLocationInPlot(e.getTo())) || (this.plugin.getSettings().isRestrictOnlyPlayerYMovement() && plot.getMaxPoint().getBlockY() <= e.getTo().getBlockY())) {
                         p.setVelocity(plot.getCenter().toVector().subtract(p.getLocation().toVector()).normalize());
                     }
                 }
@@ -649,7 +672,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onTeleport(final PlayerTeleportEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
         if ((a != null) && ((e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) || (e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))) {
             e.setCancelled(true);
         }
@@ -659,7 +682,7 @@ public class PlayerListener implements Listener {
     public void onPlace(final BlockPlaceEvent e) {
         final Player p = e.getPlayer();
         final Location loc = e.getBlockPlaced().getLocation();
-        final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
         if (arena != null) {
             switch (arena.getBBArenaState()) {
                 case LOBBY:
@@ -669,15 +692,15 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     break;
                 case INGAME:
-                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+                    BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
-                        if (BBSettings.isAutomaticGrow() && (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial())) {
+                        if (this.plugin.getSettings().isAutomaticGrow() && (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial())) {
                             CompatBridge.setData(e.getBlock(), (byte) 4);
                         }
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {
-                            final BBPlayerStats stats = PlayerManager.getInstance().getPlayerStats(p);
+                            final BBPlayerStats stats = this.plugin.getPlayerManager().getPlayerStats(p);
                             if (stats != null) {
-                                stats.setBlocksPlaced(stats.getBlocksPlaced() + 1);
+                                stats.setStat(BBStat.BLOCKS_PLACED, (Integer) stats.getStat(BBStat.BLOCKS_PLACED) + 1);
                             }
                         } else {
                             e.setCancelled(true);
@@ -694,9 +717,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBucketEmpty(final PlayerBucketEmptyEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
         if (a != null) {
-            final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a, p);
+            final BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(a, p);
             if (plot != null) {
                 if (!plot.isLocationInPlot(e.getBlockClicked().getLocation()) && !plot.isLocationInPlot(e.getBlockClicked().getLocation().clone().add(0, 1, 0))) {
                     p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
@@ -711,12 +734,12 @@ public class PlayerListener implements Listener {
         final Player p = e.getPlayer();
         if (e.getLine(0).equalsIgnoreCase("[bb]")) {
             if (p.hasPermission("buildbattlepro.create")) {
-                final BBArena arena = ArenaManager.getInstance().getArena(e.getLine(1));
+                final BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
                 if (arena != null) {
                     arena.getArenaSigns().add(new BBSign(arena, e.getBlock().getLocation()));
-                    BuildBattle.getFileManager().getConfig("signs.yml").get().createSection(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(e.getBlock().getLocation()));
-                    BuildBattle.getFileManager().getConfig("signs.yml").save();
-                    p.sendMessage(BBSettings.getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
+                    this.plugin.getFileManager().getConfig("signs.yml").get().createSection(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(e.getBlock().getLocation()));
+                    this.plugin.getFileManager().getConfig("signs.yml").save();
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
                     return;
                 } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
                     if (e.getLine(2).equalsIgnoreCase("team")) {
@@ -724,19 +747,19 @@ public class PlayerListener implements Listener {
                         e.setLine(1, Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage());
-                        p.sendMessage(BBSettings.getPrefix() + "§aTeam Auto-Join sign successfully created!");
+                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aTeam Auto-Join sign successfully created!");
                     } else if (e.getLine(2).equalsIgnoreCase("solo")) {
                         e.setLine(0, Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage());
                         e.setLine(1, Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage());
-                        p.sendMessage(BBSettings.getPrefix() + "§aSolo Auto-Join sign successfully created!");
+                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSolo Auto-Join sign successfully created!");
                     } else {
                         e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
                         e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
                         e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
                         e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
-                        p.sendMessage(BBSettings.getPrefix() + "§aAuto-Join sign successfully created!");
+                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
                         return;
                     }
                 } else {
@@ -757,7 +780,7 @@ public class PlayerListener implements Listener {
     public void onBreak(final BlockBreakEvent e) {
         final Player p = e.getPlayer();
         final Location loc = e.getBlock().getLocation();
-        final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
         final Block block = e.getBlock();
 
         if (arena != null) {
@@ -769,7 +792,7 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     break;
                 case INGAME:
-                    BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+                    BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
                     if (plot != null && !plot.isLocationInPlot(loc)) {
                         p.sendMessage(Message.CANT_BUILD_OUTSIDE.getChatMessage());
                         e.setCancelled(true);
@@ -779,7 +802,7 @@ public class PlayerListener implements Listener {
         } else {
             if (block.getState() instanceof Sign) {
                 final Sign s = (Sign) e.getBlock().getState();
-                final BBSign bbSign = ArenaManager.getInstance().getArenaSign(s);
+                final BBSign bbSign = this.plugin.getArenaManager().getArenaSign(s);
                 if (bbSign != null) {
                     if (p.hasPermission("buildbattlepro.create")) {
                         bbSign.removeSign(p);
@@ -795,8 +818,8 @@ public class PlayerListener implements Listener {
     public void onFoodChange(final FoodLevelChangeEvent e) {
         if (e.getEntity() instanceof Player) {
             final Player p = (Player) e.getEntity();
-            final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
-            if (arena != null) {
+            final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
+            if (arena != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
                 e.setCancelled(true);
                 p.setHealth(p.getMaxHealth());
                 p.setFoodLevel(20);
@@ -806,7 +829,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onWaterFlowEvent(final BlockFromToEvent e) {
-        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
             e.setCancelled(true);
         }
@@ -815,7 +838,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onTntExplode(final EntityExplodeEvent e) {
-        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromNearbyLocation(e.getLocation());
+        final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromNearbyLocation(e.getLocation());
         if (plot != null) {
             e.setCancelled(true);
             e.getEntity().getLocation().getBlock().setType(CompMaterial.AIR.getMaterial());
@@ -827,8 +850,8 @@ public class PlayerListener implements Listener {
     public void onDamage(final EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             final Player p = (Player) e.getEntity();
-            final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-            if (a != null) {
+            final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+            if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
                 e.setCancelled(true);
             }
         }
@@ -838,8 +861,8 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(final EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             final Player p = (Player) e.getDamager();
-            final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-            if (a != null && a.getBBArenaState() == BBArenaState.VOTING) {
+            final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+            if (a != null && a.getBBArenaState() == BBArenaState.VOTING || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
                 e.setCancelled(true);
             }
         }
@@ -847,7 +870,7 @@ public class PlayerListener implements Listener {
 
     /*@EventHandler
     public void LeaveDecay(LeavesDecayEvent e) {
-        BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
             if (plot.isInPlotRange(e.getBlock().getLocation(), 5)) {
                 e.setCancelled(true);
@@ -860,9 +883,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onTreeGrow(final StructureGrowEvent e) {
         final Player p = e.getPlayer();
-        final BBArena arena = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
         if (arena != null) {
-            final BBPlot plot = ArenaManager.getInstance().getPlayerPlot(arena, p);
+            final BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
             if (plot != null) {
                 for (BlockState blockState : e.getBlocks()) {
                     if (!plot.isLocationInPlot(blockState.getLocation()))
@@ -875,8 +898,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPickup(final PlayerPickupItemEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if (a != null && a.getBBArenaState() == BBArenaState.VOTING) {
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+        if (a != null && a.getBBArenaState() == BBArenaState.VOTING || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
             e.setCancelled(true);
         }
     }
@@ -888,11 +911,11 @@ public class PlayerListener implements Listener {
             return;
 
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
 
         if (a != null) {
             if (a.getGameType() == BBGameMode.TEAM) {
-                if (BBSettings.isTeamChat()) {
+                if (this.plugin.getSettings().isTeamChat()) {
                     e.getRecipients().clear();
                     if (e.getMessage().charAt(0) == '!') {
                         e.setMessage(e.getMessage().substring(1));
@@ -905,14 +928,14 @@ public class PlayerListener implements Listener {
                             e.getRecipients().add(p1);
                         }
                     }
-                } else if (BBSettings.isArenaChat()) {
+                } else if (this.plugin.getSettings().isArenaChat()) {
                     e.getRecipients().clear();
                     for (Player p1 : a.getPlayers()) {
                         e.getRecipients().add(p1);
                     }
                 }
             } else {
-                if (BBSettings.isArenaChat()) {
+                if (this.plugin.getSettings().isArenaChat()) {
                     e.getRecipients().clear();
                     for (Player p1 : a.getPlayers()) {
                         e.getRecipients().add(p1);
@@ -925,7 +948,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onCommand(final PlayerCommandPreprocessEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
         if (a != null) {
             if (p.hasPermission("buildbattlepro.bypass")) {
                 return;
@@ -936,7 +959,7 @@ public class PlayerListener implements Listener {
 
                 boolean valid = false;
 
-                for (String cmd : BBSettings.getAllowedCommands()) {
+                for (String cmd : this.plugin.getSettings().getAllowedCommands()) {
                     if (e.getMessage().contains(cmd)) {
                         valid = true;
                         break;
@@ -954,8 +977,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onItemDrop(final PlayerDropItemEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if (a != null) {
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+        if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
             e.setCancelled(true);
         }
     }
@@ -963,7 +986,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onDispense(final BlockDispenseEvent e) {
-        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
             if (!plot.isInPlotRange(e.getBlock().getLocation(), -1) && plot.isInPlotRange(e.getBlock().getLocation(), 5)) {
                 e.setCancelled(true);
@@ -973,7 +996,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPistonExtendEvent(final BlockPistonExtendEvent e) {
-        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
             for (Block block : e.getBlocks()) {
                 if (!plot.isInPlotRange(block.getLocation(), -1) && plot.isLocationInPlot(e.getBlock().getLocation())) {
@@ -985,7 +1008,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPistonRetractEvent(final BlockPistonRetractEvent e) {
-        final BBPlot plot = ArenaManager.getInstance().getBBPlotFromLocation(e.getBlock().getLocation());
+        final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
         if (plot != null) {
             for (Block block : e.getBlocks()) {
                 if (!plot.isLocationInPlot(block.getLocation())) {
@@ -998,8 +1021,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onConsume(final PlayerItemConsumeEvent e) {
         final Player p = e.getPlayer();
-        final BBArena a = PlayerManager.getInstance().getPlayerArena(p);
-        if (a != null) {
+        final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+        if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
             e.setCancelled(true);
         }
     }

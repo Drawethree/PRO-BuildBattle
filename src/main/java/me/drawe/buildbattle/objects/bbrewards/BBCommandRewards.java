@@ -9,9 +9,9 @@ import java.util.List;
 
 public class BBCommandRewards implements BBReward {
 
-    private static List<String> firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.first_place");
-    private static List<String> secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.second_place");
-    private static List<String> thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.third_place");
+    private static List<String> firstPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.first_place");
+    private static List<String> secondPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.second_place");
+    private static List<String> thirdPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getStringList("rewards.Command.third_place");
 
     @Override
     public void giveReward(BBTeam team, int placement) {

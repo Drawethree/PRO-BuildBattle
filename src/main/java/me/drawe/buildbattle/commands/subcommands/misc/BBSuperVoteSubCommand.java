@@ -1,9 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.misc;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.SuperVoteManager;
 import me.drawe.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -11,8 +10,11 @@ import org.bukkit.command.CommandSender;
 
 public class BBSuperVoteSubCommand extends BBSubCommand {
 
-    public BBSuperVoteSubCommand() {
+    private BuildBattle plugin;
+
+    public BBSuperVoteSubCommand(BuildBattle plugin) {
         super("supervote", " supervote <give/take> <player> <amount> §8» §7Give/take supervotes from player", "buildbattlepro.admin",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -26,16 +28,16 @@ public class BBSuperVoteSubCommand extends BBSubCommand {
                     int amount = Integer.parseInt(args[2]);
                     switch (action) {
                         case "give":
-                            if (SuperVoteManager.getInstance().giveSuperVote(player, amount)) {
-                                sender.sendMessage(BBSettings.getPrefix() + " §aYou have successfully given §e" + amount + " §asupervote(s) to player §e" + player.getName() + "§a!");
+                            if (plugin.getSuperVoteManager().giveSuperVote(player, amount)) {
+                                sender.sendMessage(plugin.getSettings().getPrefix() + " §aYou have successfully given §e" + amount + " §asupervote(s) to player §e" + player.getName() + "§a!");
                                 return true;
                             } else {
                                 sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");
                             }
                             break;
                         case "take":
-                            if (SuperVoteManager.getInstance().takeSuperVote(player, amount)) {
-                                sender.sendMessage(BBSettings.getPrefix() + " §aYou have successfully taken §e" + amount + " §asupervote(s) from player §e" + player.getName() + "§a!");
+                            if (plugin.getSuperVoteManager().takeSuperVote(player, amount)) {
+                                sender.sendMessage(plugin.getSettings().getPrefix() + " §aYou have successfully taken §e" + amount + " §asupervote(s) from player §e" + player.getName() + "§a!");
                                 return true;
                             } else {
                                 sender.sendMessage("§cThis player has never player BuildBattlePro ! Can't add supervote(s) !");

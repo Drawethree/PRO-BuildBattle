@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.hooks;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.hooks.papi.BuildBattleProPlaceholders;
 
 public class BBHookPlaceholderAPI extends BBHook {
@@ -10,6 +11,6 @@ public class BBHookPlaceholderAPI extends BBHook {
 
     @Override
     protected void runHookAction() {
-        new BuildBattleProPlaceholders().register();
+        new BuildBattleProPlaceholders(BuildBattle.getInstance()).register();
     }
 }

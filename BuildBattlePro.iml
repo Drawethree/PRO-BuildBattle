@@ -21,10 +21,10 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8.0_191" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="LeaderHeads1" level="project" />
     <orderEntry type="library" name="PointsAPI1" level="project" />
     <orderEntry type="library" name="worldedit-bukkit-6.1.9 (2)" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.14.3-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="LeaderHeadsAPI" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
@@ -45,9 +45,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_11_R1:2.0.24-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_12_R1:2.0.24-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.citizensnpcs:citizens-v1_13_R2:2.0.24-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: be.maximvdw:MVdWPlaceholderAPI:3.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: be.maximvdw:MVdWUpdater:1.6.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.spigotmc:spigot:1.9" level="project" />
+    <orderEntry type="library" name="Maven: be.maximvdw:MVdWPlaceholderAPI:2.1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.3.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.8" level="project" />
   </component>
 </module>

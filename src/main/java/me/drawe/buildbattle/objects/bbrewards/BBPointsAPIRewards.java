@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 
 public class BBPointsAPIRewards implements BBReward {
 
-    private static int firstPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.first_place");
-    private static int secondPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.second_place");
-    private static int thirdPlace = BuildBattle.getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.third_place");
+    private static int firstPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.first_place");
+    private static int secondPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.second_place");
+    private static int thirdPlace = BuildBattle.getInstance().getFileManager().getConfig("config.yml").get().getInt("rewards.PointsAPI.third_place");
 
     @Override
     public void giveReward(BBTeam team, int placement) {

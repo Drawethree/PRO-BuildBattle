@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.commands;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
@@ -12,10 +10,13 @@ import org.bukkit.entity.Player;
 
 public class SetThemeCommand extends BukkitCommand {
 
-    public SetThemeCommand() {
-        super(BuildBattle.getFileManager().getConfig("config.yml").get().getString("set_theme_command.name"));
-        this.description = BuildBattle.getFileManager().getConfig("config.yml").get().getString("set_theme_command.description");
-        this.setAliases(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("set_theme_command.aliases"));
+    private BuildBattle plugin;
+
+    public SetThemeCommand(BuildBattle plugin) {
+        super(plugin.getFileManager().getConfig("config.yml").get().getString("set_theme_command.name"));
+        this.plugin = plugin;
+        this.description = plugin.getFileManager().getConfig("config.yml").get().getString("set_theme_command.description");
+        this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("set_theme_command.aliases"));
     }
 
     @Override
@@ -25,8 +26,8 @@ public class SetThemeCommand extends BukkitCommand {
             if (p.hasPermission("buildbattlepro.settheme")) {
                 if (args.length > 0) {
                     String theme = this.getThemeFromArguments(args);
-                    if (BBSettings.isThemeOK(theme)) {
-                        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+                    if (plugin.getSettings().isThemeOK(theme)) {
+                        BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                         if (a != null) {
                             if (a.isMinimumPlayersRequirementMet()) {
                                 if (a.getBBArenaState() == BBArenaState.LOBBY) {

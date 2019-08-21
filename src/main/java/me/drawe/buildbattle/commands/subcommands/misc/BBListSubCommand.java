@@ -1,15 +1,18 @@
 package me.drawe.buildbattle.commands.subcommands.misc;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BBListSubCommand extends BBSubCommand {
 
-    public BBListSubCommand() {
+    private BuildBattle plugin;
+
+    public BBListSubCommand(BuildBattle plugin) {
         super("list", " list §8» §7Open GUI with all arenas", "buildbattlepro.join",false);
+        this.plugin = plugin;
     }
 
     @Override
@@ -17,14 +20,14 @@ public class BBListSubCommand extends BBSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 0) {
-                p.openInventory(ArenaManager.getAllArenasInventory());
+                p.openInventory(plugin.getArenaManager().getAllArenasInventory());
                 return true;
             } else if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("solo")) {
-                    p.openInventory(ArenaManager.getSoloArenasInventory());
+                    p.openInventory(plugin.getArenaManager().getSoloArenasInventory());
                     return true;
                 } else if (args[0].equalsIgnoreCase("team")) {
-                    p.openInventory(ArenaManager.getTeamArenasInventory());
+                    p.openInventory(plugin.getArenaManager().getTeamArenasInventory());
                     return true;
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " list <solo/team> §8| §7Show all team/solo arenas and their status");

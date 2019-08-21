@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.listeners;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
@@ -35,9 +33,9 @@ public class NPCListener implements Listener {
 
     private void manageNPCEvent(NPCClickEvent e) {
         Player p = e.getClicker();
-        BBArena a = PlayerManager.getInstance().getPlayerArena(p);
+        BBArena a = plugin.getPlayerManager().getPlayerArena(p);
         if((a != null) && (a.getBBArenaState() == BBArenaState.INGAME)) {
-            BBPlot plot = ArenaManager.getInstance().getPlayerPlot(a,p);
+            BBPlot plot = plugin.getArenaManager().getPlayerPlot(a,p);
             if(plot != null) {
                 if((p.getItemInHand() != null) && (p.getItemInHand().getType() != CompMaterial.AIR.getMaterial())) {
                     if (p.hasPermission("buildbattlepro.changefloor")) {

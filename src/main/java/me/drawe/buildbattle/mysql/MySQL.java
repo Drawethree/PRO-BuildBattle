@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.mysql;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.MySQLManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -35,7 +33,7 @@ public class MySQL {
     }
 
     public void connect() {
-        Bukkit.getConsoleSender().sendMessage(BBSettings.getPrefix() + "§aAttemping to connect to MySQL database...");
+        Bukkit.getConsoleSender().sendMessage(BuildBattle.getInstance().getSettings().getPrefix() + "§aAttemping to connect to MySQL database...");
         try {
             host = BuildBattle.getInstance().getConfig().getString("mysql.host");
             port = BuildBattle.getInstance().getConfig().getInt("mysql.port");
@@ -43,7 +41,7 @@ public class MySQL {
             username = BuildBattle.getInstance().getConfig().getString("mysql.username");
             password = BuildBattle.getInstance().getConfig().getString("mysql.password");
         } catch (Exception e) {
-            BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
+            BuildBattle.getInstance().severe("§cMySQL could not be connected ! Check your config.yml !");
             e.printStackTrace();
             return;
         }
@@ -54,11 +52,10 @@ public class MySQL {
                     try {
                         openConnection();
                         createTables();
-                        BuildBattle.info("§aMySQL Connected !");
-                        MySQLManager.getInstance().loadAllPlayerStats();
-                        MySQLManager.getInstance().loadAllReports();
+                        BuildBattle.getInstance().info("§aMySQL Connected !");
+                        BuildBattle.getInstance().getMySQLManager().loadAllReports();
                     } catch (Exception e) {
-                        BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
+                        BuildBattle.getInstance().severe("§cMySQL could not be connected ! Check your config.yml !");
                         e.printStackTrace();
                     }
                 }
@@ -67,11 +64,10 @@ public class MySQL {
             try {
                 openConnection();
                 createTables();
-                BuildBattle.info("§aMySQL Connected !");
-                MySQLManager.getInstance().loadAllPlayerStats();
-                MySQLManager.getInstance().loadAllReports();
+                BuildBattle.getInstance().info("§aMySQL Connected !");
+                BuildBattle.getInstance().getMySQLManager().loadAllReports();
             } catch (Exception e) {
-                BuildBattle.severe("§cMySQL could not be connected ! Check your config.yml !");
+                BuildBattle.getInstance().severe("§cMySQL could not be connected ! Check your config.yml !");
                 e.printStackTrace();
             }
         }
@@ -113,7 +109,7 @@ public class MySQL {
         ResultSet rs = md.getColumns(null, null, "BuildBattlePro_PlayerData", "SuperVotes");
         if (!rs.next()) {
             getConnection().prepareStatement("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0").execute();
-            BuildBattle.info("§aMySQL detected that your table doesn't have §eSuperVotes §acolumn, adding it automatically!");
+            BuildBattle.getInstance().info("§aMySQL detected that your table doesn't have §eSuperVotes §acolumn, adding it automatically!");
         }
         getConnection().prepareStatement("DROP TABLE IF EXISTS BuildBattlePro_Reports").execute();
     }

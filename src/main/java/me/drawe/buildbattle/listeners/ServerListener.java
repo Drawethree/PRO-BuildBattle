@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.listeners;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,9 +18,9 @@ public class ServerListener implements Listener {
 
     @EventHandler
     public void onMOTDChange(ServerListPingEvent e) {
-        if (BBSettings.isChangeMOTD()) {
-            if (ArenaManager.getArenas().values().size() > 0) {
-                BBArena mainArena = new ArrayList<>(ArenaManager.getArenas().values()).get(0);
+        if (plugin.getSettings().isChangeMOTD()) {
+            if (plugin.getArenaManager().getArenas().values().size() > 0) {
+                BBArena mainArena = new ArrayList<>(plugin.getArenaManager().getArenas().values()).get(0);
                 if (mainArena != null) {
                     e.setMotd(mainArena.getBBArenaState().getPrefix());
                 }

@@ -37,10 +37,10 @@ public class LocationUtil {
 
     public static Location getLocationFromConfig(String configName, String path) {
         try {
-            String locString = BuildBattle.getFileManager().getConfig(configName).get().getString(path);
+            String locString = BuildBattle.getInstance().getFileManager().getConfig(configName).get().getString(path);
             return getLocationFromString(locString);
         } catch (Exception e) {
-            BuildBattle.severe("§cAn exception occurred while trying to get §e" + path + " §cfrom §e" + configName + "§c!");
+            BuildBattle.getInstance().severe("§cAn exception occurred while trying to get §e" + path + " §cfrom §e" + configName + "§c!");
             e.printStackTrace();
         }
         return null;

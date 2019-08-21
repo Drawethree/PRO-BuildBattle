@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.commands;
 
+import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawe.buildbattle.commands.subcommands.arena.*;
@@ -12,7 +13,6 @@ import me.drawe.buildbattle.commands.subcommands.npc.BBAddNPCSubCommand;
 import me.drawe.buildbattle.commands.subcommands.npc.BBDelNPCSubCommand;
 import me.drawe.buildbattle.commands.subcommands.stats.BBExportStatsSubCommand;
 import me.drawe.buildbattle.commands.subcommands.stats.BBStatsSubCommand;
-import me.drawe.buildbattle.managers.ArenaManager;
 import me.drawe.buildbattle.utils.FancyMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,42 +28,45 @@ import java.util.TreeMap;
 public class BBCommand extends BukkitCommand implements TabCompleter {
 
 
-    public static final TreeMap<String, BBSubCommand> subCommands = new TreeMap<>();
+    @Getter
+    private final BuildBattle plugin;
+    private final TreeMap<String, BBSubCommand> subCommands;
 
-    static {
-        //Admin commands
-        subCommands.put("create", new BBCreateSubCommand());
-        subCommands.put("delete", new BBDeleteSubCommand());
-        subCommands.put("setlobby", new BBSetLobbySubCommand());
-        subCommands.put("setmainlobby", new BBSetMainLobbySubCommand());
-        subCommands.put("pos", new BBPosSubCommand());
-        subCommands.put("addplot", new BBAddPlotSubCommand());
-        subCommands.put("delplot", new BBDelPlotSubCommand());
-        subCommands.put("addnpc", new BBAddNPCSubCommand());
-        subCommands.put("delnpc", new BBDelNPCSubCommand());
-        subCommands.put("start", new BBStartSubCommand());
-        subCommands.put("forcestart", new BBForceStartSubCommand());
-        subCommands.put("stop", new BBStopSubCommand());
-        subCommands.put("lb", new BBLeaderBoardSubCommand());
-        subCommands.put("debug", new BBDebugSubCommand());
-        subCommands.put("editor", new BBEditorSubCommand());
-        subCommands.put("supervote", new BBSuperVoteSubCommand());
-        subCommands.put("exportstats", new BBExportStatsSubCommand());
-        subCommands.put("reports", new BBReportsSubCommand());
-        subCommands.put("reload", new BBReloadSubCommand());
-        subCommands.put("version", new BBVersionSubCommand());
+
+    public BBCommand(BuildBattle plugin) {
+        super(plugin.getFileManager().getConfig("config.yml").get().getString("main_command.name"));
+        this.plugin = plugin;
+        this.description = plugin.getFileManager().getConfig("config.yml").get().getString("main_command.description");
+        this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
+
+        this.subCommands = new TreeMap<>();
+        this.subCommands.put("create", new BBCreateSubCommand(plugin));
+        this.subCommands.put("delete", new BBDeleteSubCommand(plugin));
+        this.subCommands.put("setlobby", new BBSetLobbySubCommand(plugin));
+        this.subCommands.put("setmainlobby", new BBSetMainLobbySubCommand(plugin));
+        this.subCommands.put("pos", new BBPosSubCommand(plugin));
+        this.subCommands.put("addplot", new BBAddPlotSubCommand(plugin));
+        this.subCommands.put("delplot", new BBDelPlotSubCommand(plugin));
+        this.subCommands.put("addnpc", new BBAddNPCSubCommand(plugin));
+        this.subCommands.put("delnpc", new BBDelNPCSubCommand(plugin));
+        this.subCommands.put("start", new BBStartSubCommand(plugin));
+        this.subCommands.put("forcestart", new BBForceStartSubCommand(plugin));
+        this.subCommands.put("stop", new BBStopSubCommand(plugin));
+        this.subCommands.put("lb", new BBLeaderBoardSubCommand(plugin));
+        this.subCommands.put("debug", new BBDebugSubCommand(plugin));
+        this.subCommands.put("editor", new BBEditorSubCommand(plugin));
+        this.subCommands.put("supervote", new BBSuperVoteSubCommand(plugin));
+        this.subCommands.put("exportstats", new BBExportStatsSubCommand(plugin));
+        this.subCommands.put("reports", new BBReportsSubCommand(plugin));
+        this.subCommands.put("reload", new BBReloadSubCommand(plugin));
+        this.subCommands.put("version", new BBVersionSubCommand(plugin));
         //Player commands
-        subCommands.put("join", new BBJoinSubCommand());
-        subCommands.put("leave", new BBLeaveSubCommand());
-        subCommands.put("list", new BBListSubCommand());
-        subCommands.put("stats", new BBStatsSubCommand());
-        subCommands.put("party", new BBPartySubCommand());
-    }
-
-    public BBCommand() {
-        super(BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.name"));
-        this.description = BuildBattle.getFileManager().getConfig("config.yml").get().getString("main_command.description");
-        this.setAliases(BuildBattle.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
+        this.subCommands.put("join", new BBJoinSubCommand(plugin));
+        this.subCommands.put("leave", new BBLeaveSubCommand(plugin));
+        this.subCommands.put("list", new BBListSubCommand(plugin));
+        this.subCommands.put("stats", new BBStatsSubCommand(plugin));
+        this.subCommands.put("party", new BBPartySubCommand(plugin));
+        this.subCommands.put("spectate", new BBSpectateSubCommand(plugin));
     }
 
     @Override
@@ -75,7 +78,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
             } else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.openInventory(ArenaManager.getAllArenasInventory());
+                    p.openInventory(this.plugin.getArenaManager().getAllArenasInventory());
                     return true;
                 }
             }
@@ -86,7 +89,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
     }
 
     private BBSubCommand getSubCommand(String name) {
-        return subCommands.get(name);
+        return this.subCommands.get(name);
     }
 
 
@@ -102,7 +105,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
 
     private void sendCommands(CommandSender p, boolean adminOnly, String title) {
         FancyMessage.sendCenteredMessage(p, title);
-        for (BBSubCommand subCommand : subCommands.values()) {
+        for (BBSubCommand subCommand : this.subCommands.values()) {
             if (subCommand.isAdminCommand() == adminOnly) {
                 p.sendMessage("§e/" + getName() + subCommand.getDescription());
             }
@@ -111,6 +114,6 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>(subCommands.keySet());
+        return new ArrayList<>(this.subCommands.keySet());
     }
 }

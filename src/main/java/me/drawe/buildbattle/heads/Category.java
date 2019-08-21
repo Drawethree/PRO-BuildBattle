@@ -23,39 +23,29 @@ public class Category {
     private ItemStack icon;
     private String description;
     private List<CategoryPage> pages;
-
-    /**
-     * Default constructor of a Category object.
-     *
-     * @param icon The icon of this category.
-     * @param description The description of this category.
-     * @param pages The pages containing the heads in this category.
-     */
-    public Category(ItemStack icon, String description, List<CategoryPage> pages) {
-        this.icon = icon;
-        this.description = description;
-        this.pages = pages;
-    }
+    private BuildBattle plugin;
 
     /**
      * Constructor for a Category object. This constructor accepts the name of
      * the category from the heads.yml file to load in all the data
      * automatically.
      *
+     * @param plugin
      * @param category The name of the category on the heads.yml file.
      */
-    public Category(String category) {
+    public Category(BuildBattle plugin, String category) {
+        this.plugin = plugin;
         List<ItemStack> heads = new ArrayList<>();
         try {
-            String categoryName = BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
-            CompMaterial material = CompMaterial.fromString(BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
+            String categoryName = this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
+            CompMaterial material = CompMaterial.fromString(this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
             this.icon = ItemStackCreator.createItem(material, 1, "&e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();
 
-            ConfigurationSection section = BuildBattle.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories." + category + ".heads");
+            ConfigurationSection section = this.plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories." + category + ".heads");
             for (String playerName : section.getKeys(false)) {
-                String displayName = BuildBattle.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".heads." + playerName + ".description");
+                String displayName = this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".heads." + playerName + ".description");
                 ItemStack playerhead = ItemStackCreator.createPlayerhead(1, "&r" + displayName, new String[]{"&9Skull (" + categoryName + ")"}, playerName);
                 heads.add(playerhead);
             }
@@ -110,7 +100,7 @@ public class Category {
         try {
             return pages.get(index);
         } catch (IndexOutOfBoundsException ex) {
-            BuildBattle.getInstance().getLogger().log(Level.SEVERE, "§cPage index is out of bounds.", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "§cPage index is out of bounds.", ex);
             return null;
         }
     }

@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.hooks;
 
-import me.drawe.buildbattle.managers.LeaderboardManager;
+import me.drawe.buildbattle.BuildBattle;
 
 public class BBHookHolographicDisplays extends BBHook {
 
@@ -10,6 +10,6 @@ public class BBHookHolographicDisplays extends BBHook {
 
     @Override
     protected void runHookAction() {
-        LeaderboardManager.getInstance().loadAllLeaderboards();
+        BuildBattle.getInstance().getLeaderboardManager().loadAllLeaderboards();
     }
 }

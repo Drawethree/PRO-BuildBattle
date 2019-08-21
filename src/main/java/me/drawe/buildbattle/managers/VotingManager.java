@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.managers;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
@@ -7,13 +8,11 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import org.bukkit.entity.Player;
 
 public class VotingManager {
-    private static VotingManager ourInstance = new VotingManager();
 
-    public static VotingManager getInstance() {
-        return ourInstance;
-    }
+    private BuildBattle plugin;
 
-    private VotingManager() {
+    public VotingManager(BuildBattle plugin) {
+        this.plugin = plugin;
     }
 
     public void vote(Player p, Votes vote, BBPlot plot) {
@@ -21,7 +20,7 @@ public class VotingManager {
             if (vote.getWeight() != plot.getVotedPlayers().get(p)) {
                 p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
 
-                if (BBSettings.isShowVoteInSubtitle()) {
+                if (this.plugin.getSettings().isShowVoteInSubtitle()) {
                     p.sendTitle("", vote.getPrefix());
                 }
 
@@ -32,7 +31,7 @@ public class VotingManager {
         } else {
             p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
 
-            if (BBSettings.isShowVoteInSubtitle()) {
+            if (this.plugin.getSettings().isShowVoteInSubtitle()) {
                 p.sendTitle("", vote.getPrefix());
             }
 

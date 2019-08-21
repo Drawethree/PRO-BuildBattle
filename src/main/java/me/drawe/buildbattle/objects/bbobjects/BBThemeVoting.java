@@ -81,7 +81,7 @@ public class BBThemeVoting {
 
             BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(p);
             if (pStats != null) {
-                superVotesAmount = pStats.getSuperVotes();
+                superVotesAmount = (int) pStats.getStat(BBStat.SUPER_VOTES);
             }
             for (BBTheme theme : themesVoted) {
                 openInv.setItem(theme.getSlotInInventory() + 8, ItemUtil.getSuperVoteItem(superVotesAmount, theme));

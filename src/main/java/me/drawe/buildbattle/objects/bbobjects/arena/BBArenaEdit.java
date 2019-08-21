@@ -1,6 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
-import me.drawe.buildbattle.managers.OptionsManager;
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawe.buildbattle.utils.ItemUtil;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BBArenaEdit {
 
+    private BuildBattle plugin;
     private BBArena arena;
     private Inventory editInventory;
     private ItemStack arenaEditItemStack;
@@ -24,7 +25,8 @@ public class BBArenaEdit {
     private int teamSize;
     private int gameTime;
 
-    public BBArenaEdit(BBArena arena) {
+    public BBArenaEdit(BuildBattle plugin, BBArena arena) {
+        this.plugin = plugin;
         this.arena = arena;
         this.editInventory = Bukkit.createInventory(null, 9, "Editing Arena: " + arena.getName());
         this.minPlayers = arena.getMinPlayers();
@@ -40,13 +42,13 @@ public class BBArenaEdit {
     }
 
     private void loadInventory() {
-        this.editInventory.setItem(0, OptionsManager.getBackItem());
+        this.editInventory.setItem(0, plugin.getOptionsManager().getBackItem());
         this.editInventory.setItem(2, gameModeItem);
         this.editInventory.setItem(3, gameTimeItem);
         this.editInventory.setItem(4, minPlayersItem);
         this.editInventory.setItem(5, teamSizeItem);
-        this.editInventory.setItem(6, OptionsManager.getDeleteArenaItem());
-        this.editInventory.setItem(8, OptionsManager.getSaveItem());
+        this.editInventory.setItem(6, plugin.getOptionsManager().getDeleteArenaItem());
+        this.editInventory.setItem(8, plugin.getOptionsManager().getSaveItem());
     }
 
     public boolean editMinPlayers(ClickType click) {

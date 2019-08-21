@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.events.game;
+package me.drawe.buildbattle.api.events.game;
 
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;

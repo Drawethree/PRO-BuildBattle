@@ -1,9 +1,8 @@
 package me.drawe.buildbattle.commands.subcommands.arena.plot;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
-import me.drawe.buildbattle.managers.ArenaManager;
-import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
@@ -14,8 +13,11 @@ import org.bukkit.entity.Player;
 
 public class BBAddPlotSubCommand extends BBSubCommand {
 
-    public BBAddPlotSubCommand() {
+    private BuildBattle plugin;
+
+    public BBAddPlotSubCommand(BuildBattle plugin) {
         super("addplot", " addplot <arena_name> §8» §7Add build plot for arena, must have selected positions !", "buildbattlepro.create",true);
+        this.plugin = plugin;
     }
 
     @Override
@@ -24,12 +26,12 @@ public class BBAddPlotSubCommand extends BBSubCommand {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 if (args.length == 1) {
-                    BBArena arena = ArenaManager.getInstance().getArena(args[0]);
+                    BBArena arena = this.plugin.getArenaManager().getArena(args[0]);
                     //Selection sel = BuildBattle.getWorldEdit().getSelection(p);
                     if (arena != null) {
-                        if (ArenaManager.getInstance().hasSelectionReady(p)) {
-                            Location l1 = ArenaManager.getPlayerBBPos().get(p)[0];
-                            Location l2 = ArenaManager.getPlayerBBPos().get(p)[1];
+                        if (this.plugin.getArenaManager().hasSelectionReady(p)) {
+                            Location l1 = this.plugin.getArenaManager().getPlayerBBPos().get(p)[0];
+                            Location l2 = this.plugin.getArenaManager().getPlayerBBPos().get(p)[1];
                             Location maxPoint;
                             Location minPoint;
                             if (l1.getY() > l2.getY()) {
@@ -41,7 +43,7 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                             }
                             arena.getBuildPlots().add(new BBPlot(arena, minPoint, maxPoint));
                             arena.saveIntoConfig();
-                            ArenaManager.getInstance().refreshArenaItem(arena);
+                            this.plugin.getArenaManager().refreshArenaItem(arena);
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
                             LocationUtil.showCreatedPlot(minPoint, maxPoint, p, 5);
                             return true;
@@ -58,14 +60,14 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                         }
                         */
                         } else {
-                            int i = ArenaManager.getInstance().getMissingSelection(p);
+                            int i = this.plugin.getArenaManager().getMissingSelection(p);
                             switch (i) {
                                 case -1:
-                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set positions ! Please set them by §e/" + cmd.getName() + " pos");
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cYou didn't set positions ! Please set them by §e/" + cmd.getName() + " pos");
                                     break;
                                 case 1:
                                 case 2:
-                                    p.sendMessage(BBSettings.getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/" + cmd.getName() + " pos");
+                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cYou didn't set position §e" + i + " §c! Set it by §e/" + cmd.getName() + " pos");
                                     break;
                             }
                         }
