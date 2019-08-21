@@ -50,6 +50,8 @@ public class ReportManager {
     public void loadAllReports() {
         if (this.plugin.getSettings().getStatsType() == StatsType.FLATFILE) {
             this.loadAllReportsFromConfig();
+        } else {
+            this.plugin.getMySQLManager().loadAllReports();
         }
     }
 

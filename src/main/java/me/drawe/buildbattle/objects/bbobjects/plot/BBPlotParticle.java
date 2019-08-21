@@ -44,15 +44,15 @@ public class BBPlotParticle {
             public void run() {
                 if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
                     if (particle.getEffect() == ParticleEffect.REDSTONE) {
-                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), new Particle.DustOptions(Color.RED,1));
+                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BuildBattle.getInstance().getSettings().getAmountParticleToSpawn(), BuildBattle.getInstance().getSettings().getParticleOffset(), BuildBattle.getInstance().getSettings().getParticleOffset(), BuildBattle.getInstance().getSettings().getParticleOffset(), new Particle.DustOptions(Color.RED,1));
                     } else {
-                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BBSettings.getAmountParticleToSpawn(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset(), BBSettings.getParticleOffset());
+                        location.getWorld().spawnParticle(Particle.valueOf(particle.getEffect().name()), location, BuildBattle.getInstance().getSettings().getAmountParticleToSpawn(), BuildBattle.getInstance().getSettings().getParticleOffset(), BuildBattle.getInstance().getSettings().getParticleOffset(), BuildBattle.getInstance().getSettings().getParticleOffset());
                     }
                 } else {
-                    particle.getEffect().display((float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), (float) BBSettings.getParticleOffset(), 1F, BBSettings.getAmountParticleToSpawn(), location, Bukkit.getOnlinePlayers());
+                    particle.getEffect().display((float) BuildBattle.getInstance().getSettings().getParticleOffset(), (float) BuildBattle.getInstance().getSettings().getParticleOffset(), (float) BuildBattle.getInstance().getSettings().getParticleOffset(), 1F, BuildBattle.getInstance().getSettings().getAmountParticleToSpawn(), location, Bukkit.getOnlinePlayers());
                 }
             }
-        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) BBSettings.getParticleRefreshTime() * 20L);
+        }.runTaskTimer(BuildBattle.getInstance(), 0L, (long) BuildBattle.getInstance().getSettings().getParticleRefreshTime() * 20L);
     }
 
     public void stop() {

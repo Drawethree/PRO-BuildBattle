@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
@@ -29,17 +30,17 @@ public class BBThemeVoting {
         this.arena = a;
         this.votedPlayers = new HashMap<>();
         this.themesVoted = getRandomThemesToVote();
-        voteInventory = Bukkit.createInventory(null, BBSettings.getThemesToVote() * 9, Message.GUI_THEME_VOTING_TITLE.getMessage());
+        voteInventory = Bukkit.createInventory(null, BuildBattle.getInstance().getSettings().getThemesToVote() * 9, Message.GUI_THEME_VOTING_TITLE.getMessage());
         this.winner = null;
         for (BBTheme theme : themesVoted) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.OAK_SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()), null, null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.OAK_SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BuildBattle.getInstance().getSettings().getThemeVotingLore(), (int) BuildBattle.getInstance().getSettings().getThemeVotingTime()), null, null));
             voteInventory.setItem(theme.getSlotInInventory() + 1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""), null, null));
         }
     }
 
     private void resetInventory() {
         for (BBTheme theme : themesVoted) {
-            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.OAK_SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), (int) BBSettings.getThemeVotingTime()), null, null));
+            voteInventory.setItem(theme.getSlotInInventory(), ItemUtil.create(CompMaterial.OAK_SIGN, 1, Message.GUI_THEME_VOTING_INVENTORY_THEMES_DISPLAYNAME.getMessage(), ItemUtil.convertThemeLore(theme, BuildBattle.getInstance().getSettings().getThemeVotingLore(), (int) BuildBattle.getInstance().getSettings().getThemeVotingTime()), null, null));
             voteInventory.setItem(theme.getSlotInInventory() + 1, ItemUtil.create(CompMaterial.IRON_BARS, 1, "&a", ItemUtil.makeLore(""), null, null));
         }
     }
@@ -49,15 +50,15 @@ public class BBThemeVoting {
         List<String> themes = null;
         switch (arena.getGameType()) {
             case SOLO:
-                themes = new ArrayList<>(BBSettings.getSoloThemes());
+                themes = new ArrayList<>(BuildBattle.getInstance().getSettings().getSoloThemes());
                 break;
             case TEAM:
-                themes = new ArrayList<>(BBSettings.getTeamThemes());
+                themes = new ArrayList<>(BuildBattle.getInstance().getSettings().getTeamThemes());
                 break;
         }
         int slot = 0;
         Random ran = new Random();
-        while (returnList.size() != BBSettings.getThemesToVote()) {
+        while (returnList.size() != BuildBattle.getInstance().getSettings().getThemesToVote()) {
             String theme = themes.get(ran.nextInt(themes.size()));
             BBTheme bbTheme = new BBTheme(theme, 0, slot);
             returnList.add(bbTheme);
@@ -76,10 +77,10 @@ public class BBThemeVoting {
 
         openInv.setContents(voteInventory.getContents());
 
-        if (BBSettings.isSuperVotesEnabled()) {
+        if (BuildBattle.getInstance().getSettings().isSuperVotesEnabled()) {
             int superVotesAmount = 0;
 
-            BBPlayerStats pStats = PlayerManager.getInstance().getPlayerStats(p);
+            BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(p);
             if (pStats != null) {
                 superVotesAmount = (int) pStats.getStat(BBStat.SUPER_VOTES);
             }
@@ -103,12 +104,12 @@ public class BBThemeVoting {
 
             ItemStack themeItem = voteInventory.getItem(theme.getSlotInInventory());
             ItemMeta meta = themeItem.getItemMeta();
-            meta.setLore(ItemUtil.convertThemeLore(theme, BBSettings.getThemeVotingLore(), timeLeft));
+            meta.setLore(ItemUtil.convertThemeLore(theme, BuildBattle.getInstance().getSettings().getThemeVotingLore(), timeLeft));
             themeItem.setItemMeta(meta);
 
             int numberOfGreens = 0;
             int percentage = theme.getPercentage();
-            int onePart = BBSettings.isSuperVotesEnabled() ? 100 / 6 : 100 / 7;
+            int onePart = BuildBattle.getInstance().getSettings().isSuperVotesEnabled() ? 100 / 6 : 100 / 7;
 
             while (percentage - onePart >= 0) {
                 numberOfGreens = numberOfGreens + 1;
@@ -165,7 +166,7 @@ public class BBThemeVoting {
     public void superVote(Player who, BBTheme selectedTheme) {
         winner = selectedTheme;
         arena.startGame(selectedTheme.getName(), false);
-        PlayerManager.getInstance().broadcastToAllPlayersInArena(arena, Message.THEME_WAS_SUPER_VOTED.getChatMessage().replaceAll("%theme%", selectedTheme.getName()).replaceAll("%player%", who.getName()));
+        BuildBattle.getInstance().getPlayerManager().broadcastToAllPlayersInArena(arena, Message.THEME_WAS_SUPER_VOTED.getChatMessage().replaceAll("%theme%", selectedTheme.getName()).replaceAll("%player%", who.getName()));
     }
 
     public void reset() {

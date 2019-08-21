@@ -41,7 +41,7 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                                 maxPoint = l2;
                                 minPoint = l1;
                             }
-                            arena.getBuildPlots().add(new BBPlot(arena, minPoint, maxPoint));
+                            arena.getBuildPlots().add(new BBPlot(this.plugin,arena, minPoint, maxPoint));
                             arena.saveIntoConfig();
                             this.plugin.getArenaManager().refreshArenaItem(arena);
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");

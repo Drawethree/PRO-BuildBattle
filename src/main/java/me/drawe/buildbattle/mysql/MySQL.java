@@ -53,7 +53,6 @@ public class MySQL {
                         openConnection();
                         createTables();
                         BuildBattle.getInstance().info("§aMySQL Connected !");
-                        BuildBattle.getInstance().getMySQLManager().loadAllReports();
                     } catch (Exception e) {
                         BuildBattle.getInstance().severe("§cMySQL could not be connected ! Check your config.yml !");
                         e.printStackTrace();
@@ -65,7 +64,6 @@ public class MySQL {
                 openConnection();
                 createTables();
                 BuildBattle.getInstance().info("§aMySQL Connected !");
-                BuildBattle.getInstance().getMySQLManager().loadAllReports();
             } catch (Exception e) {
                 BuildBattle.getInstance().severe("§cMySQL could not be connected ! Check your config.yml !");
                 e.printStackTrace();

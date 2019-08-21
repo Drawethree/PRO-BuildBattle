@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.managers.PlayerManager;
 import org.bukkit.Bukkit;
@@ -31,8 +32,8 @@ public class BBPlayerStats {
 
     public void setStat(BBStat stat, Object value) {
         stats.put(stat, value);
-        if (BBSettings.isAsyncSavePlayerData()) {
-            PlayerManager.getInstance().savePlayerStat(this, stat);
+        if (BuildBattle.getInstance().getSettings().isAsyncSavePlayerData()) {
+            BuildBattle.getInstance().getPlayerManager().savePlayerStat(this, stat);
         }
     }
 

@@ -7,7 +7,7 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 public class BBTeamIngameScoreboard extends BBScoreboard {
 
     public BBTeamIngameScoreboard() {
-        super(BBGameMode.TEAM, BBArenaState.INGAME, BuildBattle.getFileManager().getConfig("translates.yml").get().getString("scoreboard.team.ingame.title"), BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("scoreboard.team.ingame.lines"));
+        super(BBGameMode.TEAM, BBArenaState.INGAME, BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString("scoreboard.team.ingame.title"), BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getStringList("scoreboard.team.ingame.lines"));
 
     }
 }

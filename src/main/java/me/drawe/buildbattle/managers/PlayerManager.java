@@ -26,6 +26,7 @@ import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class PlayerManager {
     private BuildBattle plugin;
 
     private HashMap<UUID, BBPlayerStats> playerStats;
+    private HashMap<UUID, BBPlayerStats> cachedStats;
     private HashMap<Player, PlayerData> playerData;
     private HashMap<Player, BBArena> playersInArenas;
     private HashMap<Player, Spectetable> spectators;
@@ -45,6 +47,7 @@ public class PlayerManager {
     public PlayerManager(BuildBattle plugin) {
         this.plugin = plugin;
         this.playerStats = new HashMap<>();
+        this.cachedStats = new HashMap<>();
         this.playerData = new HashMap<>();
         this.playersInArenas = new HashMap<>();
         this.spectators = new HashMap<>();
@@ -82,6 +85,17 @@ public class PlayerManager {
     }
 
     public void loadPlayerData(Player p) {
+
+        BuildBattle.getInstance().debug("Loading data for player " + p.getName());
+
+        //Check if data is in cache
+        if (this.cachedStats.containsKey(p.getUniqueId())) {
+            BuildBattle.getInstance().debug("Data is cached, loading it ");
+            this.playerStats.put(p.getUniqueId(), this.cachedStats.remove(p.getUniqueId()));
+            return;
+        }
+
+        BuildBattle.getInstance().debug("Data is not cached, trying to load it");
         switch (this.plugin.getSettings().getStatsType()) {
             case MYSQL:
                 this.plugin.getMySQLManager().loadPlayer(p);
@@ -93,6 +107,7 @@ public class PlayerManager {
                         stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
                     }
                     playerStats.put(p.getUniqueId(), stats);
+                    BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from stats.yml!");
                 }
                 break;
         }
@@ -435,7 +450,22 @@ public class PlayerManager {
                 this.plugin.getMySQLManager().savePlayerStats(getPlayerStats(p));
                 break;
         }
-        playerStats.remove(p.getUniqueId());
+
+        BuildBattle.getInstance().debug("Putting data of player " + p.getName() + " into cache.");
+        this.cachedStats.put(p.getUniqueId(), playerStats.remove(p.getUniqueId()));
+        this.runRemoveFromCacheTask(p);
+    }
+
+    private void runRemoveFromCacheTask(Player player) {
+        BuildBattle.getInstance().debug("Data of player " + player.getName() + " will be remove from cache in 1 minute.");
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                cachedStats.remove(player.getUniqueId());
+                BuildBattle.getInstance().debug("Removing data of player " + player.getName() + " from cache.");
+            }
+        }.runTaskLater(plugin, 20*60);
     }
 
     public Double getPlayerStat(BBStat stat, Player player) {

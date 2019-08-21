@@ -7,7 +7,7 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 public class BBSoloThemeVotingScoreboard extends BBScoreboard {
 
     public BBSoloThemeVotingScoreboard() {
-        super(BBGameMode.SOLO, BBArenaState.THEME_VOTING, BuildBattle.getFileManager().getConfig("translates.yml").get().getString("scoreboard.solo.theme-voting.title"), BuildBattle.getFileManager().getConfig("translates.yml").get().getStringList("scoreboard.solo.theme-voting.lines"));
+        super(BBGameMode.SOLO, BBArenaState.THEME_VOTING, BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString("scoreboard.solo.theme-voting.title"), BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getStringList("scoreboard.solo.theme-voting.lines"));
 
     }
 }

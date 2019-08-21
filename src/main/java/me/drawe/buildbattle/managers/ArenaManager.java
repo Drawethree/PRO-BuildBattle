@@ -89,7 +89,7 @@ public class ArenaManager {
         if (!existsArena(name)) {
             try {
                 BBGameMode bbGameMode = BBGameMode.valueOf(gamemode.toUpperCase());
-                this.arenas.put(name, new BBArena(name, bbGameMode));
+                this.arenas.put(name, new BBArena(this.plugin,name, bbGameMode));
                 sender.sendMessage("§e§lBuildBattle Setup §8| §aYou have successfully created arena §e" + name + " §8[§e" + bbGameMode.name() + "§8]§a!");
                 this.reloadAllArenasInventory();
                 this.reloadArenaEditors();
@@ -198,7 +198,7 @@ public class ArenaManager {
         try {
             this.arenas = new HashMap<>();
             for (String name : this.plugin.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
-                this.arenas.put(name, new BBArena(name));
+                this.arenas.put(name, new BBArena(this.plugin,name));
                 plugin.info("§aArena §e" + name + " §aloaded !");
             }
         } catch (Exception e) {

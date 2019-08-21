@@ -15,6 +15,7 @@ import me.drawe.buildbattle.utils.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,11 +51,11 @@ public class BBBuildReport {
     }
 
     public boolean saveReport() {
-        switch(BBSettings.getStatsType()) {
+        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
-                return ReportManager.getInstance().saveReportIntoConfig(this);
+                return BuildBattle.getInstance().getReportManager().saveReportIntoConfig(this);
             case MYSQL:
-                return MySQLManager.getInstance().saveReport(this);
+                return BuildBattle.getInstance().getMySQLManager().saveReport(this);
         }
         return false;
     }
@@ -66,9 +67,9 @@ public class BBBuildReport {
     public void setReportStatus(BBReportStatus reportStatus) {
         this.reportStatus = reportStatus;
         reportInventoryItem = ItemUtil.createReportItem(this);
-        switch(BBSettings.getStatsType()) {
+        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
-                BuildBattle.getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
+                BuildBattle.getInstance().getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
                 break;
             case MYSQL:
                 MySQL.update("UPDATE BuildBattlePro_ReportedBuilds SET Status=" + reportStatus.name().toUpperCase() + " WHERE ID=" + getReportID() + "");
@@ -116,9 +117,9 @@ public class BBBuildReport {
             FileInputStream fis = closer.register(new FileInputStream(schematic));
             BufferedInputStream bis = closer.register(new BufferedInputStream(fis));
             ClipboardReader reader = ClipboardFormat.SCHEMATIC.getReader(bis);
-            LocalSession session = BuildBattle.getWorldEdit().getSession(p);
-            WorldData worldData = BuildBattle.getWorldEdit().wrapPlayer(p).getWorld().getWorldData();
-            Clipboard clipboard = reader.read(BuildBattle.getWorldEdit().wrapPlayer(p).getWorld().getWorldData());
+            LocalSession session = BuildBattle.getInstance().getWorldEdit().getSession(p);
+            WorldData worldData = BuildBattle.getInstance().getWorldEdit().wrapPlayer(p).getWorld().getWorldData();
+            Clipboard clipboard = reader.read(BuildBattle.getInstance().getWorldEdit().wrapPlayer(p).getWorld().getWorldData());
             session.setClipboard(new ClipboardHolder(clipboard, worldData));
             return true;
         } catch (Exception e) {
@@ -134,11 +135,11 @@ public class BBBuildReport {
 
     public boolean delete() {
         if(schematic.exists()) schematic.delete();
-        switch(BBSettings.getStatsType()) {
+        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
-                return ReportManager.getInstance().deleteReportFromConfig(this);
+                return BuildBattle.getInstance().getReportManager().deleteReportFromConfig(this);
             case MYSQL:
-                return MySQLManager.getInstance().deleteReport(this);
+                return BuildBattle.getInstance().getMySQLManager().deleteReport(this);
         }
         return false;
     }

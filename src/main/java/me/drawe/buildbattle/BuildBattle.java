@@ -58,11 +58,17 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onEnable() {
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
+        Bukkit.getConsoleSender().sendMessage("");
+
         instance = this;
         API = new BuildBattleProAPIImpl(instance);
 
         this.fileManager = new FileManager(this);
         this.loadAllConfigs();
+
+        this.settings = new BBSettings(this);
         this.settings.loadSettings();
 
         this.checkForLoadingLater();
@@ -75,14 +81,9 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.partyManager = new PartyManager(this);
         this.playerManager = new PlayerManager(this);
         this.rewardManager = new RewardManager(this);
-        this.reportManager = new ReportManager(this);
         this.superVoteManager = new SuperVoteManager(this);
         this.votingManager = new VotingManager(this);
-        this.settings = new BBSettings(this);
 
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lBuildBattlePro §7v." + getDescription().getVersion()));
-        Bukkit.getConsoleSender().sendMessage("");
 
 
         this.registerBBCommands();
@@ -216,14 +217,14 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
             this.warning("§cWorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
             return;
         }
-
         this.worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
         if (this.worldEdit == null) {
             this.warning("§cWorldEdit dependency not found ! Report features will be disabled !");
         } else {
             this.info("§aSuccessfully hooked into §eWorldEdit §a!");
-            this.getReportManager().loadAllReports();
+            this.reportManager = new ReportManager(this);
+            this.reportManager.loadAllReports();
         }
     }
 
@@ -246,7 +247,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public void debug(String message) {
-        if (this.debug) Bukkit.getLogger().info("[DEBUG] " + message);
+        if (this.debug) this.info("[DEBUG] " + message);
     }
 
     public void severe(String message) {

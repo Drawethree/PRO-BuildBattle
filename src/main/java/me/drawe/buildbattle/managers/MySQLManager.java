@@ -97,6 +97,7 @@ public class MySQLManager {
                             stats.setStat(stat, set.getObject(stat.getSQLKey()));
                         }
                         MySQLManager.this.plugin.getPlayerManager().getPlayerStats().put(stats.getUuid(), stats);
+                        BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from MySQL!");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

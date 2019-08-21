@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
+import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.managers.PartyManager;
 import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
@@ -28,7 +29,7 @@ public class BBParty {
             p1.sendMessage(Message.PARTY_PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getName()));
         }
         players.add(p);
-        PartyManager.getInvitedPlayers().remove(p);
+        BuildBattle.getInstance().getPartyManager().getInvitedPlayers().remove(p);
     }
 
     public void removePlayer(Player p) {
@@ -45,11 +46,11 @@ public class BBParty {
 
     private void disbandParty() {
         for (Player p : players) {
-            PartyManager.getPlayersInParties().remove(p);
+            BuildBattle.getInstance().getPartyManager().getPlayersInParties().remove(p);
             p.sendMessage(Message.PARTY_DISBANDED.getChatMessage());
         }
         players.clear();
-        PartyManager.getInstance().clearInvitations(this);
+        BuildBattle.getInstance().getPartyManager().clearInvitations(this);
         this.creator = null;
     }
 
@@ -58,7 +59,7 @@ public class BBParty {
             BBTeam team = a.getFreeBBTeamForParty(this);
             for (Player p : players) {
                 if (!p.equals(creator)) {
-                    BBArena pArena = PlayerManager.getInstance().getPlayerArena(p);
+                    BBArena pArena = BuildBattle.getInstance().getPlayerManager().getPlayerArena(p);
                     if (pArena != null) {
                         pArena.removePlayer(p);
                     }
@@ -87,6 +88,6 @@ public class BBParty {
 
     public boolean isFull() {
         if (creator.isOp() || creator.hasPermission("buildbattlepro.party.size.*")) return false;
-        return getPlayers().size() == PartyManager.getInstance().getMaxPlayersInParty(getCreator());
+        return getPlayers().size() == BuildBattle.getInstance().getPartyManager().getMaxPlayersInParty(getCreator());
     }
 }
