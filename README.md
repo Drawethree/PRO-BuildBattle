@@ -25,4 +25,4 @@ Players can choose to play **solo mode**, or **team mode** to team up with other
 ### Support
 * [FAQ](https://github.com/Drawethree/PRO-BuildBattle/wiki/Frequently-Asked-Questions)
 ### For Developers
-* [Developer API](https://github.com/Drawethree/PRO-BuildBattle/wiki)
+* [Developer API](https://github.com/Drawethree/PRO-BuildBattle/wiki/Developer-API)
