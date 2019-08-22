@@ -1,6 +1,6 @@
 ![BuildBattlePro Header](https://i.imgur.com/4xWDCJJ.png)
 # PRO BuildBattle 
-![Version](https://img.shields.io/spiget/version/49587?label=Latest%20Release)
+![Version](https://img.shields.io/spiget/version/49587?label=Latest%20Official%20Release%)
 ![Rating](https://img.shields.io/spiget/stars/49587?label=Rating)
 ![Issues](https://img.shields.io/github/issues/Drawethree/PRO-BuildBattle?label=Issues&logo=GitHub)
 ![Discord](https://img.shields.io/discord/505846258867372033?label=Discord&logo=Discord)
