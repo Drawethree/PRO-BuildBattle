@@ -3,6 +3,7 @@ package me.drawe.buildbattle.commands.subcommands.misc;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
+import org.apache.commons.lang.BooleanUtils;
 import org.bukkit.command.CommandSender;
 
 public class BBDebugSubCommand extends BBSubCommand {
@@ -17,7 +18,7 @@ public class BBDebugSubCommand extends BBSubCommand {
     @Override
     public boolean execute(BBCommand cmd, CommandSender sender, String[] args) {
         if (sender.isOp()) {
-            sender.sendMessage(plugin.getSettings().getPrefix() + "§aDebug mode >> §e" + plugin.enableDebugMode());
+            sender.sendMessage(plugin.getSettings().getPrefix() + "§aDebug mode >> §e" + BooleanUtils.toStringOnOff(plugin.enableDebugMode()));
             return true;
         }
         return false;

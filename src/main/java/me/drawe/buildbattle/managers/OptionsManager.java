@@ -53,26 +53,17 @@ public class OptionsManager {
 
     public OptionsManager(BuildBattle plugin) {
         this.plugin = plugin;
-        this.backItem = ItemUtil.create(CompMaterial.ARROW, 1, Message.ITEMS_BACK_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("items.back_item.lore")), null, null);
+
         this.saveItem = ItemUtil.create(CompMaterial.EMERALD, 1, "&eSave & Close", ItemUtil.makeLore("&7Click to save and apply changes !"), null, null);
         this.deleteArenaItem = ItemUtil.create(CompMaterial.BARRIER, 1, "&eDelete Arena", ItemUtil.makeLore("&4&lWARNING!", "&cThis action cannot be undone !"), null, null);
-        this.reportItem = ItemUtil.create(CompMaterial.ENCHANTED_BOOK, 1, Message.ITEMS_REPORT_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("items.report_item.lore")), null, null);
-        this.clearPlotItem = ItemUtil.create(CompMaterial.BARRIER, 1, Message.GUI_OPTIONS_CLEAR_PLOT_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.clear_plot_item.lore")), null, null);
-        this.removeParticlesItem = ItemUtil.create(CompMaterial.CHEST, 1, Message.GUI_OPTIONS_PARTICLE_LIST_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particle_list_item.lore")), null, null);
-        this.particlesItem = ItemUtil.create(CompMaterial.BLAZE_POWDER, 1, Message.GUI_OPTIONS_PARTICLES_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.particles_item.lore")), null, null);
-        this.biomesItem = ItemUtil.create(CompMaterial.FILLED_MAP, 1, Message.GUI_OPTIONS_PLOT_BIOME_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_biome_item.lore")), null, null);
-        this.headsItem = ItemUtil.create(CompMaterial.PLAYER_HEAD, 1, Message.GUI_OPTIONS_HEADS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.heads_item.lore")), null, null);
-        this.leaveItem = ItemUtil.create(CompMaterial.RED_BED, 1, Message.ITEMS_LEAVE_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("items.leave_item.lore")), null, null);
-        this.optionsItem = ItemUtil.create(CompMaterial.NETHER_STAR, 1, Message.ITEMS_OPTIONS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("items.options_item.lore")), null, null);
-        this.teamsItem = ItemUtil.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_TEAMS_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("items.teams_item.lore")), null, null);
-        this.timeItem = ItemUtil.create(CompMaterial.CLOCK, 1, Message.GUI_OPTIONS_CHANGE_TIME_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.time_item.lore")), null, null);
-        this.bannerCreatorItem = ItemUtil.create(CompMaterial.BLACK_BANNER, 1, Message.ITEMS_BANNER_CREATOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.banner_creator_item.lore")), null, null);
 
         this.particlesInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_PARTICLES_TITLE.getMessage());
         this.colorsInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_COLORS_TITLE.getMessage());
         this.patternsInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_PATTERNS_TITLE.getMessage());
         this.biomesInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_BIOMES_TITLE.getMessage());
         this.reportsInventoryTitle = "Build Reports Page: ";
+
+        this.reloadItemsAndInventories();
     }
 
     public void reloadItemsAndInventories() {

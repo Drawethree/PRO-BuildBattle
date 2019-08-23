@@ -6,14 +6,14 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBStat;
+import me.drawe.buildbattle.objects.bbobjects.BBStatIntegerComparator;
 import me.drawe.buildbattle.utils.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class BBLeaderboard {
 
@@ -21,70 +21,39 @@ public class BBLeaderboard {
     private LeaderboardType type;
     private Hologram hologram;
     private int amountToDisplay;
-    private double refreshTime;
-    private BukkitTask updateTask;
 
-    public BBLeaderboard(BuildBattle plugin, Location loc, LeaderboardType type, int amountToDisplay, double refreshTime) {
+    public BBLeaderboard(BuildBattle plugin, Location loc, LeaderboardType type, int amountToDisplay) {
         this.plugin = plugin;
         this.type = type;
         this.amountToDisplay = amountToDisplay;
-        this.refreshTime = refreshTime;
         this.hologram = HologramsAPI.createHologram(plugin, loc);
-        this.startUpdateTask();
+        this.hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', this.type.getTitle()));
     }
 
-    private void startUpdateTask() {
-        this.updateTask = new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                update();
-            }
-        }.runTaskTimer(plugin, 0L, (long) (20 * 60 * getRefreshTime()));
-    }
-
-    public void update() {
+    public void update(List<BBPlayerStats> loadedStats) {
 
         if (!BBHook.getHook("HolographicDisplays") || this.hologram == null || this.hologram.isDeleted()) {
             return;
         }
 
-        this.hologram.clearLines();
-        this.hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
-
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                ArrayList<BBPlayerStats> allData = new ArrayList<>();
 
-                switch (plugin.getSettings().getStatsType()) {
-                    case FLATFILE:
-                        plugin.getPlayerManager().loadAllPlayerStats(allData);
-                        break;
-                    case MYSQL:
-                        plugin.getMySQLManager().loadAllPlayerStats(allData);
-                        break;
-                }
+                hologram.clearLines();
+                hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
 
-                /*
-                switch (getType()) {
+                switch (type) {
                     case WINS:
-                        Collections.sort(allData, Comparator.comparing(BBPlayerStats::getWins));
-                        break;
                     case PLAYED:
-                        Collections.sort(allData, Comparator.comparing(BBPlayerStats::getPlayed));
-                        break;
                     case BLOCKS_PLACED:
-                        Collections.sort(allData, Comparator.comparing(BBPlayerStats::getBlocksPlaced));
-                        break;
                     case PARTICLES_PLACED:
-                        Collections.sort(allData, Comparator.comparing(BBPlayerStats::getParticlesPlaced));
+                        Collections.sort(loadedStats, new BBStatIntegerComparator(BBStat.valueOf(type.name())).reversed());
                         break;
+                    default:
+                        return;
                 }
-                */
-
-                Collections.reverse(allData);
 
                 for (int i = 0, position = 0; ; i++) {
 
@@ -94,7 +63,7 @@ public class BBLeaderboard {
 
                     BBPlayerStats stats;
                     try {
-                        stats = allData.get(i);
+                        stats = loadedStats.get(i);
                     } catch (IndexOutOfBoundsException e) {
                         break;
                     }
@@ -106,15 +75,13 @@ public class BBLeaderboard {
 
                     hologram.appendTextLine(getFormattedFormat(stats, ++position, getType()));
                 }
-                allData = null;
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTask(plugin);
     }
 
 
     public void delete() {
         this.hologram.delete();
-        this.updateTask.cancel();
         plugin.getLeaderboardManager().getActiveLeaderboards().remove(this);
         this.removeFromConfig();
     }
@@ -131,7 +98,6 @@ public class BBLeaderboard {
         plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".location", LocationUtil.getStringFromLocation(hologram.getLocation()));
         plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", type.name());
         plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", amountToDisplay);
-        plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".refresh-time", refreshTime);
         plugin.getFileManager().getConfig("leaderboards.yml").save();
     }
 
@@ -153,9 +119,5 @@ public class BBLeaderboard {
                 replaceAll("%player%", stats.getOfflinePlayer().getName())
                 .replaceAll(type.getPlaceholder(), String.valueOf(stats.getStat(BBStat.valueOf(type.name()))));
         return returnString;
-    }
-
-    public double getRefreshTime() {
-        return refreshTime;
     }
 }

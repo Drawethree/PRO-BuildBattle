@@ -3,16 +3,14 @@ package me.drawe.buildbattle.managers;
 import lombok.Getter;
 import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.api.events.misc.BBSpectateJoinEvent;
-import me.drawe.buildbattle.api.events.misc.BBSpectateQuitEvent;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlayerData;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawe.buildbattle.objects.bbobjects.BBPlayerStatsLoader;
 import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.arena.Spectetable;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.scoreboards.BBMainLobbyScoreboard;
 import me.drawe.buildbattle.utils.FancyMessage;
@@ -22,7 +20,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -31,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 @Getter
 public class PlayerManager {
@@ -41,7 +39,6 @@ public class PlayerManager {
     private HashMap<UUID, BBPlayerStats> cachedStats;
     private HashMap<Player, PlayerData> playerData;
     private HashMap<Player, BBArena> playersInArenas;
-    private HashMap<Player, Spectetable> spectators;
 
 
     public PlayerManager(BuildBattle plugin) {
@@ -50,7 +47,6 @@ public class PlayerManager {
         this.cachedStats = new HashMap<>();
         this.playerData = new HashMap<>();
         this.playersInArenas = new HashMap<>();
-        this.spectators = new HashMap<>();
     }
 
     public BBPlayerStats getPlayerStats(Player p) {
@@ -74,7 +70,7 @@ public class PlayerManager {
         }
     }
 
-    public void loadAllPlayerStats(ArrayList<BBPlayerStats> list) {
+    public synchronized void loadAllPlayerStats(ArrayList<BBPlayerStats> list, CountDownLatch latch) {
         for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
             BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
             for (BBStat stat : BBStat.values()) {
@@ -82,6 +78,7 @@ public class PlayerManager {
             }
             list.add(stats);
         }
+        latch.countDown();
     }
 
     public void loadPlayerData(Player p) {
@@ -96,21 +93,7 @@ public class PlayerManager {
         }
 
         BuildBattle.getInstance().debug("Data is not cached, trying to load it");
-        switch (this.plugin.getSettings().getStatsType()) {
-            case MYSQL:
-                this.plugin.getMySQLManager().loadPlayer(p);
-                break;
-            case FLATFILE:
-                if (this.plugin.getFileManager().getConfig("stats.yml").get().contains(p.getUniqueId().toString())) {
-                    BBPlayerStats stats = new BBPlayerStats(p.getUniqueId());
-                    for (BBStat stat : BBStat.values()) {
-                        stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
-                    }
-                    playerStats.put(p.getUniqueId(), stats);
-                    BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from stats.yml!");
-                }
-                break;
-        }
+        BBPlayerStatsLoader.load(p);
     }
 
     public PlayerData getPlayerData(Player p) {
@@ -284,6 +267,7 @@ public class PlayerManager {
         if (getPlayerStats(p) == null) {
             BBPlayerStats stats = new BBPlayerStats(p.getUniqueId(), 0, 0, 0, 0, 0, 0);
             playerStats.put(p.getUniqueId(), stats);
+
             if (this.plugin.getSettings().isAsyncSavePlayerData()) {
                 switch (this.plugin.getSettings().getStatsType()) {
                     case FLATFILE:
@@ -300,7 +284,7 @@ public class PlayerManager {
         return false;
     }
 
-    private void addPlayerToStatsYML(BBPlayerStats stats) {
+    private synchronized void addPlayerToStatsYML(BBPlayerStats stats) {
         for (BBStat stat : BBStat.values()) {
             this.plugin.getFileManager().getConfig("stats.yml").set(stats.getUuid() + "." + stat.getConfigKey(), stats.getStat(stat));
         }
@@ -374,67 +358,6 @@ public class PlayerManager {
         return playerStats.get(p.getUniqueId());
     }
 
-    public void spectate(Player p, Spectetable target) {
-
-        if (spectators.containsKey(p)) {
-            return;
-        }
-
-        if (target instanceof BBArena) {
-            BBSpectateJoinEvent event = new BBSpectateJoinEvent(p, (BBArena) target);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return;
-            }
-        }
-
-        spectators.put(p, target);
-
-        this.createNewPlayerData(p);
-
-        p.getInventory().clear();
-        p.setGameMode(GameMode.ADVENTURE);
-        p.setAllowFlight(true);
-        p.setFlying(true);
-        p.setHealth(p.getMaxHealth());
-        p.setFoodLevel(20);
-        this.hidePlayer(p);
-
-        target.spectate(p);
-    }
-
-    public void unspectate(Player p) {
-        if (!spectators.containsKey(p)) {
-            return;
-        }
-
-        Spectetable spectetable = spectators.remove(p);
-
-        spectetable.unspectate(p);
-
-        this.showPlayer(p);
-        this.restorePlayerData(p);
-        if (spectetable instanceof BBArena) {
-            Bukkit.getPluginManager().callEvent(new BBSpectateQuitEvent(p, (BBArena) spectetable));
-        }
-    }
-
-    private void showPlayer(Player p) {
-        for (Player p1 : Bukkit.getOnlinePlayers()) {
-            if (p1.equals(p))
-                continue;
-            p1.showPlayer(p);
-        }
-    }
-
-    private void hidePlayer(Player p) {
-        for (Player p1 : Bukkit.getOnlinePlayers()) {
-            if (p1.equals(p))
-                continue;
-            p1.hidePlayer(p);
-        }
-    }
-
     public void unloadPlayerData(Player p) {
 
         //Data can be null in rare cases ! (Not plugin issue)
@@ -444,10 +367,10 @@ public class PlayerManager {
 
         switch (this.plugin.getSettings().getStatsType()) {
             case FLATFILE:
-                this.addPlayerToStatsYML(getPlayerStats(p));
+                this.addPlayerToStatsYML(this.getPlayerStats(p));
                 break;
             case MYSQL:
-                this.plugin.getMySQLManager().savePlayerStats(getPlayerStats(p));
+                this.plugin.getMySQLManager().savePlayerStats(this.getPlayerStats(p));
                 break;
         }
 
@@ -457,7 +380,7 @@ public class PlayerManager {
     }
 
     private void runRemoveFromCacheTask(Player player) {
-        BuildBattle.getInstance().debug("Data of player " + player.getName() + " will be remove from cache in 1 minute.");
+        BuildBattle.getInstance().debug("Data of player " + player.getName() + " will be remove from cache in 60 minutes.");
         new BukkitRunnable() {
 
             @Override
@@ -465,7 +388,7 @@ public class PlayerManager {
                 cachedStats.remove(player.getUniqueId());
                 BuildBattle.getInstance().debug("Removing data of player " + player.getName() + " from cache.");
             }
-        }.runTaskLater(plugin, 20*60);
+        }.runTaskLater(plugin, 20 * 60 * 60);
     }
 
     public Double getPlayerStat(BBStat stat, Player player) {
@@ -494,5 +417,21 @@ public class PlayerManager {
                 this.plugin.getFileManager().getConfig("stats.yml").get().set(bbPlayerStats.getUuid().toString() + "." + stat.getConfigKey(), bbPlayerStats.getStat(stat));
                 this.plugin.getFileManager().getConfig("stats.yml").save();
         }
+    }
+
+    public synchronized void loadPlayer(Player p) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (plugin.getFileManager().getConfig("stats.yml").get().contains(p.getUniqueId().toString())) {
+                    BBPlayerStats stats = new BBPlayerStats(p.getUniqueId());
+                    for (BBStat stat : BBStat.values()) {
+                        stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
+                    }
+                    playerStats.put(p.getUniqueId(), stats);
+                    BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from stats.yml!");
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 }

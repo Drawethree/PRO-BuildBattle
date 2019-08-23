@@ -11,7 +11,6 @@ import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaEdit;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
-import me.drawe.buildbattle.objects.bbobjects.arena.Spectetable;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
@@ -70,10 +69,6 @@ public class PlayerListener implements Listener {
 
         this.plugin.getPlayerManager().loadPlayerData(p);
 
-        if (this.plugin.getSettings().isCreateStatsOnServerJoin()) {
-            this.plugin.getPlayerManager().createPlayerStatsIfNotExists(p);
-        }
-
         if (this.plugin.getSettings().isUseBungeecord() && this.plugin.getSettings().isAutoJoinPlayers()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
                 final BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
@@ -100,12 +95,6 @@ public class PlayerListener implements Listener {
         BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
 
         if (inv != null) {
-            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == CompMaterial.PLAYER_HEAD.getMaterial() && this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
-                Player target = Bukkit.getPlayer(e.getCurrentItem().getItemMeta().getDisplayName());
-                p.teleport(target.getLocation());
-                p.closeInventory();
-                return;
-            }
             if (invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage()) || invView.getTitle().equalsIgnoreCase(Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage())) {
                 e.setCancelled(true);
                 if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
@@ -475,16 +464,6 @@ public class PlayerListener implements Listener {
 
         Player p = e.getPlayer();
         BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
-        Spectetable<Player> spectating = this.plugin.getPlayerManager().getSpectators().get(p);
-
-        if (spectating != null && e.getItem() != null) {
-            if (e.getItem().equals(Spectetable.SPECTATE_ITEM)) {
-                spectating.openSpectateInventory(p);
-            } else if (e.getItem().equals(Spectetable.QUIT_SPECTATE_ITEM)) {
-                this.plugin.getPlayerManager().unspectate(p);
-            }
-            return;
-        }
 
         if (arena != null) {
             if ((e.getItem() != null) && (e.getItem().getType() == CompMaterial.COMPASS.getMaterial())) {
@@ -610,7 +589,7 @@ public class PlayerListener implements Listener {
         if (a != null) {
             a.removePlayer(p);
         }
-        this.plugin.getPlayerManager().unspectate(p);
+        this.plugin.getSpectatorManager().unspectate(p);
         this.plugin.getPlayerManager().unloadPlayerData(p);
     }
 
@@ -819,7 +798,7 @@ public class PlayerListener implements Listener {
         if (e.getEntity() instanceof Player) {
             final Player p = (Player) e.getEntity();
             final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
-            if (arena != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+            if (arena != null) {
                 e.setCancelled(true);
                 p.setHealth(p.getMaxHealth());
                 p.setFoodLevel(20);
@@ -851,7 +830,7 @@ public class PlayerListener implements Listener {
         if (e.getEntity() instanceof Player) {
             final Player p = (Player) e.getEntity();
             final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
-            if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+            if (a != null) {
                 e.setCancelled(true);
             }
         }
@@ -862,7 +841,7 @@ public class PlayerListener implements Listener {
         if (e.getDamager() instanceof Player) {
             final Player p = (Player) e.getDamager();
             final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
-            if (a != null && a.getBBArenaState() == BBArenaState.VOTING || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+            if (a != null && a.getBBArenaState() == BBArenaState.VOTING) {
                 e.setCancelled(true);
             }
         }
@@ -899,7 +878,7 @@ public class PlayerListener implements Listener {
     public void onPickup(final PlayerPickupItemEvent e) {
         final Player p = e.getPlayer();
         final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
-        if (a != null && a.getBBArenaState() == BBArenaState.VOTING || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+        if (a != null && a.getBBArenaState() == BBArenaState.VOTING) {
             e.setCancelled(true);
         }
     }
@@ -978,7 +957,7 @@ public class PlayerListener implements Listener {
     public void onItemDrop(final PlayerDropItemEvent e) {
         final Player p = e.getPlayer();
         final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
-        if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+        if (a != null) {
             e.setCancelled(true);
         }
     }
@@ -1022,7 +1001,7 @@ public class PlayerListener implements Listener {
     public void onConsume(final PlayerItemConsumeEvent e) {
         final Player p = e.getPlayer();
         final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
-        if (a != null || this.plugin.getPlayerManager().getSpectators().containsKey(p)) {
+        if (a != null) {
             e.setCancelled(true);
         }
     }

@@ -7,15 +7,11 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.MySQLManager;
-import me.drawe.buildbattle.managers.ReportManager;
 import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.utils.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.swing.plaf.basic.BasicButtonUI;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

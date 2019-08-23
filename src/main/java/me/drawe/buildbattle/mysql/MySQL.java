@@ -86,9 +86,9 @@ public class MySQL {
         }
     }
 
-    public static ResultSet getResult(String sql) {
+    public static ResultSet getResult(PreparedStatement statement) {
         try {
-            return getConnection().prepareStatement(sql).executeQuery();
+            return statement.executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         }

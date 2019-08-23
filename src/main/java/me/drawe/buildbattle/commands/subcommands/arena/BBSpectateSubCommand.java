@@ -5,7 +5,7 @@ import me.drawe.buildbattle.commands.BBCommand;
 import me.drawe.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.arena.Spectetable;
+import me.drawe.spectateapi.Spectatable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,18 +24,18 @@ public class BBSpectateSubCommand extends BBSubCommand {
             Player p = (Player) sender;
             if (args.length == 1) {
                 BBArena currentArena = this.plugin.getPlayerManager().getPlayerArena(p);
-                Spectetable currentSpectate = this.plugin.getPlayerManager().getSpectators().get(p);
+                Spectatable currentSpectate = this.plugin.getSpectatorManager().getSpectators().get(p);
                 if (currentArena == null) {
                     if (currentSpectate == null) {
                         BBArena targetArena = this.plugin.getArenaManager().getArena(args[0]);
                         if(targetArena != null) {
-                            this.plugin.getPlayerManager().spectate(p, targetArena);
+                            this.plugin.getSpectatorManager().spectate(p, targetArena);
                             return true;
                         } else {
                             p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
                         }
                     } else {
-                        this.plugin.getPlayerManager().unspectate(p);
+                        this.plugin.getSpectatorManager().unspectate(p);
                         return true;
                     }
                 } else {

@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.0.0-BETA</version>
+    <version>6.0.1-BETA</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -132,7 +132,7 @@
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
-            <version>2.3.2</version>
+            <version>2.3.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -145,6 +145,7 @@
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

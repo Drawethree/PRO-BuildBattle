@@ -5,6 +5,7 @@ import me.drawe.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -31,19 +32,25 @@ public class HeadInventory {
         this.plugin = plugin;
         this.MAIN_PAGE = Bukkit.createInventory(null, 9, Message.GUI_HEADS_TITLE.getMessage());
         this.CATEGORIES = new ArrayList<>();
-        try {
-            ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
-            int i = 0;
-            for (String name : section.getKeys(false)) {
-                Category category = new Category(plugin,name);
-                CATEGORIES.add(category);
-                MAIN_PAGE.setItem(i, category.getIcon());
-                i++;
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
+                    int i = 0;
+                    for (String name : section.getKeys(false)) {
+                        Category category = new Category(plugin,name);
+                        CATEGORIES.add(category);
+                        MAIN_PAGE.setItem(i, category.getIcon());
+                        i++;
+                    }
+                    MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
+                } catch (Exception e) {
+                    plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
                 }
-            MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
-        }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     /**

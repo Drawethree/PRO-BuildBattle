@@ -37,6 +37,7 @@ public class BBSettings {
     private int themesToVote;
     private int maxParticlesPerPlayer;
     private int partyMaxPlayers;
+    private int leaderBoardsRefreshTime;
     private double particleOffset;
     private int amountParticleToSpawn;
     private double particleRefreshTime;
@@ -50,7 +51,6 @@ public class BBSettings {
     private boolean asyncSavePlayerData;
     private StatsType statsType;
     private boolean scoreboardEnabled;
-    private boolean createStatsOnServerJoin;
     private boolean mainLobbyScoreboardEnabled;
     private boolean partiesEnabled;
     private boolean reportsEnabled;
@@ -131,7 +131,6 @@ public class BBSettings {
         asyncSavePlayerData = false;
         statsType = StatsType.FLATFILE;
         scoreboardEnabled = true;
-        createStatsOnServerJoin = true;
         mainLobbyScoreboardEnabled = true;
         partiesEnabled = true;
         reportsEnabled = true;
@@ -599,10 +598,6 @@ public class BBSettings {
         this.giveRewardsAfterGameEnds = giveRewardsAfterGameEnds;
     }
 
-    private void setCreateStatsOnServerJoin(boolean createStatsOnServerJoin) {
-        this.createStatsOnServerJoin = createStatsOnServerJoin;
-    }
-
     private void loadThemes() {
         this.soloThemes = new ArrayList<>();
         this.teamThemes = new ArrayList<>();
@@ -722,7 +717,6 @@ public class BBSettings {
             setGiveRewardsAfterGameEnds(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.give_after_game_ends"));
             setAsyncSavePlayerData(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
             setStatsType(StatsType.valueOf(this.plugin.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
-            setCreateStatsOnServerJoin(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("stats.create_stats_on_server_join"));
             setReportsEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.enable_reports"));
             setShowVoteInSubtitle(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_vote_in_subtitle"));
             setFloorChangeNPCtype(EntityType.valueOf(this.plugin.getFileManager().getConfig("config.yml").get().getString("change_floor_npc.type")));
@@ -731,6 +725,7 @@ public class BBSettings {
             setChangeMOTD(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
             setReplaceBlockBehindSigns(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
             setAutoRestarting(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
+            setLeaderBoardsRefreshTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("leaderboards_refresh_time"));
             setMainLobbyLocation();
             loadFallbackServers();
             loadRestrictedBlocks();
@@ -797,5 +792,9 @@ public class BBSettings {
 
     private void setWinFireworksEnabled(boolean winFireworksEnabled) {
         this.winFireworksEnabled = winFireworksEnabled;
+    }
+
+    public void setLeaderBoardsRefreshTime(int leaderBoardsRefreshTime) {
+        this.leaderBoardsRefreshTime = leaderBoardsRefreshTime;
     }
 }

@@ -29,8 +29,7 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
                     String subCommand = args[0].toLowerCase();
                     switch (subCommand) {
                         case "refresh":
-                            plugin.getLeaderboardManager().refreshAllLeaderBoards();
-                            sender.sendMessage(plugin.getSettings().getPrefix() + " §aLeaderboards refreshed !");
+                            plugin.getLeaderboardManager().refreshAllLeaderBoards(sender);
                             return true;
                         case "create":
                             if (args.length == 2) {

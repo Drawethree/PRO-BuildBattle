@@ -16,10 +16,12 @@ import me.drawe.buildbattle.managers.*;
 import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
+import me.drawe.buildbattle.objects.bbobjects.BBPlayerStatsLoader;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.FancyMessage;
 import me.drawe.buildbattle.utils.MetricsLite;
 import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
+import me.drawe.spectateapi.SpectatorManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -32,7 +34,6 @@ import java.lang.reflect.Field;
 
 @Getter
 public final class BuildBattle extends JavaPlugin implements PluginMessageListener {
-
 
     private static BuildBattle instance;
     private static BuildBattleProAPI API;
@@ -50,6 +51,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private RewardManager rewardManager;
     private SuperVoteManager superVoteManager;
     private VotingManager votingManager;
+    private SpectatorManager spectatorManager;
     private BBSettings settings;
     private WorldEditPlugin worldEdit;
     private Economy econ;
@@ -71,6 +73,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.settings = new BBSettings(this);
         this.settings.loadSettings();
 
+        if (this.settings.getStatsType() == StatsType.MYSQL) {
+            MySQL.getInstance().connect();
+        }
+
         this.checkForLoadingLater();
 
         this.arenaManager = new ArenaManager(this);
@@ -83,8 +89,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.rewardManager = new RewardManager(this);
         this.superVoteManager = new SuperVoteManager(this);
         this.votingManager = new VotingManager(this);
-
-
+        this.spectatorManager = new SpectatorManager(this);
 
         this.registerBBCommands();
         this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -94,8 +99,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.headInventory = new HeadInventory(this);
         this.hook();
 
-        if (this.settings.getStatsType() == StatsType.MYSQL) {
-            MySQL.getInstance().connect();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            BBPlayerStatsLoader.load(p);
         }
 
         Bukkit.getConsoleSender().sendMessage("");
@@ -145,8 +150,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     public void reloadPlugin() {
 
-        for (Player p : this.playerManager.getSpectators().keySet()) {
-            this.playerManager.unspectate(p);
+        for (Player p : this.spectatorManager.getSpectators().keySet()) {
+            this.spectatorManager.unspectate(p);
         }
 
         for (BBArena a : this.arenaManager.getArenas().values()) {
@@ -204,8 +209,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onDisable() {
-        for (Player p : this.playerManager.getSpectators().keySet()) {
-            this.playerManager.unspectate(p);
+        for (Player p : this.spectatorManager.getSpectators().keySet()) {
+            this.spectatorManager.unspectate(p);
         }
         for (BBArena a : this.arenaManager.getArenas().values()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);

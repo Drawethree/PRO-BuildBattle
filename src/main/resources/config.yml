@@ -2,7 +2,6 @@ prefix: "&8[&eBuildBattlePro&8]&r "
 stats:
   type: FLATFILE
   async_save_player_data: false
-  create_stats_on_server_join: true
 mysql:
   host: dbHost
   port: 3306
@@ -99,6 +98,7 @@ change_floor_npc:
   type: VILLAGER
 main_lobby:
 teleport_to_main_lobby_on_join: false
+leaderboards_refresh_time: 60
 plugin_loading:
   load_plugin_later: false
   load_after: 10

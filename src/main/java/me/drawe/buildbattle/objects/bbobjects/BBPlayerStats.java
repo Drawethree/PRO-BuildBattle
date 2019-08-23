@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -11,8 +9,8 @@ import java.util.UUID;
 
 public class BBPlayerStats {
 
-    private HashMap<BBStat, Object> stats;
     private UUID uuid;
+    private HashMap<BBStat, Object> stats;
 
     public BBPlayerStats(UUID uuid, int wins, int played, int mostPoints, int blocksPlaced, int particlesPlaced, int superVotes) {
         this.uuid = uuid;
@@ -31,20 +29,29 @@ public class BBPlayerStats {
     }
 
     public void setStat(BBStat stat, Object value) {
-        stats.put(stat, value);
+        this.stats.put(stat, value);
         if (BuildBattle.getInstance().getSettings().isAsyncSavePlayerData()) {
             BuildBattle.getInstance().getPlayerManager().savePlayerStat(this, stat);
         }
     }
 
     public Object getStat(BBStat stat) {
-        return stats.get(stat);
+        return this.stats.get(stat);
     }
 
     public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(this.uuid);
     }
+
     public UUID getUuid() {
-        return uuid;
+        return this.uuid;
+    }
+
+    @Override
+    public String toString() {
+        return "BBPlayerStats{" +
+                "uuid=" + this.uuid +
+                ", nick=" + this.getOfflinePlayer().getName() +
+                '}';
     }
 }

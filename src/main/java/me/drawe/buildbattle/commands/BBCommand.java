@@ -66,7 +66,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
         this.subCommands.put("list", new BBListSubCommand(plugin));
         this.subCommands.put("stats", new BBStatsSubCommand(plugin));
         this.subCommands.put("party", new BBPartySubCommand(plugin));
-        this.subCommands.put("spectate", new BBSpectateSubCommand(plugin));
+        //this.subCommands.put("spectate", new BBSpectateSubCommand(plugin));
     }
 
     @Override

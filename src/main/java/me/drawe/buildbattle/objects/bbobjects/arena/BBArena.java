@@ -12,6 +12,7 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.objects.bbobjects.scoreboards.BBScoreboard;
 import me.drawe.buildbattle.utils.*;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
+import me.drawe.spectateapi.Spectatable;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,7 +26,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BBArena implements Spectetable<Player> {
+public class BBArena implements Spectatable<Player> {
 
     private BuildBattle plugin;
     private String name;
@@ -54,7 +55,7 @@ public class BBArena implements Spectetable<Player> {
     private BukkitTask themeVotingCountdown;
 
     private Inventory teamsInventory;
-    private List<Player> spectators;
+
     private Inventory spectateInventory;
 
     //LOADING
@@ -78,6 +79,7 @@ public class BBArena implements Spectetable<Player> {
         this.setupTeams();
         this.setupTeamInventory();
         this.arenaEdit = new BBArenaEdit(plugin,this);
+        this.spectateInventory = Bukkit.createInventory(null, ItemUtil.getInventorySizeBasedOnList(this.players), "Spectating Arena: " + this.name);
     }
 
     //CREATING
@@ -107,6 +109,7 @@ public class BBArena implements Spectetable<Player> {
         this.setupTeamInventory();
         this.saveIntoConfig();
         this.arenaEdit = new BBArenaEdit(plugin, this);
+        this.spectateInventory = Bukkit.createInventory(null, ItemUtil.getInventorySizeBasedOnList(this.players), "Spectating Arena: " + this.name);
     }
 
     private List<BBPlot> loadArenaPlots() {
@@ -238,17 +241,20 @@ public class BBArena implements Spectetable<Player> {
         }
     }
 
-    private void refreshSpectateInventory() {
-        if (spectateInventory == null) {
-            return;
-        }
-        spectateInventory.clear();
+    @Override
+    public void refreshSpectateInventory() {
+        this.spectateInventory.clear();
         for (Player p : this.players) {
-            spectateInventory.addItem(ItemUtil.createPlayerHead(p));
+            this.spectateInventory.addItem(ItemUtil.createPlayerHead(p));
         }
     }
 
     private void joinCommands(Player p) {
+
+        if(lobbyLocation == null) {
+            p.sendMessage(Message.ARENA_NO_LOBBY.getChatMessage());
+            return;
+        }
 
         BBParty party = plugin.getPartyManager().getPlayerParty(p);
 
@@ -1054,54 +1060,22 @@ public class BBArena implements Spectetable<Player> {
     }
 
     @Override
-    public List<Player> getSpectators() {
-        return spectators;
-    }
-
-    @Override
     public void spectate(Player player) {
-        if (spectators == null) {
-            spectateInventory = Bukkit.createInventory(null, ItemUtil.getInventorySizeBasedOnList(this.players), "Spectating Arena: " + this.name);
-            for (Player p : this.players) {
-                spectateInventory.addItem(ItemUtil.createPlayerHead(p));
-            }
-            spectators = new ArrayList<>();
-        }
-
-        if (spectators.contains(player)) {
-            player.sendMessage(Message.ALREADY_SPECTATING.getChatMessage());
-            return;
-        }
-
-        player.getInventory().setItem(0, SPECTATE_ITEM);
-        player.getInventory().setItem(8, QUIT_SPECTATE_ITEM);
-        player.updateInventory();
-
         player.sendMessage(Message.SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
-        spectators.add(player);
     }
 
     @Override
     public void unspectate(Player player) {
-        if (spectators == null) {
-            return;
-        }
-
-        if (!spectators.contains(player)) {
-            player.sendMessage(Message.NOT_SPECTATING.getChatMessage());
-            return;
-        }
-
-        player.getInventory().remove(Spectetable.SPECTATE_ITEM);
-        player.getInventory().remove(Spectetable.QUIT_SPECTATE_ITEM);
-        player.updateInventory();
-
         player.sendMessage(Message.NO_LONGER_SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
-        spectators.remove(player);
     }
 
     @Override
     public Inventory getSpectateInventory() {
         return spectateInventory;
+    }
+
+    @Override
+    public List<Player> getPlayersToSpectate() {
+        return players;
     }
 }
