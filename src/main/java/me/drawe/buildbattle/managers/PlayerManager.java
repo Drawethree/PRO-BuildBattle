@@ -394,7 +394,7 @@ public class PlayerManager {
     public Double getPlayerStat(BBStat stat, Player player) {
 
         if (this.getPlayerStats(player) != null) {
-            return (Double) this.getPlayerStats(player).getStat(stat);
+            return ((Integer) this.getPlayerStats(player).getStat(stat)) + 0.0;
         }
 
         switch (this.plugin.getSettings().getStatsType()) {

@@ -252,6 +252,7 @@ public enum Message {
     FIRST_LEAVE_ARENA("messages.first_leave_arena_to_spectate"),
     NO_LONGER_SPECTATING_ARENA("messages.no_longer_spectating"),
     NOT_SPECTATING("messages.not_spectating"),
+    BLOCK_RESTRICTED("messages.block_restricted"),
     ARENA_NO_LOBBY("messages.arena_no_lobby");
 
     private String message;

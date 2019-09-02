@@ -276,7 +276,7 @@ public class ArenaManager {
     private void loadAllArenasInventory() {
         this.allArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(arenas.values().size()), Message.GUI_ARENA_LIST_TITLE.getMessage());
         this.teamArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.TEAM)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
-        this.soloArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_TEAM_TITLE.getMessage());
+        this.soloArenasInventory = Bukkit.createInventory(null, InventoryUtil.getInventorySize(getArenasAmount(BBGameMode.SOLO)), Message.GUI_ARENA_LIST_SOLO_TITLE.getMessage());
 
         for (BBArena a : this.arenas.values()) {
             if (a.getGameType() == BBGameMode.SOLO) {

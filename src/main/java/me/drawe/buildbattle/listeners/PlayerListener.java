@@ -671,6 +671,13 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     break;
                 case INGAME:
+
+                    if(this.plugin.getSettings().getRestricedBlocks().contains(e.getBlock().getType())) {
+                        p.sendMessage(Message.BLOCK_RESTRICTED.getChatMessage());
+                        e.setCancelled(true);
+                        return;
+                    }
+
                     BBPlot plot = this.plugin.getArenaManager().getPlayerPlot(arena, p);
                     if (plot != null && plot.isLocationInPlot(loc)) {
                         if (this.plugin.getSettings().isAutomaticGrow() && (e.getBlock().getType() == CompMaterial.WHEAT_SEEDS.getMaterial() || e.getBlock().getType() == CompMaterial.MELON_STEM.getMaterial() || e.getBlock().getType() == CompMaterial.PUMPKIN_STEM.getMaterial())) {

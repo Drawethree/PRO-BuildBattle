@@ -16,6 +16,7 @@ import me.drawe.buildbattle.utils.StringUtils;
 import me.drawe.buildbattle.utils.compatbridge.model.CompDye;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -134,8 +135,8 @@ public class OptionsManager {
     private void loadColorsInventory() {
         this.colorsInventory = Bukkit.createInventory(null, 6 * 9, Message.GUI_COLORS_TITLE.getMessage());
         int slot = 10;
-        for (int i = 0; i < 16; i++) {
-            BBDyeColor dyeColor = BBDyeColor.getById(i);
+        for (DyeColor color : DyeColor.values()) {
+            BBDyeColor dyeColor = BBDyeColor.getByColor(color);
             this.colorsInventory.setItem(slot, dyeColor.getItem());
             if (slot == 16 || slot == 25 || slot == 34) {
                 slot += 3;

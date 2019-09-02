@@ -90,10 +90,8 @@ arena:
   allowed_commands:
    - bb
    - buildbattle
-  restriced_blocks:
-    - 7
-    - 10
-    - 11
+  restricted_blocks:
+    - BEDROCK
 change_floor_npc:
   type: VILLAGER
 main_lobby:

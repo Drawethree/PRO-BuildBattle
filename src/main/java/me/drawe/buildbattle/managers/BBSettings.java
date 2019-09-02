@@ -5,10 +5,7 @@ import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -22,7 +19,7 @@ public class BBSettings {
     private List<String> soloThemes;
     private List<String> teamThemes;
     private List<String> restricedThemes;
-    private List<String> restricedBlocks;
+    private List<Material> restricedBlocks;
     private List<String> fallbackServers;
     private List<String> allowedCommands;
     private CompMaterial defaultFloorMaterial;
@@ -634,7 +631,20 @@ public class BBSettings {
 
     private void loadRestrictedBlocks() {
         try {
-            this.restricedBlocks = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.restriced_blocks");
+            this.restricedBlocks = new ArrayList<>();
+            List<String> strings = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.restriced_blocks");
+
+            for(String s : strings) {
+                CompMaterial mat = CompMaterial.fromString(s);
+
+                if(mat == null)  {
+                    this.plugin.warning("§cMaterial " + s + " is not a valid material for your server version ! Use materials from here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
+                    continue;
+                }
+
+                this.restricedBlocks.add(mat.toMaterial());
+            }
+
             this.plugin.info("§aRestricted blocks loaded !");
         } catch (Exception e) {
             this.plugin.severe("§cAn exception occurred while trying loading restriced blocks from config !");
@@ -671,6 +681,7 @@ public class BBSettings {
             setLoadAfter(this.plugin.getFileManager().getConfig("config.yml").get().getInt("plugin_loading.load_after"));
             setLobbyTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.lobbyTime"));
             setDefaultGameTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.defaultGameTime"));
+            setDefaultFloorMaterial(CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
             setVotingTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.votingTime"));
             setThemeVotingTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themeVotingTime"));
             setEndTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.endTime"));

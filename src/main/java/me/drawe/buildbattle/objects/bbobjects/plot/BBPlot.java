@@ -8,6 +8,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawe.buildbattle.objects.bbobjects.BBStat;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
+import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
 import org.bukkit.Chunk;
@@ -211,7 +212,11 @@ public class BBPlot implements Comparable<BBPlot> {
 
         for (int x = minX; x <= maxX; x += 1) {
             for (int z = minZ; z <= maxZ; z += 1) {
-                CompatBridge.setTypeAndData(new Location(getWorld(), x, minY, z).getBlock(), material, (byte) material.getData());
+                if(MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
+                   new Location(getWorld(), x,minY , z).getBlock().setType(material.getMaterial());
+                } else {
+                    CompatBridge.setTypeAndData(new Location(getWorld(), x, minY, z).getBlock(), material, (byte) material.getData());
+                }
             }
         }
     }

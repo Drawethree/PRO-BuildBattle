@@ -19,10 +19,14 @@ public class BuildBattleProPlaceholders extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer p, String params) {
 
-        BBPlayerStats stats = plugin.getPlayerManager().getPlayerStats(p);
-
         if (p == null) {
             return "";
+        }
+
+        BBPlayerStats stats = plugin.getPlayerManager().getPlayerStats(p);
+
+        if (stats == null) {
+            return "Loading...";
         }
 
         if (params.contains("status")) {

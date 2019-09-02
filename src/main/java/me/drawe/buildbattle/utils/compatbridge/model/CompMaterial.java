@@ -135,7 +135,7 @@ public enum CompMaterial {
     BUBBLE_CORAL_FAN("STONE"),
     BUCKET("BUCKET"),
     CACTUS("CACTUS"),
-    CACTUS_GREEN("GREEN_DYE", "INK_SACK", 2),
+    CACTUS_GREEN("INK_SACK", "GREEN_DYE", 2),
     CAKE("CAKE"),
     CARROT("CARROT"),
     CARROTS("CARROT"),
@@ -294,6 +294,8 @@ public enum CompMaterial {
     END_ROD("END_ROD"),
     END_STONE("ENDER_STONE"),
     END_STONE_BRICKS("END_BRICKS"),
+    END_STONE_BRICK_SLAB("STONE"),
+    END_STONE_BRICK_STAIRS("STONE"),
     EVOKER_SPAWN_EGG("MONSTER_EGG"),
     EXPERIENCE_BOTTLE("EXP_BOTTLE"),
     FARMLAND("SOIL"),
@@ -510,6 +512,8 @@ public enum CompMaterial {
     MOOSHROOM_SPAWN_EGG("MONSTER_EGG", 96),
     MOSSY_COBBLESTONE("MOSSY_COBBLESTONE"),
     MOSSY_COBBLESTONE_WALL("COBBLE_WALL", 1),
+    MOSSY_COBBLESTONE_SLAB("STONE"),
+    MOSSY_COBBLESTONE_STAIRS("STONE"),
     MOSSY_STONE_BRICKS("SMOOTH_BRICK", 1),
     MOVING_PISTON("PISTON_MOVING_PIECE"),
     MULE_SPAWN_EGG("MONSTER_EGG"),
@@ -606,8 +610,13 @@ public enum CompMaterial {
     POISONOUS_POTATO("POISONOUS_POTATO"),
     POLAR_BEAR_SPAWN_EGG("MONSTER_EGG", 102),
     POLISHED_ANDESITE("STONE", 6),
+    POLISHED_ANDESITE_STAIRS("STONE"),
+    POLISHED_ANDESITE_SLAB("STONE"),
+
     POLISHED_DIORITE("STONE", 4),
     POLISHED_GRANITE("STONE", 2),
+    POLISHED_GRANITE_STAIRS("STONE"),
+    POLISHED_GRANITE_SLAB("STONE"),
     POPPED_CHORUS_FRUIT("CHORUS_FRUIT_POPPED"),
     POPPY("RED_ROSE"),
     PORKCHOP("PORK"),
@@ -739,9 +748,16 @@ public enum CompMaterial {
     SLIME_BLOCK("SLIME_BLOCK"),
     SLIME_SPAWN_EGG("MONSTER_EGG", 55),
     SMOOTH_QUARTZ("STONE"),
+    SMOOTH_QUARTZ_STAIRS("STONE"),
+    SMOOTH_QUARTZ_SLAB("STONE"),
     SMOOTH_RED_SANDSTONE("RED_SANDSTONE", 2),
+    SMOOTH_RED_SANDSTONE_SLAB("STONE"),
+    SMOOTH_RED_SANDSTONE_STAIRS("STONE"),
     SMOOTH_SANDSTONE("SANDSTONE", 2),
-    SMOOTH_STONE("STEP"),
+    SMOOTH_SANDSTONE_STAIRS("STONE"),
+    SMOOTH_SANDSTONE_SLAB("STONE"),
+    SMOOTH_STONE("STONE"),
+    SMOOTH_STONE_SLAB("STONE"),
     SNOW("SNOW"),
     SNOWBALL("SNOW_BALL"),
     SNOW_BLOCK("SNOW_BLOCK"),
@@ -922,7 +938,7 @@ public enum CompMaterial {
     BLUE_DYE("LIGHT_BLUE_DYE", "INK_SACK", 12),
     BRICK_WALL("COBBLESTONE_WALL"),
     BROWN_DYE("GRAY_DYE", "INK_SACK", 8),
-    GREEN_DYE("INK_SACK", "CACTUS_GREEN", 2),
+    GREEN_DYE("CACTUS_GREEN", "INK_SACK", 2),
     CAMPFIRE("FIRE"),
     CARTOGRAPHY_TABLE("MAP"),
     CAT_SPAWN_EGG("OCELOT_SPAWN_EGG", "MONSTER_EGG", 98),
@@ -935,9 +951,21 @@ public enum CompMaterial {
     DIORITE_SLAB("STEP", "STONE_SLAB", 0),
     DIORITE_STAIRS("COBBLESTONE_STAIRS", 0),
     DIORITE_WALL("COBBLESTONE_WALL"),
-
-    ;
-
+    MOSSY_STONE_BRICK_STAIRS("STONE"),
+    MOSSY_STONE_BRICK_SLAB("STONE"),
+    POLISHED_DIORITE_STAIRS("STONE"),
+    POLISHED_DIORITE_SLAB("STONE"),
+    STONE_STAIRS("STONE"),
+    GRANITE_STAIRS("STONE"),
+    RED_NETHER_BRICK_STAIRS("STONE"),
+    RED_NETHER_BRICK_SLAB("STONE"),
+    GRANITE_SLAB("STONE"),
+    RED_DYE("ROSE_RED", "INK_SAC", 1),
+    SUSPICIOUS_STEW("MUSHROOM_SOUP"),
+    SWEET_BERRIES("SWEET_BERRIES"),
+    LEATHER_HORSE_ARMOR("IRON_BARDING", "IRON_HORSE_ARMOR", 0),
+    RAVAGER_SPAWN_EGG("MONSTER_EGG", "SHEEP_SPAWN_EGG", 0),
+    PILLAGER_SPAWN_EGG("MONSTER_EGG", "SHEEP_SPAWN_EGG", 0);
     // Holds history of last called translated names, for performance.
     private static HashMap<String, CompMaterial> cachedSearch = new HashMap<>();
 
@@ -1062,7 +1090,6 @@ public enum CompMaterial {
      */
     public final ItemStack toItem(int amount) {
         final Material mat = toMaterial();
-
         return MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);
     }
 
@@ -1072,10 +1099,14 @@ public enum CompMaterial {
      * @return the material
      */
     public final Material toMaterial() {
-        final Material mat = Material.matchMaterial(toString());
+        Material mat = Material.matchMaterial(toString());
 
-        return mat != null ? mat : Material.matchMaterial(legacyName);
+        mat = mat != null ? mat : Material.matchMaterial(legacyName);
+        mat = mat != null ? mat : Material.matchMaterial(alternativeName);
+
+        return mat;
     }
+
 
     /**
      * Return true if the {@link #getMaterial()} and the given Material matches.
@@ -1108,15 +1139,6 @@ public enum CompMaterial {
             return true;
 
         return false;
-    }
-
-    /**
-     * Returns true for damageable materials.
-     *
-     * @return
-     */
-    public final boolean isDamageable() {
-        return isDamageable(this);
     }
 
     /**

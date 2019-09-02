@@ -53,14 +53,14 @@ public enum CompDye {
 
         try {
             color = DyeColor.valueOf(name());
-
         } catch (final IllegalArgumentException ex) {
-            if (name == null) throw new RuntimeException("Missing legacy name for DyeColor." + name());
-
+            if (name == null)
+                throw new RuntimeException("Missing legacy name for DyeColor." + name());
             color = DyeColor.valueOf(name);
         }
 
-        if (color == null) throw new RuntimeException("Failed to resolve DyeColor." + name());
+        if (color == null)
+            throw new RuntimeException("Failed to resolve DyeColor." + name());
         this.dye = color;
     }
 

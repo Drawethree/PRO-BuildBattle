@@ -1,5 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
+import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.api.events.game.BBGameEndEvent;
 import me.drawe.buildbattle.api.events.game.BBGameStartEvent;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BBArena implements Spectatable<Player> {
 
+    @Getter
     private BuildBattle plugin;
     private String name;
     private int minPlayers;

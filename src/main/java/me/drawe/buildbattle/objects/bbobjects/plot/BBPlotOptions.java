@@ -1,7 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects.plot;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.utils.ItemUtil;
@@ -36,6 +35,12 @@ public class BBPlotOptions {
     }
 
     public void setCurrentFloorItem(Player changer, ItemStack currentFloorItem) {
+
+        if(this.plot.getArena().getPlugin().getSettings().getRestricedBlocks().contains(currentFloorItem.getType())) {
+            changer.sendMessage(Message.BLOCK_RESTRICTED.getChatMessage());
+            return;
+        }
+
         if (currentFloorItem.getType().isBlock() || currentFloorItem.getType() == CompMaterial.LAVA_BUCKET.getMaterial() || currentFloorItem.getType() == CompMaterial.WATER_BUCKET.getMaterial()) {
             if (!isItemValidForChange(currentFloorItem)) {
                 if(changer != null) {
@@ -46,7 +51,7 @@ public class BBPlotOptions {
 
             this.currentFloorMaterial = CompMaterial.fromItem(currentFloorItem);
             this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
-            plot.changeFloor(currentFloorItem);
+            plot.changeFloor(currentFloorMaterial);
             if(changer != null) {
                 changer.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
                 changer.playSound(changer.getLocation(), CompSound.NOTE_PLING.getSound(), 1, 2.0F);

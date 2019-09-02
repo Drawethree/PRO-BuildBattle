@@ -120,6 +120,7 @@ messages:
   no_longer_spectating: "&aYou left the spectator mode."
   not_spectating: "&cYou are not spectating this arena!"
   arena_no_lobby: "&cThis arena does not have lobby set up!"
+  block_restricted: "&cThis block is forbidden!"
 ordinals:
   st: "st"
   nd: "nd"

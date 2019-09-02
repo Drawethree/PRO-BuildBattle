@@ -38,7 +38,7 @@ public class Category {
         List<ItemStack> heads = new ArrayList<>();
         try {
             String categoryName = this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
-            CompMaterial material = CompMaterial.fromString(this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
+            CompMaterial material = CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
             this.icon = ItemStackCreator.createItem(material, 1, "&e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();

@@ -183,28 +183,29 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void loadAllConfigs() {
-        fileManager.getConfig("config.yml").copyDefaults(true).save();
-        fileManager.getConfig("arenas.yml").copyDefaults(true).save();
-        fileManager.getConfig("heads.yml").copyDefaults(true).save();
-        fileManager.getConfig("leaderboards.yml").copyDefaults(true).save();
-        fileManager.getConfig("translates.yml").copyDefaults(true).save();
-        fileManager.getConfig("signs.yml").copyDefaults(true).save();
-        fileManager.getConfig("stats.yml").copyDefaults(true).save();
-        fileManager.getConfig("themes.yml").copyDefaults(true).save();
-        fileManager.getConfig("reports.yml").copyDefaults(true).save();
-        removeUnusedPathsFromConfigs();
+        this.fileManager.getConfig("config.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("arenas.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("heads.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("leaderboards.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("translates.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("signs.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("stats.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("themes.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("reports.yml").copyDefaults(true).save();
+
+        this.removeUnusedPathsFromConfigs();
     }
 
     public void saveAllConfigs() {
-        fileManager.getConfigs().values().forEach(c -> c.save());
+        this.fileManager.getConfigs().values().forEach(c -> c.save());
     }
 
     public void reloadAllConfigs() {
-        fileManager.getConfigs().values().forEach(c -> c.reload());
+        this.fileManager.getConfigs().values().forEach(c -> c.reload());
     }
 
     private void removeUnusedPathsFromConfigs() {
-        fileManager.getConfig("config.yml").set("arena.themes", null).set("arena.blacklisted_themes", null).set("arena.enable_clear_plot_option", null).set("arena.end_command", null).save();
+        this.fileManager.getConfig("config.yml").set("arena.restriced_blocks", null).set("arena.themes", null).set("arena.blacklisted_themes", null).set("arena.enable_clear_plot_option", null).set("arena.end_command", null).save();
     }
 
     @Override
