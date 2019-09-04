@@ -14,7 +14,7 @@ public class BBSpectateSubCommand extends BBSubCommand {
     private BuildBattle plugin;
 
     public BBSpectateSubCommand(BuildBattle plugin) {
-        super("spectate", "spectate <arena> §8» §7Spectate an arena", "buildbattlepro.spectate", false);
+        super("spectate", " spectate <arena> §8» §7Spectate an arena", "buildbattlepro.spectate", false);
         this.plugin = plugin;
     }
 
