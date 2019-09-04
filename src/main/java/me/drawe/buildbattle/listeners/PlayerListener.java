@@ -586,10 +586,11 @@ public class PlayerListener implements Listener {
     public void onQuit(final PlayerQuitEvent e) {
         final Player p = e.getPlayer();
         final BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
+
         if (a != null) {
             a.removePlayer(p);
         }
-        this.plugin.getSpectatorManager().unspectate(p);
+
         this.plugin.getPlayerManager().unloadPlayerData(p);
     }
 
