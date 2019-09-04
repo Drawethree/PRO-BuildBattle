@@ -243,14 +243,6 @@ public class BBArena implements Spectatable<Player> {
         }
     }
 
-    @Override
-    public void refreshSpectateInventory() {
-        this.spectateInventory.clear();
-        for (Player p : this.players) {
-            this.spectateInventory.addItem(ItemUtil.createPlayerHead(p));
-        }
-    }
-
     private void joinCommands(Player p) {
 
         if(lobbyLocation == null) {
