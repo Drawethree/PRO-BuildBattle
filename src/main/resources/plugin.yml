@@ -1,5 +1,5 @@
 name: BuildBattlePro
-version: 6.0.4
+version: 6.1.0
 main: me.drawe.buildbattle.BuildBattle
 load: POSTWORLD
 api-version: 1.13
@@ -47,13 +47,16 @@ permissions:
     description: Allows you to reload plugin
     default: op
     children:
+      buildbattlepro.particle.*: true
       buildbattlepro.start: true
       buildbattlepro.stop: true
       buildbattlepro.create: true
       buildbattlepro.bypass: true
       buildbattlepro.party: true
+      buildbattlepro.party.size.*: true
       buildbattlepro.joinfull: true
       buildbattlepro.manage.reports: true
+      buildbattlepro.settheme: true
   buildbattlepro.joinfull:
     description: Join full arena
     default: op
@@ -85,6 +88,7 @@ permissions:
       buildbattlepro.changeweather: true
       buildbattlepro.changetime: true
       buildbattlepro.changebiome: true
+      buildbattlepro.spectate: true
       buildbattlepro.party: false
       buildbattlepro.joinfull: false
   buildbattlepro.changebiome:
@@ -102,6 +106,9 @@ permissions:
   buildbattlepro.manage.reports:
     description: Manage reports permission
     default: op
+  buildbattlepro.spectate:
+    description: Allows to join specator mode
+    default: true
 
 
 
