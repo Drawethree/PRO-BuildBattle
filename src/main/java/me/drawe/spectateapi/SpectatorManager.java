@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,10 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,7 +28,7 @@ public class SpectatorManager implements Listener {
     private final JavaPlugin plugin;
     @Getter
     private final HashMap<Player, Spectatable> spectators;
-    private final HashMap<Player, PlayerData> playerData;
+    private final HashMap<Player, SpectatePlayerData> playerData;
 
     public SpectatorManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -39,16 +37,13 @@ public class SpectatorManager implements Listener {
         this.playerData = new HashMap<>();
     }
 
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player)) {
             return;
         }
         Player p = (Player) e.getEntity();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -59,17 +54,13 @@ public class SpectatorManager implements Listener {
         }
 
         Player p = (Player) e.getDamager();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPickup(PlayerPickupItemEvent e) {
         Player p = e.getPlayer();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -79,33 +70,25 @@ public class SpectatorManager implements Listener {
         }
 
         Player p = (Player) e.getEntity();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent e) {
         Player p = e.getPlayer();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDropItem(PlayerDropItemEvent e) {
         Player p = e.getPlayer();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -121,6 +104,13 @@ public class SpectatorManager implements Listener {
         }
     }
 
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        if(this.spectators.containsKey(e.getPlayer())) {
+            this.unspectate(e.getPlayer());
+        }
+    }
+
     private void openSpectateInventory(Player p) {
         p.openInventory(this.spectators.get(p).getSpectateInventory());
     }
@@ -128,18 +118,29 @@ public class SpectatorManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (this.spectators.containsKey(p) && e.getCurrentItem() != null && e.getCurrentItem().getType() == CompMaterial.PLAYER_HEAD.getMaterial()) {
+        if (this.spectators.containsKey(p)) {
             e.setCancelled(true);
-            p.teleport(Bukkit.getPlayer(e.getCurrentItem().getItemMeta().getDisplayName()).getLocation());
+            if (e.getCurrentItem() != null && e.getCurrentItem().getType() == CompMaterial.PLAYER_HEAD.getMaterial()) {
+                p.teleport(Bukkit.getPlayer(e.getCurrentItem().getItemMeta().getDisplayName()).getLocation());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent e) {
+        Player p = e.getPlayer();
+
+        if(this.spectators.containsKey(p)) {
+
+            this.runPlayerSpectateCommands(p);
+
         }
     }
 
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
-        if (this.spectators.containsKey(p)) {
-            e.setCancelled(true);
-        }
+        this.handleEvent(e, p);
     }
 
 
@@ -156,12 +157,22 @@ public class SpectatorManager implements Listener {
             return;
         }
 
-        this.playerData.put(p, new PlayerData(p));
+        this.playerData.put(p, new SpectatePlayerData(p));
 
+        this.runPlayerSpectateCommands(p);
+
+        this.spectators.put(p, target);
+
+        target.spectate(p);
+    }
+
+    private void runPlayerSpectateCommands(Player p) {
         p.getInventory().clear();
         p.setGameMode(GameMode.ADVENTURE);
+
         p.setAllowFlight(true);
         p.setFlying(true);
+
         p.setHealth(p.getMaxHealth());
         p.setFoodLevel(20);
 
@@ -169,13 +180,10 @@ public class SpectatorManager implements Listener {
 
         p.getInventory().setItem(0, Spectatable.SPECTATE_ITEM);
         p.getInventory().setItem(8, Spectatable.QUIT_SPECTATE_ITEM);
-
-        this.spectators.put(p, target);
-
-        target.spectate(p);
     }
 
     public void unspectate(Player p) {
+
         if (!spectators.containsKey(p)) {
             return;
         }
@@ -208,7 +216,14 @@ public class SpectatorManager implements Listener {
         }
     }
 
-    private class PlayerData {
+    private void handleEvent(Cancellable event, Player p) {
+        if(this.spectators.containsKey(p)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Getter
+    private class SpectatePlayerData {
 
         private Location location;
         private UUID uuid;
@@ -219,7 +234,7 @@ public class SpectatorManager implements Listener {
         private float exp;
         private boolean allowFlight;
 
-        public PlayerData(Player p) {
+        public SpectatePlayerData(Player p) {
             this.contents = p.getInventory().getContents();
             this.armor = p.getInventory().getArmorContents();
             this.location = p.getLocation();
@@ -230,57 +245,25 @@ public class SpectatorManager implements Listener {
             this.allowFlight = p.getAllowFlight();
         }
 
-        public Location getLocation() {
-            return location;
-        }
-
-        public GameMode getGamemode() {
-            return gameMode;
-        }
-
-        public ItemStack[] getContents() {
-            return contents;
-        }
-
-        public ItemStack[] getArmor() {
-            return armor;
-        }
-
-        public UUID getUuid() {
-            return uuid;
-        }
-
         public Player getPlayer() {
-            return Bukkit.getPlayer(uuid);
+            return Bukkit.getPlayer(this.uuid);
         }
 
         public void restorePlayerData() {
-            getPlayer().getInventory().clear();
-            getPlayer().resetPlayerWeather();
-            getPlayer().resetPlayerTime();
-            getPlayer().getActivePotionEffects().forEach(e -> getPlayer().removePotionEffect(e.getType()));
-            getPlayer().setMaxHealth(20);
-            getPlayer().setHealth(getPlayer().getMaxHealth());
-            getPlayer().setFoodLevel(20);
-            getPlayer().getInventory().setArmorContents(armor);
-            getPlayer().getInventory().setContents(contents);
-            getPlayer().setGameMode(gameMode);
-            getPlayer().setLevel(level);
-            getPlayer().setExp(exp);
-            getPlayer().setAllowFlight(allowFlight);
-            getPlayer().teleport(location);
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public float getExp() {
-            return exp;
-        }
-
-        public boolean isAllowFlight() {
-            return allowFlight;
+            this.getPlayer().getInventory().clear();
+            this.getPlayer().resetPlayerWeather();
+            this.getPlayer().resetPlayerTime();
+            this.getPlayer().getActivePotionEffects().forEach(e -> getPlayer().removePotionEffect(e.getType()));
+            this.getPlayer().setMaxHealth(20);
+            this.getPlayer().setHealth(getPlayer().getMaxHealth());
+            this.getPlayer().setFoodLevel(20);
+            this.getPlayer().getInventory().setArmorContents(this.armor);
+            this.getPlayer().getInventory().setContents(this.contents);
+            this.getPlayer().setGameMode(this.gameMode);
+            this.getPlayer().setLevel(this.level);
+            this.getPlayer().setExp(this.exp);
+            this.getPlayer().setAllowFlight(this.allowFlight);
+            this.getPlayer().teleport(this.location);
         }
     }
 
