@@ -40,6 +40,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
         this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
 
         this.subCommands = new TreeMap<>();
+        //Admin commands
         this.subCommands.put("create", new BBCreateSubCommand(plugin));
         this.subCommands.put("delete", new BBDeleteSubCommand(plugin));
         this.subCommands.put("setlobby", new BBSetLobbySubCommand(plugin));
@@ -63,10 +64,10 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
         //Player commands
         this.subCommands.put("join", new BBJoinSubCommand(plugin));
         this.subCommands.put("leave", new BBLeaveSubCommand(plugin));
+        this.subCommands.put("spectate", new BBSpectateSubCommand(plugin));
         this.subCommands.put("list", new BBListSubCommand(plugin));
         this.subCommands.put("stats", new BBStatsSubCommand(plugin));
         this.subCommands.put("party", new BBPartySubCommand(plugin));
-        //this.subCommands.put("spectate", new BBSpectateSubCommand(plugin));
     }
 
     @Override
@@ -105,6 +106,7 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
 
     private void sendCommands(CommandSender p, boolean adminOnly, String title) {
         FancyMessage.sendCenteredMessage(p, title);
+        FancyMessage.sendCenteredMessage(p, "§b[] §8- §7Optional argument §b<> §8- §7Required argument");
         for (BBSubCommand subCommand : this.subCommands.values()) {
             if (subCommand.isAdminCommand() == adminOnly) {
                 p.sendMessage("§e/" + getName() + subCommand.getDescription());
