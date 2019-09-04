@@ -15,9 +15,17 @@ public interface Spectatable<E extends Player> {
     ItemStack SPECTATE_ITEM = ItemUtil.create(CompMaterial.COMPASS, 1, "&eSpectate", Arrays.asList(new String[]{"§7Click to open up spectate inventory"}), null, null);
 
     Inventory getSpectateInventory();
+
     List<E> getPlayersToSpectate();
 
-    void refreshSpectateInventory();
+    default void refreshSpectateInventory() {
+        this.getSpectateInventory().clear();
+        for (Player p : this.getPlayersToSpectate()) {
+            this.getSpectateInventory().addItem(ItemUtil.createPlayerHead(p));
+        }
+    }
+
     void spectate(E e);
+
     void unspectate(E e);
 }
