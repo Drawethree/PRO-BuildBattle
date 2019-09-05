@@ -175,6 +175,14 @@ public class ArenaManager {
         return null;
     }
 
+    public BBArena getArenaToAutoSpectate() {
+        for(BBArena a : this.arenas.values()) {
+            if (a.getBBArenaState() != BBArenaState.LOBBY && a.getBBArenaState() != BBArenaState.ENDING) {
+                return a;
+            }
+        }
+        return null;
+    }
     public BBArena getArenaToAutoJoin(BBGameMode gamemode) {
         if (gamemode == null) {
             for (BBArena a : this.arenas.values()) {
