@@ -192,6 +192,10 @@ public class BBArena implements Spectatable<Player> {
                 }
             }
         } else {
+            if (this.plugin.getSettings().isAutoJoinSpectate()) {
+                this.plugin.getSpectatorManager().spectate(p, this);
+                return;
+            }
             p.sendMessage(Message.ARENA_ALREADY_STARTED.getChatMessage());
         }
     }
@@ -1055,6 +1059,7 @@ public class BBArena implements Spectatable<Player> {
 
     @Override
     public void spectate(Player player) {
+        player.teleport(this.lobbyLocation);
         player.sendMessage(Message.SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
     }
 
