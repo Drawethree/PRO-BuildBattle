@@ -68,6 +68,7 @@ public class BBSettings {
     private boolean lockServerOnGameStart;
     private boolean replaceBlockBehindSigns;
     private boolean fairVote;
+    private boolean autoJoinSpectate;
     private boolean giveRewardsAfterGameEnds;
     private boolean winFireworksEnabled;
     //PLOT OPTIONS
@@ -159,6 +160,7 @@ public class BBSettings {
         enableChangeFloorOption = true;
         enableTimeOption = true;
         autoRestarting = false;
+        autoJoinSpectate = true;
         autoRestartGamesRequired = -1;
         autoRestartCommand = "NONE";
         floorChangeNPCtype = EntityType.VILLAGER;
@@ -286,6 +288,10 @@ public class BBSettings {
         }
     }
 
+
+    public void setAutoJoinSpectate(boolean autoJoinSpectate) {
+        this.autoJoinSpectate = autoJoinSpectate;
+    }
 
     private void setScoreboardEnabled(boolean scoreboardEnabled) {
         this.scoreboardEnabled = scoreboardEnabled;
@@ -693,6 +699,7 @@ public class BBSettings {
             setEndCommands(this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.end_command"));
             setArenaChat(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
             setTeamChat(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.team_chat"));
+            setAutoJoinSpectate(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.auto_join_spectate"));
             setFairVote(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.fair_vote.enabled"));
             setRestrictPlayerMovement(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_player_movement"));
             setRestrictOnlyPlayerYMovement(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_only_player_Y_movement"));
