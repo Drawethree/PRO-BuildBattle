@@ -237,6 +237,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+
     }
 
     public boolean setupEconomy() {
