@@ -56,6 +56,7 @@ arena:
   default_floor: "WOOD:2"
   arena_chat: true
   team_chat: true
+  auto_join_spectate: true
   announce_new_most_points: true
   replace_block_behind_signs: true
   show_game_scoreboard: true
