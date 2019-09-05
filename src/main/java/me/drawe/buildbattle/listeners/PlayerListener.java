@@ -71,12 +71,21 @@ public class PlayerListener implements Listener {
 
         if (this.plugin.getSettings().isUseBungeecord() && this.plugin.getSettings().isAutoJoinPlayers()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                final BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
+                BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
                 if (arena != null) {
                     arena.addPlayer(p);
                 } else {
+                    if(this.plugin.getSettings().isAutoJoinSpectate()) {
+                        arena = this.plugin.getArenaManager().getArenaToAutoSpectate();
+                        if(arena != null) {
+                            this.plugin.getSpectatorManager().spectate(p, arena);
+                            return;
+                        }
+                    }
+
                     p.sendMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                     BungeeUtils.connectPlayerToServer(p, this.plugin.getSettings().getRandomFallbackServer());
+
                 }
             }, 1L);
         } else if (this.plugin.getSettings().getMainLobbyLocation() != null && this.plugin.getSettings().isTeleportToMainLobbyOnJoin()) {
