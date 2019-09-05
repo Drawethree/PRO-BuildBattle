@@ -192,7 +192,7 @@ public class BBArena implements Spectatable<Player> {
                 }
             }
         } else {
-            if (this.plugin.getSettings().isAutoJoinSpectate()) {
+            if (this.plugin.getSettings().isAutoJoinSpectate() && this.bbArenaState != BBArenaState.ENDING) {
                 this.plugin.getSpectatorManager().spectate(p, this);
                 return;
             }
