@@ -281,6 +281,17 @@ public enum Message {
         return message;
     }
 
+    public String getMessage(String[] placeholders, Object... replacement) {
+        String retMessage = this.message;
+        if(placeholders.length != replacement.length) {
+            throw new RuntimeException("Placeholders length is not as same as replacements!");
+        }
+        for(int i = 0; i < placeholders.length; i++) {
+            retMessage = retMessage.replaceAll(placeholders[i], String.valueOf(replacement[i]));
+        }
+        return retMessage;
+    }
+
     private String getPath() {
         return path;
     }
