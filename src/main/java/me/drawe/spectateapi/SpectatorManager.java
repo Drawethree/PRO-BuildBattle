@@ -1,6 +1,8 @@
 package me.drawe.spectateapi;
 
 import lombok.Getter;
+import me.drawe.buildbattle.BuildBattle;
+import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,19 +20,18 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class SpectatorManager implements Listener {
 
-    private final JavaPlugin plugin;
+    private final BuildBattle plugin;
     @Getter
     private final HashMap<Player, Spectatable> spectators;
     private final HashMap<Player, SpectatePlayerData> playerData;
 
-    public SpectatorManager(JavaPlugin plugin) {
+    public SpectatorManager(BuildBattle plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.spectators = new HashMap<>();
@@ -197,6 +198,10 @@ public class SpectatorManager implements Listener {
 
         SpectateQuitEvent event = new SpectateQuitEvent(p, spectatable);
         Bukkit.getPluginManager().callEvent(event);
+
+        if(this.plugin.getSettings().isUseBungeecord()) {
+            BungeeUtils.connectPlayerToServer(p, this.plugin.getSettings().getRandomFallbackServer());
+        }
 
     }
 
