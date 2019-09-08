@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.2.0</version>
+    <version>6.2.1</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -142,10 +142,28 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>LeaderHeads</groupId>
+            <artifactId>LeaderHeads</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/LeaderHeadsAPI.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>PointsAPI</groupId>
+            <artifactId>PointsAPI</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PointsAPI.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>WorldEdit</groupId>
+            <artifactId>WorldEdit</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/worldedit-bukkit-6.1.9.jar</systemPath>
+        </dependency>
+
+
+
     </dependencies>
 </project>
