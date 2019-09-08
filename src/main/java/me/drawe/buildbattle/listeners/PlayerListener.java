@@ -55,10 +55,17 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPreJoin(final AsyncPlayerPreLoginEvent e) {
         if (this.plugin.getSettings().isUseBungeecord() && this.plugin.getSettings().isAutoJoinPlayers()) {
-            final BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
+            BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
             if (arena == null) {
-                e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-                e.setKickMessage(Message.NO_EMPTY_ARENA.getChatMessage());
+
+                if(this.plugin.getSettings().isAutoJoinSpectate()) {
+                    arena = this.plugin.getArenaManager().getArenaToAutoSpectate();
+                }
+
+                if(arena == null) {
+                    e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
+                    e.setKickMessage(Message.NO_EMPTY_ARENA.getChatMessage());
+                }
             }
         }
     }
@@ -633,8 +640,9 @@ public class PlayerListener implements Listener {
     }
 
 
-    @EventHandler
+    /*@EventHandler
     public void onMove(final PlayerMoveEvent e) {
+        System.out.println("Firing event");
         if (this.plugin.getSettings().isRestrictPlayerMovement() || this.plugin.getSettings().isRestrictOnlyPlayerYMovement()) {
             final Player p = e.getPlayer();
             final BBArena arena = this.plugin.getPlayerManager().getPlayerArena(p);
@@ -655,7 +663,7 @@ public class PlayerListener implements Listener {
                 }
             }
         }
-    }
+    }*/
 
 
     @EventHandler
