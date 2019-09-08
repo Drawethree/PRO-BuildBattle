@@ -55,6 +55,7 @@ public class BBArena implements Spectatable<Player> {
     private BukkitTask votingCountdown;
     private BukkitTask endCountdown;
     private BukkitTask themeVotingCountdown;
+    private BukkitTask playerMovementTask;
 
     private Inventory teamsInventory;
 
@@ -425,6 +426,8 @@ public class BBArena implements Spectatable<Player> {
         plugin.getPlayerManager().sendStartMessageToAllPlayers(this);
         plugin.getPlayerManager().closeInventoryAllPlayersInArena(this);
 
+        this.startCheckingForPlayerMovement();
+
         gameCountdown = new BukkitRunnable() {
             int countdown = gameTime;
 
@@ -585,12 +588,18 @@ public class BBArena implements Spectatable<Player> {
                 break;
             case INGAME:
                 gameCountdown.cancel();
+                if(playerMovementTask != null)
+                    playerMovementTask.cancel();
                 break;
             case VOTING:
                 votingCountdown.cancel();
+                if(playerMovementTask != null)
+                    playerMovementTask.cancel();
                 break;
             case ENDING:
                 endCountdown.cancel();
+                if(playerMovementTask != null)
+                    playerMovementTask.cancel();
                 break;
             default:
                 break;
@@ -1076,5 +1085,46 @@ public class BBArena implements Spectatable<Player> {
     @Override
     public List<Player> getPlayersToSpectate() {
         return players;
+    }
+
+    private void startCheckingForPlayerMovement() {
+        if(this.plugin.getSettings().isRestrictPlayerMovement() || this.plugin.getSettings().isRestrictOnlyPlayerYMovement()) {
+
+            this.playerMovementTask = new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    if (bbArenaState == BBArenaState.VOTING || bbArenaState == BBArenaState.INGAME || bbArenaState == BBArenaState.ENDING) {
+                        BBPlot plot;
+                        for (Player p : players) {
+                            plot = getPlayerPlot(p);
+                            switch (bbArenaState) {
+                                case VOTING:
+                                    plot = getCurrentVotingPlot();
+                                    break;
+                                case ENDING:
+                                    plot = getWinner();
+                                    break;
+                            }
+                            if (plot != null) {
+                                if ((plugin.getSettings().isRestrictPlayerMovement() && !plot.isLocationInPlot(p.getLocation())) || (plugin.getSettings().isRestrictOnlyPlayerYMovement() && plot.getMaxPoint().getBlockY() <= p.getLocation().getBlockY())) {
+                                    p.teleport(plot.getRandomLocationInPlot());
+                                    //p.setVelocity(plot.getCenter().toVector().subtract(p.getLocation().toVector()).normalize());
+                                }
+                            }
+                        }
+                    }
+                }
+            }.runTaskTimer(this.plugin, 0L, 20L);
+        }
+    }
+
+    private BBPlot getPlayerPlot(Player p) {
+        for(BBPlot plot : this.buildPlots) {
+            if ((plot.getTeam() != null) && (plot.getTeam().getPlayers().contains(p))) {
+                return plot;
+            }
+        }
+        return null;
     }
 }
