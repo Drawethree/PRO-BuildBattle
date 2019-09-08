@@ -199,6 +199,15 @@ public class BBPlot implements Comparable<BBPlot> {
         return tpLoc;
     }
 
+    @Override
+    public String toString() {
+        return "BBPlot{" +
+                "team=" + team +
+                ", minPoint=" + minPoint +
+                ", maxPoint=" + maxPoint +
+                '}';
+    }
+
     public void changeFloor(CompMaterial material) {
 
         if (material == CompMaterial.WATER_BUCKET) material = CompMaterial.WATER;
