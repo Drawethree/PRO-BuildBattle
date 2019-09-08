@@ -141,4 +141,11 @@ public class BBTeam {
             return str.substring(0, str.length() - 1);
         }
     }
+
+    @Override
+    public String toString() {
+        return "BBTeam{" +
+                "players=" + players +
+                '}';
+    }
 }
