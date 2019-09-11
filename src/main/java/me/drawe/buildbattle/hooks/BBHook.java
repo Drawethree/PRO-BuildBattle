@@ -13,8 +13,8 @@ public abstract class BBHook {
         hooks.put("Citizens", new BBHookCitizens());
         hooks.put("HolographicDisplays", new BBHookHolographicDisplays());
         hooks.put("LeaderHeads", new BBHookLeaderHeads());
-        hooks.put("PlaceholderAPI", new BBHookPlaceholderAPI());
         hooks.put("MVdWPlaceholderAPI", new BBHookMVDWPAPI());
+        hooks.put("PlaceholderAPI", new BBHookPlaceholderAPI());
     }
 
     public static void attemptHooks() {
