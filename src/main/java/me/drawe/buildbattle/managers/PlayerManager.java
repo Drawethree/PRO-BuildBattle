@@ -50,7 +50,12 @@ public class PlayerManager {
     }
 
     public BBPlayerStats getPlayerStats(Player p) {
-        return playerStats.get(p.getUniqueId());
+        if(playerStats.get(p.getUniqueId()) == null) {
+            //Try to look in cache
+            return cachedStats.get(p.getUniqueId());
+        } else {
+            return playerStats.get(p.getUniqueId());
+        }
     }
 
     public void showMainLobbyScoreboard(Player... players) {
