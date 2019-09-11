@@ -53,10 +53,10 @@ public class PlayerManager {
         return playerStats.get(p.getUniqueId());
     }
 
-    public void setMainLobbyScoreboard(Player... players) {
+    public void showMainLobbyScoreboard(Player... players) {
         BBMainLobbyScoreboard sb;
         for (Player p : players) {
-            sb = new BBMainLobbyScoreboard(p, getPlayerStats(p));
+            sb = new BBMainLobbyScoreboard(p, this.getPlayerStats(p));
             sb.send(p);
         }
     }
@@ -64,9 +64,6 @@ public class PlayerManager {
     public void teleportToMainLobby(Player... players) {
         for (Player p : players) {
             p.teleport(this.plugin.getSettings().getMainLobbyLocation());
-        }
-        if (this.plugin.getSettings().isMainLobbyScoreboardEnabled()) {
-            setMainLobbyScoreboard(players);
         }
     }
 

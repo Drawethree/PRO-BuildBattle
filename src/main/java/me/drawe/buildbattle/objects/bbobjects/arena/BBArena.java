@@ -81,7 +81,7 @@ public class BBArena implements Spectatable<Player> {
         this.playerBoards = new HashMap<>();
         this.setupTeams();
         this.setupTeamInventory();
-        this.arenaEdit = new BBArenaEdit(plugin,this);
+        this.arenaEdit = new BBArenaEdit(plugin, this);
         this.spectateInventory = Bukkit.createInventory(null, ItemUtil.getInventorySizeBasedOnList(this.players), "Spectating Arena: " + this.name);
     }
 
@@ -121,7 +121,7 @@ public class BBArena implements Spectatable<Player> {
             for (String plot : plugin.getFileManager().getConfig("arenas.yml").get().getConfigurationSection(name + ".plots").getKeys(false)) {
                 final Location minPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".min"));
                 final Location maxPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".max"));
-                list.add(new BBPlot(this.plugin,this, minPoint, maxPoint));
+                list.add(new BBPlot(this.plugin, this, minPoint, maxPoint));
                 plugin.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
             }
         } catch (Exception e) {
@@ -225,6 +225,11 @@ public class BBArena implements Spectatable<Player> {
 
         if (this.plugin.getSettings().getMainLobbyLocation() != null) {
             plugin.getPlayerManager().teleportToMainLobby(p);
+
+            if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
+                plugin.getPlayerManager().showMainLobbyScoreboard(p);
+            }
+
         }
 
         if (this.plugin.getSettings().isUseBungeecord()) {
@@ -250,7 +255,7 @@ public class BBArena implements Spectatable<Player> {
 
     private void joinCommands(Player p) {
 
-        if(lobbyLocation == null) {
+        if (lobbyLocation == null) {
             p.sendMessage(Message.ARENA_NO_LOBBY.getChatMessage());
             return;
         }
@@ -588,17 +593,17 @@ public class BBArena implements Spectatable<Player> {
                 break;
             case INGAME:
                 gameCountdown.cancel();
-                if(playerMovementTask != null)
+                if (playerMovementTask != null)
                     playerMovementTask.cancel();
                 break;
             case VOTING:
                 votingCountdown.cancel();
-                if(playerMovementTask != null)
+                if (playerMovementTask != null)
                     playerMovementTask.cancel();
                 break;
             case ENDING:
                 endCountdown.cancel();
-                if(playerMovementTask != null)
+                if (playerMovementTask != null)
                     playerMovementTask.cancel();
                 break;
             default:
@@ -704,7 +709,12 @@ public class BBArena implements Spectatable<Player> {
             plugin.getPlayerManager().restorePlayerData(p);
 
             if (plugin.getSettings().getMainLobbyLocation() != null) {
+
                 plugin.getPlayerManager().teleportToMainLobby(p);
+
+                if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
+                    plugin.getPlayerManager().showMainLobbyScoreboard(p);
+                }
             }
 
             plugin.getPlayerManager().getPlayersInArenas().remove(p);
@@ -1088,7 +1098,7 @@ public class BBArena implements Spectatable<Player> {
     }
 
     private void startCheckingForPlayerMovement() {
-        if(this.plugin.getSettings().isRestrictPlayerMovement() || this.plugin.getSettings().isRestrictOnlyPlayerYMovement()) {
+        if (this.plugin.getSettings().isRestrictPlayerMovement() || this.plugin.getSettings().isRestrictOnlyPlayerYMovement()) {
 
             this.playerMovementTask = new BukkitRunnable() {
 
@@ -1120,7 +1130,7 @@ public class BBArena implements Spectatable<Player> {
     }
 
     private BBPlot getPlayerPlot(Player p) {
-        for(BBPlot plot : this.buildPlots) {
+        for (BBPlot plot : this.buildPlots) {
             if ((plot.getTeam() != null) && (plot.getTeam().getPlayers().contains(p))) {
                 return plot;
             }

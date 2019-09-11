@@ -58,11 +58,11 @@ public class PlayerListener implements Listener {
             BBArena arena = this.plugin.getArenaManager().getArenaToAutoJoin(null);
             if (arena == null) {
 
-                if(this.plugin.getSettings().isAutoJoinSpectate()) {
+                if (this.plugin.getSettings().isAutoJoinSpectate()) {
                     arena = this.plugin.getArenaManager().getArenaToAutoSpectate();
                 }
 
-                if(arena == null) {
+                if (arena == null) {
                     e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
                     e.setKickMessage(Message.NO_EMPTY_ARENA.getChatMessage());
                 }
@@ -82,9 +82,9 @@ public class PlayerListener implements Listener {
                 if (arena != null) {
                     arena.addPlayer(p);
                 } else {
-                    if(this.plugin.getSettings().isAutoJoinSpectate()) {
+                    if (this.plugin.getSettings().isAutoJoinSpectate()) {
                         arena = this.plugin.getArenaManager().getArenaToAutoSpectate();
-                        if(arena != null) {
+                        if (arena != null) {
                             this.plugin.getSpectatorManager().spectate(p, arena);
                             return;
                         }
@@ -98,7 +98,11 @@ public class PlayerListener implements Listener {
         } else if (this.plugin.getSettings().getMainLobbyLocation() != null && this.plugin.getSettings().isTeleportToMainLobbyOnJoin()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
                 this.plugin.getPlayerManager().teleportToMainLobby(p);
+
             }, 1L);
+        }
+        if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
+            plugin.getPlayerManager().showMainLobbyScoreboard(p);
         }
     }
 
@@ -690,7 +694,7 @@ public class PlayerListener implements Listener {
                     break;
                 case INGAME:
 
-                    if(this.plugin.getSettings().getRestricedBlocks().contains(e.getBlock().getType())) {
+                    if (this.plugin.getSettings().getRestricedBlocks().contains(e.getBlock().getType())) {
                         p.sendMessage(Message.BLOCK_RESTRICTED.getChatMessage());
                         e.setCancelled(true);
                         return;
