@@ -168,6 +168,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.settings.loadSettings();
         Message.reloadMessages();
         this.optionsManager.reloadItemsAndInventories();
+        this.headInventory.reload();
         this.arenaManager.loadArenas();
 
         if (BBHook.getHook("HolographicDisplays")) {
