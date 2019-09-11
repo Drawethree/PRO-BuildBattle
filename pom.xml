@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.2.1</version>
+    <version>6.2.2</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -15,7 +15,7 @@
     </properties>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
+        <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>
                 <version>3.6.1</version>
@@ -162,8 +162,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/worldedit-bukkit-6.1.9.jar</systemPath>
         </dependency>
-
-
 
     </dependencies>
 </project>
