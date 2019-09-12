@@ -15,6 +15,7 @@ Players can choose to play **solo mode**, or **team mode** to team up with other
 * [Home](https://github.com/Drawethree/PRO-BuildBattle/wiki)
 * [Setup](https://github.com/Drawethree/PRO-BuildBattle/wiki/Setup)
 * [Commands & Permissions](https://github.com/Drawethree/PRO-BuildBattle/wiki/Commands-&-Permissions)
+* [Leaderboards](https://github.com/Drawethree/PRO-BuildBattle/wiki/Leaderboards)
 * [Placeholders](https://github.com/Drawethree/PRO-BuildBattle/wiki/Placeholders)
 * [Downloadable Content](https://github.com/Drawethree/PRO-BuildBattle/wiki/Downloadable-Content)
 ### Default Files
