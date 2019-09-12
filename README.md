@@ -31,8 +31,8 @@ Players can choose to play **solo mode**, or **team mode** to team up with other
 
 # Screenshots
 ![Image1](https://i.imgur.com/NMsKxZf.gif)
-![Image2](https://i.imgur.com/dRzIDtJ.jpg)
+![Image2](https://i.imgur.com/dRzIDtJ.gif)
 ![Image3](https://i.imgur.com/5BSzrgV.gif)
 ![Image4](https://i.imgur.com/1phhuuV.gif)
-![Image5](https://i.imgur.com/g9hn69V.jpg)
+![Image5](https://i.imgur.com/g9hn69V.gif)
 ![Image6](https://i.imgur.com/uE9sbbS.gif)
