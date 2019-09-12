@@ -32,25 +32,7 @@ public class HeadInventory {
         this.plugin = plugin;
         this.MAIN_PAGE = Bukkit.createInventory(null, 9, Message.GUI_HEADS_TITLE.getMessage());
         this.CATEGORIES = new ArrayList<>();
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                try {
-                    ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
-                    int i = 0;
-                    for (String name : section.getKeys(false)) {
-                        Category category = new Category(plugin,name);
-                        CATEGORIES.add(category);
-                        MAIN_PAGE.setItem(i, category.getIcon());
-                        i++;
-                    }
-                    MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
-                } catch (Exception e) {
-                    plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+        this.reload();
     }
 
     /**
@@ -94,20 +76,26 @@ public class HeadInventory {
      * or an old head has been removed.
      */
     public void reload() {
-        MAIN_PAGE.clear();
-        CATEGORIES.clear();
-        try {
-            ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
-            int i = 0;
-            for (String name : section.getKeys(false)) {
-                Category category = new Category(plugin,name);
-                CATEGORIES.add(category);
-                MAIN_PAGE.setItem(i, category.getIcon());
-                i++;
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
+                    int i = 0;
+                    for (String name : section.getKeys(false)) {
+                        Category category = new Category(plugin,name);
+                        CATEGORIES.add(category);
+                        MAIN_PAGE.setItem(i, category.getIcon());
+                        i++;
+                    }
+                    MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
+                } catch (Exception e) {
+                    plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
+                }
             }
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
-        }
+        }.runTaskAsynchronously(this.plugin);
+
     }
 
 }
