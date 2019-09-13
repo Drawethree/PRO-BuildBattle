@@ -24,6 +24,7 @@ import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import me.drawe.spectateapi.SpectatorManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -52,6 +53,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private SuperVoteManager superVoteManager;
     private VotingManager votingManager;
     private SpectatorManager spectatorManager;
+    private SignManager signManager;
     private BBSettings settings;
     private WorldEditPlugin worldEdit;
     private Economy econ;
@@ -90,12 +92,15 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.superVoteManager = new SuperVoteManager(this);
         this.votingManager = new VotingManager(this);
         this.spectatorManager = new SpectatorManager(this);
+        this.signManager = new SignManager(this);
 
         this.registerBBCommands();
         this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         this.getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 
         this.arenaManager.loadArenas();
+        this.signManager.loadSigns();
+
         this.headInventory = new HeadInventory(this);
         this.hook();
 
@@ -170,6 +175,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.optionsManager.reloadItemsAndInventories();
         this.headInventory.reload();
         this.arenaManager.loadArenas();
+        this.signManager.loadSigns();
 
         if (BBHook.getHook("HolographicDisplays")) {
             for (Hologram h : HologramsAPI.getHolograms(this)) {
@@ -221,15 +227,15 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private void loadWorldEdit() {
         if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
-            this.warning("§cWorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
+            this.warning("WorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
             return;
         }
         this.worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
         if (this.worldEdit == null) {
-            this.warning("§cWorldEdit dependency not found ! Report features will be disabled !");
+            this.warning("WorldEdit dependency not found ! Report features will be disabled !");
         } else {
-            this.info("§aSuccessfully hooked into §eWorldEdit §a!");
+            this.info("Successfully hooked into WorldEdit !");
             this.reportManager = new ReportManager(this);
             this.reportManager.loadAllReports();
         }
@@ -251,7 +257,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public void info(String message) {
-        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + message);
+        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + ChatColor.GREEN + message);
     }
 
     public void debug(String message) {
@@ -263,7 +269,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     public void warning(String message) {
-        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + "§4[Warning] §r" + message);
+        Bukkit.getConsoleSender().sendMessage(this.settings.getPrefix() + ChatColor.RED + "[Warning] " + ChatColor.RESET + message);
     }
 
     public boolean enableDebugMode() {
