@@ -1,0 +1,5 @@
+import-old-signs: true
+signs:
+  join: {}
+  leave: {}
+  auto-join: {}
