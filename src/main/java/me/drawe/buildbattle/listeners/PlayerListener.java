@@ -14,8 +14,10 @@ import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
+import me.drawe.buildbattle.objects.bbobjects.sign.BBArenaJoinSign;
+import me.drawe.buildbattle.objects.bbobjects.sign.BBAutoJoinSign;
+import me.drawe.buildbattle.objects.bbobjects.sign.BBSign;
 import me.drawe.buildbattle.utils.BungeeUtils;
-import me.drawe.buildbattle.utils.LocationUtil;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
@@ -557,23 +559,10 @@ public class PlayerListener implements Listener {
                     }
                     return;
                 }
-                if (e.getClickedBlock().getState() instanceof Sign && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    Sign s = (Sign) e.getClickedBlock().getState();
-                    BBSign arenaSign = this.plugin.getArenaManager().getArenaSign(s);
+                if (e.getClickedBlock().getState() instanceof Sign) {
+                    BBSign arenaSign = this.plugin.getSignManager().getSignAtLocation(e.getClickedBlock().getLocation());
                     if (arenaSign != null) {
-                        arenaSign.getArena().addPlayer(p);
-                    } else {
-                        BBArena arenaToAutoJoin = null;
-                        if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(null);
-                        } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(BBGameMode.SOLO);
-                        } else if (s.getLine(0).equals(Message.SIGN_AUTO_JOIN_TEAM_FIRST_LINE.getMessage()) && s.getLine(1).equals(Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage()) && s.getLine(2).equals(Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage()) && s.getLine(3).equals(Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage())) {
-                            arenaToAutoJoin = this.plugin.getArenaManager().getArenaToAutoJoin(BBGameMode.TEAM);
-                        }
-                        if (arenaToAutoJoin != null) {
-                            arenaToAutoJoin.addPlayer(p);
-                        }
+                        arenaSign.handleClick(p, e.getAction());
                     }
                 }
             }
@@ -741,48 +730,44 @@ public class PlayerListener implements Listener {
     public void onSignCreate(final SignChangeEvent e) {
         final Player p = e.getPlayer();
         if (e.getLine(0).equalsIgnoreCase("[bb]")) {
-            if (p.hasPermission("buildbattlepro.create")) {
-                final BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
-                if (arena != null) {
-                    arena.getArenaSigns().add(new BBSign(arena, e.getBlock().getLocation()));
-                    this.plugin.getFileManager().getConfig("signs.yml").get().createSection(arena.getName() + "." + LocationUtil.getStringFromLocationXYZ(e.getBlock().getLocation()));
-                    this.plugin.getFileManager().getConfig("signs.yml").save();
-                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
-                    return;
-                } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
-                    if (e.getLine(2).equalsIgnoreCase("team")) {
-                        e.setLine(0, Message.SIGN_AUTO_JOIN_TEAM_FIRST_LINE.getMessage());
-                        e.setLine(1, Message.SIGN_AUTO_JOIN_TEAM_SECOND_LINE.getMessage());
-                        e.setLine(2, Message.SIGN_AUTO_JOIN_TEAM_THIRD_LINE.getMessage());
-                        e.setLine(3, Message.SIGN_AUTO_JOIN_TEAM_FOURTH_LINE.getMessage());
-                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aTeam Auto-Join sign successfully created!");
-                    } else if (e.getLine(2).equalsIgnoreCase("solo")) {
-                        e.setLine(0, Message.SIGN_AUTO_JOIN_SOLO_FIRST_LINE.getMessage());
-                        e.setLine(1, Message.SIGN_AUTO_JOIN_SOLO_SECOND_LINE.getMessage());
-                        e.setLine(2, Message.SIGN_AUTO_JOIN_SOLO_THIRD_LINE.getMessage());
-                        e.setLine(3, Message.SIGN_AUTO_JOIN_SOLO_FOURTH_LINE.getMessage());
-                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSolo Auto-Join sign successfully created!");
-                    } else {
-                        e.setLine(0, Message.SIGN_AUTO_JOIN_FIRST_LINE.getMessage());
-                        e.setLine(1, Message.SIGN_AUTO_JOIN_SECOND_LINE.getMessage());
-                        e.setLine(2, Message.SIGN_AUTO_JOIN_THIRD_LINE.getMessage());
-                        e.setLine(3, Message.SIGN_AUTO_JOIN_FOURTH_LINE.getMessage());
-                        p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
-                        return;
-                    }
-                } else {
-                    p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage());
-                    e.setCancelled(true);
-                    e.getBlock().breakNaturally();
-                    return;
-                }
-            } else {
+
+            if (!p.hasPermission("buildbattlepro.create")) {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());
                 e.setCancelled(true);
                 e.getBlock().breakNaturally();
+                return;
+            }
+
+            final BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
+
+            if (arena != null) {
+                if (this.plugin.getSignManager().createSign(new BBArenaJoinSign(this.plugin, arena, e.getBlock().getLocation()))) {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aJoin sign for arena §e" + arena.getName() + "§a successfully created!");
+                } else {
+                    e.setCancelled(true);
+                    e.getBlock().breakNaturally();
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
+                }
+                return;
+            } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
+                BBGameMode type = null;
+                if (e.getLine(2).equalsIgnoreCase("team")) {
+                    type = BBGameMode.TEAM;
+                } else if (e.getLine(2).equalsIgnoreCase("solo")) {
+                    type = BBGameMode.SOLO;
+                }
+
+                if (this.plugin.getSignManager().createSign(new BBAutoJoinSign(this.plugin, type, e.getBlock().getLocation()))) {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
+                } else {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cSomething went wrong. Please contact developer.");
+                    e.setCancelled(true);
+                    e.getBlock().breakNaturally();
+                }
             }
         }
     }
+
 
     @EventHandler
     public void onBreak(final BlockBreakEvent e) {
@@ -810,10 +795,10 @@ public class PlayerListener implements Listener {
         } else {
             if (block.getState() instanceof Sign) {
                 final Sign s = (Sign) e.getBlock().getState();
-                final BBSign bbSign = this.plugin.getArenaManager().getArenaSign(s);
+                final BBSign bbSign = this.plugin.getSignManager().getSignAtLocation(s.getLocation());
                 if (bbSign != null) {
                     if (p.hasPermission("buildbattlepro.create")) {
-                        bbSign.removeSign(p);
+                        this.plugin.getSignManager().removeSign(p,bbSign);
                     } else {
                         e.setCancelled(true);
                     }
