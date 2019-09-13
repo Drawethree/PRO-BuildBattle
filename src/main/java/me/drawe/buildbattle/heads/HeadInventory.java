@@ -65,7 +65,7 @@ public class HeadInventory {
         try {
             return CATEGORIES.get(index);
         } catch (IndexOutOfBoundsException ex) {
-            plugin.getLogger().log(Level.SEVERE, "§cCategory index is out of bounds.", ex);
+            plugin.getLogger().log(Level.SEVERE, "Category index is out of bounds.", ex);
             return null;
         }
     }
@@ -91,7 +91,7 @@ public class HeadInventory {
                     }
                     MAIN_PAGE.setItem(8, plugin.getOptionsManager().getBackItem());
                 } catch (Exception e) {
-                    plugin.getLogger().log(Level.SEVERE, "§cThe heads.yml could not be loaded.", e);
+                    plugin.getLogger().log(Level.SEVERE, "The heads.yml could not be loaded.", e);
                 }
             }
         }.runTaskAsynchronously(this.plugin);
