@@ -7,7 +7,10 @@ import me.drawe.buildbattle.api.events.game.BBGameStartEvent;
 import me.drawe.buildbattle.api.events.game.BBGameStateSwitchEvent;
 import me.drawe.buildbattle.api.events.game.BBPlayerGameJoinEvent;
 import me.drawe.buildbattle.objects.Message;
-import me.drawe.buildbattle.objects.bbobjects.*;
+import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
+import me.drawe.buildbattle.objects.bbobjects.BBParty;
+import me.drawe.buildbattle.objects.bbobjects.BBTeam;
+import me.drawe.buildbattle.objects.bbobjects.BBThemeVoting;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.objects.bbobjects.scoreboards.BBScoreboard;
@@ -40,7 +43,6 @@ public class BBArena implements Spectatable<Player> {
     private List<BBTeam> teams;
     private List<BBPlot> buildPlots;
     private List<BBPlot> votingPlots;
-    private List<BBSign> arenaSigns;
     private HashMap<Player, BBScoreboard> playerBoards;
     private String theme;
     private BBPlot winner;
@@ -72,7 +74,6 @@ public class BBArena implements Spectatable<Player> {
         this.lobbyLocation = LocationUtil.getLocationFromConfig("arenas.yml", name + ".lobbyLocation");
         this.players = new ArrayList<>();
         this.buildPlots = loadArenaPlots();
-        this.arenaSigns = loadArenaSigns();
         this.theme = null;
         this.winner = null;
         this.currentVotingPlot = null;
@@ -94,7 +95,6 @@ public class BBArena implements Spectatable<Player> {
         this.gameMode = gameMode;
         this.players = new ArrayList<>();
         this.buildPlots = new ArrayList<>();
-        this.arenaSigns = new ArrayList<>();
         this.playerBoards = new HashMap<>();
         this.theme = null;
         this.winner = null;
@@ -126,25 +126,6 @@ public class BBArena implements Spectatable<Player> {
             }
         } catch (Exception e) {
             plugin.warning("§cLooks like arena §e" + name + " §c have no plots ! Please set them.");
-        }
-        return list;
-    }
-
-    private List<BBSign> loadArenaSigns() {
-        List<BBSign> list = new ArrayList<>();
-        try {
-            if (plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name) != null) {
-                for (String sign : plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(name).getKeys(false)) {
-                    final Location signLoc = LocationUtil.getLocationFromString(sign);
-                    final BBSign bbSign = new BBSign(this, signLoc);
-                    if (bbSign.getLocation() != null) {
-                        list.add(bbSign);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            plugin.severe("§cAn exception occurred while trying loading signs for arena §e" + name + "§c!");
-            e.printStackTrace();
         }
         return list;
     }
@@ -239,7 +220,7 @@ public class BBArena implements Spectatable<Player> {
         players.remove(p);
         playerBoards.remove(p);
 
-        updateAllSigns();
+        this.plugin.getSignManager().updateAllSigns(this);
         this.refreshSpectateInventory();
         plugin.getArenaManager().refreshArenaItem(this);
 
@@ -292,7 +273,7 @@ public class BBArena implements Spectatable<Player> {
 
         this.refreshSpectateInventory();
         plugin.getArenaManager().refreshArenaItem(this);
-        updateAllSigns();
+        this.plugin.getSignManager().updateAllSigns(this);
 
         plugin.getPlayerManager().getPlayersInArenas().put(p, this);
     }
@@ -775,7 +756,7 @@ public class BBArena implements Spectatable<Player> {
     public void setBBArenaState(BBArenaState newState) {
         BuildBattle.getInstance().getServer().getPluginManager().callEvent(new BBGameStateSwitchEvent(this, bbArenaState, newState));
         this.bbArenaState = newState;
-        this.updateAllSigns();
+        this.plugin.getSignManager().updateAllSigns(this);
         this.resetAllScoreboards();
         plugin.getArenaManager().refreshArenaItem(this);
     }
@@ -926,16 +907,6 @@ public class BBArena implements Spectatable<Player> {
 
     public BBThemeVoting getThemeVoting() {
         return themeVoting;
-    }
-
-    public List<BBSign> getArenaSigns() {
-        return arenaSigns;
-    }
-
-    private void updateAllSigns() {
-        for (BBSign sign : getArenaSigns()) {
-            sign.update();
-        }
     }
 
     public BBGameMode getGameType() {
