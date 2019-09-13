@@ -17,14 +17,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocationUtil {
 
-    public static void knockbackPlayer(Player p, Location from) {
+    private LocationUtil() {
+
+    }
+
+    /*public static void knockbackPlayer(Player p, Location from) {
         final Location loc1 = p.getLocation();
 
         final double deltaX = from.getX() - loc1.getX();//Get X Delta
@@ -33,14 +36,14 @@ public class LocationUtil {
         final Vector vec = new Vector(deltaX, 0, deltaZ);//Create new vector
         vec.normalize();//Normalize it so we don't shoot the player into oblivion
         p.setVelocity(vec.multiply(5 / (Math.sqrt(Math.pow(deltaX, 2.0) + Math.pow(deltaZ, 2.0)))));
-    }
+    }*/
 
     public static Location getLocationFromConfig(String configName, String path) {
         try {
             String locString = BuildBattle.getInstance().getFileManager().getConfig(configName).get().getString(path);
             return getLocationFromString(locString);
         } catch (Exception e) {
-            BuildBattle.getInstance().severe("§cAn exception occurred while trying to get §e" + path + " §cfrom §e" + configName + "§c!");
+            BuildBattle.getInstance().severe("An exception occurred while trying to get " + path + " from " + configName + "!");
             e.printStackTrace();
         }
         return null;
@@ -74,16 +77,7 @@ public class LocationUtil {
                 float pitch = Float.parseFloat(s1[5]);
                 return new Location(w, x, y, z, yaw, pitch);
             } catch (Exception e1) {
-                try {
-                    String[] s1 = s.split("//");
-                    World w = Bukkit.getWorld(s1[0]);
-                    double x = Double.parseDouble(s1[1]);
-                    double y = Double.parseDouble(s1[2]);
-                    double z = Double.parseDouble(s1[3]);
-                    return new Location(w, x, y, z);
-                } catch (Exception e2) {
-                    return null;
-                }
+                return getLocationFromStringXYZ(s);
             }
         } else {
             return null;
@@ -171,5 +165,18 @@ public class LocationUtil {
             }
         }
         return null;
+    }
+
+    public static Location getLocationFromStringXYZ(String locationString) {
+        try {
+            String[] s1 = locationString.split("//");
+            World w = Bukkit.getWorld(s1[0]);
+            double x = Double.parseDouble(s1[1]);
+            double y = Double.parseDouble(s1[2]);
+            double z = Double.parseDouble(s1[3]);
+            return new Location(w, x, y, z);
+        } catch (Exception e2) {
+            return null;
+        }
     }
 }
