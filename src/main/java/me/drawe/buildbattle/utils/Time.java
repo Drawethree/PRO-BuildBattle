@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.utils;
 
 import me.drawe.buildbattle.objects.Message;
+import org.bukkit.ChatColor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -225,11 +226,11 @@ public class Time {
         String timeString = String.format("%02d:%02d", minutes, seconds);
 
         if(secs > defaultTime / 2) {
-            return "§a" + timeString;
+            return ChatColor.GREEN + timeString;
         } else if(secs > (defaultTime / 2) / 2) {
-            return "§e" + timeString;
+            return ChatColor.YELLOW + timeString;
         } else {
-            return "§c" + timeString;
+            return ChatColor.RED + timeString;
         }
     }
 
