@@ -176,7 +176,7 @@ public class BBSettings {
         if (lobbyTime > 0) {
             this.lobbyTime = lobbyTime;
         } else {
-            this.plugin.warning("§cVariable lobbyTime must be higher than 0 ! Setting it to default (" + this.lobbyTime + ")");
+            this.plugin.warning("Variable lobbyTime must be higher than 0 ! Setting it to default (" + this.lobbyTime + ")");
         }
     }
 
@@ -184,7 +184,7 @@ public class BBSettings {
         if (time > 0) {
             this.themeVotingTime = time;
         } else {
-            this.plugin.warning("§cVariable themeVotingTime must be higher than 0 ! Setting it to default (" + this.themeVotingTime + ")");
+            this.plugin.warning("Variable themeVotingTime must be higher than 0 ! Setting it to default (" + this.themeVotingTime + ")");
         }
     }
 
@@ -192,7 +192,7 @@ public class BBSettings {
         if (defaultFloorMaterial != null) {
             this.defaultFloorMaterial = defaultFloorMaterial;
         } else {
-            this.plugin.warning("§cVariable default_floor cannot be loaded (maybe it's invalid ?) ! Setting it to default (" + this.defaultFloorMaterial + ")");
+            this.plugin.warning("Variable default_floor cannot be loaded (maybe it's invalid ?) ! Setting it to default (" + this.defaultFloorMaterial + ")");
         }
     }
 
@@ -200,7 +200,7 @@ public class BBSettings {
         if (defaultGameTime > 0) {
             this.defaultGameTime = defaultGameTime;
         } else {
-            this.plugin.warning("§cVariable defaultGameTime must be higher than 0 ! Setting it to default (" + this.defaultGameTime + ")");
+            this.plugin.warning("Variable defaultGameTime must be higher than 0 ! Setting it to default (" + this.defaultGameTime + ")");
         }
     }
 
@@ -209,7 +209,7 @@ public class BBSettings {
         if (votingTime > 0) {
             this.votingTime = votingTime;
         } else {
-            this.plugin.warning("§cVariable votingTime must be higher than 0 ! Setting it to default (" + this.votingTime + ")");
+            this.plugin.warning("Variable votingTime must be higher than 0 ! Setting it to default (" + this.votingTime + ")");
         }
     }
 
@@ -217,7 +217,7 @@ public class BBSettings {
         if (endTime > 0) {
             this.endTime = endTime;
         } else {
-            this.plugin.warning("§cVariable endTime must be higher than 0 ! Setting it to default (" + this.endTime + ")");
+            this.plugin.warning("Variable endTime must be higher than 0 ! Setting it to default (" + this.endTime + ")");
         }
     }
 
@@ -225,14 +225,14 @@ public class BBSettings {
         if (prefix != null) {
             this.prefix = ChatColor.translateAlternateColorCodes('&', prefix);
         } else {
-            this.plugin.warning("§cVariable prefix could not be loaded ! Setting it to default (" + this.prefix + ")");
+            this.plugin.warning("Variable prefix could not be loaded ! Setting it to default (" + this.prefix + ")");
         }
     }
 
 
     private void setMaxParticlesPerPlayer(int maxParticlesPerPlayer) {
         if (maxParticlesPerPlayer < 0) {
-            this.plugin.warning("§cVariable particles.max_particles_per_player must be higher or equal 0 ! Setting it to default (" + this.maxParticlesPerPlayer + ")");
+            this.plugin.warning("Variable particles.max_particles_per_player must be higher or equal 0 ! Setting it to default (" + this.maxParticlesPerPlayer + ")");
         } else {
             this.maxParticlesPerPlayer = maxParticlesPerPlayer;
         }
@@ -248,7 +248,7 @@ public class BBSettings {
         if (amountParticleToSpawn > 0) {
             this.amountParticleToSpawn = amountParticleToSpawn;
         } else {
-            this.plugin.warning("§cVariable particles.amount_to_spawn must be higher than 0 ! Setting it to default (" + this.amountParticleToSpawn + ")");
+            this.plugin.warning("Variable particles.amount_to_spawn must be higher than 0 ! Setting it to default (" + this.amountParticleToSpawn + ")");
         }
     }
 
@@ -256,7 +256,7 @@ public class BBSettings {
         if (particleRefreshTime > 0) {
             this.particleRefreshTime = particleRefreshTime;
         } else {
-            this.plugin.warning("§cVariable particles.refresh_time must be higher than 0 ! Setting it to default (" + this.particleRefreshTime + ")");
+            this.plugin.warning("Variable particles.refresh_time must be higher than 0 ! Setting it to default (" + this.particleRefreshTime + ")");
         }
     }
 
@@ -264,7 +264,7 @@ public class BBSettings {
         if (startMessage != null) {
             this.startMessage = startMessage;
         } else {
-            this.plugin.severe("§cVariable start message could not be loaded !");
+            this.plugin.severe("Variable start message could not be loaded !");
         }
     }
 
@@ -276,7 +276,7 @@ public class BBSettings {
         if (fireworkWaves >= 0) {
             this.fireworkWaves = fireworkWaves;
         } else {
-            this.plugin.warning("§cVariable firework_waves must be higher or equal 0 ! Setting it to default (" + this.fireworkWaves + ")");
+            this.plugin.warning("Variable firework_waves must be higher or equal 0 ! Setting it to default (" + this.fireworkWaves + ")");
         }
     }
 
@@ -284,7 +284,7 @@ public class BBSettings {
         if (fireworkAmount >= 0) {
             this.fireworkAmount = fireworkAmount;
         } else {
-            this.plugin.warning("§cVariable firework_amount must be higher or equal 0 ! Setting it to default (" + this.fireworkAmount + ")");
+            this.plugin.warning("Variable firework_amount must be higher or equal 0 ! Setting it to default (" + this.fireworkAmount + ")");
         }
     }
 
@@ -306,7 +306,7 @@ public class BBSettings {
         if (themesToVote > 0 && themesToVote <= 6) {
             this.themesToVote = themesToVote;
         } else {
-            this.plugin.warning("§cVariable themesToVote must be higher than 0 and lower or equal 6 ! Setting it to default (" + this.themesToVote + ")");
+            this.plugin.warning("Variable themesToVote must be higher than 0 and lower or equal 6 ! Setting it to default (" + this.themesToVote + ")");
         }
     }
 
@@ -319,7 +319,7 @@ public class BBSettings {
         try {
             this.statsType = statsType;
         } catch (Exception e) {
-            this.plugin.warning("§cVariable stats.Type is invalid ! Setting it to default (" + this.statsType.name() + ")");
+            this.plugin.warning("Variable stats.Type is invalid ! Setting it to default (" + this.statsType.name() + ")");
         }
     }
 
@@ -336,10 +336,10 @@ public class BBSettings {
         this.pointsApiRewards = pointsApiRewards;
         if (pointsApiRewards) {
             if (this.plugin.getServer().getPluginManager().getPlugin("PointsAPI") == null) {
-                this.plugin.warning("§cYou enabled PointsAPI rewards, but PointsAPI plugin cannot be found ! Disabling PointsAPI rewards...");
+                this.plugin.warning("You enabled PointsAPI rewards, but PointsAPI plugin cannot be found ! Disabling PointsAPI rewards...");
                 this.pointsApiRewards = false;
             } else {
-                this.plugin.info("§ePointsAPI §arewards enabled!");
+                this.plugin.info("PointsAPI rewards enabled!");
             }
         }
     }
@@ -348,10 +348,10 @@ public class BBSettings {
         this.vaultRewards = vaultRewards;
         if (vaultRewards) {
             if (this.plugin.setupEconomy() == false) {
-                this.plugin.warning("§cYou enabled Vault rewards, but Vault plugin cannot be found ! Disabling Vault rewards...");
+                this.plugin.warning("You enabled Vault rewards, but Vault plugin cannot be found ! Disabling Vault rewards...");
                 this.vaultRewards = false;
             } else {
-                this.plugin.info("§eVault §arewards enabled!");
+                this.plugin.info("Vault rewards enabled!");
             }
         }
     }
@@ -360,7 +360,7 @@ public class BBSettings {
         if (themeVotingLore != null) {
             this.themeVotingLore = themeVotingLore;
         } else {
-            this.plugin.severe("§cVariable gui.theme_voting.themes.lore in translates.yml could not be loaded !");
+            this.plugin.severe("Variable gui.theme_voting.themes.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -373,7 +373,7 @@ public class BBSettings {
         if (weatherLore != null) {
             this.weatherLore = weatherLore;
         } else {
-            this.plugin.severe("§cVariable gui.options.items.change_weather_item.lore in translates.yml could not be loaded !");
+            this.plugin.severe("Variable gui.options.items.change_weather_item.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -382,7 +382,7 @@ public class BBSettings {
         if (allowedCommands != null) {
             this.allowedCommands = allowedCommands;
         } else {
-            this.plugin.severe("§cVariable allowed_commands in config.yml could not be loaded !");
+            this.plugin.severe("Variable allowed_commands in config.yml could not be loaded !");
         }
     }
 
@@ -400,10 +400,10 @@ public class BBSettings {
             if (partyMaxPlayers <= 100) {
                 this.partyMaxPlayers = partyMaxPlayers;
             } else {
-                this.plugin.warning("§cVariable parties.max_players can not exceed 100 ! Setting it to default (" + this.partyMaxPlayers + ")");
+                this.plugin.warning("Variable parties.max_players can not exceed 100 ! Setting it to default (" + this.partyMaxPlayers + ")");
             }
         } else {
-            this.plugin.warning("§cVariable parties.max_players must be higher than 0 ! Setting it to default (" + this.partyMaxPlayers + ")");
+            this.plugin.warning("Variable parties.max_players must be higher than 0 ! Setting it to default (" + this.partyMaxPlayers + ")");
         }
     }
 
@@ -451,7 +451,7 @@ public class BBSettings {
     private void setAutoRestarting(boolean autoRestarting) {
         this.autoRestarting = autoRestarting;
         if (autoRestarting) {
-            this.plugin.info("§aAuto-Restarting >> §eEnabled !");
+            this.plugin.info("Auto-Restarting >> Enabled !");
         }
     }
 
@@ -459,9 +459,9 @@ public class BBSettings {
     private void setAutoRestartGamesRequired(int autoRestartGamesRequired) {
         if (autoRestartGamesRequired > 0) {
             this.autoRestartGamesRequired = autoRestartGamesRequired;
-            this.plugin.info("§aAuto-Restarting >> Games Needed to restart : §e" + autoRestartGamesRequired);
+            this.plugin.info("Auto-Restarting >> Games Needed to restart : " + autoRestartGamesRequired);
         } else {
-            this.plugin.warning("§cVariable auto-restart.games-needed must be higher than 0 ! Setting it to default (" + this.autoRestartGamesRequired + ")");
+            this.plugin.warning("Variable auto-restart.games-needed must be higher than 0 ! Setting it to default (" + this.autoRestartGamesRequired + ")");
         }
     }
 
@@ -469,9 +469,9 @@ public class BBSettings {
     private void setAutoRestartCommand(String autoRestartCommand) {
         if (autoRestartCommand != null) {
             this.autoRestartCommand = autoRestartCommand;
-            this.plugin.info("§aAuto-Restarting >> Restart command : §e" + autoRestartCommand);
+            this.plugin.info("Auto-Restarting >> Restart command : " + autoRestartCommand);
         } else {
-            this.plugin.warning("§cVariable auto-restart.restart-command in config.yml is not set ! Setting it to default (" + this.autoRestartCommand + ")");
+            this.plugin.warning("Variable auto-restart.restart-command in config.yml is not set ! Setting it to default (" + this.autoRestartCommand + ")");
         }
     }
 
@@ -480,7 +480,7 @@ public class BBSettings {
         if (finalBannerLore != null) {
             this.finalBannerLore = finalBannerLore;
         } else {
-            this.plugin.warning("§cFinal banner lore in translates.yml is empty !");
+            this.plugin.warning("Final banner lore in translates.yml is empty !");
         }
     }
 
@@ -489,7 +489,7 @@ public class BBSettings {
         if (restricedThemes != null) {
             this.restricedThemes = restricedThemes;
         } else {
-            this.plugin.warning("§cBlacklisted themes in config.yml are empty !");
+            this.plugin.warning("Blacklisted themes in config.yml are empty !");
         }
     }
 
@@ -511,7 +511,7 @@ public class BBSettings {
             } catch (Exception e2) {
             }
         }
-        this.plugin.warning("§cMain Lobby Location in config.yml is not set ! If you don't want to use main lobby feature, just ignore this warning :)");
+        this.plugin.warning("Main Lobby Location in config.yml is not set ! If you don't want to use main lobby feature, just ignore this warning :)");
     }
 
 
@@ -537,7 +537,7 @@ public class BBSettings {
         if (superVoteLore != null) {
             this.superVoteLore = superVoteLore;
         } else {
-            this.plugin.severe("§cVariable gui.theme_voting.supervote_item.lore in translates.yml could not be loaded !");
+            this.plugin.severe("Variable gui.theme_voting.supervote_item.lore in translates.yml could not be loaded !");
         }
     }
 
@@ -584,7 +584,7 @@ public class BBSettings {
         if (endCommands != null) {
             this.endCommands = endCommands;
         } else {
-            this.plugin.severe("§cEnd-Commands list in config.yml could not be loaded !");
+            this.plugin.severe("End-Commands list in config.yml could not be loaded !");
         }
     }
 
@@ -616,11 +616,11 @@ public class BBSettings {
             for (String s : this.plugin.getFileManager().getConfig("themes.yml").get().getStringList("blacklisted-themes")) {
                 this.restricedThemes.add(s);
             }
-            this.plugin.info("§aLoaded §e" + soloThemes.size() + " Solo Themes !");
-            this.plugin.info("§aLoaded §e" + teamThemes.size() + " Team Themes !");
-            this.plugin.info("§aLoaded §e" + restricedThemes.size() + " Restriced Themes !");
+            this.plugin.info("Loaded " + soloThemes.size() + " Solo Themes !");
+            this.plugin.info("Loaded " + teamThemes.size() + " Team Themes !");
+            this.plugin.info("Loaded " + restricedThemes.size() + " Restriced Themes !");
         } catch (Exception e) {
-            this.plugin.severe("§cAn exception occurred while trying loading themes from themes.yml !");
+            this.plugin.severe("An exception occurred while trying loading themes from themes.yml !");
             e.printStackTrace();
         }
     }
@@ -628,9 +628,9 @@ public class BBSettings {
     private void loadFallbackServers() {
         try {
             this.fallbackServers = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("bungeecord.fallback_servers");
-            this.plugin.info("§aFallback servers loaded !");
+            this.plugin.info("Fallback servers loaded !");
         } catch (Exception e) {
-            this.plugin.severe("§cAn exception occurred while trying loading fallback servers from config!");
+            this.plugin.severe("An exception occurred while trying loading fallback servers from config!");
             e.printStackTrace();
         }
     }
@@ -644,16 +644,16 @@ public class BBSettings {
                 CompMaterial mat = CompMaterial.fromString(s);
 
                 if(mat == null)  {
-                    this.plugin.warning("§cMaterial " + s + " is not a valid material for your server version ! Use materials from here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
+                    this.plugin.warning("Material " + s + " is not a valid material for your server version ! Use materials from here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
                     continue;
                 }
 
                 this.restricedBlocks.add(mat.toMaterial());
             }
 
-            this.plugin.info("§aRestricted blocks loaded !");
+            this.plugin.info("Restricted blocks loaded !");
         } catch (Exception e) {
-            this.plugin.severe("§cAn exception occurred while trying loading restriced blocks from config !");
+            this.plugin.severe("An exception occurred while trying loading restriced blocks from config !");
             e.printStackTrace();
         }
     }
@@ -757,7 +757,7 @@ public class BBSettings {
             }
 
         } catch (NullPointerException e) {
-            this.plugin.severe("§cAn exception occurred while loading arena preferences ! Check your config.yml");
+            this.plugin.severe("An exception occurred while loading arena preferences ! Check your config.yml");
             e.printStackTrace();
         }
     }
