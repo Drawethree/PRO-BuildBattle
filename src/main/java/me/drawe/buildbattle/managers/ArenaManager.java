@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
-import me.drawe.buildbattle.objects.bbobjects.BBSign;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaEdit;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
@@ -15,7 +14,6 @@ import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -149,17 +147,6 @@ public class ArenaManager {
             }
         }
         return false;
-    }
-
-    public BBSign getArenaSign(Sign s) {
-        for (BBArena a : this.arenas.values()) {
-            for (BBSign sign : a.getArenaSigns()) {
-                if (sign.getSign().equals(s)) {
-                    return sign;
-                }
-            }
-        }
-        return null;
     }
 
     public BBArena getArena(String name) {
