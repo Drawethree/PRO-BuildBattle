@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.listeners;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.heads.Category;
-import me.drawe.buildbattle.heads.HeadInventory;
 import me.drawe.buildbattle.objects.GUIItem;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.PlotBiome;
@@ -15,12 +13,15 @@ import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.objects.bbobjects.sign.BBArenaJoinSign;
+import me.drawe.buildbattle.objects.bbobjects.sign.BBArenaSpectateSign;
 import me.drawe.buildbattle.objects.bbobjects.sign.BBAutoJoinSign;
 import me.drawe.buildbattle.objects.bbobjects.sign.BBSign;
 import me.drawe.buildbattle.utils.BungeeUtils;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawe.buildbattle.utils.compatbridge.model.CompSound;
 import me.drawe.buildbattle.utils.compatbridge.model.CompatBridge;
+import me.drawe.headsapi.Category;
+import me.drawe.headsapi.HeadInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -738,7 +739,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            final BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
+			BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
 
             if (arena != null) {
                 if (this.plugin.getSignManager().createSign(new BBArenaJoinSign(this.plugin, arena, e.getBlock().getLocation()))) {
@@ -749,22 +750,33 @@ public class PlayerListener implements Listener {
                     p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
                 }
                 return;
-            } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
-                BBGameMode type = null;
-                if (e.getLine(2).equalsIgnoreCase("team")) {
-                    type = BBGameMode.TEAM;
-                } else if (e.getLine(2).equalsIgnoreCase("solo")) {
-                    type = BBGameMode.SOLO;
-                }
+			} else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
+				BBGameMode type = null;
+				if (e.getLine(2).equalsIgnoreCase("team")) {
+					type = BBGameMode.TEAM;
+				} else if (e.getLine(2).equalsIgnoreCase("solo")) {
+					type = BBGameMode.SOLO;
+				}
 
-                if (this.plugin.getSignManager().createSign(new BBAutoJoinSign(this.plugin, type, e.getBlock().getLocation()))) {
-                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
-                } else {
-                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cSomething went wrong. Please contact developer.");
-                    e.setCancelled(true);
-                    e.getBlock().breakNaturally();
-                }
-            }
+				if (this.plugin.getSignManager().createSign(new BBAutoJoinSign(this.plugin, type, e.getBlock().getLocation()))) {
+					p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
+				} else {
+					p.sendMessage(this.plugin.getSettings().getPrefix() + "§cSomething went wrong. Please contact developer.");
+					e.setCancelled(true);
+					e.getBlock().breakNaturally();
+				}
+			} else if (e.getLine(1).equalsIgnoreCase("spectate")) {
+				arena = this.plugin.getArenaManager().getArena(e.getLine(2));
+
+				if (arena != null && this.plugin.getSignManager().createSign(new BBArenaSpectateSign(this.plugin, arena, e.getBlock().getLocation()))) {
+					p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSpectate sign for arena §e" + arena.getName() + " §asuccessfully created!");
+				} else {
+					e.setCancelled(true);
+					e.getBlock().breakNaturally();
+					p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
+					return;
+				}
+			}
         }
     }
 
