@@ -15,6 +15,7 @@ import org.bukkit.event.block.Action;
 @Getter
 public abstract class BBSign implements ConfigLoadable, ConfigSaveable {
 
+
     private BuildBattle parent;
     private BBSignType type;
     protected Sign sign;
