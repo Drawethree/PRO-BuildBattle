@@ -341,6 +341,11 @@ signs:
     second_line: "&7Right-Click to"
     third_line: "&aAUTO-JOIN"
     fourth_line: "&eTEAM"
+  spectate:
+    first_line: "&7[&bBuildBattle&7]"
+    second_line: "&7Right-Click to"
+    third_line: "&aSpectate"
+    fourth_line: "&e%arena%"
 time:
   seconds: "Seconds"
   minutes: "Minutes"
