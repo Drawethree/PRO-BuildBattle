@@ -46,6 +46,9 @@ public class SignManager {
                     case AUTO_JOIN:
                         loadedSign = new BBAutoJoinSign(this.plugin, location);
                         break;
+					case SPECTATE:
+						loadedSign = new BBArenaSpectateSign(this.plugin, location);
+						break;
                 }
 
                 if (loadedSign != null && loadedSign.isValid()) {
@@ -121,7 +124,6 @@ public class SignManager {
                 }
             }
         }.runTaskAsynchronously(this.plugin);
-
     }
 
     public void removeSign(Player p, BBSign bbSign) {
