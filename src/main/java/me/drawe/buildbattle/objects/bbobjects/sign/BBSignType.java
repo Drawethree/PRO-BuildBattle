@@ -5,7 +5,8 @@ import lombok.Getter;
 public enum BBSignType {
     JOIN("join"),
     LEAVE("leave"),
-    AUTO_JOIN("auto-join");
+    AUTO_JOIN("auto-join"),
+    SPECTATE("spectate");
 
     @Getter
     private String configPath;
