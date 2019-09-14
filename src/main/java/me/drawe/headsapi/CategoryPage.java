@@ -1,15 +1,13 @@
-package me.drawe.buildbattle.heads;
+package me.drawe.headsapi;
 
 
-import java.util.List;
-
-import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.heads.util.ItemStackCreator;
 import me.drawe.buildbattle.objects.Message;
+import me.drawe.headsapi.util.ItemStackCreator;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 /**
  * This class contains the object of CategoryPage. This object is a page in the
@@ -44,7 +42,7 @@ public class CategoryPage {
         for (int i = 0; i < heads.size(); i++) {
             PAGE.setItem(i, heads.get(i));
         }
-        setDefaults();
+		this.setDefaults();
     }
 
     /**

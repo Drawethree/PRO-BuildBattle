@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.heads.util;
+package me.drawe.headsapi.util;
 
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.ChatColor;
@@ -94,9 +94,8 @@ public class ItemStackCreator {
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setOwner(playerName);
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
-        List<String> loreList = new ArrayList();
-        for (int i = 0; i < lore.length; i++) {
-            String loreLine = lore[i];
+		List<String> loreList = new ArrayList<>();
+		for (String loreLine : lore) {
             loreList.add(ChatColor.translateAlternateColorCodes('&', loreLine));
         }
         skullMeta.setLore(loreList);

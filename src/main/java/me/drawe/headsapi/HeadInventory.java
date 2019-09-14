@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.heads;
+package me.drawe.headsapi;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.Message;

@@ -1,8 +1,8 @@
-package me.drawe.buildbattle.heads;
+package me.drawe.headsapi;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.heads.util.ItemStackCreator;
 import me.drawe.buildbattle.utils.compatbridge.model.CompMaterial;
+import me.drawe.headsapi.util.ItemStackCreator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
