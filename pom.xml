@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.3.0</version>
+    <version>6.3.1</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -29,7 +29,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -84,7 +84,6 @@
         </repository>
         <repository>
             <id>mvdw-software</id>
-            <name>MVdW Public Repositories</name>
             <url>http://repo.mvdw-software.be/content/groups/public/</url>
         </repository>
         <repository>
@@ -124,12 +123,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.maximvdw</groupId>
-            <artifactId>MVdWPlaceholderAPI</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.3.0</version>
@@ -162,6 +155,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/worldedit-bukkit-6.1.9.jar</systemPath>
         </dependency>
-
+        <dependency>
+            <groupId>MVdWPlaceholderAPI</groupId>
+            <artifactId>MVdWPlaceholderAPI</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MVdWPlaceholderAPI.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
