@@ -3,3 +3,4 @@ signs:
   join: {}
   leave: {}
   auto-join: {}
+  spectate: {}
