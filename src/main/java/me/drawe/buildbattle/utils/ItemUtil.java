@@ -19,12 +19,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
 public class ItemUtil {
 
-    public static int getInventorySizeBasedOnList(List<?> list) {
+	public static int getInventorySizeBasedOnList(Collection<?> list) {
         int size = 9;
         while (list.size() > size) {
             if (size == 54) {
