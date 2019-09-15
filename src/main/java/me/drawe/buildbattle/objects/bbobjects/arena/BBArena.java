@@ -336,11 +336,11 @@ public class BBArena implements Spectatable<Player> {
         setPlotsToTeams();
         plugin.getPlayerManager().clearInventoryAllPlayersInArena(getArenaInstance());
         themeVotingCountdown = new BukkitRunnable() {
-            int countdown = (int) plugin.getSettings().getThemeVotingTime();
+			int countdown = plugin.getSettings().getThemeVotingTime();
 
             @Override
             public void run() {
-                updateAllScoreboards(countdown, (int) plugin.getSettings().getThemeVotingTime());
+				updateAllScoreboards(countdown, plugin.getSettings().getThemeVotingTime());
                 if (countdown == 0) {
                     themeVoting.setWinner();
                     startGame(themeVoting.getWinner().getName());
