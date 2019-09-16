@@ -179,7 +179,7 @@ public class MySQLManager {
 
     public void savePlayerStats(BBPlayerStats playerStats) {
 
-        if(!isUUIDInTable(playerStats.getUuid())) {
+        if (!isUUIDInTable(playerStats.getUuid())) {
             this.addPlayerToTable(playerStats);
             return;
         }
@@ -189,7 +189,7 @@ public class MySQLManager {
         }
     }
 
-    public synchronized void loadAllPlayerStats(ArrayList<BBPlayerStats> allData, CountDownLatch latch) {
+    public synchronized void loadAllPlayerStats(HashMap<UUID, BBPlayerStats> map, CountDownLatch latch) {
         new BukkitRunnable() {
 
             @Override
@@ -199,10 +199,10 @@ public class MySQLManager {
                     while (set.next()) {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
 
-                        for(BBStat stat : BBStat.values()) {
+                        for (BBStat stat : BBStat.values()) {
                             stats.setStat(stat, set.getObject(stat.getSQLKey()));
                         }
-                        allData.add(stats);
+                        map.put(stats.getUuid(), stats);
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
