@@ -7,7 +7,6 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.mysql.MySQL;
 import me.drawe.buildbattle.utils.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +67,7 @@ public class BBBuildReport {
                 BuildBattle.getInstance().getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
                 break;
             case MYSQL:
-                MySQL.update("UPDATE BuildBattlePro_ReportedBuilds SET Status=" + reportStatus.name().toUpperCase() + " WHERE ID=" + getReportID() + "");
+                BuildBattle.getInstance().getMySQLDatabase().update("UPDATE BuildBattlePro_ReportedBuilds SET Status=" + reportStatus.name().toUpperCase() + " WHERE ID=" + getReportID() + "");
                 break;
         }
     }
