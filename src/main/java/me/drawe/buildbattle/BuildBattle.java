@@ -12,7 +12,7 @@ import me.drawe.buildbattle.hooks.BBHook;
 import me.drawe.buildbattle.listeners.PlayerListener;
 import me.drawe.buildbattle.listeners.ServerListener;
 import me.drawe.buildbattle.managers.*;
-import me.drawe.buildbattle.mysql.MySQL;
+import me.drawe.buildbattle.mysql.MySQLDatabase;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.StatsType;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStatsLoader;
@@ -22,12 +22,10 @@ import me.drawe.buildbattle.utils.MetricsLite;
 import me.drawe.buildbattle.utils.compatbridge.MinecraftVersion;
 import me.drawe.headsapi.HeadInventory;
 import me.drawe.spectateapi.SpectatorManager;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -38,13 +36,14 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private static BuildBattle instance;
     private static BuildBattleProAPI API;
-    private boolean debug = false;
+    private boolean debug = true;
 
     private FileManager fileManager;
     private ArenaManager arenaManager;
     private BannerCreatorManager bannerCreatorManager;
     private LeaderboardManager leaderboardManager;
     private MySQLManager mySQLManager;
+    private MySQLDatabase mySQLDatabase;
     private OptionsManager optionsManager;
     private PartyManager partyManager;
     private PlayerManager playerManager;
@@ -56,7 +55,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private SignManager signManager;
     private BBSettings settings;
     private WorldEditPlugin worldEdit;
-    private Economy econ;
     private MetricsLite metrics;
     private HeadInventory headInventory;
 
@@ -76,7 +74,9 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.settings.loadSettings();
 
         if (this.settings.getStatsType() == StatsType.MYSQL) {
-            MySQL.getInstance().connect();
+            this.mySQLDatabase = new MySQLDatabase(this);
+            this.mySQLDatabase.connect();
+            this.mySQLManager = new MySQLManager(this.mySQLDatabase);
         }
 
         this.checkForLoadingLater();
@@ -84,7 +84,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.arenaManager = new ArenaManager(this);
         this.bannerCreatorManager = new BannerCreatorManager(this);
         this.leaderboardManager = new LeaderboardManager(this);
-        this.mySQLManager = new MySQLManager(this);
         this.optionsManager = new OptionsManager(this);
         this.partyManager = new PartyManager(this);
         this.playerManager = new PlayerManager(this);
@@ -104,7 +103,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.headInventory = new HeadInventory(this);
         this.hook();
 
-        for(Player p : Bukkit.getOnlinePlayers()) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
             BBPlayerStatsLoader.load(p);
         }
 
@@ -140,13 +139,13 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void hook() {
-        BBHook.attemptHooks();
+        BBHook.attemptHooks(this);
         this.loadWorldEdit();
         this.metrics = new MetricsLite(this);
     }
 
     public static BuildBattle getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new BuildBattle();
         }
         return instance;
@@ -171,9 +170,18 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
         this.reloadAllConfigs();
         this.settings.loadSettings();
+
+        //Reconnect MySQL
+        if (this.settings.getStatsType() == StatsType.MYSQL) {
+            this.mySQLDatabase.close();
+            this.mySQLDatabase.connect();
+        }
+
         Message.reloadMessages();
+
         this.optionsManager.reloadItemsAndInventories();
         this.headInventory.reload();
+        this.rewardManager.reload(this);
         this.arenaManager.loadArenas();
         this.signManager.loadSigns();
 
@@ -212,7 +220,22 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void removeUnusedPathsFromConfigs() {
-        this.fileManager.getConfig("config.yml").set("arena.restriced_blocks", null).set("arena.themes", null).set("arena.blacklisted_themes", null).set("arena.enable_clear_plot_option", null).set("arena.end_command", null).save();
+        this.fileManager.getConfig("config.yml")
+                .set("arena.restriced_blocks", null)
+                .set("arena.themes", null)
+                .set("arena.blacklisted_themes", null)
+                .set("arena.enable_clear_plot_option", null)
+                .set("arena.end_command", null)
+                .set("rewards.PointsAPI.first_place", null)
+                .set("rewards.PointsAPI.second_place", null)
+                .set("rewards.PointsAPI.third_place", null)
+                .set("rewards.Vault.first_place", null)
+                .set("rewards.Vault.second_place", null)
+                .set("rewards.Vault.third_place", null)
+                .set("rewards.Command.first_place", null)
+                .set("rewards.Command.second_place", null)
+                .set("rewards.Command.third_place", null)
+                .save();
     }
 
     @Override
@@ -222,6 +245,11 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         }
         for (BBArena a : this.arenaManager.getArenas().values()) {
             a.stopArena(Message.RELOAD.getChatMessage(), true);
+        }
+
+        //Do not forget to close MySQL connection !
+        if (this.mySQLDatabase != null) {
+            this.mySQLDatabase.close();
         }
     }
 
@@ -245,15 +273,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
 
-    }
-
-    public boolean setupEconomy() {
-        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        this.econ = rsp.getProvider();
-        return true;
     }
 
     public void info(String message) {
