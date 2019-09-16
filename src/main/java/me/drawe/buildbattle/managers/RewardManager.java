@@ -28,7 +28,7 @@ public class RewardManager {
                 pointsAPIRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 pointsAPIRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
                 pointsAPIRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (IndexOutOfBoundsException e) {
+            } catch (Exception e) {
             }
         }
         if(this.plugin.getSettings().isVaultRewards()) {
@@ -36,7 +36,7 @@ public class RewardManager {
                 vaultRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 vaultRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
                 vaultRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (IndexOutOfBoundsException e) {
+            } catch (Exception e) {
             }
         }
         if(this.plugin.getSettings().isCommandRewards()) {
@@ -44,7 +44,7 @@ public class RewardManager {
                 commandRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
                 commandRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
                 commandRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (IndexOutOfBoundsException e) {
+            } catch (Exception e) {
             }
         }
     }
