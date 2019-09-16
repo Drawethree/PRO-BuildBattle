@@ -1,7 +1,7 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.mysql.MySQL;
+import me.drawe.buildbattle.mysql.MySQLDatabase;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.BBBuildReport;
 import me.drawe.buildbattle.objects.bbobjects.BBPlayerStats;
@@ -23,10 +23,10 @@ import java.util.concurrent.CountDownLatch;
 
 public class MySQLManager {
 
-    private BuildBattle plugin;
+    private MySQLDatabase database;
 
-    public MySQLManager(BuildBattle buildBattle) {
-        this.plugin = buildBattle;
+    public MySQLManager(MySQLDatabase database) {
+        this.database = database;
     }
 
     //CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int, Wins int, MostPoints int)
@@ -34,7 +34,7 @@ public class MySQLManager {
 
     public boolean hasReportedPlayer(Player reporter, Player player) {
         try {
-            return MySQL.getResult(MySQL.getStatement("SELECT * FROM BuildBattlePro_ReportedBuilds WHERE Player='" + player.getName() + "' AND ReportedBy='" + reporter.getName() + "'")).next();
+            return database.query(database.getStatement("SELECT * FROM BuildBattlePro_ReportedBuilds WHERE Player='" + player.getName() + "' AND ReportedBy='" + reporter.getName() + "'")).next();
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -49,7 +49,7 @@ public class MySQLManager {
                     return;
                 }
                 if (!hasReportedPlayer(reporter, player)) {
-                    PreparedStatement statement = MySQL.getConnection().prepareStatement("INSERT INTO BuildBattlePro_ReportedBuilds(Player,ReportedBy,Date) VALUES(?,?,?)");
+                    PreparedStatement statement = database.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(Player,ReportedBy,Date) VALUES(?,?,?)");
                     statement.setString(1, player.getName());
                     statement.setString(2, reporter.getName());
                     statement.setString(3, Time.getCurrentDateTime());
@@ -68,7 +68,7 @@ public class MySQLManager {
 
     public boolean isUUIDInTable(UUID uuid) {
         try {
-            ResultSet set = MySQL.getResult(MySQL.getStatement("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID='" + uuid.toString() + "'"));
+            ResultSet set = database.query(database.getStatement("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID='" + uuid.toString() + "'"));
             return set.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class MySQLManager {
 
     public void addPlayerToTable(BBPlayerStats ps) {
         if (!isUUIDInTable(ps.getUuid())) {
-            MySQL.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getStat(BBStat.PLAYED) + "','" + ps.getStat(BBStat.WINS) + "','" + ps.getStat(BBStat.MOST_POINTS) + "','" + ps.getStat(BBStat.BLOCKS_PLACED) + "','" + ps.getStat(BBStat.PARTICLES_PLACED) + "','" + ps.getStat(BBStat.SUPER_VOTES) + "')");
+            database.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getStat(BBStat.PLAYED) + "','" + ps.getStat(BBStat.WINS) + "','" + ps.getStat(BBStat.MOST_POINTS) + "','" + ps.getStat(BBStat.BLOCKS_PLACED) + "','" + ps.getStat(BBStat.PARTICLES_PLACED) + "','" + ps.getStat(BBStat.SUPER_VOTES) + "')");
         } else {
             this.savePlayerStats(ps);
         }
@@ -89,32 +89,32 @@ public class MySQLManager {
 
             @Override
             public void run() {
-                PreparedStatement statement = MySQL.getStatement("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID=?");
+                PreparedStatement statement = database.getStatement("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID=?");
                 try {
                     statement.setString(1, p.getUniqueId().toString());
-                    ResultSet set = MySQL.getResult(statement);
+                    ResultSet set = database.query(statement);
                     if (set.next()) {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
                         for (BBStat stat : BBStat.values()) {
                             stats.setStat(stat, set.getObject(stat.getSQLKey()));
                         }
-                        MySQLManager.this.plugin.getPlayerManager().getPlayerStats().put(stats.getUuid(), stats);
-                        BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from MySQL!");
+                        database.getParent().getPlayerManager().getPlayerStats().put(stats.getUuid(), stats);
+                        BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from MySQLDatabase!");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-        }.runTaskAsynchronously(this.plugin);
+        }.runTaskAsynchronously(database.getParent());
     }
 
     public void loadAllReports() {
         if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
             return;
         }
-        this.plugin.getReportManager().getBuildReports().clear();
+        database.getParent().getReportManager().getBuildReports().clear();
 
-        ResultSet set = MySQL.getResult(MySQL.getStatement("SELECT * FROM BuildBattlePro_ReportedBuilds"));
+        ResultSet set = database.query(database.getStatement("SELECT * FROM BuildBattlePro_ReportedBuilds"));
         try {
             while (set.next()) {
                 String id = set.getString("ID");
@@ -123,23 +123,23 @@ public class MySQLManager {
                 Arrays.asList(reportedPlayersString.split(",")).forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
                 UUID reportedBy = UUID.fromString(set.getString("ReportedBy"));
                 Date date = set.getTimestamp("Date");
-                File schematic = new File(new File(this.plugin.getDataFolder(), this.plugin.getReportManager().getReportsDirectoryName()), set.getString("SchematicName"));
+                File schematic = new File(new File(database.getParent().getDataFolder(), database.getParent().getReportManager().getReportsDirectoryName()), set.getString("SchematicName"));
                 BBReportStatus reportStatus = BBReportStatus.valueOf(set.getString("Status").toUpperCase());
                 BBBuildReport report = new BBBuildReport(id, reportedPlayers, reportedBy, schematic, date, reportStatus);
-                this.plugin.getReportManager().getBuildReports().add(report);
+                database.getParent().getReportManager().getBuildReports().add(report);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        plugin.info("§aBuildBattle build reports loaded !");
+        database.getParent().info("§aBuildBattle build reports loaded !");
     }
 
     public boolean saveReport(BBBuildReport report) {
-        if (plugin.isEnabled()) {
+        if (database.getParent().isEnabled()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    PreparedStatement statement = MySQL.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
+                    PreparedStatement statement = database.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
                     try {
                         statement.setString(1, report.getReportID());
                         statement.setString(2, report.getReportedPlayersInCommaSeparatedString());
@@ -149,13 +149,13 @@ public class MySQLManager {
                         statement.setString(6, report.getReportStatus().name().toUpperCase());
                         statement.execute();
                     } catch (SQLException e) {
-                        plugin.severe("An error occurred while saving build report " + report.getReportID() + " into MySQL database !");
+                        database.getParent().severe("An error occurred while saving build report " + report.getReportID() + " into MySQLDatabase database !");
                         e.printStackTrace();
                     }
                 }
-            }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(database.getParent());
         } else {
-            PreparedStatement statement = MySQL.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
+            PreparedStatement statement = database.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)");
             try {
                 statement.setString(1, report.getReportID());
                 statement.setString(2, report.getReportedPlayersInCommaSeparatedString());
@@ -165,7 +165,7 @@ public class MySQLManager {
                 statement.setString(6, report.getReportStatus().name().toUpperCase());
                 statement.execute();
             } catch (SQLException e) {
-                plugin.severe("An error occurred while saving build report " + report.getReportID() + " into MySQL database !");
+                database.getParent().severe("An error occurred while saving build report " + report.getReportID() + " into MySQLDatabase database !");
                 e.printStackTrace();
             }
         }
@@ -173,7 +173,7 @@ public class MySQLManager {
     }
 
     public boolean deleteReport(BBBuildReport report) {
-        MySQL.update("DELETE FROM BuildBattlePro_ReportedBuilds WHERE ID='" + report.getReportID() + "'");
+        database.update("DELETE FROM BuildBattlePro_ReportedBuilds WHERE ID='" + report.getReportID() + "'");
         return true;
     }
 
@@ -194,7 +194,7 @@ public class MySQLManager {
 
             @Override
             public void run() {
-                ResultSet set = MySQL.getResult(MySQL.getStatement("SELECT * FROM BuildBattlePro_PlayerData"));
+                ResultSet set = database.query(database.getStatement("SELECT * FROM BuildBattlePro_PlayerData"));
                 try {
                     while (set.next()) {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
@@ -209,15 +209,15 @@ public class MySQLManager {
                 }
                 latch.countDown();
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(database.getParent());
     }
 
     public void savePlayerStat(BBStat stat, BBPlayerStats bbPlayerStats) {
-        MySQL.update("UPDATE BuildBattlePro_PlayerData SET " + stat.getSQLKey() + "='" + bbPlayerStats.getStat(stat) + "' WHERE UUID='" + bbPlayerStats.getUuid().toString() + "'");
+        database.update("UPDATE BuildBattlePro_PlayerData SET " + stat.getSQLKey() + "='" + bbPlayerStats.getStat(stat) + "' WHERE UUID='" + bbPlayerStats.getUuid().toString() + "'");
     }
 
     public Double getPlayerStat(BBStat stat, Player player) {
-        ResultSet set = MySQL.getResult(MySQL.getStatement("SELECT " + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData WHERE UUID='" + player.getUniqueId() + "'"));
+        ResultSet set = database.query(database.getStatement("SELECT " + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData WHERE UUID='" + player.getUniqueId() + "'"));
         try {
             while (set.next()) {
                 return set.getDouble(stat.getSQLKey());
