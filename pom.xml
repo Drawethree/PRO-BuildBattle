@@ -6,7 +6,7 @@
 
     <groupId>me.drawe</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.3.1</version>
+    <version>6.3.2-TEST</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
