@@ -14,63 +14,63 @@ public class BBHookMVDWPAPI extends BBHook {
     }
 
     @Override
-    protected void runHookAction() {
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_wins",
+    protected void runHookAction(BuildBattle plugin) {
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_wins",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.WINS));
                     }
                     return "0";
                 });
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_played",
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_played",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.PLAYED));
                     }
                     return "0";
                 });
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_most_points",
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_most_points",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.MOST_POINTS));
                     }
                     return "0";
                 });
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_blocks_placed",
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_blocks_placed",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.BLOCKS_PLACED));
                     }
                     return "0";
                 });
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_particles_placed",
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_particles_placed",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.PARTICLES_PLACED));
                     }
                     return "0";
                 });
-        PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_super_votes",
+        PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_super_votes",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
-                    BBPlayerStats pStats = BuildBattle.getInstance().getPlayerManager().getPlayerStats(offlinePlayer);
+                    BBPlayerStats pStats = plugin.getPlayerManager().getPlayerStats(offlinePlayer);
                     if (pStats != null) {
                         return String.valueOf(pStats.getStat(BBStat.SUPER_VOTES));
                     }
                     return "0";
                 });
-        for (BBArena arena : BuildBattle.getInstance().getArenaManager().getArenas().values()) {
-            PlaceholderAPI.registerPlaceholder(BuildBattle.getInstance(), "buildbattlepro_status_" + arena.getName(),
+        for (BBArena arena : plugin.getArenaManager().getArenas().values()) {
+            PlaceholderAPI.registerPlaceholder(plugin, "buildbattlepro_status_" + arena.getName(),
                     placeholderReplaceEvent -> arena.getBBArenaState().getPrefix());
         }
     }

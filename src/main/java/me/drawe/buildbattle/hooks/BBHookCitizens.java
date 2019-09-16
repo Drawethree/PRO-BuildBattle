@@ -11,7 +11,7 @@ public class BBHookCitizens extends BBHook {
     }
 
     @Override
-    protected void runHookAction() {
-        Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(BuildBattle.getInstance()), BuildBattle.getInstance());
+    protected void runHookAction(BuildBattle plugin) {
+        Bukkit.getServer().getPluginManager().registerEvents(new NPCListener(plugin), plugin);
     }
 }

@@ -9,7 +9,7 @@ public class BBHookHolographicDisplays extends BBHook {
     }
 
     @Override
-    protected void runHookAction() {
-        BuildBattle.getInstance().getLeaderboardManager().loadAllLeaderboards();
+    protected void runHookAction(BuildBattle plugin) {
+        plugin.getLeaderboardManager().loadAllLeaderboards();
     }
 }
