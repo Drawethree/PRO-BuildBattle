@@ -10,6 +10,7 @@ public abstract class BBHook {
     private static HashMap<String, BBHook> hooks = new HashMap<>();
 
     static {
+        hooks.put("Vault", new BBVaultHook());
         hooks.put("Citizens", new BBHookCitizens());
         hooks.put("HolographicDisplays", new BBHookHolographicDisplays());
         hooks.put("LeaderHeads", new BBHookLeaderHeads());
@@ -17,14 +18,18 @@ public abstract class BBHook {
         hooks.put("PlaceholderAPI", new BBHookPlaceholderAPI());
     }
 
-    public static void attemptHooks() {
+    public static void attemptHooks(BuildBattle buildBattle) {
         for(BBHook hook : hooks.values()) {
-            hook.hook();
+            hook.hook(buildBattle);
         }
     }
 
     public static boolean getHook(String pluginName) {
         return hooks.get(pluginName).isEnabled();
+    }
+
+    public static BBHook getHookInstance(String pluginName) {
+        return hooks.get(pluginName);
     }
 
     private String pluginName;
@@ -34,19 +39,15 @@ public abstract class BBHook {
         this.pluginName = pluginName;
     }
 
-    public void hook() {
+    public void hook(BuildBattle buildBattle) {
         if(Bukkit.getPluginManager().isPluginEnabled(this.pluginName)) {
             BuildBattle.getInstance().info("§aSuccessfully hooked into §e" + this.pluginName + " §a!");
             this.enabled = true;
-            this.runHookAction();
+            this.runHookAction(buildBattle);
         }
     }
 
-    protected abstract void runHookAction();
-
-    public String getPluginName() {
-        return pluginName;
-    }
+    protected abstract void runHookAction(BuildBattle buildBattle);
 
     public boolean isEnabled() {
         return enabled;
