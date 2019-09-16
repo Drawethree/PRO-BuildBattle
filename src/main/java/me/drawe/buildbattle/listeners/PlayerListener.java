@@ -563,6 +563,7 @@ public class PlayerListener implements Listener {
                 if (e.getClickedBlock().getState() instanceof Sign) {
                     BBSign arenaSign = this.plugin.getSignManager().getSignAtLocation(e.getClickedBlock().getLocation());
                     if (arenaSign != null) {
+                        e.setCancelled(true);
                         arenaSign.handleClick(p, e.getAction());
                     }
                 }
