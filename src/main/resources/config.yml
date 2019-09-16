@@ -9,11 +9,11 @@ mysql:
   database: dbName
   password: dbPass
 bungeecord:
- use_bungee: false
- fallback_servers:
- - lobby1
- auto_join_players: true
- change_motd: false
+  use_bungee: false
+  fallback_servers:
+    - lobby1
+  auto_join_players: true
+  change_motd: false
 parties:
   enabled: true
   max_players: 5
@@ -21,22 +21,25 @@ rewards:
   give_after_game_ends: true
   PointsAPI:
     enabled: false
-    first_place: 50
-    second_place: 25
-    third_place: 10
+    placement:
+      1: 50
+      2: 25
+      3: 10
   Vault:
     enabled: false
-    first_place: 50
-    second_place: 25
-    third_place: 10
+    placement:
+      1: 50
+      2: 25
+      3: 10
   Command:
     enabled: false
-    first_place:
-      - 'give %player% 264 3'
-    second_place:
-      - 'give %player% 264 2'
-    third_place:
-      - 'give %player% 264 1'
+    placement:
+      1:
+        - 'give %player% diamond 3'
+      2:
+        - 'give %player% diamond 2'
+      3:
+        - 'give %player% diamond 1'
 auto-restart:
   enabled: false
   games-needed: 10
@@ -69,7 +72,7 @@ arena:
   remove_players_after_game: true
   enable_clear_plot_option: true
   end_commands:
-  - "eco give %winner% 100"
+    - "eco give %winner% 100"
   plot_options:
     heads: true
     change_floor: true
@@ -89,8 +92,8 @@ arena:
     firework_waves: 3
     amount_per_corner: 5
   allowed_commands:
-   - bb
-   - buildbattle
+    - bb
+    - buildbattle
   restricted_blocks:
     - BEDROCK
 change_floor_npc:
@@ -105,11 +108,11 @@ main_command:
   name: "buildbattle"
   description: "Main BuildBattle command"
   aliases:
-  - "bb"
-  - "bbpro"
-  - "buildbattlepro"
+    - "bb"
+    - "bbpro"
+    - "buildbattlepro"
 set_theme_command:
   name: "settheme"
   description: "Settheme command for BuildBattle"
   aliases:
-  - "themeset"
+    - "themeset"
