@@ -241,7 +241,7 @@ public class PlayerManager {
                         try {
                             BBPlot plot = a.getVotingPlots().get(i);
                             if (plot != null && plot.getTeam() != null) {
-                                FancyMessage.sendCenteredMessage(player, s.replaceAll("%position%", String.valueOf(a.getPosition(plot))).replaceAll("%points%", String.valueOf(plot.getVotePoints())));
+                                FancyMessage.sendCenteredMessage(player, s.replaceAll("%position%", String.valueOf(a.getPositionOrdinal(plot))).replaceAll("%points%", String.valueOf(plot.getVotePoints())));
                                 FancyMessage.sendCenteredMessage(player, "&7" + plot.getTeam().getPlayersInCommaSeparatedString());
                             }
                         } catch (IndexOutOfBoundsException e) {
@@ -251,12 +251,12 @@ public class PlayerManager {
                 } else {
                     if (Bukkit.getServer().getPluginManager().getPlugin("PointsAPI") != null) {
                         FancyMessage.sendCenteredMessage(player, s
-                                .replaceAll("%player_position%", a.getPosition(playerPlot))
+                                .replaceAll("%player_position%", a.getPositionOrdinal(playerPlot))
                                 .replaceAll("%player_points%", String.valueOf(playerPlot.getVotePoints()).
                                         replaceAll("%pointsapi_points%", String.valueOf(PointsAPI.getPoints(player)))));
                     } else {
                         FancyMessage.sendCenteredMessage(player, s
-                                .replaceAll("%player_position%", a.getPosition(playerPlot))
+                                .replaceAll("%player_position%", a.getPositionOrdinal(playerPlot))
                                 .replaceAll("%player_points%", String.valueOf(playerPlot.getVotePoints())));
                     }
                 }
