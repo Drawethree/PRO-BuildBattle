@@ -429,7 +429,7 @@ public class BBArena implements Spectatable<Player> {
             runEndCommands();
         }
         if (!plugin.getSettings().isGiveRewardsAfterGameEnds()) {
-            plugin.getRewardManager().giveRewards(this);
+            plugin.getRewardManager().giveRewards(this.getVotingPlots());
         }
 
         plugin.getArenaManager().setTotalPlayedGames(plugin.getArenaManager().getTotalPlayedGames() + 1);
@@ -564,9 +564,11 @@ public class BBArena implements Spectatable<Player> {
 
         if (removePlayers || plugin.getSettings().isRemovePlayersAfterGame()) {
             kickAllPlayers();
+
             if (plugin.getSettings().isGiveRewardsAfterGameEnds()) {
-                plugin.getRewardManager().giveRewards(this);
+                plugin.getRewardManager().giveRewards(this.getVotingPlots());
             }
+
         } else {
             updateAllScoreboards(plugin.getSettings().getLobbyTime(), plugin.getSettings().getLobbyTime());
             plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
@@ -839,8 +841,12 @@ public class BBArena implements Spectatable<Player> {
     }
 
 
-    public String getPosition(BBPlot plot) {
+    public String getPositionOrdinal(BBPlot plot) {
         return Time.ordinal(votingPlots.indexOf(plot) + 1);
+    }
+
+    public int getPostionOfPlot(BBPlot plot) {
+        return votingPlots.indexOf(plot) + 1;
     }
 
     private void setVotingPlots() {
