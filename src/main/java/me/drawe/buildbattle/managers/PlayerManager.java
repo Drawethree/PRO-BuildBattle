@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -72,13 +71,13 @@ public class PlayerManager {
         }
     }
 
-    public synchronized void loadAllPlayerStats(ArrayList<BBPlayerStats> list, CountDownLatch latch) {
+    public synchronized void loadAllPlayerStats(HashMap<UUID, BBPlayerStats> map, CountDownLatch latch) {
         for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
             BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
             for (BBStat stat : BBStat.values()) {
                 stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()));
             }
-            list.add(stats);
+            map.put(stats.getUuid(), stats);
         }
         latch.countDown();
     }
