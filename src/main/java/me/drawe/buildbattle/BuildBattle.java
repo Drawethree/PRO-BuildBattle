@@ -36,7 +36,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private static BuildBattle instance;
     private static BuildBattleProAPI API;
-    private boolean debug = true;
+    private boolean debug = false;
 
     private FileManager fileManager;
     private ArenaManager arenaManager;
@@ -66,6 +66,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
         instance = this;
         API = new BuildBattleProAPIImpl(instance);
+
+        if(this.isTestVersion()) {
+            this.debug = true;
+        }
 
         this.fileManager = new FileManager(this);
         this.loadAllConfigs();
@@ -110,6 +114,10 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(FancyMessage.getCenteredMessage("§e§lby §a§l" + getDescription().getAuthors().toString().substring(1, getDescription().getAuthors().toString().length() - 1)));
         Bukkit.getConsoleSender().sendMessage("");
+    }
+
+    private boolean isTestVersion() {
+        return this.getDescription().getVersion().toLowerCase().contains("test");
     }
 
     private void registerBBCommands() {
