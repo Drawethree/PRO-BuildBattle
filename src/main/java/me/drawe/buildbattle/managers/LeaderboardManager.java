@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 public class LeaderboardManager {
@@ -77,18 +78,18 @@ public class LeaderboardManager {
 
             @Override
             public void run() {
-                ArrayList<BBPlayerStats> allData = new ArrayList<>();
+                HashMap<UUID, BBPlayerStats> loadedData = new HashMap<>();
                 CountDownLatch latch = new CountDownLatch(1);
 
                 synchronized (this) {
                     switch (plugin.getSettings().getStatsType()) {
                         case FLATFILE:
                             BuildBattle.getInstance().debug("Loading data from stats.yml");
-                            plugin.getPlayerManager().loadAllPlayerStats(allData, latch);
+                            plugin.getPlayerManager().loadAllPlayerStats(loadedData, latch);
                             break;
                         case MYSQL:
                             BuildBattle.getInstance().debug("Loading data from SQL");
-                            plugin.getMySQLManager().loadAllPlayerStats(allData, latch);
+                            plugin.getMySQLManager().loadAllPlayerStats(loadedData, latch);
                             break;
                     }
                 }
@@ -101,11 +102,14 @@ public class LeaderboardManager {
                     e.printStackTrace();
                 }
 
+                //Data is loaded, now sync it with online data.
+                loadedData.putAll(plugin.getPlayerManager().getPlayerStats());
+
                 BuildBattle.getInstance().debug("Done!");
-                BuildBattle.getInstance().debug("Loaded " + allData.size() + " players!");
+                BuildBattle.getInstance().debug("Loaded " + loadedData.values().size() + " players!");
 
                 for (BBLeaderboard l : activeLeaderboards) {
-                    l.update(allData);
+                    l.update(new ArrayList<>(loadedData.values()));
                 }
 
                 BuildBattle.getInstance().debug("Leaderboards Refreshed!");
