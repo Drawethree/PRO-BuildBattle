@@ -71,7 +71,7 @@ public class SignManager {
             BBArenaJoinSign loadedSign;
             Location loc;
 
-            if(this.plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(arena.getName()) == null) {
+            if(!this.plugin.getFileManager().getConfig("signs.yml").get().contains(arena.getName())) {
                 continue;
             }
 
