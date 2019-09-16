@@ -55,9 +55,6 @@ public class BBSettings {
     private boolean votingForThemes;
     private boolean superVotesEnabled;
     private boolean changeMOTD;
-    private boolean pointsApiRewards;
-    private boolean vaultRewards;
-    private boolean commandRewards;
     private boolean arenaChat;
     private boolean teamChat;
     private boolean announceNewMostPoints;
@@ -136,9 +133,6 @@ public class BBSettings {
         votingForThemes = true;
         superVotesEnabled = true;
         changeMOTD = false;
-        pointsApiRewards = false;
-        vaultRewards = false;
-        commandRewards = false;
         arenaChat = true;
         teamChat = true;
         announceNewMostPoints = true;
@@ -328,31 +322,6 @@ public class BBSettings {
             return true;
         } else {
             return false;
-        }
-    }
-
-
-    private void setPointsApiRewards(boolean pointsApiRewards) {
-        this.pointsApiRewards = pointsApiRewards;
-        if (pointsApiRewards) {
-            if (this.plugin.getServer().getPluginManager().getPlugin("PointsAPI") == null) {
-                this.plugin.warning("You enabled PointsAPI rewards, but PointsAPI plugin cannot be found ! Disabling PointsAPI rewards...");
-                this.pointsApiRewards = false;
-            } else {
-                this.plugin.info("PointsAPI rewards enabled!");
-            }
-        }
-    }
-
-    private void setVaultRewards(boolean vaultRewards) {
-        this.vaultRewards = vaultRewards;
-        if (vaultRewards) {
-            if (this.plugin.setupEconomy() == false) {
-                this.plugin.warning("You enabled Vault rewards, but Vault plugin cannot be found ! Disabling Vault rewards...");
-                this.vaultRewards = false;
-            } else {
-                this.plugin.info("Vault rewards enabled!");
-            }
         }
     }
 
@@ -575,10 +544,6 @@ public class BBSettings {
         this.enableTimeOption = enableTimeOption;
     }
 
-    private void setCommandRewards(boolean commandRewards) {
-        this.commandRewards = commandRewards;
-    }
-
 
     private void setEndCommands(List<String> endCommands) {
         if (endCommands != null) {
@@ -729,9 +694,6 @@ public class BBSettings {
             setFinalBannerLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
             setWeatherLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
             setSuperVoteLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
-            setPointsApiRewards(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.PointsAPI.enabled"));
-            setVaultRewards(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Vault.enabled"));
-            setCommandRewards(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.Command.enabled"));
             setGiveRewardsAfterGameEnds(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.give_after_game_ends"));
             setAsyncSavePlayerData(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
             setStatsType(StatsType.valueOf(this.plugin.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
