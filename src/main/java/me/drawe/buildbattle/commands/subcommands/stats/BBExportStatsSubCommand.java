@@ -16,7 +16,7 @@ public class BBExportStatsSubCommand extends BBSubCommand {
     private BuildBattle plugin;
 
     public BBExportStatsSubCommand(BuildBattle plugin) {
-        super("exportstats", " exportstats §8» §7Export players stats from stats.yml into MySQL", "buildbattlepro.admin", true);
+        super("exportstats", " exportstats §8» §7Export players stats from stats.yml into MySQL Database", "buildbattlepro.admin", true);
         this.plugin = plugin;
     }
 
@@ -25,9 +25,9 @@ public class BBExportStatsSubCommand extends BBSubCommand {
         if (sender.hasPermission(getPermissionRequired())) {
             if (args.length == 0) {
                 if (plugin.getSettings().getStatsType() == StatsType.MYSQL) {
-                    plugin.info("§cUser §e" + sender.getName() + " §chas requested exporting players stats to MySQL!");
-                    plugin.info("§7Starting exporting player stats from stats.yml into MySQL database...");
-                    sender.sendMessage(plugin.getSettings().getPrefix() + " §7§oStarting exporting players stats from stats.yml into MySQL database...");
+                    plugin.info("§cUser §e" + sender.getName() + " §chas requested exporting players stats to MySQL Database!");
+                    plugin.info("§7Starting exporting player stats from stats.yml into MySQL Database database...");
+                    sender.sendMessage(plugin.getSettings().getPrefix() + " §7§oStarting exporting players stats from stats.yml into MySQL Database database...");
                     int playersTransfered = 0;
                     for (String s : plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
@@ -36,7 +36,7 @@ public class BBExportStatsSubCommand extends BBSubCommand {
                             stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()));
                         }
 
-                        plugin.info("§7Copying data of user §e" + s + " §7into MySQL");
+                        plugin.info("§7Copying data of user §e" + s + " §7into MySQL Database");
                         plugin.getMySQLManager().addPlayerToTable(stats);
                         playersTransfered += 1;
                     }
@@ -44,10 +44,10 @@ public class BBExportStatsSubCommand extends BBSubCommand {
                     sender.sendMessage(plugin.getSettings().getPrefix() + " §2Done! §e" + playersTransfered + "§2 players have been transferred.");
                     return true;
                 } else {
-                    sender.sendMessage(plugin.getSettings().getPrefix() + " §cTo export data, firstly please enable and setup MySQL!");
+                    sender.sendMessage(plugin.getSettings().getPrefix() + " §cTo export data, firstly please enable and setup MySQL Database!");
                 }
             } else {
-                sender.sendMessage("§cUsage >> /" + cmd.getName() + " exportstats §8| §7Export players stats from stats.yml into MySQL");
+                sender.sendMessage("§cUsage >> /" + cmd.getName() + " exportstats §8| §7Export players stats from stats.yml into MySQLDatabase");
             }
         } else {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
