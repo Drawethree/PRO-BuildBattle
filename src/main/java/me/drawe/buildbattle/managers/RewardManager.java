@@ -1,51 +1,48 @@
 package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.objects.bbrewards.BBCommandRewards;
-import me.drawe.buildbattle.objects.bbrewards.BBPointsAPIRewards;
-import me.drawe.buildbattle.objects.bbrewards.BBVaultRewards;
+import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
+import me.drawe.buildbattle.objects.rewards.BBCommandRewards;
+import me.drawe.buildbattle.objects.rewards.BBPointsAPIRewards;
+import me.drawe.buildbattle.objects.rewards.BBReward;
+import me.drawe.buildbattle.objects.rewards.BBVaultRewards;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class RewardManager {
 
-    private BuildBattle plugin;
-
-    private BBVaultRewards vaultRewards;
-    private BBCommandRewards commandRewards;
-    private BBPointsAPIRewards pointsAPIRewards;
+    private Set<BBReward> rewards;
 
     public RewardManager(BuildBattle plugin) {
-        this.plugin = plugin;
-        this.vaultRewards = new BBVaultRewards();
-        this.commandRewards = new BBCommandRewards();
-        this.pointsAPIRewards = new BBPointsAPIRewards();
+        this.reload(plugin);
     }
 
 
-    public void giveRewards(BBArena a) {
-        if(this.plugin.getSettings().isPointsApiRewards()) {
-            try {
-                pointsAPIRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
-                pointsAPIRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
-                pointsAPIRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (Exception e) {
+    public void giveRewards(List<BBPlot> votingPlots) {
+
+        //Check if there are no plots to give reward for.
+        if (votingPlots == null) {
+            return;
+        }
+
+        for (BBReward reward : this.rewards) {
+
+            if (!reward.isEnabled()) {
+                continue;
+            }
+
+            for (BBPlot plot : votingPlots) {
+                reward.giveReward(plot.getTeam(), votingPlots.indexOf(plot) + 1);
             }
         }
-        if(this.plugin.getSettings().isVaultRewards()) {
-            try {
-                vaultRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
-                vaultRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
-                vaultRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (Exception e) {
-            }
-        }
-        if(this.plugin.getSettings().isCommandRewards()) {
-            try {
-                commandRewards.giveReward(a.getVotingPlots().get(0).getTeam(), 1);
-                commandRewards.giveReward(a.getVotingPlots().get(1).getTeam(), 2);
-                commandRewards.giveReward(a.getVotingPlots().get(2).getTeam(), 3);
-            } catch (Exception e) {
-            }
-        }
+    }
+
+    public void reload(BuildBattle parent) {
+        this.rewards = new HashSet<>();
+        this.rewards.add(new BBVaultRewards(parent));
+        this.rewards.add(new BBCommandRewards(parent));
+        this.rewards.add(new BBPointsAPIRewards(parent));
     }
 }
