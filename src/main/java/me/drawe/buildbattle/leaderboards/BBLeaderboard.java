@@ -12,8 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class BBLeaderboard {
 
@@ -30,7 +30,7 @@ public class BBLeaderboard {
         this.hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', this.type.getTitle()));
     }
 
-    public void update(List<BBPlayerStats> loadedStats) {
+    public void update(ArrayList<BBPlayerStats> loadedStats) {
 
         if (!BBHook.getHook("HolographicDisplays") || this.hologram == null || this.hologram.isDeleted()) {
             return;
