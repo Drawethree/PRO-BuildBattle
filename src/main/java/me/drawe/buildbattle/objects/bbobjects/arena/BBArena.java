@@ -34,6 +34,7 @@ public class BBArena implements Spectatable<Player> {
 
     @Getter
     private BuildBattle plugin;
+
     private String name;
     private int minPlayers;
     private int gameTime;
@@ -44,6 +45,7 @@ public class BBArena implements Spectatable<Player> {
     private List<BBPlot> buildPlots;
     private List<BBPlot> votingPlots;
     private HashMap<Player, BBScoreboard> playerBoards;
+
     private String theme;
     private BBPlot winner;
     private BBPlot currentVotingPlot;
@@ -60,7 +62,6 @@ public class BBArena implements Spectatable<Player> {
     private BukkitTask playerMovementTask;
 
     private Inventory teamsInventory;
-
     private Inventory spectateInventory;
 
     //LOADING
@@ -343,7 +344,7 @@ public class BBArena implements Spectatable<Player> {
 				updateAllScoreboards(countdown, plugin.getSettings().getThemeVotingTime());
                 if (countdown == 0) {
                     themeVoting.setWinner();
-                    startGame(themeVoting.getWinner().getName());
+                    startGame(themeVoting.getWinner().getName(), true);
                     cancel();
                 } else {
                     themeVoting.updateVoting(countdown);
@@ -359,46 +360,16 @@ public class BBArena implements Spectatable<Player> {
         }
     }
 
-    private void startGame(String theme) {
-        setBBArenaState(BBArenaState.INGAME);
-        this.theme = theme;
-        setVotingPlots();
-        plugin.getPlayerManager().clearInventoryAllPlayersInArena(this);
-        setGamemodeToAllPlayers(GameMode.CREATIVE);
-        plugin.getPlayerManager().addPlayedToAllPlayers(this);
-        plugin.getOptionsManager().giveAllPlayersItem(this, plugin.getOptionsManager().getOptionsItem(), 8);
-        plugin.getPlayerManager().sendStartMessageToAllPlayers(this);
-        plugin.getPlayerManager().closeInventoryAllPlayersInArena(this);
-
-        gameCountdown = new BukkitRunnable() {
-            int countdown = gameTime;
-
-            @Override
-            public void run() {
-                if (countdown == 0) {
-                    updateAllScoreboards(countdown, getGameTime());
-                    startVotingCountdown();
-                    cancel();
-                    return;
-                } else if ((countdown % 60 == 0 && countdown >= 60 && countdown != gameTime) || (countdown % 30 == 0 && countdown < 60) || (countdown < 11)) {
-                    plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
-                    plugin.getPlayerManager().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
-                }
-                updateAllScoreboards(countdown, getGameTime());
-                countdown--;
-            }
-        }.runTaskTimer(BuildBattle.getInstance(), 0L, 20L);
-
-        BuildBattle.getInstance().getServer().getPluginManager().callEvent(new BBGameStartEvent(getArenaInstance()));
-    }
 
     public void startGame(String theme, boolean fromLobby) {
         if (lobbyCountdown != null) {
             lobbyCountdown.cancel();
         }
+
         if (themeVotingCountdown != null) {
             themeVotingCountdown.cancel();
         }
+
         setBBArenaState(BBArenaState.INGAME);
         this.theme = theme;
         if (fromLobby) {
