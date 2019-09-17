@@ -79,6 +79,7 @@ public class MySQLManager {
     public void addPlayerToTable(BBPlayerStats ps) {
         if (!isUUIDInTable(ps.getUuid())) {
             database.update("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES('" + ps.getUuid().toString() + "','" + ps.getStat(BBStat.PLAYED) + "','" + ps.getStat(BBStat.WINS) + "','" + ps.getStat(BBStat.MOST_POINTS) + "','" + ps.getStat(BBStat.BLOCKS_PLACED) + "','" + ps.getStat(BBStat.PARTICLES_PLACED) + "','" + ps.getStat(BBStat.SUPER_VOTES) + "')");
+            database.getParent().debug("Player stats created!");
         } else {
             this.savePlayerStats(ps);
         }
@@ -179,6 +180,8 @@ public class MySQLManager {
 
     public void savePlayerStats(BBPlayerStats playerStats) {
 
+        database.getParent().debug("Saving player stats to MySQL Database...");
+
         if (!isUUIDInTable(playerStats.getUuid())) {
             this.addPlayerToTable(playerStats);
             return;
@@ -214,6 +217,7 @@ public class MySQLManager {
 
     public void savePlayerStat(BBStat stat, BBPlayerStats bbPlayerStats) {
         database.update("UPDATE BuildBattlePro_PlayerData SET " + stat.getSQLKey() + "='" + bbPlayerStats.getStat(stat) + "' WHERE UUID='" + bbPlayerStats.getUuid().toString() + "'");
+        database.getParent().debug("Saved statistic " + stat.getSQLKey() + "=" + bbPlayerStats.getStat(stat) + " for UUID " + bbPlayerStats.getUuid().toString());
     }
 
     public Double getPlayerStat(BBStat stat, Player player) {
