@@ -1,24 +1,56 @@
+# ------------------------------------ #
+#      BuildBattlePro config.yml
+# ------------------------------------ #
+
+# Plugin's prefix
 prefix: "&8[&eBuildBattlePro&8]&r "
+# ---------------------------------- #
+#     Player statistics settings
+# ---------------------------------- #
 stats:
+  # Type of storing players data.
+  #   MYSQL - Storing data in MySQL
+  #   FLATFILE - Storing data in data.yml
   type: FLATFILE
+  # Should stats be saved immediately ?
   async_save_player_data: false
+# ----------------------- #
+#      MySQL Settings
+# ----------------------- #
 mysql:
   host: dbHost
   port: 3306
   username: dbUser
   database: dbName
   password: dbPass
+# --------------------------- #
+#    BungeeCord Settings
+# --------------------------- #
 bungeecord:
+  # Are we using bungee ?
   use_bungee: false
+  # List of servers where player will be after game teleported. Random 1 is picked.
   fallback_servers:
     - lobby1
+  # Should players be automatically connected to first empty arena on server ?
   auto_join_players: true
+  # Should BuildBattlePro change automatically server's MOTD ?
   change_motd: false
+#---------------------------- #
+#    Settings for parties
+#---------------------------- #
 parties:
+  # Should players be able to use /bb party command ?
   enabled: true
+  # Maximum amount of players in party
   max_players: 5
+# ----------------------------- #
+#    Game reward settings
+# ----------------------------- #
 rewards:
+  # Should player receive rewards after game has ended or immediately after winner is announced ?
   give_after_game_ends: true
+  # Individual reward settings
   PointsAPI:
     enabled: false
     placement:
@@ -40,39 +72,76 @@ rewards:
         - 'give %player% diamond 2'
       3:
         - 'give %player% diamond 1'
+# ------------------------------ #
+#    Auto restarting server
+# ------------------------------ #
 auto-restart:
+  # Should auto-restarting be enabled ?
   enabled: false
+  # After how many games (in total) should server automatically restart ?
   games-needed: 10
+  # What command should be executed to restart the server ?
   restart-command: "stop"
+# ------------------------ #
+#     Arena Settings
+# ------------------------ #
 arena:
+  # How many seconds should players be in lobby ?
   lobbyTime: 30
+  # Default play (build) time for each arena, can be configured per arena in arenas.yml
   defaultGameTime: 300
+  # Default time to vote for build
   votingTime: 13
+  # Theme Voting Options
   voting_for_themes:
+    # Should players be able to vote for theme ?
     enabled: true
+    # How much time they have to pick a theme ?
     themeVotingTime: 15
+    # From how many votes they can choose from ?
     themesToVote: 5
+    # Should super votes be enabled ?
     super_votes_enabled: true
+  # Fair voting settings
+  # If player has given only negative votes, his votes will be marked as 'OK'
   fair_vote:
+    # Should fair voting be enabled ?
     enabled: true
+  # After how many seconds in the end should game restart ?
   endTime: 10
+  # Default ground floor material of plots
   default_floor: "WOOD:2"
+  # Should players in arena chat only between themselves ?
   arena_chat: true
+  # Should chat in team mode be enabled ?
   team_chat: true
+  # Should players be automatically joined to spectate when arena is in progress ?
   auto_join_spectate: true
+  # When player overcome his record, should he receive notification message about that ?
   announce_new_most_points: true
+  # Should the block behind join signs change depending on the current game state ?
   replace_block_behind_signs: true
+  # Should scoreboard in game be enabled ?
   show_game_scoreboard: true
+  # Should scoreboard in main lobby be enabled ?
   show_main_lobby_scoreboard: true
+  # Should build reports be enabled ?
   enable_reports: true
+  # When player votes for a plot, should he see his vote in subtitle ?
   show_vote_in_subtitle: true
+  # Should grass, pumpkin and melons automatically grow to the max level ?
   automatic_grow: true
+  # Should players be allowed to move only on their plot ?
   restrict_player_movement: true
+  # Should players be not able to go above their plot ?
   restrict_only_player_Y_movement: false
+  # Should players after game stay in arena to play another game ?
   remove_players_after_game: true
-  enable_clear_plot_option: true
+  # List of all end commands that will be executed when game has ended.
+  # Supports placeholder %winner% for game winner / winning team
   end_commands:
     - "eco give %winner% 100"
+  # In-game plot options. Should they be enabled ?
   plot_options:
     heads: true
     change_floor: true
@@ -82,28 +151,54 @@ arena:
     banner_creator: true
     particles: true
     clear_plot: true
+  # Plot particles settings
   particles:
+    # How many particles can player have up to ?
     max_particles_per_player: 20
+    # Particle offset
     offset: 0.5
+    # Amount of particles to spawn on place
     amount_to_spawn: 1
+    # How often should be particle refreshed (in seconds)
     refresh_time: 0.5
+  # Winner fireworks effect
   win_fireworks:
+    # Enable winning fireworks?
     enabled: true
+    # How many times should fireworks be fired ?
     firework_waves: 3
+    # How many fireworks per corner of plot should be fired ?
     amount_per_corner: 5
+  # List of all allowed commands that players are able to use while in-game
   allowed_commands:
     - bb
     - buildbattle
+  # List of all blocks that players are unable to place
   restricted_blocks:
     - BEDROCK
+# ---------------------------------------- #
+#       Change Floor NPC Settings
+# ---------------------------------------- #
 change_floor_npc:
+  # Type of Change Floor NPC
   type: VILLAGER
+# Main Lobby Location
 main_lobby:
+# Should players be teleported on join to the main lobby ?
 teleport_to_main_lobby_on_join: false
-leaderboards_refresh_time: 60
+# Period of refreshing the leaderboards in minutes
+leaderboards_refresh_time: 10
+# --------------------------------- #
+#     Plugin Loading Settings
+# --------------------------------- #
 plugin_loading:
+  # Should the plugin load later ?
   load_plugin_later: false
+  # After how many seconds will plugin load
   load_after: 10
+# --------------------------------- #
+#     Main Command Settings
+# --------------------------------- #
 main_command:
   name: "buildbattle"
   description: "Main BuildBattle command"
@@ -111,6 +206,9 @@ main_command:
     - "bb"
     - "bbpro"
     - "buildbattlepro"
+# --------------------------------- #
+#     Set Theme Command Settings
+# --------------------------------- #
 set_theme_command:
   name: "settheme"
   description: "Settheme command for BuildBattle"
