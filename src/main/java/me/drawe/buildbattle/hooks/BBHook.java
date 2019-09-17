@@ -25,6 +25,10 @@ public abstract class BBHook {
     }
 
     public static boolean getHook(String pluginName) {
+        if(hooks.get(pluginName) == null) {
+            return false;
+        }
+
         return hooks.get(pluginName).isEnabled();
     }
 
