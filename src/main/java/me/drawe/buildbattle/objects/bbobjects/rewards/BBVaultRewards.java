@@ -21,7 +21,7 @@ public class BBVaultRewards extends BBReward<Integer> {
             return;
         }
 
-        if(team == null) {
+        if (team == null || this.rewardsForPlacements.get(placement) == null) {
             return;
         }
 
