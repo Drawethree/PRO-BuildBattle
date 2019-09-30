@@ -2,10 +2,10 @@ package me.drawe.buildbattle.managers;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
-import me.drawe.buildbattle.objects.rewards.BBCommandRewards;
-import me.drawe.buildbattle.objects.rewards.BBPointsAPIRewards;
-import me.drawe.buildbattle.objects.rewards.BBReward;
-import me.drawe.buildbattle.objects.rewards.BBVaultRewards;
+import me.drawe.buildbattle.objects.bbobjects.rewards.BBCommandRewards;
+import me.drawe.buildbattle.objects.bbobjects.rewards.BBPointsAPIRewards;
+import me.drawe.buildbattle.objects.bbobjects.rewards.BBReward;
+import me.drawe.buildbattle.objects.bbobjects.rewards.BBVaultRewards;
 
 import java.util.HashSet;
 import java.util.List;
