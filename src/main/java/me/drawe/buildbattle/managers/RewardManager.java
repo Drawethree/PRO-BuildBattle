@@ -23,7 +23,7 @@ public class RewardManager {
     public void giveRewards(List<BBPlot> votingPlots) {
 
         //Check if there are no plots to give reward for.
-        if (votingPlots == null) {
+        if (votingPlots == null || votingPlots.isEmpty()) {
             return;
         }
 

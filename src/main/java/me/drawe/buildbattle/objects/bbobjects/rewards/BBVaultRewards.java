@@ -17,11 +17,7 @@ public class BBVaultRewards extends BBReward<Integer> {
         super.giveReward(team, placement);
 
 
-        if(!BBHook.getHook(this.rewardType)) {
-            return;
-        }
-
-        if (team == null || this.rewardsForPlacements.get(placement) == null) {
+        if(!BBHook.getHook(this.rewardType) || team == null || this.rewardsForPlacements.get(placement) == null || team.getPlayers() == null) {
             return;
         }
 

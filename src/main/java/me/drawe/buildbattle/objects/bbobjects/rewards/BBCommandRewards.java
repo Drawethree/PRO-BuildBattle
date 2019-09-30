@@ -17,7 +17,7 @@ public class BBCommandRewards extends BBReward<List> {
     public void giveReward(BBTeam team, int placement) {
         super.giveReward(team, placement);
 
-        if (team == null || this.rewardsForPlacements.get(placement) == null) {
+        if (team == null || this.rewardsForPlacements.get(placement) == null || team.getPlayers() == null) {
             return;
         }
 
