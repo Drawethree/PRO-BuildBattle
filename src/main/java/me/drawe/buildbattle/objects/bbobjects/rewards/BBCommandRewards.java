@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.rewards;
+package me.drawe.buildbattle.objects.bbobjects.rewards;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
@@ -16,6 +16,11 @@ public class BBCommandRewards extends BBReward<List> {
     @Override
     public void giveReward(BBTeam team, int placement) {
         super.giveReward(team, placement);
+
+        if(team == null) {
+            return;
+        }
+
         for (Player p : team.getPlayers()) {
             for (String s : (List<String>) this.rewardsForPlacements.get(placement)) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replaceAll("%player%", p.getName()));

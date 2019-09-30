@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.rewards;
+package me.drawe.buildbattle.objects.bbobjects.rewards;
 
 import lombok.Getter;
 import me.drawe.buildbattle.BuildBattle;
@@ -51,7 +51,7 @@ public abstract class BBReward<T> {
                 continue;
             }
 
-            this.addReward(place, this.parent.getFileManager().getConfig("config.yml").get().getObject("rewards." + rewardType + ".placement." + place, typeOfReward));
+            this.addReward(place, (T) this.parent.getFileManager().getConfig("config.yml").get().get("rewards." + rewardType + ".placement." + place, typeOfReward));
         }
     }
 

@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.rewards;
+package me.drawe.buildbattle.objects.bbobjects.rewards;
 
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.hooks.BBHook;
@@ -16,7 +16,12 @@ public class BBVaultRewards extends BBReward<Integer> {
     public void giveReward(BBTeam team, int placement) {
         super.giveReward(team, placement);
 
+
         if(!BBHook.getHook(this.rewardType)) {
+            return;
+        }
+
+        if(team == null) {
             return;
         }
 

@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.objects.rewards;
+package me.drawe.buildbattle.objects.bbobjects.rewards;
 
 import me.BukkitPVP.PointsAPI.PointsAPI;
 import me.drawe.buildbattle.BuildBattle;
@@ -18,6 +18,10 @@ public class BBPointsAPIRewards extends BBReward<Integer> {
         super.giveReward(team, placement);
 
         if(!BBHook.getHook(this.rewardType)) {
+            return;
+        }
+
+        if(team == null) {
             return;
         }
 
