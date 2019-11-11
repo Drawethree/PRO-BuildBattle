@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.PartyManager;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.entity.Player;
@@ -24,9 +22,9 @@ public class BBParty {
 
 
     public void joinPlayer(Player p) {
-        p.sendMessage(Message.PARTY_JOIN.getChatMessage().replaceAll("%creator%", getCreator().getName()));
+        p.sendMessage(Message.PARTY_JOIN.getChatMessage().replace("%creator%", getCreator().getName()));
         for (Player p1 : players) {
-            p1.sendMessage(Message.PARTY_PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getName()));
+            p1.sendMessage(Message.PARTY_PLAYER_JOINED.getChatMessage().replace("%player%", p.getName()));
         }
         players.add(p);
         BuildBattle.getInstance().getPartyManager().getInvitedPlayers().remove(p);
@@ -35,9 +33,9 @@ public class BBParty {
     public void removePlayer(Player p) {
         if (!isCreator(p)) {
             players.remove(p);
-            p.sendMessage(Message.PARTY_LEFT.getChatMessage().replaceAll("%creator%", getCreator().getName()));
+            p.sendMessage(Message.PARTY_LEFT.getChatMessage().replace("%creator%", getCreator().getName()));
             for (Player p1 : players) {
-                p1.sendMessage(Message.PARTY_PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getName()));
+                p1.sendMessage(Message.PARTY_PLAYER_LEFT.getChatMessage().replace("%player%", p.getName()));
             }
         } else {
             this.disbandParty();

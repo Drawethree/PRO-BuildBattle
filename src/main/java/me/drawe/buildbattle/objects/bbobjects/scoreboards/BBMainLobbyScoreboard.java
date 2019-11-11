@@ -46,19 +46,19 @@ public class BBMainLobbyScoreboard {
         add("&1", 2);
         add(Message.SCOREBOARD_MAIN_LOBBY_SERVER.getMessage(), 1);
         if(stats != null) {
-            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replaceAll("%played%", String.valueOf(stats.getStat(BBStat.PLAYED))), 13);
-            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replaceAll("%wins%", String.valueOf(stats.getStat(BBStat.WINS))), 11);
-            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(stats.getStat(BBStat.MOST_POINTS))), 9);
-            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(stats.getStat(BBStat.BLOCKS_PLACED))), 7);
-            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(stats.getStat(BBStat.PARTICLES_PLACED))), 5);
-            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(stats.getStat(BBStat.SUPER_VOTES))), 3);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replace("%played%", String.valueOf(stats.getStat(BBStat.PLAYED))), 13);
+            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replace("%wins%", String.valueOf(stats.getStat(BBStat.WINS))), 11);
+            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replace("%most_points%", String.valueOf(stats.getStat(BBStat.MOST_POINTS))), 9);
+            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replace("%blocks%", String.valueOf(stats.getStat(BBStat.BLOCKS_PLACED))), 7);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replace("%particles%", String.valueOf(stats.getStat(BBStat.PARTICLES_PLACED))), 5);
+            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replace("%super_votes%", String.valueOf(stats.getStat(BBStat.SUPER_VOTES))), 3);
         } else {
-            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replaceAll("%played%", String.valueOf(0)), 13);
-            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replaceAll("%wins%", String.valueOf(0)), 11);
-            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(0)), 9);
-            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(0)), 7);
-            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(0)), 5);
-            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(0)), 3);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PLAYED.getMessage().replace("%played%", String.valueOf(0)), 13);
+            add(Message.SCOREBOARD_MAIN_LOBBY_WINS.getMessage().replace("%wins%", String.valueOf(0)), 11);
+            add(Message.SCOREBOARD_MAIN_LOBBY_MOST_POINTS.getMessage().replace("%most_points%", String.valueOf(0)), 9);
+            add(Message.SCOREBOARD_MAIN_LOBBY_BLOCKS_PLACED.getMessage().replace("%blocks%", String.valueOf(0)), 7);
+            add(Message.SCOREBOARD_MAIN_LOBBY_PARTICLES_PLACED.getMessage().replace("%particles%", String.valueOf(0)), 5);
+            add(Message.SCOREBOARD_MAIN_LOBBY_SUPER_VOTES.getMessage().replace("%super_votes%", String.valueOf(0)), 3);
         }
         update();
     }

@@ -36,7 +36,7 @@ public class BBDelPlotSubCommand extends BBSubCommand {
                             return true;
                         }
                     } else {
-                        sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
+                        sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replace("%arena%", args[0]));
                     }
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " delplot <arena> §8| §7Deletes plot at your current location ");

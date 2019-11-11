@@ -257,7 +257,8 @@ public enum Message {
     NO_LONGER_SPECTATING_ARENA("messages.no_longer_spectating"),
     NOT_SPECTATING("messages.not_spectating"),
     BLOCK_RESTRICTED("messages.block_restricted"),
-    ARENA_NO_LOBBY("messages.arena_no_lobby");
+    ARENA_NO_LOBBY("messages.arena_no_lobby"),
+    THEME_CHANGED("messages.theme_changed");
 
     private String message;
     private String path;
@@ -291,7 +292,7 @@ public enum Message {
             throw new RuntimeException("Placeholders length is not as same as replacements!");
         }
         for(int i = 0; i < placeholders.length; i++) {
-            retMessage = retMessage.replaceAll(placeholders[i], String.valueOf(replacement[i]));
+            retMessage = retMessage.replace(placeholders[i], String.valueOf(replacement[i]));
         }
         return retMessage;
     }

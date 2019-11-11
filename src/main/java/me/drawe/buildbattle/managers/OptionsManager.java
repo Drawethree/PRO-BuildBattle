@@ -220,9 +220,9 @@ public class OptionsManager {
     public BBPlotParticle getPlotParticleFromLore(BBPlot plot, List<String> lore) {
         for (BBPlotParticle particle : plot.getParticles()) {
             Location pLoc = particle.getLocation();
-            int x = Integer.parseInt(lore.get(1).replaceAll(" §7X: ", ""));
-            int y = Integer.parseInt(lore.get(2).replaceAll(" §7Y: ", ""));
-            int z = Integer.parseInt(lore.get(3).replaceAll(" §7Z: ", ""));
+            int x = Integer.parseInt(lore.get(1).replace(" §7X: ", ""));
+            int y = Integer.parseInt(lore.get(2).replace(" §7Y: ", ""));
+            int z = Integer.parseInt(lore.get(3).replace(" §7Z: ", ""));
             if (pLoc.getBlockX() == x && pLoc.getBlockY() == y && pLoc.getBlockZ() == z) {
                 return particle;
             }

@@ -152,7 +152,7 @@ public class ReportManager {
 
     public boolean existsReport(int id) {
         for (BBBuildReport report : buildReports) {
-            if (Integer.parseInt(report.getReportID().replaceAll("report", "")) == id) {
+            if (Integer.parseInt(report.getReportID().replace("report", "")) == id) {
                 return true;
             }
         }
@@ -186,7 +186,7 @@ public class ReportManager {
 
     public int getNextPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) + 1;
+            return Integer.parseInt(inv.getTitle().replace(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) + 1;
         } catch (Exception e) {
             return 0;
         }
@@ -194,7 +194,7 @@ public class ReportManager {
 
     public int getCurrentPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), ""));
+            return Integer.parseInt(inv.getTitle().replace(this.plugin.getOptionsManager().getReportsInventoryTitle(), ""));
         } catch (Exception e) {
             return 0;
         }
@@ -202,7 +202,7 @@ public class ReportManager {
 
     public int getPrevPage(InventoryView inv) {
         try {
-            return Integer.parseInt(inv.getTitle().replaceAll(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) - 1;
+            return Integer.parseInt(inv.getTitle().replace(this.plugin.getOptionsManager().getReportsInventoryTitle(), "")) - 1;
         } catch (Exception e) {
             return 0;
         }

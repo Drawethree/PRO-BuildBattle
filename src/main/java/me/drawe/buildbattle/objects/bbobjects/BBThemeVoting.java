@@ -1,8 +1,6 @@
 package me.drawe.buildbattle.objects.bbobjects;
 
 import me.drawe.buildbattle.BuildBattle;
-import me.drawe.buildbattle.managers.BBSettings;
-import me.drawe.buildbattle.managers.PlayerManager;
 import me.drawe.buildbattle.objects.Message;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawe.buildbattle.utils.ItemUtil;
@@ -166,7 +164,7 @@ public class BBThemeVoting {
     public void superVote(Player who, BBTheme selectedTheme) {
         winner = selectedTheme;
         arena.startGame(selectedTheme.getName(), false);
-        BuildBattle.getInstance().getPlayerManager().broadcastToAllPlayersInArena(arena, Message.THEME_WAS_SUPER_VOTED.getChatMessage().replaceAll("%theme%", selectedTheme.getName()).replaceAll("%player%", who.getName()));
+        BuildBattle.getInstance().getPlayerManager().broadcastToAllPlayersInArena(arena, Message.THEME_WAS_SUPER_VOTED.getChatMessage().replace("%theme%", selectedTheme.getName()).replace("%player%", who.getName()));
     }
 
     public void reset() {

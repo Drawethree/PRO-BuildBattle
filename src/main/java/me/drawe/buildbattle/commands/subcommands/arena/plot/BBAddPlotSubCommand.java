@@ -56,7 +56,7 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
                             LocationUtil.showCreatedPlot(sel, p, 5);
                         } else {
-                            p.sendMessage(Message.NO_SELECTION.getChatMessage().replaceAll("%arena%", args[1]));
+                            p.sendMessage(Message.NO_SELECTION.getChatMessage().replace("%arena%", args[1]));
                         }
                         */
                         } else {
@@ -72,7 +72,7 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                             }
                         }
                     } else {
-                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
+                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replace("%arena%", args[0]));
                     }
                 } else {
                     sender.sendMessage("§cUsage >> /" + cmd.getName() + " addplot <arena> §8| §7Add a build plot to arena");

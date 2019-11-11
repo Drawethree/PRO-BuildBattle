@@ -55,7 +55,7 @@ public class MySQLManager {
                     statement.setString(3, Time.getCurrentDateTime());
                     statement.execute();
                     statement.close();
-                    reporter.sendMessage(Message.REPORT_SUCCESS.getChatMessage().replaceAll("%player%", player.getName()));
+                    reporter.sendMessage(Message.REPORT_SUCCESS.getChatMessage().replace("%player%", player.getName()));
                 } else {
                     reporter.sendMessage(Message.ALREADY_REPOTED.getChatMessage());
                 }

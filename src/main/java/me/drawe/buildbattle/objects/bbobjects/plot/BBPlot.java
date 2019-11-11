@@ -128,7 +128,7 @@ public class BBPlot implements Comparable<BBPlot> {
         if(votedPlayers.containsKey(p)) {
             if(item.getWeight() != votedPlayers.get(p)) {
                 votedPlayers.put(p, item.getWeight());
-                p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", item.getPrefix()));
+                p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replace("%vote%", item.getPrefix()));
                 if(BBSettings.isShowVoteInSubtitle()) {
                     p.sendTitle("", item.getPrefix());
                 }
@@ -136,7 +136,7 @@ public class BBPlot implements Comparable<BBPlot> {
             }
         } else {
             votedPlayers.put(p, item.getWeight());
-            p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", item.getPrefix()));
+            p.sendMessage(Message.VOTED.getChatMessage().replace("%vote%", item.getPrefix()));
             if(BBSettings.isShowVoteInSubtitle()) {
                 p.sendTitle("", item.getPrefix());
             }
@@ -277,7 +277,7 @@ public class BBPlot implements Comparable<BBPlot> {
             particle.start();
             particles.add(particle);
         } else {
-            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replaceAll("%amount%", String.valueOf(plugin.getSettings().getMaxParticlesPerPlayer())));
+            player.sendMessage(Message.MAX_PARTICLES.getChatMessage().replace("%amount%", String.valueOf(plugin.getSettings().getMaxParticlesPerPlayer())));
         }
     }
 

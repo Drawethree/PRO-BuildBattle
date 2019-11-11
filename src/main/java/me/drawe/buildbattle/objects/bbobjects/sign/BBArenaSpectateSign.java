@@ -28,10 +28,10 @@ public class BBArenaSpectateSign extends BBArenaSign {
 	public void update() {
 		if (Bukkit.getPluginManager().isPluginEnabled(BuildBattle.getInstance())) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(BuildBattle.getInstance(), () -> {
-				sign.setLine(0, Message.SIGN_SPECTATE_FIRST_LINE.getMessage().replaceAll("%arena%", this.arena.getName()));
-				sign.setLine(1, Message.SIGN_SPECTATE_SECOND_LINE.getMessage().replaceAll("%arena%", this.arena.getName()));
-				sign.setLine(2, Message.SIGN_SPECTATE_THIRD_LINE.getMessage().replaceAll("%arena%", this.arena.getName()));
-				sign.setLine(3, Message.SIGN_SPECTATE_FOURTH_LINE.getMessage().replaceAll("%arena%", this.arena.getName()));
+				sign.setLine(0, Message.SIGN_SPECTATE_FIRST_LINE.getMessage().replace("%arena%", this.arena.getName()));
+				sign.setLine(1, Message.SIGN_SPECTATE_SECOND_LINE.getMessage().replace("%arena%", this.arena.getName()));
+				sign.setLine(2, Message.SIGN_SPECTATE_THIRD_LINE.getMessage().replace("%arena%", this.arena.getName()));
+				sign.setLine(3, Message.SIGN_SPECTATE_FOURTH_LINE.getMessage().replace("%arena%", this.arena.getName()));
 				sign.update(true);
 			}, 20L);
 		}

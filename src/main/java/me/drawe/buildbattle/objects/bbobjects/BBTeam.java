@@ -23,7 +23,7 @@ public class BBTeam {
         this.arena = arena;
         this.maxPlayers = arena.getTeamSize();
         this.players = new ArrayList<>();
-        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
+        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replace("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
     }
 
     public List<Player> getPlayers() {
@@ -74,7 +74,7 @@ public class BBTeam {
 
             players.add(p);
             if (players.size() > 1) {
-                p.sendMessage(Message.YOUR_TEAMMATE.getChatMessage().replaceAll("%players%", getPlayersInCommaSeparatedString()));
+                p.sendMessage(Message.YOUR_TEAMMATE.getChatMessage().replace("%players%", getPlayersInCommaSeparatedString()));
             }
 
             updateStatusItemStack();
@@ -115,7 +115,7 @@ public class BBTeam {
     }
 
     private void updateStatusItemStack() {
-        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replaceAll("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
+        this.statusItemstack = ItemUtil.create(getStatusMaterial(),1, Message.GUI_TEAMS_ITEMS_DISPLAYNAME.getMessage().replace("%id%", String.valueOf(ID)), ItemUtil.createTeamLore(this), null,null);
         arena.getTeamsInventory().setItem(ID-1,statusItemstack);
     }
 

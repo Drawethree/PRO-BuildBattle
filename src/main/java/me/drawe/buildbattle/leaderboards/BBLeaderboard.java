@@ -115,9 +115,9 @@ public class BBLeaderboard {
 
     public String getFormattedFormat(BBPlayerStats stats, int position, LeaderboardType type) {
         String returnString = type.getLineFormat().
-                replaceAll("%position%", position + ".").
-                replaceAll("%player%", stats.getOfflinePlayer().getName())
-                .replaceAll(type.getPlaceholder(), String.valueOf(stats.getStat(BBStat.valueOf(type.name()))));
+                replace("%position%", position + ".").
+                replace("%player%", stats.getOfflinePlayer().getName()).
+                replace(type.getPlaceholder(), String.valueOf(stats.getStat(BBStat.valueOf(type.name()))));
         return returnString;
     }
 }

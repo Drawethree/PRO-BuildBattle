@@ -29,18 +29,18 @@ public class SetThemeCommand extends BukkitCommand {
                     if (plugin.getSettings().isThemeOK(theme)) {
                         BBArena a = this.plugin.getPlayerManager().getPlayerArena(p);
                         if (a != null) {
-                            if (a.isMinimumPlayersRequirementMet()) {
-                                if (a.getBBArenaState() == BBArenaState.LOBBY) {
-                                    a.startGame(theme, true);
-                                    return true;
-                                } else if (a.getBBArenaState() == BBArenaState.THEME_VOTING) {
-                                    a.startGame(theme, false);
+                            if (a.getBBArenaState() == BBArenaState.LOBBY || a.getBBArenaState() == BBArenaState.THEME_VOTING) {
+                                if (a.isMinimumPlayersRequirementMet()) {
+                                    a.startGame(theme, a.getBBArenaState() == BBArenaState.LOBBY);
                                     return true;
                                 } else {
-                                    p.sendMessage(Message.CANNOT_SET_THEME.getChatMessage());
+                                    p.sendMessage(Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
                                 }
+                            } else if(a.getBBArenaState() == BBArenaState.INGAME) {
+                                a.changeTheme(theme);
+                                return true;
                             } else {
-                                p.sendMessage(Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
+                                p.sendMessage(Message.CANNOT_SET_THEME.getChatMessage());
                             }
                         } else {
                             p.sendMessage(Message.NOT_IN_ARENA.getChatMessage());

@@ -23,7 +23,7 @@ public class BBCommandRewards extends BBReward<List> {
 
         for (Player p : team.getPlayers()) {
             for (String s : (List<String>) this.rewardsForPlacements.get(placement)) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replaceAll("%player%", p.getName()));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", p.getName()));
             }
         }
     }

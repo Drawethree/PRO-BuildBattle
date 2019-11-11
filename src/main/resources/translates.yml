@@ -64,6 +64,7 @@ messages:
   team_is_full: "&cThis team is full !"
   already_in_that_team: "&cYou are already in that team !"
   theme_blacklisted: "&cThis theme is blacklisted !"
+  theme_changed: "&c&lATTENTION! &aTheme was changed to &e%theme%&a!"
   kicked_due_vip_join: "&cYou have been kicked because &6VIP &e%player% &chas joined !"
   no_vip_slot_free: "&cThere is no VIP slot free !"
   unable_to_join: "&cWe are unable to join you to arena ! Please contact admins to check console."

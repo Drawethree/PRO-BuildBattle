@@ -57,10 +57,10 @@ public class BBJoinSubCommand extends BBSubCommand {
                             argArena.addPlayer(p);
                             return true;
                         } else {
-                            p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replaceAll("%arena%", playerArena.getName()));
+                            p.sendMessage(Message.ALREADY_IN_ARENA.getChatMessage().replace("%arena%", playerArena.getName()));
                         }
                     } else {
-                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
+                        p.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replace("%arena%", args[0]));
                     }
                 }
             } else {

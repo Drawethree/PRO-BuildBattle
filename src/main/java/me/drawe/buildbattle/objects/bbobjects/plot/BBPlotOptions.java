@@ -67,7 +67,7 @@ public class BBPlotOptions {
     public void setCurrentWeather(Player changer, WeatherType currentWeather, boolean broadcast) {
         this.currentWeather = currentWeather;
         if (broadcast && changer != null) {
-            changer.sendMessage(Message.WEATHER_CHANGED.getChatMessage().replaceAll("%weather%", currentWeather.name()));
+            changer.sendMessage(Message.WEATHER_CHANGED.getChatMessage().replace("%weather%", currentWeather.name()));
         }
         for (Player p : plot.getTeam().getPlayers()) p.setPlayerWeather(currentWeather);
     }
@@ -76,7 +76,7 @@ public class BBPlotOptions {
         this.currentTime = currentTime;
         for (Player p : plot.getTeam().getPlayers()) p.setPlayerTime(currentTime.getTime(), false);
         if (broadcast && changer != null) {
-            changer.sendMessage(Message.TIME_CHANGED.getChatMessage().replaceAll("%time%", currentTime.getName()));
+            changer.sendMessage(Message.TIME_CHANGED.getChatMessage().replace("%time%", currentTime.getName()));
         }
     }
 
@@ -99,7 +99,7 @@ public class BBPlotOptions {
     public void setCurrentBiome(Player changer, PlotBiome currentBiome, boolean broadcast) {
         this.currentBiome = currentBiome;
         if (broadcast && changer != null) {
-            changer.sendMessage(Message.BIOME_CHANGED.getChatMessage().replaceAll("%biome%", getCurrentBiome().getName()));
+            changer.sendMessage(Message.BIOME_CHANGED.getChatMessage().replace("%biome%", getCurrentBiome().getName()));
         }
         for (Location l : plot.getBlocksInPlot()) {
             l.getBlock().setBiome(currentBiome.getBiome().getBiome());

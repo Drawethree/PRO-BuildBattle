@@ -29,12 +29,12 @@ public class BBStatsSubCommand extends BBSubCommand {
                     FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
                     p.sendMessage("");
                     FancyMessage.sendCenteredMessage(p, Message.STATS_TITLE.getMessage());
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_PLAYED.getMessage().replaceAll("%played%", String.valueOf(ps.getStat(BBStat.PLAYED))));
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_WINS.getMessage().replaceAll("%wins%", String.valueOf(ps.getStat(BBStat.WINS))));
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_MOST_POINTS.getMessage().replaceAll("%most_points%", String.valueOf(ps.getStat(BBStat.MOST_POINTS))));
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_BLOCKS_PLACED.getMessage().replaceAll("%blocks%", String.valueOf(ps.getStat(BBStat.BLOCKS_PLACED))));
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_PARTICLES_PLACED.getMessage().replaceAll("%particles%", String.valueOf(ps.getStat(BBStat.PARTICLES_PLACED))));
-                    FancyMessage.sendCenteredMessage(p, Message.STATS_SUPER_VOTES.getMessage().replaceAll("%super_votes%", String.valueOf(ps.getStat(BBStat.SUPER_VOTES))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_PLAYED.getMessage().replace("%played%", String.valueOf(ps.getStat(BBStat.PLAYED))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_WINS.getMessage().replace("%wins%", String.valueOf(ps.getStat(BBStat.WINS))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_MOST_POINTS.getMessage().replace("%most_points%", String.valueOf(ps.getStat(BBStat.MOST_POINTS))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_BLOCKS_PLACED.getMessage().replace("%blocks%", String.valueOf(ps.getStat(BBStat.BLOCKS_PLACED))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_PARTICLES_PLACED.getMessage().replace("%particles%", String.valueOf(ps.getStat(BBStat.PARTICLES_PLACED))));
+                    FancyMessage.sendCenteredMessage(p, Message.STATS_SUPER_VOTES.getMessage().replace("%super_votes%", String.valueOf(ps.getStat(BBStat.SUPER_VOTES))));
                     p.sendMessage("");
                     FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
                     return true;

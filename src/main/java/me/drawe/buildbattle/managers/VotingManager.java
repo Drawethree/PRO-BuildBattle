@@ -18,7 +18,7 @@ public class VotingManager {
     public void vote(Player p, Votes vote, BBPlot plot) {
         if (plot.getVotedPlayers().containsKey(p)) {
             if (vote.getWeight() != plot.getVotedPlayers().get(p)) {
-                p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
+                p.sendMessage(Message.VOTE_CHANGED.getChatMessage().replace("%vote%", vote.getPrefix()));
 
                 if (this.plugin.getSettings().isShowVoteInSubtitle()) {
                     p.sendTitle("", vote.getPrefix());
@@ -29,7 +29,7 @@ public class VotingManager {
                 plot.getVotedPlayers().put(p, vote.getWeight());
             }
         } else {
-            p.sendMessage(Message.VOTED.getChatMessage().replaceAll("%vote%", vote.getPrefix()));
+            p.sendMessage(Message.VOTED.getChatMessage().replace("%vote%", vote.getPrefix()));
 
             if (this.plugin.getSettings().isShowVoteInSubtitle()) {
                 p.sendTitle("", vote.getPrefix());

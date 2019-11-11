@@ -48,7 +48,7 @@ public class ItemUtil {
     public static List<String> convertThemeLore(BBTheme theme, List<String> list, int timeLeft) {
         List<String> lore = new ArrayList<>();
         for (String s : list) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%theme_percentage%", String.valueOf(theme.getPercentage())).replaceAll("%time_left%", String.valueOf(timeLeft)));
+            lore.add(ChatColor.translateAlternateColorCodes('&', s).replace("%theme%", theme.getName()).replace("%theme_percentage%", String.valueOf(theme.getPercentage())).replace("%time_left%", String.valueOf(timeLeft)));
         }
         return lore;
     }
@@ -56,7 +56,7 @@ public class ItemUtil {
     public static List<String> convertWeatherLore(BBPlot plot, List<String> list) {
         List<String> lore = new ArrayList<>();
         for (String s : list) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%weather%", plot.getOptions().getCurrentWeather().name()));
+            lore.add(ChatColor.translateAlternateColorCodes('&', s).replace("%weather%", plot.getOptions().getCurrentWeather().name()));
         }
         return lore;
     }
@@ -145,7 +145,7 @@ public class ItemUtil {
     private static List<String> convertSuperVoteLore(List<String> list, BBTheme theme, int amount) {
         List<String> lore = new ArrayList<>();
         for (String s : list) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', s).replaceAll("%theme%", theme.getName()).replaceAll("%supervotes%", String.valueOf(amount)));
+            lore.add(ChatColor.translateAlternateColorCodes('&', s).replace("%theme%", theme.getName()).replace("%supervotes%", String.valueOf(amount)));
         }
         return lore;
     }

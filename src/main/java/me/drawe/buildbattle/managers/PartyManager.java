@@ -46,7 +46,7 @@ public class PartyManager {
                 party.joinPlayer(p);
                 this.playersInParties.put(p, party);
             } else {
-                p.sendMessage(Message.PARTY_INVITE_DECLINE.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
+                p.sendMessage(Message.PARTY_INVITE_DECLINE.getChatMessage().replace("%creator%", party.getCreator().getName()));
             }
             this.invitedPlayers.remove(p);
         } else {
@@ -64,10 +64,10 @@ public class PartyManager {
                                 if (getPlayerParty(p) == null) {
                                     doInviteCommands(p, party);
                                 } else {
-                                    party.getCreator().sendMessage(Message.PARTY_ALREADY_IN_PARTY.getChatMessage().replaceAll("%player%", p.getName()));
+                                    party.getCreator().sendMessage(Message.PARTY_ALREADY_IN_PARTY.getChatMessage().replace("%player%", p.getName()));
                                 }
                             } else {
-                                party.getCreator().sendMessage(Message.PARTY_ALREADY_INVITED.getChatMessage().replaceAll("%player%", p.getName()));
+                                party.getCreator().sendMessage(Message.PARTY_ALREADY_INVITED.getChatMessage().replace("%player%", p.getName()));
                             }
                         } else {
                             whoInvited.sendMessage(Message.PARTY_FULL.getChatMessage());
@@ -91,16 +91,16 @@ public class PartyManager {
 
     private void doInviteCommands(Player p, BBParty party) {
         invitedPlayers.put(p, party);
-        party.getCreator().sendMessage(Message.PARTY_INVITE.getChatMessage().replaceAll("%player%", p.getName()));
+        party.getCreator().sendMessage(Message.PARTY_INVITE.getChatMessage().replace("%player%", p.getName()));
 
-        p.sendMessage(Message.PARTY_YOU_HAVE_BEEN_INVITED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
+        p.sendMessage(Message.PARTY_YOU_HAVE_BEEN_INVITED.getChatMessage().replace("%creator%", party.getCreator().getName()));
         p.sendMessage(Message.PARTY_ACCEPT_INFO.getChatMessage());
         p.sendMessage(Message.PARTY_DECLINE_INFO.getChatMessage());
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
             if (invitedPlayers.containsKey(p)) {
                 invitedPlayers.remove(p);
-                p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replaceAll("%creator%", party.getCreator().getName()));
+                p.sendMessage(Message.PARTY_INVITE_EXPIRED.getChatMessage().replace("%creator%", party.getCreator().getName()));
             }
         }, 20 * 180L);
     }

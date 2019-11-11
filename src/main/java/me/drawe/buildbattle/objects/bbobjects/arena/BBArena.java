@@ -226,7 +226,7 @@ public class BBArena implements Spectatable<Player> {
         plugin.getArenaManager().refreshArenaItem(this);
 
         plugin.getPlayerManager().getPlayersInArenas().remove(p);
-        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.PLAYER_LEFT.getChatMessage().replace("%player%", p.getDisplayName()).replace("%players%", getTotalPlayers()));
 
         if (bbArenaState != BBArenaState.LOBBY) {
             if (players.size() <= teamSize) {
@@ -270,7 +270,7 @@ public class BBArena implements Spectatable<Player> {
 
         updateAllScoreboards(this.plugin.getSettings().getLobbyTime(), this.plugin.getSettings().getLobbyTime());
 
-        plugin.getPlayerManager().broadcastToAllPlayersInArena(this, Message.PLAYER_JOINED.getChatMessage().replaceAll("%player%", p.getDisplayName()).replaceAll("%players%", getTotalPlayers()));
+        plugin.getPlayerManager().broadcastToAllPlayersInArena(this, Message.PLAYER_JOINED.getChatMessage().replace("%player%", p.getDisplayName()).replace("%players%", getTotalPlayers()));
 
         this.refreshSpectateInventory();
         plugin.getArenaManager().refreshArenaItem(this);
@@ -318,7 +318,7 @@ public class BBArena implements Spectatable<Player> {
                         return;
                     } else if (countdown % 15 == 0 || countdown < 6) {
                         plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.ORB_PICKUP);
-                        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
+                        plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.GAME_STARTS_IN.getChatMessage().replace("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                     }
                 } else {
                     plugin.getPlayerManager().broadcastToAllPlayersInArena(getArenaInstance(), Message.NOT_ENOUGH_PLAYERS_TO_START.getChatMessage());
@@ -337,11 +337,11 @@ public class BBArena implements Spectatable<Player> {
         setPlotsToTeams();
         plugin.getPlayerManager().clearInventoryAllPlayersInArena(getArenaInstance());
         themeVotingCountdown = new BukkitRunnable() {
-			int countdown = plugin.getSettings().getThemeVotingTime();
+            int countdown = plugin.getSettings().getThemeVotingTime();
 
             @Override
             public void run() {
-				updateAllScoreboards(countdown, plugin.getSettings().getThemeVotingTime());
+                updateAllScoreboards(countdown, plugin.getSettings().getThemeVotingTime());
                 if (countdown == 0) {
                     themeVoting.setWinner();
                     startGame(themeVoting.getWinner().getName(), true);
@@ -397,7 +397,7 @@ public class BBArena implements Spectatable<Player> {
                     return;
                 } else if ((countdown % 60 == 0 && countdown >= 60 && countdown != gameTime) || (countdown % 30 == 0 && countdown < 60) || (countdown < 11)) {
                     plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
-                    plugin.getPlayerManager().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replaceAll("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
+                    plugin.getPlayerManager().sendTitleToAllPlayersInArena(getArenaInstance(), "", Message.GAME_ENDS_IN.getMessage().replace("%time%", new Time(countdown, TimeUnit.SECONDS).toString()));
                 }
                 updateAllScoreboards(countdown, getGameTime());
                 countdown--;
@@ -499,7 +499,7 @@ public class BBArena implements Spectatable<Player> {
                         plugin.getPlayerManager().setLevelsToAllPlayers(getArenaInstance(), timeLeft);
                         updateAllScoreboards(timeLeft, plugin.getSettings().getVotingTime());
                         if (timeLeft >= 1)
-                            plugin.getPlayerManager().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replaceAll("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
+                            plugin.getPlayerManager().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replace("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
                     }
                     timeLeft -= 1;
                 }
@@ -640,7 +640,7 @@ public class BBArena implements Spectatable<Player> {
         Player lastNonVIPPlayer = getLastNonVipPlayer();
         if (lastNonVIPPlayer != null) {
             removePlayer(lastNonVIPPlayer);
-            lastNonVIPPlayer.sendMessage(Message.KICKED_DUE_TO_VIP_JOIN.getChatMessage().replaceAll("%player%", vip.getDisplayName()));
+            lastNonVIPPlayer.sendMessage(Message.KICKED_DUE_TO_VIP_JOIN.getChatMessage().replace("%player%", vip.getDisplayName()));
             joinCommands(vip);
             if (players.size() == minPlayers) {
                 startLobby();
@@ -793,7 +793,7 @@ public class BBArena implements Spectatable<Player> {
 
     public void forceStop(CommandSender sender) {
         if (bbArenaState != BBArenaState.LOBBY) {
-            stopArena(Message.FORCE_STOP.getChatMessage().replaceAll("%operator%", sender.getName()), true);
+            stopArena(Message.FORCE_STOP.getChatMessage().replace("%operator%", sender.getName()), true);
         } else {
             sender.sendMessage(Message.ARENA_NOT_RUNNING.getChatMessage());
         }
@@ -938,9 +938,9 @@ public class BBArena implements Spectatable<Player> {
     public ItemStack getArenaStatusItem() {
         return ItemUtil.create(bbArenaState.getBlockMaterial(), 1, name, ItemUtil.makeLore(
                 " ",
-                Message.ARENA_LIST_MODE.getMessage().replaceAll("%mode%", gameMode.getName()),
-                Message.ARENA_LIST_PLAYERS.getMessage().replaceAll("%total_players%", getTotalPlayers()),
-                Message.ARENA_LIST_STATUS.getMessage().replaceAll("%status%", bbArenaState.getPrefix()),
+                Message.ARENA_LIST_MODE.getMessage().replace("%mode%", gameMode.getName()),
+                Message.ARENA_LIST_PLAYERS.getMessage().replace("%total_players%", getTotalPlayers()),
+                Message.ARENA_LIST_STATUS.getMessage().replace("%status%", bbArenaState.getPrefix()),
                 " ",
                 Message.ARENA_LIST_CLICK_TO_JOIN.getMessage()), null, null);
     }
@@ -957,7 +957,7 @@ public class BBArena implements Spectatable<Player> {
     private void runEndCommands() {
         for (String cmd : plugin.getSettings().getEndCommands()) {
             for (Player p : players) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", p.getName()));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", p.getName()));
             }
         }
     }
@@ -1027,12 +1027,12 @@ public class BBArena implements Spectatable<Player> {
     @Override
     public void spectate(Player player) {
         player.teleport(this.lobbyLocation);
-        player.sendMessage(Message.SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
+        player.sendMessage(Message.SPECTATING_ARENA.getChatMessage().replace("%arena%", this.name));
     }
 
     @Override
     public void unspectate(Player player) {
-        player.sendMessage(Message.NO_LONGER_SPECTATING_ARENA.getChatMessage().replaceAll("%arena%", this.name));
+        player.sendMessage(Message.NO_LONGER_SPECTATING_ARENA.getChatMessage().replace("%arena%", this.name));
     }
 
     @Override
@@ -1084,5 +1084,10 @@ public class BBArena implements Spectatable<Player> {
             }
         }
         return null;
+    }
+
+    public void changeTheme(String theme) {
+        this.theme = theme;
+        this.plugin.getPlayerManager().broadcastToAllPlayersInArena(this, Message.THEME_CHANGED.getChatMessage().replace("%theme%", this.theme));
     }
 }

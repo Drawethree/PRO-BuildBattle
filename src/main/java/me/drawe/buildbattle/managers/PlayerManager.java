@@ -213,10 +213,10 @@ public class PlayerManager {
 
     public void sendStartMessageToAllPlayers(BBArena a) {
         for (Player p : a.getPlayers()) {
-            p.sendTitle(Message.THEME.getMessage().replaceAll("%theme%", a.getTheme()), Message.BUILD_SOMETHING_RELEVANT.getMessage(new String[]{"%theme%"}, a.getTheme()));
+            p.sendTitle(Message.THEME.getMessage().replace("%theme%", a.getTheme()), Message.BUILD_SOMETHING_RELEVANT.getMessage(new String[]{"%theme%"}, a.getTheme()));
             FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
             for (String s : this.plugin.getSettings().getStartMessage()) {
-                FancyMessage.sendCenteredMessage(p, s.replaceAll("%theme%", a.getTheme()));
+                FancyMessage.sendCenteredMessage(p, s.replace("%theme%", a.getTheme()));
             }
             FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
         }
@@ -226,8 +226,8 @@ public class PlayerManager {
         FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
         p.sendMessage("");
         FancyMessage.sendCenteredMessage(p, Message.MOST_POINTS_ANNOUNCE.getMessage());
-        FancyMessage.sendCenteredMessage(p, Message.MOST_POINTS_OLD.getMessage().replaceAll("%old_value%", String.valueOf(oldPoints)));
-        FancyMessage.sendCenteredMessage(p, Message.MOST_POINTS_NEW.getMessage().replaceAll("%new_value%", String.valueOf(newPoints)));
+        FancyMessage.sendCenteredMessage(p, Message.MOST_POINTS_OLD.getMessage().replace("%old_value%", String.valueOf(oldPoints)));
+        FancyMessage.sendCenteredMessage(p, Message.MOST_POINTS_NEW.getMessage().replace("%new_value%", String.valueOf(newPoints)));
         p.sendMessage("");
         FancyMessage.sendCenteredMessage(p, Message.LINE_SPACER.getMessage());
     }
@@ -241,7 +241,7 @@ public class PlayerManager {
                         try {
                             BBPlot plot = a.getVotingPlots().get(i);
                             if (plot != null && plot.getTeam() != null) {
-                                FancyMessage.sendCenteredMessage(player, s.replaceAll("%position%", String.valueOf(a.getPositionOrdinal(plot))).replaceAll("%points%", String.valueOf(plot.getVotePoints())));
+                                FancyMessage.sendCenteredMessage(player, s.replace("%position%", String.valueOf(a.getPositionOrdinal(plot))).replace("%points%", String.valueOf(plot.getVotePoints())));
                                 FancyMessage.sendCenteredMessage(player, "&7" + plot.getTeam().getPlayersInCommaSeparatedString());
                             }
                         } catch (IndexOutOfBoundsException e) {
@@ -251,13 +251,13 @@ public class PlayerManager {
                 } else {
                     if (Bukkit.getServer().getPluginManager().getPlugin("PointsAPI") != null) {
                         FancyMessage.sendCenteredMessage(player, s
-                                .replaceAll("%player_position%", a.getPositionOrdinal(playerPlot))
-                                .replaceAll("%player_points%", String.valueOf(playerPlot.getVotePoints()).
-                                        replaceAll("%pointsapi_points%", String.valueOf(PointsAPI.getPoints(player)))));
+                                .replace("%player_position%", a.getPositionOrdinal(playerPlot))
+                                .replace("%player_points%", String.valueOf(playerPlot.getVotePoints()).
+                                        replace("%pointsapi_points%", String.valueOf(PointsAPI.getPoints(player)))));
                     } else {
                         FancyMessage.sendCenteredMessage(player, s
-                                .replaceAll("%player_position%", a.getPositionOrdinal(playerPlot))
-                                .replaceAll("%player_points%", String.valueOf(playerPlot.getVotePoints())));
+                                .replace("%player_position%", a.getPositionOrdinal(playerPlot))
+                                .replace("%player_points%", String.valueOf(playerPlot.getVotePoints())));
                     }
                 }
             }

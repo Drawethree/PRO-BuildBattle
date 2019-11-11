@@ -95,7 +95,7 @@ public class ArenaManager {
                 sender.sendMessage("§e§lBuildBattle Setup §8| §cInvalid arena type ! Valid types: §esolo, team");
             }
         } else {
-            sender.sendMessage(Message.ARENA_EXISTS.getChatMessage().replaceAll("%arena%", name));
+            sender.sendMessage(Message.ARENA_EXISTS.getChatMessage().replace("%arena%", name));
         }
     }
 

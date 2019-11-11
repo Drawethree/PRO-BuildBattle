@@ -25,7 +25,7 @@ public class BBDeleteSubCommand extends BBSubCommand {
                     this.plugin.getArenaManager().removeArena(sender, arena);
                     return true;
                 } else {
-                    sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replaceAll("%arena%", args[0]));
+                    sender.sendMessage(Message.ARENA_NOT_EXISTS.getChatMessage().replace("%arena%", args[0]));
                 }
             } else {
                 sender.sendMessage("§cUsage >> /" + cmd.getName() + " delete <arena> §8| §7Deletes arena.");

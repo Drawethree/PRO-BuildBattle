@@ -108,16 +108,16 @@ public abstract class BBScoreboard {
 
     private String replacePlaceholders(Player player, BBArena arena, String line, int timeLeft, int baseTime) {
         line = line
-                .replaceAll("%timeleft%", Time.formatTimeMMSS(timeLeft, baseTime))
-                .replaceAll("%gamemode%", arena.getArenaModeInString())
-                .replaceAll("%time%", String.valueOf(timeLeft))
-                .replaceAll("%current_players%", String.valueOf(arena.getPlayers().size()))
-                .replaceAll("%theme%", arena.getTheme())
-                .replaceAll("%current_teams%", String.valueOf(arena.getValidTeams().size()))
-                .replaceAll("%player_teammates%", arena.getTeamMatesNames(player))
-                .replaceAll("%winners%", arena.getWinner() == null ? "" : arena.getWinner().getTeam().getPlayersInCommaSeparatedString())
-                .replaceAll("%builders%", arena.getCurrentVotingPlot() == null ? "" : arena.getCurrentVotingPlot().getTeam().getPlayersInCommaSeparatedString())
-                .replaceAll("%player_vote%", arena.getCurrentVotingPlot() == null ? "" : String.valueOf(arena.getCurrentVotingPlot().getPlayerVoteString(player)));
+                .replace("%timeleft%", Time.formatTimeMMSS(timeLeft, baseTime))
+                .replace("%gamemode%", arena.getArenaModeInString())
+                .replace("%time%", String.valueOf(timeLeft))
+                .replace("%current_players%", String.valueOf(arena.getPlayers().size()))
+                .replace("%theme%", arena.getTheme())
+                .replace("%current_teams%", String.valueOf(arena.getValidTeams().size()))
+                .replace("%player_teammates%", arena.getTeamMatesNames(player))
+                .replace("%winners%", arena.getWinner() == null ? "" : arena.getWinner().getTeam().getPlayersInCommaSeparatedString())
+                .replace("%builders%", arena.getCurrentVotingPlot() == null ? "" : arena.getCurrentVotingPlot().getTeam().getPlayersInCommaSeparatedString())
+                .replace("%player_vote%", arena.getCurrentVotingPlot() == null ? "" : String.valueOf(arena.getCurrentVotingPlot().getPlayerVoteString(player)));
 
         if (BBHook.getHook("PlaceholderAPI")) {
             line = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, line);
