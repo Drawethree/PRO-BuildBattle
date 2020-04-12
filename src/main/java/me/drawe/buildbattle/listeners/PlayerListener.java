@@ -7,8 +7,9 @@ import me.drawe.buildbattle.objects.PlotBiome;
 import me.drawe.buildbattle.objects.Votes;
 import me.drawe.buildbattle.objects.bbobjects.*;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArena;
-import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaEdit;
 import me.drawe.buildbattle.objects.bbobjects.arena.BBArenaState;
+import me.drawe.buildbattle.objects.bbobjects.arena.editor.BBArenaEdit;
+import me.drawe.buildbattle.objects.bbobjects.arena.editor.options.BBArenaEditOption;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
@@ -145,15 +146,13 @@ public class PlayerListener implements Listener {
                 BBArenaEdit currentEdit = this.plugin.getArenaManager().getArenaEdit(inv);
                 if (currentEdit != null) {
                     if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
-                        boolean edited = false;
-                        if (e.getCurrentItem().equals(currentEdit.getGameModeItem())) {
-                            edited = currentEdit.editGameMode();
-                        } else if (e.getCurrentItem().equals(currentEdit.getGameTimeItem())) {
-                            edited = currentEdit.editGameTime(e.getClick());
-                        } else if (e.getCurrentItem().equals(currentEdit.getMinPlayersItem())) {
-                            edited = currentEdit.editMinPlayers(e.getClick());
-                        } else if (e.getCurrentItem().equals(currentEdit.getTeamSizeItem())) {
-                            edited = currentEdit.editTeamSize(e.getClick());
+                        BBArenaEditOption selectedOption = currentEdit.getOption(e.getSlot());
+                        if (selectedOption != null) {
+                            if (selectedOption.handleClick(e.getClick())) {
+                                p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
+                            } else {
+                                p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
+                            }
                         } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getSaveItem())) {
                             currentEdit.saveOptions();
                             p.playSound(p.getLocation(), CompSound.LEVEL_UP.getSound(), 1.0F, 1.0F);
@@ -170,11 +169,6 @@ public class PlayerListener implements Listener {
                             return;
                         }
 
-                        if (edited) {
-                            p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
-                        } else {
-                            p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
-                        }
                     }
                 }
             } else if (invView.getTitle().contains(this.plugin.getOptionsManager().getReportsInventoryTitle())) {

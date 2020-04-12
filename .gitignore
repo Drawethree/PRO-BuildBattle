@@ -1,5 +1,6 @@
-*.iml
+.iml
 .idea
 target
 test
-
+.DS_Store
+dependency-reduced-pom.xml

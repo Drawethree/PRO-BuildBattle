@@ -1,6 +1,7 @@
 package me.drawe.buildbattle.objects.bbobjects.arena;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.drawe.buildbattle.BuildBattle;
 import me.drawe.buildbattle.api.events.game.BBGameEndEvent;
 import me.drawe.buildbattle.api.events.game.BBGameStartEvent;
@@ -11,6 +12,7 @@ import me.drawe.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawe.buildbattle.objects.bbobjects.BBParty;
 import me.drawe.buildbattle.objects.bbobjects.BBTeam;
 import me.drawe.buildbattle.objects.bbobjects.BBThemeVoting;
+import me.drawe.buildbattle.objects.bbobjects.arena.editor.BBArenaEdit;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawe.buildbattle.objects.bbobjects.plot.BBPlotTime;
 import me.drawe.buildbattle.objects.bbobjects.scoreboards.BBScoreboard;
@@ -46,6 +48,7 @@ public class BBArena implements Spectatable<Player> {
     private List<BBPlot> votingPlots;
     private HashMap<Player, BBScoreboard> playerBoards;
 
+    @Setter
     private String theme;
     private BBPlot winner;
     private BBPlot currentVotingPlot;
