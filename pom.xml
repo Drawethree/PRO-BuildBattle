@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.drawe</groupId>
+    <groupId>me.drawethree</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.3.6</version>
+    <version>6.4.1</version>
     <packaging>jar</packaging>
     <name>BuildBattlePro</name>
     <description>Build</description>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <version>1.15.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

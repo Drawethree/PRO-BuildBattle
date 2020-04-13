@@ -137,6 +137,8 @@ arena:
   restrict_only_player_Y_movement: false
   # Should players after game stay in arena to play another game ?
   remove_players_after_game: true
+  # Should be names of builders visible ?
+  show_builders_names: true
   # List of all end commands that will be executed when game has ended.
   # Supports placeholder %winner% for game winner / winning team
   end_commands:

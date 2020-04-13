@@ -1,6 +1,6 @@
 name: BuildBattlePro
 version: ${project.version}
-main: me.drawe.buildbattle.BuildBattle
+main: me.drawethree.buildbattle.BuildBattle
 load: POSTWORLD
 api-version: 1.13
 website: https://www.spigotmc.org/resources/49587/
