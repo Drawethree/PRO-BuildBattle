@@ -46,7 +46,7 @@ public class BBBuildReport {
     }
 
     public boolean saveReport() {
-        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
+        switch (BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
                 return BuildBattle.getInstance().getReportManager().saveReportIntoConfig(this);
             case MYSQL:
@@ -62,12 +62,12 @@ public class BBBuildReport {
     public void setReportStatus(BBReportStatus reportStatus) {
         this.reportStatus = reportStatus;
         reportInventoryItem = ItemUtil.createReportItem(this);
-        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
+        switch (BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
                 BuildBattle.getInstance().getFileManager().getConfig("reports.yml").set(getReportID() + ".status", getReportStatus().name().toUpperCase()).save();
                 break;
             case MYSQL:
-                BuildBattle.getInstance().getMySQLDatabase().update("UPDATE BuildBattlePro_ReportedBuilds SET Status=" + reportStatus.name().toUpperCase() + " WHERE ID=" + getReportID() + "");
+                BuildBattle.getInstance().getMySQLDatabase().execute("UPDATE BuildBattlePro_ReportedBuilds SET Status=? WHERE ID=?", reportStatus.name().toUpperCase(), getReportID());
                 break;
         }
     }
@@ -90,15 +90,15 @@ public class BBBuildReport {
 
     public String getReportedPlayersInCommaSeparatedString() {
         String s = "";
-        for(UUID uuid : reportedPlayers) {
+        for (UUID uuid : reportedPlayers) {
             s = s + (uuid.toString() + ",");
         }
-        return s.substring(0, s.length()-1);
+        return s.substring(0, s.length() - 1);
     }
 
     public List<String> getReportedPlayersStringList() {
         List<String> returnList = new ArrayList<>();
-        reportedPlayers.forEach(p-> returnList.add(p.toString()));
+        reportedPlayers.forEach(p -> returnList.add(p.toString()));
         return returnList;
     }
 
@@ -129,8 +129,8 @@ public class BBBuildReport {
     }
 
     public boolean delete() {
-        if(schematic.exists()) schematic.delete();
-        switch(BuildBattle.getInstance().getSettings().getStatsType()) {
+        if (schematic.exists()) schematic.delete();
+        switch (BuildBattle.getInstance().getSettings().getStatsType()) {
             case FLATFILE:
                 return BuildBattle.getInstance().getReportManager().deleteReportFromConfig(this);
             case MYSQL:

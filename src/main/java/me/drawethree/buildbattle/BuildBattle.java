@@ -79,7 +79,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
         if (this.settings.getStatsType() == StatsType.MYSQL) {
             this.mySQLDatabase = new MySQLDatabase(this);
-            this.mySQLDatabase.connect();
             this.mySQLManager = new MySQLManager(this.mySQLDatabase);
         }
 
@@ -182,7 +181,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         //Reconnect MySQL
         if (this.settings.getStatsType() == StatsType.MYSQL) {
             this.mySQLDatabase.close();
-            this.mySQLDatabase.connect();
         }
 
         Message.reloadMessages();

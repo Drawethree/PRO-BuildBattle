@@ -10,6 +10,8 @@ import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArenaState;
 import me.drawethree.buildbattle.objects.bbobjects.arena.editor.BBArenaEdit;
 import me.drawethree.buildbattle.objects.bbobjects.arena.editor.options.BBArenaEditOption;
+import me.drawethree.buildbattle.objects.bbobjects.gui.ArenaDeleteGUI;
+import me.drawethree.buildbattle.objects.bbobjects.gui.ClearPlotGUI;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlotParticle;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlotTime;
@@ -150,6 +152,7 @@ public class PlayerListener implements Listener {
                         if (selectedOption != null) {
                             if (selectedOption.handleClick(e.getClick())) {
                                 p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
+                                currentEdit.refreshGUI();
                             } else {
                                 p.playSound(p.getLocation(), CompSound.NOTE_BASS.getSound(), 1.0F, 1.0F);
                             }
@@ -163,8 +166,7 @@ public class PlayerListener implements Listener {
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
                         } else if (e.getCurrentItem().equals(this.plugin.getOptionsManager().getDeleteArenaItem())) {
-                            this.plugin.getArenaManager().removeArena(p, currentEdit.getArena());
-                            p.openInventory(this.plugin.getArenaManager().getEditArenasInventory());
+                            p.openInventory(new ArenaDeleteGUI(currentEdit).getInventory());
                             p.playSound(p.getLocation(), CompSound.CLICK.getSound(), 1.0F, 1.0F);
                             return;
                         }
@@ -319,8 +321,7 @@ public class PlayerListener implements Listener {
                             } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getTimeItem())) {
                                 this.plugin.getOptionsManager().openTimeInventory(p, plot);
                             } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getClearPlotItem())) {
-                                plot.resetPlotFromGame();
-                                p.closeInventory();
+                                p.openInventory(new ClearPlotGUI(plot).getInventory());
                             } else if (e.getCurrentItem().isSimilar(this.plugin.getOptionsManager().getBiomesItem())) {
                                 p.openInventory(this.plugin.getOptionsManager().getBiomesInventory());
                             }

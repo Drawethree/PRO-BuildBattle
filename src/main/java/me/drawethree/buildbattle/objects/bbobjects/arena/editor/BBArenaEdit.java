@@ -49,6 +49,12 @@ public class BBArenaEdit {
         }
     }
 
+    public void refreshGUI() {
+        for (int i : editOptions.keySet()) {
+            this.editInventory.setItem(i, editOptions.get(i).getItem());
+        }
+    }
+
     public void saveOptions() {
         arena.setMinPlayers((Integer) getOption(MIN_PLAYERS_OPTION_SLOT).getValue());
         arena.setGameType((BBGameMode) getOption(GAMEMODE_OPTION_SLOT).getValue());
