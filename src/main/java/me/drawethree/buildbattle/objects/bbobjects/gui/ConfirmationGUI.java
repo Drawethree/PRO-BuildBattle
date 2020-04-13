@@ -21,7 +21,6 @@ public abstract class ConfirmationGUI implements Listener {
     private static final ItemStack NO_ITEM = ItemUtil.create(CompMaterial.RED_STAINED_GLASS_PANE, 1, "&cNO");
 
     protected ItemStack item;
-
     @Getter
     protected Inventory inventory;
 
