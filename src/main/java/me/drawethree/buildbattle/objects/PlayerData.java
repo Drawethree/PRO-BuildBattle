@@ -29,27 +29,8 @@ public class PlayerData {
         this.exp = p.getExp();
         this.allowFlight = p.getAllowFlight();
     }
-    public Location getLocation() {
-        return location;
-    }
 
-    public GameMode getGamemode() {
-        return gameMode;
-    }
-
-    public ItemStack[] getContents() {
-        return contents;
-    }
-
-    public ItemStack[] getArmor() {
-        return armor;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public Player getPlayer() {
+    private Player getPlayer() {
         return Bukkit.getPlayer(uuid);
     }
 
@@ -68,17 +49,5 @@ public class PlayerData {
         getPlayer().setExp(exp);
         getPlayer().setAllowFlight(allowFlight);
         getPlayer().teleport(location);
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public float getExp() {
-        return exp;
-    }
-
-    public boolean isAllowFlight() {
-        return allowFlight;
     }
 }

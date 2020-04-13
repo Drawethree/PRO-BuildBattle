@@ -34,7 +34,7 @@ public class MySQLManager {
 
     public boolean hasReportedPlayer(Player reporter, Player player) {
         try {
-            return database.query(database.getStatement("SELECT * FROM BuildBattlePro_ReportedBuilds WHERE Player='" + player.getName() + "' AND ReportedBy='" + reporter.getName() + "'")).next();
+			return database.query("SELECT * FROM BuildBattlePro_ReportedBuilds WHERE Player=? AND ReportedBy=?", player.getName(), reporter.getName()).get().next();
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -49,12 +49,7 @@ public class MySQLManager {
                     return;
                 }
                 if (!hasReportedPlayer(reporter, player)) {
-                    PreparedStatement statement = database.getStatement("INSERT INTO BuildBattlePro_ReportedBuilds(Player,ReportedBy,Date) VALUES(?,?,?)");
-                    statement.setString(1, player.getName());
-                    statement.setString(2, reporter.getName());
-                    statement.setString(3, Time.getCurrentDateTime());
-                    statement.execute();
-                    statement.close();
+					database.execute("INSERT INTO BuildBattlePro_ReportedBuilds(Player,ReportedBy,Date) VALUES(?,?,?)", player.getName(), reporter.getName(), Time.getCurrentDateTime());
                     reporter.sendMessage(Message.REPORT_SUCCESS.getChatMessage().replace("%player%", player.getName()));
                 } else {
                     reporter.sendMessage(Message.ALREADY_REPOTED.getChatMessage());
@@ -68,7 +63,7 @@ public class MySQLManager {
 
     public boolean isUUIDInTable(UUID uuid) {
         try {
-            ResultSet set = database.query(database.getStatement("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID='" + uuid.toString() + "'"));
+			ResultSet set = database.query("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID=?", uuid.toString()).get().next();
             return set.next();
         } catch (SQLException e) {
             e.printStackTrace();

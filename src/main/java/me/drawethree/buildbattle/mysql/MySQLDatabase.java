@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.concurrent.CompletableFuture;
 
 
 public class MySQLDatabase {
@@ -15,22 +16,23 @@ public class MySQLDatabase {
     private BuildBattle parent;
 
     private Connection connection;
-    private String host, database, username, password;
-    private int port;
+	private DatabaseCredentials credentials;
 
     public MySQLDatabase(BuildBattle parent) {
 
         this.parent = parent;
-        this.host = parent.getConfig().getString("mysql.host");
-        this.port = parent.getConfig().getInt("mysql.port");
-        this.database = parent.getConfig().getString("mysql.database");
-        this.username = parent.getConfig().getString("mysql.username");
-        this.password = parent.getConfig().getString("mysql.password");
-
+		this.credentials = new DatabaseCredentials(
+				parent.getConfig().getString("mysql.host"),
+				parent.getConfig().getString("mysql.database"),
+				parent.getConfig().getString("mysql.username"),
+				parent.getConfig().getString("mysql.password"),
+				parent.getConfig().getInt("mysql.port")
+		);
+		this.connect();
     }
 
 
-    public void connect() {
+	private void connect() {
         if (!this.parent.isEnabled()) {
             this.parent.warning("Cannot maintain MySQL connection when plugin is disabled!");
             return;
@@ -57,124 +59,87 @@ public class MySQLDatabase {
 
         synchronized (this) {
             this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?autoReconnect=true", this.username, this.password);
+					"jdbc:mysql://" + this.credentials.getHost() + ":" + this.credentials.getPort() + "/" + this.credentials.getDatabaseName(), this.credentials.getUserName(), this.credentials.getPassword());
         }
     }
 
-    public ResultSet query(PreparedStatement statement) {
+	public CompletableFuture<ResultSet> query(String sql, Object... replacements) {
 
         if (!parent.isEnabled()) {
             this.parent.warning("Cannot execute SQL Query when plugin is disabled!");
             return null;
         }
+		return null;
 
-        synchronized (this) {
-
-            if (!isConnected()) {
-                connect();
-            }
-
-            try {
-                return statement.executeQuery();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 
-    private void createTables() throws Exception {
-        this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL)").execute();
-        this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID varchar(100) NOT NULL, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL)").execute();
+	private void createTables() {
+		execute("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL PRIMARY KEY, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL");
+		execute("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID int NOT NULL PRIMARY KEY AUTO INCREMENT, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL)");
         this.approveChanges();
     }
 
-    private void approveChanges() throws Exception {
-        DatabaseMetaData md;
-        md = this.connection.getMetaData();
-        ResultSet rs = md.getColumns(null, null, "BuildBattlePro_PlayerData", "SuperVotes");
-        if (!rs.next()) {
-            connection.prepareStatement("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0").execute();
-            parent.info("MySQL detected that your table doesn't have SuperVotes column, adding it automatically!");
-        }
-        this.connection.prepareStatement("DROP TABLE IF EXISTS BuildBattlePro_Reports").execute();
+	private void approveChanges() {
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				try (Connection con = getConnection()) {
+					DatabaseMetaData md = con.getMetaData();
+					ResultSet rs = md.getColumns(null, null, "BuildBattlePro_PlayerData", "SuperVotes");
+					if (!rs.next()) {
+						execute("ALTER TABLE BuildBattlePro_PlayerData ADD SuperVotes int NOT NULL DEFAULT 0");
+						parent.info("MySQL detected that your table doesn't have SuperVotes column, adding it automatically!");
+					}
+					execute("DROP TABLE IF EXISTS BuildBattlePro_Reports");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(this.parent);
+
     }
 
-    public void update(String sql) {
+
+	public void execute(String sql, Object... replacements) {
 
         if (!parent.isEnabled()) {
-            this.parent.warning("Cannot execute SQL when plugin is disabled!");
-            return;
+			this.parent.warning("Cannot execute SQL when plugin is disabled!");
+			return;
         }
 
-        synchronized (this) {
-            if (!isConnected()) {
-                connect();
-            }
+		new BukkitRunnable() {
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    try {
-                        Statement statement = connection.createStatement();
-                        statement.executeUpdate(sql);
-                        statement.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.runTaskAsynchronously(BuildBattle.getInstance());
-        }
+			@Override
+			public void run() {
+				try (Connection con = getConnection(); PreparedStatement statement = con.prepareStatement(sql)) {
+					for (int i = 0; i < replacements.length; i++) {
+						statement.setObject(i + 1, replacements[i]);
+					}
+					statement.execute();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(this.parent);
+
     }
 
-
-    public PreparedStatement getStatement(String sql) {
-
-        if (!parent.isEnabled()) {
-            this.parent.warning("Cannot create SQL Statement when plugin is disabled!");
-            return null;
-        }
-
-        synchronized (this) {
-
-            if (!isConnected()) {
-                connect();
-            }
-
-            try {
-                return this.connection.prepareStatement(sql);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public final void close() {
+	public void close() {
         if (connection != null)
-            synchronized (this) {
                 try {
                     connection.close();
                 } catch (final SQLException e) {
                     parent.warning("Error closing MySQL connection!");
                 }
-            }
     }
 
-    public final boolean isLoaded() {
-        return connection != null;
-    }
 
-    public final boolean isConnected() {
-        if (!isLoaded())
-            return false;
-
-        synchronized (this) {
-            try {
-                return connection != null && !connection.isClosed() && connection.isValid(0);
-            } catch (final SQLException ex) {
-                return false;
-            }
-        }
+	public Connection getConnection() throws SQLException {
+		if (connection == null || connection.isClosed()) {
+			this.connection = DriverManager.getConnection(
+					"jdbc:mysql://" + this.credentials.getHost() + ":" + this.credentials.getPort() + "/" + this.credentials.getDatabaseName(), this.credentials.getUserName(), this.credentials.getPassword());
+		}
+		return connection;
     }
 }
