@@ -1,4 +1,4 @@
-package me.drawe.buildbattle.mysql;
+package me.drawethree.buildbattle.mysql;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
