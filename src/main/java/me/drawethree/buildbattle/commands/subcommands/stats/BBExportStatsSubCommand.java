@@ -7,8 +7,10 @@ import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.StatsType;
 import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawethree.buildbattle.objects.bbobjects.BBStat;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
 import java.util.UUID;
 
 public class BBExportStatsSubCommand extends BBSubCommand {
@@ -53,5 +55,10 @@ public class BBExportStatsSubCommand extends BBSubCommand {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }

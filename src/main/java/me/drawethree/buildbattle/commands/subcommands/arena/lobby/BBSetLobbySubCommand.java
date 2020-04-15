@@ -6,15 +6,19 @@ import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSetLobbySubCommand extends BBSubCommand {
 
     private BuildBattle plugin;
 
     public BBSetLobbySubCommand(BuildBattle plugin) {
-        super("setlobby", " setlobby <arena> §8» §7Set lobby for Arena","buildbattlepro.create", true);
+        super("setlobby", " setlobby <arena> §8» §7Set lobby for Arena", "buildbattlepro.create", true);
 
         this.plugin = plugin;
     }
@@ -42,5 +46,13 @@ public class BBSetLobbySubCommand extends BBSubCommand {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return new ArrayList<>(this.plugin.getArenaManager().getArenas().keySet());
+        }
+        return null;
     }
 }

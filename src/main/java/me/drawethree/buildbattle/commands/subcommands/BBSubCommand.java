@@ -2,8 +2,9 @@ package me.drawethree.buildbattle.commands.subcommands;
 
 import me.drawethree.buildbattle.commands.BBCommand;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-public abstract class BBSubCommand {
+public abstract class BBSubCommand implements TabCompleter {
 
     private String subCommand;
     private String permissionRequired;

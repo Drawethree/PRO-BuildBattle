@@ -179,7 +179,7 @@ public class MySQLManager {
     }
 
     public void savePlayerStat(BBStat stat, BBPlayerStats bbPlayerStats) {
-        database.execute("UPDATE BuildBattlePro_PlayerData SET ?=? WHERE UUID=?", stat.getSQLKey(), bbPlayerStats.getStat(stat), bbPlayerStats.getUuid().toString());
+        database.execute("UPDATE BuildBattlePro_PlayerData SET " + stat.getSQLKey() + "=? WHERE UUID=?", bbPlayerStats.getStat(stat), bbPlayerStats.getUuid().toString());
         database.getParent().debug("Saved statistic " + stat.getSQLKey() + "=" + bbPlayerStats.getStat(stat) + " for UUID " + bbPlayerStats.getUuid().toString());
     }
 

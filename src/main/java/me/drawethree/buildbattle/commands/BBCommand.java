@@ -14,9 +14,8 @@ import me.drawethree.buildbattle.commands.subcommands.npc.BBDelNPCSubCommand;
 import me.drawethree.buildbattle.commands.subcommands.stats.BBExportStatsSubCommand;
 import me.drawethree.buildbattle.commands.subcommands.stats.BBStatsSubCommand;
 import me.drawethree.buildbattle.utils.FancyMessage;
-import org.bukkit.command.Command;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
@@ -25,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-public class BBCommand extends BukkitCommand implements TabCompleter {
+public class BBCommand extends BukkitCommand {
 
 
     @Getter
@@ -38,7 +37,6 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
         this.plugin = plugin;
         this.description = plugin.getFileManager().getConfig("config.yml").get().getString("main_command.description");
         this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
-
         this.subCommands = new TreeMap<>();
         //Admin commands
         this.subCommands.put("create", new BBCreateSubCommand(plugin));
@@ -115,7 +113,21 @@ public class BBCommand extends BukkitCommand implements TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>(this.subCommands.keySet());
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
+        return tabComplete(sender, alias, args);
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        List<String> list = Arrays.asList(args);
+        if (list.size() >= 1) {
+            BBSubCommand subCommand = getSubCommand(args[0]);
+            if (subCommand != null) {
+                return subCommand.onTabComplete(sender, this, alias, args);
+            } else {
+                return new ArrayList<>(this.subCommands.keySet());
+            }
+        }
+        return null;
     }
 }

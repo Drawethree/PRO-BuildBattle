@@ -9,8 +9,13 @@ import me.drawethree.buildbattle.leaderboards.LeaderboardType;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BBLeaderBoardSubCommand extends BBSubCommand {
 
@@ -102,5 +107,15 @@ public class BBLeaderBoardSubCommand extends BBSubCommand {
         sender.sendMessage("         §c>> §e/" + cmd.getName() + " lb delete §8| §7Deletes selected leaderboard");
         sender.sendMessage("         §c>> §e/" + cmd.getName() + " lb teleport §8| §7Teleports selected leaderboard to your position");
         sender.sendMessage("         §c>> §e/" + cmd.getName() + " lb refresh §8| §7Refresh all leaderboards");
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return Arrays.asList("create", "select", "delete", "teleport", "refresh");
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("create")) {
+            return Arrays.asList(LeaderboardType.values()).stream().map(LeaderboardType::name).collect(Collectors.toList());
+        }
+        return null;
     }
 }

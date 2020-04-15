@@ -6,8 +6,12 @@ import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.spectateapi.Spectatable;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSpectateSubCommand extends BBSubCommand {
 
@@ -46,5 +50,13 @@ public class BBSpectateSubCommand extends BBSubCommand {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return new ArrayList<>(this.plugin.getArenaManager().getArenas().keySet());
+        }
+        return null;
     }
 }

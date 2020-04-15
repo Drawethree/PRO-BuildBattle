@@ -8,8 +8,12 @@ import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBAddPlotSubCommand extends BBSubCommand {
 
@@ -82,5 +86,13 @@ public class BBAddPlotSubCommand extends BBSubCommand {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return new ArrayList<>(this.plugin.getArenaManager().getArenas().keySet());
+        }
+        return null;
     }
 }

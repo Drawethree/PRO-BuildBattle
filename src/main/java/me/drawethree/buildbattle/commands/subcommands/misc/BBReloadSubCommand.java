@@ -4,7 +4,10 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.commands.BBCommand;
 import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class BBReloadSubCommand extends BBSubCommand {
 
@@ -29,5 +32,10 @@ public class BBReloadSubCommand extends BBSubCommand {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }

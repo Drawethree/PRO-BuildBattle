@@ -6,7 +6,13 @@ import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BBSuperVoteSubCommand extends BBSubCommand {
 
@@ -57,5 +63,15 @@ public class BBSuperVoteSubCommand extends BBSubCommand {
             sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return Arrays.asList("give", "take");
+        } else if (args.length == 3) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        }
+        return null;
     }
 }

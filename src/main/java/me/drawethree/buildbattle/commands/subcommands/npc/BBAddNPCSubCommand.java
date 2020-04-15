@@ -8,8 +8,11 @@ import me.drawethree.buildbattle.objects.Message;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class BBAddNPCSubCommand extends BBSubCommand {
 
@@ -44,5 +47,10 @@ public class BBAddNPCSubCommand extends BBSubCommand {
             sender.sendMessage(plugin.getSettings().getPrefix() + " §cCitizens plugin is not loaded!");
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }

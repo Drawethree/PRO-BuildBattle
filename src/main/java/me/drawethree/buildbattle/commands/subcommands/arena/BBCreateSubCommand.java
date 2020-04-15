@@ -3,8 +3,14 @@ package me.drawethree.buildbattle.commands.subcommands.arena;
 import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.commands.BBCommand;
 import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
+import me.drawethree.buildbattle.objects.bbobjects.BBGameMode;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BBCreateSubCommand extends BBSubCommand {
 
@@ -32,4 +38,11 @@ public class BBCreateSubCommand extends BBSubCommand {
         return false;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 3) {
+            return Arrays.stream(BBGameMode.values()).map(BBGameMode::getName).collect(Collectors.toList());
+        }
+        return null;
+    }
 }

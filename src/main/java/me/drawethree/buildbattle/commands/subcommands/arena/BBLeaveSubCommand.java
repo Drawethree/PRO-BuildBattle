@@ -5,8 +5,11 @@ import me.drawethree.buildbattle.commands.BBCommand;
 import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class BBLeaveSubCommand extends BBSubCommand {
 
@@ -30,5 +33,10 @@ public class BBLeaveSubCommand extends BBSubCommand {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }

@@ -6,8 +6,14 @@ import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.BBGameMode;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BBJoinSubCommand extends BBSubCommand {
 
@@ -79,5 +85,15 @@ public class BBJoinSubCommand extends BBSubCommand {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return new ArrayList<>(this.plugin.getArenaManager().getArenas().keySet());
+        } else if (args.length == 3) {
+            Arrays.asList(BBGameMode.values()).stream().map(BBGameMode::getName).collect(Collectors.toList());
+        }
+        return null;
     }
 }

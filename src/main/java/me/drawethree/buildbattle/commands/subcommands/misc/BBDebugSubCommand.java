@@ -4,7 +4,10 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.commands.BBCommand;
 import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import org.apache.commons.lang.BooleanUtils;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class BBDebugSubCommand extends BBSubCommand {
 
@@ -22,5 +25,10 @@ public class BBDebugSubCommand extends BBSubCommand {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }

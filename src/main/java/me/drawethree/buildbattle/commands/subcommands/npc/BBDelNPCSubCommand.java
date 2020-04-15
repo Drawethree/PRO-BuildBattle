@@ -7,8 +7,11 @@ import me.drawethree.buildbattle.hooks.BBHook;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class BBDelNPCSubCommand extends BBSubCommand {
 
@@ -48,4 +51,8 @@ public class BBDelNPCSubCommand extends BBSubCommand {
     }
 
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
+    }
 }

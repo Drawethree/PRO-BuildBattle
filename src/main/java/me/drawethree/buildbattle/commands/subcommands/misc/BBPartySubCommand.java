@@ -6,8 +6,13 @@ import me.drawethree.buildbattle.commands.subcommands.BBSubCommand;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.BBParty;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BBPartySubCommand extends BBSubCommand {
 
@@ -62,5 +67,15 @@ public class BBPartySubCommand extends BBSubCommand {
         sender.sendMessage("§e/" + cmd.getName() + " party invite <player> " + "§8» " + "§7Invite player to your party");
         sender.sendMessage("§e/" + cmd.getName() + " party <accept/decline> " + "§8» " + "§7Accept/Decline party invite");
         sender.sendMessage("§e/" + cmd.getName() + " party leave " + "§8» " + "§7Leave your current party");
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            return Arrays.asList("invite", "accept", "decline", "leave");
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("invite")) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        }
+        return null;
     }
 }

@@ -7,8 +7,11 @@ import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawethree.buildbattle.objects.bbobjects.BBStat;
 import me.drawethree.buildbattle.utils.FancyMessage;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class BBStatsSubCommand extends BBSubCommand {
 
@@ -46,5 +49,10 @@ public class BBStatsSubCommand extends BBSubCommand {
             sender.sendMessage("§cUsage >> /" + cmd.getName() + " stats §8| §7Show your BuildBattlePro stats");
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return null;
     }
 }
