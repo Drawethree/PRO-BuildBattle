@@ -76,7 +76,7 @@ public class BBAutoJoinSign extends BBSign {
             return;
         }
 
-        String loadedSting = this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").get().getString("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()));
+        String loadedSting = this.getParent().getFileManager().getConfig("signs.yml").get().getString("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()));
         if (loadedSting.equals("BOTH")) {
             this.gamemode = null;
         } else {
@@ -86,6 +86,6 @@ public class BBAutoJoinSign extends BBSign {
 
     @Override
     public void save() {
-        this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").set("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()), this.gamemode == null ? "BOTH" : gamemode.name()).save();
+        this.getParent().getFileManager().getConfig("signs.yml").set("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()), this.gamemode == null ? "BOTH" : gamemode.name()).save();
     }
 }

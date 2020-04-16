@@ -15,6 +15,7 @@ public abstract class BBHook {
         hooks.put("HolographicDisplays", new BBHookHolographicDisplays());
         hooks.put("LeaderHeads", new BBHookLeaderHeads());
         hooks.put("MVdWPlaceholderAPI", new BBHookMVDWPAPI());
+        hooks.put("WorldEdit", new BBHookWorldEdit());
         hooks.put("PlaceholderAPI", new BBHookPlaceholderAPI());
     }
 

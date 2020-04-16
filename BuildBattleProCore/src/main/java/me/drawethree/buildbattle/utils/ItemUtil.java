@@ -1,6 +1,7 @@
 package me.drawethree.buildbattle.utils;
 
 import me.drawethree.buildbattle.BuildBattle;
+import me.drawethree.buildbattle.managers.ReportManager;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.bbobjects.BBBuildReport;
 import me.drawethree.buildbattle.objects.bbobjects.BBReportStatus;
@@ -162,12 +163,12 @@ public class ItemUtil {
         reportLore.add("§eReported by: §f" + reportedBy.getName());
         reportLore.add("§eReported players:");
         report.getReportedPlayers().forEach(uuid -> reportLore.add(" §f- " + Bukkit.getOfflinePlayer(uuid).getName()));
-        reportLore.add("§eDate: §f" + BuildBattle.getInstance().getReportManager().getReportDateformat().format(report.getReportDate()));
+        reportLore.add("§eDate: §f" + ReportManager.REPORT_DATE_FORMAT.format(report.getReportDate()));
         reportLore.add("§eSchematic name: §f" + report.getSchematicFile().getName());
         reportLore.add("§eStatus: " + report.getReportStatus().getStatusColor() + report.getReportStatus().name().toUpperCase());
         reportLore.add("");
-        reportLore.add("§eRight-Click §7to mark as " + BBReportStatus.SOLVED.getStatusColor() + BBReportStatus.SOLVED.name());
-        reportLore.add("§eLeft-Click §7to §aLOAD §7schematic to your clipboard");
+        reportLore.add("§eRight-Click §7to mark as " + BBReportStatus.SOLVED.getStatusColor() + BBReportStatus.SOLVED.name() + " §r/ " + BBReportStatus.PENDING.getStatusColor() + BBReportStatus.PENDING.name());
+        reportLore.add("§eLeft-Click §7to §aPASTE §7schematic at your location");
         reportLore.add("§eMiddle-Click §7to §cDELETE §7this report");
         return reportLore;
     }

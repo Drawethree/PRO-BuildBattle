@@ -148,11 +148,16 @@
             <systemPath>${project.basedir}/lib/PointsAPI.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>WorldEdit</groupId>
-            <artifactId>WorldEdit</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/worldedit-bukkit-6.1.9.jar</systemPath>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-core</artifactId>
+            <version>7.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>MVdWPlaceholderAPI</groupId>

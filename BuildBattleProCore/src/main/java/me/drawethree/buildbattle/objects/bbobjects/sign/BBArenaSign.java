@@ -26,12 +26,12 @@ public abstract class BBArenaSign extends BBSign {
         if(this.sign == null) {
             return;
         }
-        this.arena = this.getParent().getArenaManager().getArena(this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").get().getString("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation())));
+        this.arena = this.getParent().getArenaManager().getArena(this.getParent().getFileManager().getConfig("signs.yml").get().getString("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation())));
     }
 
     @Override
     public void save() {
-        this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").set("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()), this.arena.getName()).save();
+        this.getParent().getFileManager().getConfig("signs.yml").set("signs." + this.getType().getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(this.getLocation()), this.arena.getName()).save();
     }
 
     @Override

@@ -13,10 +13,10 @@ public class SetThemeCommand extends BukkitCommand {
     private BuildBattle plugin;
 
     public SetThemeCommand(BuildBattle plugin) {
-        super(plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("set_theme_command.name"));
+        super(plugin.getFileManager().getConfig("config.yml").get().getString("set_theme_command.name"));
         this.plugin = plugin;
-        this.description = plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("set_theme_command.description");
-        this.setAliases(plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("set_theme_command.aliases"));
+        this.description = plugin.getFileManager().getConfig("config.yml").get().getString("set_theme_command.description");
+        this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("set_theme_command.aliases"));
     }
 
     @Override

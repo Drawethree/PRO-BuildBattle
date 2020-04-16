@@ -33,10 +33,10 @@ public class BBCommand extends BukkitCommand {
 
 
     public BBCommand(BuildBattle plugin) {
-        super(plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("main_command.name"));
+        super(plugin.getFileManager().getConfig("config.yml").get().getString("main_command.name"));
         this.plugin = plugin;
-        this.description = plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("main_command.description");
-        this.setAliases(plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("main_command.aliases"));
+        this.description = plugin.getFileManager().getConfig("config.yml").get().getString("main_command.description");
+        this.setAliases(plugin.getFileManager().getConfig("config.yml").get().getStringList("main_command.aliases"));
         this.subCommands = new TreeMap<>();
         //Admin commands
         this.subCommands.put("create", new BBCreateSubCommand(plugin));

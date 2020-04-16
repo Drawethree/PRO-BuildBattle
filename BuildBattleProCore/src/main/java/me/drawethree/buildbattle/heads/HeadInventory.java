@@ -81,7 +81,7 @@ public class HeadInventory {
             @Override
             public void run() {
                 try {
-                    ConfigurationSection section = plugin.getFileManager().getConfig("src/main/resources/heads.yml").get().getConfigurationSection("categories");
+                    ConfigurationSection section = plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories");
                     int i = 0;
                     for (String name : section.getKeys(false)) {
                         Category category = new Category(plugin,name);

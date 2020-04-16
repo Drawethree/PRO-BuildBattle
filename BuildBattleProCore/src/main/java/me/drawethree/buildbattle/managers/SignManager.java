@@ -25,13 +25,13 @@ public class SignManager {
         this.loadedSigns = new HashMap<>();
 
         //Check if we want to import from old config.
-        if (this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").get().getBoolean("import-old-signs")) {
+        if (this.plugin.getFileManager().getConfig("signs.yml").get().getBoolean("import-old-signs")) {
             this.importFromOldConfig();
             return;
         }
 
         for (BBSignType type : BBSignType.values()) {
-            for (String locationString : this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").get().getConfigurationSection("signs." + type.getConfigPath()).getKeys(false)) {
+            for (String locationString : this.plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection("signs." + type.getConfigPath()).getKeys(false)) {
 
                 BBSign loadedSign = null;
                 Location location = LocationUtil.getLocationFromStringXYZ(locationString);
@@ -71,11 +71,11 @@ public class SignManager {
             BBArenaJoinSign loadedSign;
             Location loc;
 
-            if (!this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").get().contains(arena.getName())) {
+            if (!this.plugin.getFileManager().getConfig("signs.yml").get().contains(arena.getName())) {
                 continue;
             }
 
-            for (String locationString : this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").get().getConfigurationSection(arena.getName()).getKeys(false)) {
+            for (String locationString : this.plugin.getFileManager().getConfig("signs.yml").get().getConfigurationSection(arena.getName()).getKeys(false)) {
 
                 loc = LocationUtil.getLocationFromStringXYZ(locationString);
                 loadedSign = new BBArenaJoinSign(this.plugin, arena, loc);
@@ -89,11 +89,11 @@ public class SignManager {
                 }
             }
 
-            this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").set(arena.getName(), null);
+            this.plugin.getFileManager().getConfig("signs.yml").set(arena.getName(), null);
 
         }
         this.plugin.info("Done! Setting import-old-signs to false.");
-        this.plugin.getFileManager().getConfig("src/main/resources/signs.yml").set("import-old-signs", false).save();
+        this.plugin.getFileManager().getConfig("signs.yml").set("import-old-signs", false).save();
     }
 
     public BBSign getSignAtLocation(Location location) {

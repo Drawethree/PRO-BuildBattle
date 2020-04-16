@@ -192,7 +192,7 @@ public class ArenaManager {
     public void loadArenas() {
         try {
             this.arenas = new HashMap<>();
-            for (String name : this.plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getKeys(false)) {
+            for (String name : this.plugin.getFileManager().getConfig("arenas.yml").get().getKeys(false)) {
                 this.arenas.put(name, new BBArena(this.plugin,name));
                 plugin.info("§aArena §e" + name + " §aloaded !");
             }

@@ -1,6 +1,8 @@
 package me.drawethree.buildbattle.listeners;
 
 import me.drawethree.buildbattle.BuildBattle;
+import me.drawethree.buildbattle.hooks.BBHook;
+import me.drawethree.buildbattle.hooks.BBHookWorldEdit;
 import me.drawethree.buildbattle.objects.GUIItem;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.PlotBiome;
@@ -175,22 +177,28 @@ public class PlayerListener implements Listener {
                 }
             } else if (invView.getTitle().contains(this.plugin.getOptionsManager().getReportsInventoryTitle())) {
                 e.setCancelled(true);
+
+                if (e.getCurrentItem() == null) {
+                    return;
+                }
+
+                BBHookWorldEdit hookWorldEdit = (BBHookWorldEdit) BBHook.getHookInstance("WorldEdit");
+                if (hookWorldEdit == null || !hookWorldEdit.isEnabled()) {
+                    return;
+                }
+
                 if (e.getCurrentItem().isSimilar(GUIItem.NEXT_PAGE.getItemStack())) {
-                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getNextPage(invView));
+                    hookWorldEdit.getReportManager().openReports(p, hookWorldEdit.getReportManager().getNextPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.PREV_PAGE.getItemStack())) {
-                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getPrevPage(invView));
+                    hookWorldEdit.getReportManager().openReports(p, hookWorldEdit.getReportManager().getPrevPage(invView));
                 } else if (e.getCurrentItem().isSimilar(GUIItem.CLOSE_GUI.getItemStack())) {
                     p.closeInventory();
                 } else if (!e.getCurrentItem().isSimilar(GUIItem.FILL_ITEM.getItemStack())) {
-                    BBBuildReport clickedReport = this.plugin.getReportManager().getReport(e.getCurrentItem());
+                    BBBuildReport clickedReport = hookWorldEdit.getReportManager().getReport(e.getCurrentItem());
                     if (clickedReport != null) {
                         switch (e.getClick()) {
                             case LEFT:
-                                if (clickedReport.selectSchematic(p)) {
-                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSchematic of report §e" + clickedReport.getReportID() + " §aloaded into your clipboard. Paste it by §e//paste");
-                                } else {
-                                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cThere is some problem with loading schematic for report §e" + clickedReport.getReportID() + " !");
-                                }
+                                clickedReport.pasteSchematic(p);
                                 p.closeInventory();
                                 break;
                             case RIGHT:
@@ -199,12 +207,12 @@ public class PlayerListener implements Listener {
                                 } else {
                                     clickedReport.setReportStatus(BBReportStatus.PENDING);
                                 }
-                                this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getCurrentPage(invView));
+                                hookWorldEdit.getReportManager().openReports(p, hookWorldEdit.getReportManager().getCurrentPage(invView));
                                 break;
                             case MIDDLE:
-                                if (this.plugin.getReportManager().deleteReport(clickedReport)) {
+                                if (hookWorldEdit.getReportManager().deleteReport(clickedReport)) {
                                     p.sendMessage(this.plugin.getSettings().getPrefix() + "§aReport deleted !");
-                                    this.plugin.getReportManager().openReports(p, this.plugin.getReportManager().getCurrentPage(invView));
+                                    hookWorldEdit.getReportManager().openReports(p, hookWorldEdit.getReportManager().getCurrentPage(invView));
                                 } else {
                                     p.sendMessage(this.plugin.getSettings().getPrefix() + "§cThere is an issue with deleting this report ! Check console.");
                                     p.closeInventory();
@@ -490,10 +498,16 @@ public class PlayerListener implements Listener {
             }
             if (arena.getBBArenaState() == BBArenaState.VOTING) {
                 if (e.getItem() != null) {
+
                     if (e.getItem().isSimilar(this.plugin.getOptionsManager().getReportItem())) {
-                        this.plugin.getReportManager().attemptReport(arena.getCurrentVotingPlot(), p);
+                        BBHookWorldEdit hookWorldEdit = (BBHookWorldEdit) BBHook.getHookInstance("WorldEdit");
+                        if (hookWorldEdit == null || !hookWorldEdit.isEnabled()) {
+                            return;
+                        }
+                        hookWorldEdit.getReportManager().attemptReport(arena.getCurrentVotingPlot(), p);
                         return;
                     }
+
                     Votes vote = Votes.getVoteByItemStack(e.getItem());
                     if (vote != null) {
                         BBPlot currentPlot = arena.getCurrentVotingPlot();

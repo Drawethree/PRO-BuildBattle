@@ -37,15 +37,15 @@ public class Category {
         this.plugin = plugin;
         List<ItemStack> heads = new ArrayList<>();
         try {
-            String categoryName = this.plugin.getFileManager().getConfig("src/main/resources/heads.yml").get().getString("categories." + category + ".description");
-            CompMaterial material = CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("src/main/resources/heads.yml").get().getString("categories." + category + ".icon.material"));
+            String categoryName = this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".description");
+            CompMaterial material = CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".icon.material"));
             this.icon = ItemStackCreator.createItem(material, 1, "§e" + categoryName);
             this.description = categoryName;
             this.pages = new ArrayList<>();
 
-            ConfigurationSection section = this.plugin.getFileManager().getConfig("src/main/resources/heads.yml").get().getConfigurationSection("categories." + category + ".heads");
+            ConfigurationSection section = this.plugin.getFileManager().getConfig("heads.yml").get().getConfigurationSection("categories." + category + ".heads");
             for (String playerName : section.getKeys(false)) {
-                String displayName = this.plugin.getFileManager().getConfig("src/main/resources/heads.yml").get().getString("categories." + category + ".heads." + playerName + ".description");
+                String displayName = this.plugin.getFileManager().getConfig("heads.yml").get().getString("categories." + category + ".heads." + playerName + ".description");
                 ItemStack playerhead = ItemStackCreator.createPlayerhead(1, "§r" + displayName, new String[]{"§9Skull (" + categoryName + ")"}, playerName);
                 heads.add(playerhead);
             }

@@ -467,17 +467,17 @@ public class BBSettings {
 
     private void setMainLobbyLocation() {
         try {
-            World w = Bukkit.getWorld(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("main_lobby.world"));
-            double x = this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("main_lobby.x");
-            double y = this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("main_lobby.y");
-            double z = this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("main_lobby.z");
-            float pitch = (float) this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("main_lobby.pitch");
-            float yaw = (float) this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("main_lobby.yaw");
+            World w = Bukkit.getWorld(this.plugin.getFileManager().getConfig("config.yml").get().getString("main_lobby.world"));
+            double x = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.x");
+            double y = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.y");
+            double z = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.z");
+            float pitch = (float) this.plugin.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.pitch");
+            float yaw = (float) this.plugin.getFileManager().getConfig("config.yml").get().getDouble("main_lobby.yaw");
             this.mainLobbyLocation = new Location(w, x, y, z, yaw, pitch);
             return;
         } catch (Exception e) {
             try {
-                this.mainLobbyLocation = LocationUtil.getLocationFromString(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("main_lobby"));
+                this.mainLobbyLocation = LocationUtil.getLocationFromString(this.plugin.getFileManager().getConfig("config.yml").get().getString("main_lobby"));
                 return;
             } catch (Exception e2) {
             }
@@ -574,13 +574,13 @@ public class BBSettings {
         this.restricedThemes = new ArrayList<>();
 
         try {
-            for (String s : this.plugin.getFileManager().getConfig("src/main/resources/themes.yml").get().getStringList("solo-themes")) {
+            for (String s : this.plugin.getFileManager().getConfig("themes.yml").get().getStringList("solo-themes")) {
                 this.soloThemes.add(s);
             }
-            for (String s : this.plugin.getFileManager().getConfig("src/main/resources/themes.yml").get().getStringList("team-themes")) {
+            for (String s : this.plugin.getFileManager().getConfig("themes.yml").get().getStringList("team-themes")) {
                 this.teamThemes.add(s);
             }
-            for (String s : this.plugin.getFileManager().getConfig("src/main/resources/themes.yml").get().getStringList("blacklisted-themes")) {
+            for (String s : this.plugin.getFileManager().getConfig("themes.yml").get().getStringList("blacklisted-themes")) {
                 this.restricedThemes.add(s);
             }
             this.plugin.info("Loaded " + soloThemes.size() + " Solo Themes !");
@@ -594,7 +594,7 @@ public class BBSettings {
 
     private void loadFallbackServers() {
         try {
-            this.fallbackServers = this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("bungeecord.fallback_servers");
+            this.fallbackServers = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("bungeecord.fallback_servers");
             this.plugin.info("Fallback servers loaded !");
         } catch (Exception e) {
             this.plugin.severe("An exception occurred while trying loading fallback servers from config!");
@@ -605,7 +605,7 @@ public class BBSettings {
     private void loadRestrictedBlocks() {
         try {
             this.restricedBlocks = new ArrayList<>();
-            List<String> strings = this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("arena.restriced_blocks");
+            List<String> strings = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.restriced_blocks");
 
             for(String s : strings) {
                 CompMaterial mat = CompMaterial.fromString(s);
@@ -648,77 +648,77 @@ public class BBSettings {
 
     public void loadSettings() {
         try {
-            setUseBungeecord(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("bungeecord.use_bungee"));
-            setAutoJoinPlayers(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("bungeecord.auto_join_players"));
-            setLoadPluginLater(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("plugin_loading.load_plugin_later"));
-            setLoadAfter(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("plugin_loading.load_after"));
-            setLobbyTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.lobbyTime"));
-            setDefaultGameTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.defaultGameTime"));
-            setDefaultFloorMaterial(CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("arena.default_floor")));
-            setVotingTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.votingTime"));
-            setThemeVotingTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.voting_for_themes.themeVotingTime"));
-            setEndTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.endTime"));
-            setAutomaticGrow(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.automatic_grow"));
-            setThemesToVote(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.voting_for_themes.themesToVote"));
-            setVotingForThemes(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.voting_for_themes.enabled"));
-            setSuperVotesEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.voting_for_themes.super_votes_enabled"));
-            setPrefix(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("prefix"));
-            setEndCommands(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("arena.end_command"));
-            setArenaChat(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.arena_chat"));
-            setTeamChat(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.team_chat"));
-            setAutoJoinSpectate(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.auto_join_spectate"));
-            setFairVote(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.fair_vote.enabled"));
-            setRestrictPlayerMovement(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.restrict_player_movement"));
-            setRestrictOnlyPlayerYMovement(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.restrict_only_player_Y_movement"));
-            setMaxParticlesPerPlayer(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.particles.max_particles_per_player"));
-            setParticleOffset(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("arena.particles.offset"));
-            setFireworkAmount(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.win_fireworks.amount_per_corner"));
-            setFireworkWaves(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.win_fireworks.firework_waves"));
-            setWinFireworksEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.win_fireworks.enabled"));
-            setAmountParticleToSpawn(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("arena.particles.amount_to_spawn"));
-            setPartyMaxPlayers(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("parties.max_players"));
-            setAnnounceNewMostPoints(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.announce_new_most_points"));
-            setEnableClearPlotOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.clear_plot"));
-            setEnableBannerCreatorOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.banner_creator"));
-            setEnableBiomeOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.biome_selector"));
-            setEnableChangeFloorOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.change_floor"));
-            setEnabledWeatherOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.weather"));
-            setEnableHeadsOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.heads"));
-            setEnableTimeOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.time"));
-            setEnableParticleOption(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.plot_options.particles"));
-            setPartiesEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("parties.enabled"));
-            setParticleRefreshTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getDouble("arena.particles.refresh_time"));
-            setStartMessage(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("messages.start_message"));
-            setAllowedCommands(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getStringList("arena.allowed_commands"));
-            setRemovePlayersAfterGame(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.remove_players_after_game"));
-            setEndMessage(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("messages.end_message"));
-            setThemeVotingLore(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("gui.theme_voting.themes.lore"));
-            setFinalBannerLore(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
-            setWeatherLore(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
-            setSuperVoteLore(this.plugin.getFileManager().getConfig("src/main/resources/translates.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
-            setGiveRewardsAfterGameEnds(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("rewards.give_after_game_ends"));
-            setAsyncSavePlayerData(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("stats.async_save_player_data"));
-            setStatsType(StatsType.valueOf(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("stats.type").toUpperCase()));
-            setReportsEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.enable_reports"));
-            setShowVoteInSubtitle(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.show_vote_in_subtitle"));
-            setFloorChangeNPCtype(EntityType.valueOf(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("change_floor_npc.type")));
-            setScoreboardEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.show_game_scoreboard"));
-            setMainLobbyScoreboardEnabled(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.show_main_lobby_scoreboard"));
-            setChangeMOTD(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("bungeecord.change_motd"));
-            setReplaceBlockBehindSigns(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.replace_block_behind_signs"));
-            setAutoRestarting(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("auto-restart.enabled"));
-            setLeaderBoardsRefreshTime(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("leaderboards_refresh_time"));
-            setShowBuildersNames(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("arena.show_builders_names"));
+            setUseBungeecord(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.use_bungee"));
+            setAutoJoinPlayers(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.auto_join_players"));
+            setLoadPluginLater(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("plugin_loading.load_plugin_later"));
+            setLoadAfter(this.plugin.getFileManager().getConfig("config.yml").get().getInt("plugin_loading.load_after"));
+            setLobbyTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.lobbyTime"));
+            setDefaultGameTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.defaultGameTime"));
+            setDefaultFloorMaterial(CompMaterial.fromStringStrict(this.plugin.getFileManager().getConfig("config.yml").get().getString("arena.default_floor")));
+            setVotingTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.votingTime"));
+            setThemeVotingTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themeVotingTime"));
+            setEndTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.endTime"));
+            setAutomaticGrow(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.automatic_grow"));
+            setThemesToVote(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.voting_for_themes.themesToVote"));
+            setVotingForThemes(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.enabled"));
+            setSuperVotesEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.voting_for_themes.super_votes_enabled"));
+            setPrefix(this.plugin.getFileManager().getConfig("config.yml").get().getString("prefix"));
+            setEndCommands(this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.end_command"));
+            setArenaChat(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.arena_chat"));
+            setTeamChat(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.team_chat"));
+            setAutoJoinSpectate(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.auto_join_spectate"));
+            setFairVote(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.fair_vote.enabled"));
+            setRestrictPlayerMovement(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_player_movement"));
+            setRestrictOnlyPlayerYMovement(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.restrict_only_player_Y_movement"));
+            setMaxParticlesPerPlayer(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.particles.max_particles_per_player"));
+            setParticleOffset(this.plugin.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.offset"));
+            setFireworkAmount(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.amount_per_corner"));
+            setFireworkWaves(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.win_fireworks.firework_waves"));
+            setWinFireworksEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.win_fireworks.enabled"));
+            setAmountParticleToSpawn(this.plugin.getFileManager().getConfig("config.yml").get().getInt("arena.particles.amount_to_spawn"));
+            setPartyMaxPlayers(this.plugin.getFileManager().getConfig("config.yml").get().getInt("parties.max_players"));
+            setAnnounceNewMostPoints(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.announce_new_most_points"));
+            setEnableClearPlotOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.clear_plot"));
+            setEnableBannerCreatorOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.banner_creator"));
+            setEnableBiomeOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.biome_selector"));
+            setEnableChangeFloorOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.change_floor"));
+            setEnabledWeatherOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.weather"));
+            setEnableHeadsOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.heads"));
+            setEnableTimeOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.time"));
+            setEnableParticleOption(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.plot_options.particles"));
+            setPartiesEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("parties.enabled"));
+            setParticleRefreshTime(this.plugin.getFileManager().getConfig("config.yml").get().getDouble("arena.particles.refresh_time"));
+            setStartMessage(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("messages.start_message"));
+            setAllowedCommands(this.plugin.getFileManager().getConfig("config.yml").get().getStringList("arena.allowed_commands"));
+            setRemovePlayersAfterGame(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.remove_players_after_game"));
+            setEndMessage(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("messages.end_message"));
+            setThemeVotingLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.theme_voting.themes.lore"));
+            setFinalBannerLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.banner_creator.items.final_banner.lore"));
+            setWeatherLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_weather_item.lore"));
+            setSuperVoteLore(this.plugin.getFileManager().getConfig("translates.yml").get().getStringList("gui.theme_voting.supervote_item.lore"));
+            setGiveRewardsAfterGameEnds(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("rewards.give_after_game_ends"));
+            setAsyncSavePlayerData(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("stats.async_save_player_data"));
+            setStatsType(StatsType.valueOf(this.plugin.getFileManager().getConfig("config.yml").get().getString("stats.type").toUpperCase()));
+            setReportsEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.enable_reports"));
+            setShowVoteInSubtitle(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_vote_in_subtitle"));
+            setFloorChangeNPCtype(EntityType.valueOf(this.plugin.getFileManager().getConfig("config.yml").get().getString("change_floor_npc.type")));
+            setScoreboardEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_game_scoreboard"));
+            setMainLobbyScoreboardEnabled(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_main_lobby_scoreboard"));
+            setChangeMOTD(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("bungeecord.change_motd"));
+            setReplaceBlockBehindSigns(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.replace_block_behind_signs"));
+            setAutoRestarting(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto-restart.enabled"));
+            setLeaderBoardsRefreshTime(this.plugin.getFileManager().getConfig("config.yml").get().getInt("leaderboards_refresh_time"));
+            setShowBuildersNames(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("arena.show_builders_names"));
             setMainLobbyLocation();
             loadFallbackServers();
             loadRestrictedBlocks();
             loadThemes();
             if (isAutoRestarting()) {
-                setAutoRestartGamesRequired(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getInt("auto-restart.games-needed"));
-                setAutoRestartCommand(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getString("auto-restart.restart-command"));
+                setAutoRestartGamesRequired(this.plugin.getFileManager().getConfig("config.yml").get().getInt("auto-restart.games-needed"));
+                setAutoRestartCommand(this.plugin.getFileManager().getConfig("config.yml").get().getString("auto-restart.restart-command"));
             }
             if (mainLobbyLocation != null) {
-                setTeleportToMainLobbyOnJoin(this.plugin.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("teleport_to_main_lobby_on_join"));
+                setTeleportToMainLobbyOnJoin(this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("teleport_to_main_lobby_on_join"));
             }
 
         } catch (NullPointerException e) {
@@ -734,13 +734,13 @@ public class BBSettings {
     public void setMainLobbyLocation(Player p) {
         try {
             Location pLoc = p.getLocation();
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby", null);
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.world", pLoc.getWorld().getName());
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.x", pLoc.getX());
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.y", pLoc.getY());
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.z", pLoc.getZ());
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.pitch", pLoc.getPitch());
-            this.plugin.getFileManager().getConfig("src/main/resources/config.yml").set("main_lobby.yaw", pLoc.getYaw()).save();
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby", null);
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.world", pLoc.getWorld().getName());
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.x", pLoc.getX());
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.y", pLoc.getY());
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.z", pLoc.getZ());
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.pitch", pLoc.getPitch());
+            this.plugin.getFileManager().getConfig("config.yml").set("main_lobby.yaw", pLoc.getYaw()).save();
             p.sendMessage("§e§lBuildBattle Setup §8| §aMain lobby location set to §e" + LocationUtil.getStringFromLocationXYZ(pLoc));
             mainLobbyLocation = pLoc;
         } catch (Exception e) {

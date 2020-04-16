@@ -9,7 +9,6 @@ import me.drawethree.buildbattle.objects.bbobjects.BBReportStatus;
 import me.drawethree.buildbattle.objects.bbobjects.BBStat;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawethree.buildbattle.utils.Time;
-import me.drawethree.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -99,12 +98,7 @@ public class MySQLManager {
         }.runTaskAsynchronously(database.getParent());
     }
 
-    public void loadAllReports() {
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
-            return;
-        }
-        database.getParent().getReportManager().getBuildReports().clear();
-
+    public void loadAllReports(ReportManager manager) {
         try (ResultSet set = database.query("SELECT * FROM BuildBattlePro_ReportedBuilds")) {
             while (set.next()) {
                 String id = set.getString("ID");
@@ -113,10 +107,10 @@ public class MySQLManager {
                 Arrays.asList(reportedPlayersString.split(",")).forEach(uuid -> reportedPlayers.add(UUID.fromString(uuid)));
                 UUID reportedBy = UUID.fromString(set.getString("ReportedBy"));
                 Date date = set.getTimestamp("Date");
-                File schematic = new File(new File(database.getParent().getDataFolder(), database.getParent().getReportManager().getReportsDirectoryName()), set.getString("SchematicName"));
+                File schematic = new File(new File(database.getParent().getDataFolder(), ReportManager.REPORTS_DIRECTORY_NAME), set.getString("SchematicName"));
                 BBReportStatus reportStatus = BBReportStatus.valueOf(set.getString("Status").toUpperCase());
                 BBBuildReport report = new BBBuildReport(id, reportedPlayers, reportedBy, schematic, date, reportStatus);
-                database.getParent().getReportManager().getBuildReports().add(report);
+                manager.addReport(report);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,7 +123,7 @@ public class MySQLManager {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    database.execute("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)", report.getReportID(), report.getReportedPlayersInCommaSeparatedString(), report.getReportedBy().toString(), new Timestamp(report.getReportDate().getTime()), report.getSchematicFile().getName(), report.getReportStatus().name().toUpperCase());
+                    database.execute("INSERT INTO BuildBattlePro_ReportedBuilds(ID,ReportedPlayers,ReportedBy,Date,SchematicName,Status) VALUES(?,?,?,?,?,?)", report.getReportIDRaw(), report.getReportedPlayersInCommaSeparatedString(), report.getReportedBy().toString(), new Timestamp(report.getReportDate().getTime()), report.getSchematicFile().getName(), report.getReportStatus().name().toUpperCase());
                 }
             }.runTaskAsynchronously(database.getParent());
         }
@@ -137,7 +131,7 @@ public class MySQLManager {
     }
 
     public boolean deleteReport(BBBuildReport report) {
-        database.execute("DELETE FROM BuildBattlePro_ReportedBuilds WHERE ID=?", report.getReportID());
+        database.execute("DELETE FROM BuildBattlePro_ReportedBuilds WHERE ID=?", report.getReportIDRaw());
         return true;
     }
 

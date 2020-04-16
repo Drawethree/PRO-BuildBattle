@@ -25,7 +25,7 @@ public abstract class BBReward<T> {
         this.parent = parent;
         this.rewardType = rewardType;
         this.rewardsForPlacements = new HashMap<>();
-        this.enabled = this.parent.getFileManager().getConfig("src/main/resources/config.yml").get().getBoolean("rewards." + rewardType + ".enabled");
+        this.enabled = this.parent.getFileManager().getConfig("config.yml").get().getBoolean("rewards." + rewardType + ".enabled");
         this.loadFromConfig();
     }
 
@@ -42,7 +42,7 @@ public abstract class BBReward<T> {
         }
 
         int place;
-        for (String key : this.parent.getFileManager().getConfig("src/main/resources/config.yml").get().getConfigurationSection("rewards." + rewardType + ".placement").getKeys(false)) {
+        for (String key : this.parent.getFileManager().getConfig("config.yml").get().getConfigurationSection("rewards." + rewardType + ".placement").getKeys(false)) {
 
             try {
                 place = Integer.parseInt(key);
@@ -51,7 +51,7 @@ public abstract class BBReward<T> {
                 continue;
             }
 
-            this.addReward(place, (T) this.parent.getFileManager().getConfig("src/main/resources/config.yml").get().get("rewards." + rewardType + ".placement." + place, typeOfReward));
+            this.addReward(place, (T) this.parent.getFileManager().getConfig("config.yml").get().get("rewards." + rewardType + ".placement." + place, typeOfReward));
         }
     }
 

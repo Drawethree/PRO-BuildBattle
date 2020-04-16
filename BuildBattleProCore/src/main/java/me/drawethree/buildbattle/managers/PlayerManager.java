@@ -72,10 +72,10 @@ public class PlayerManager {
     }
 
     public synchronized void loadAllPlayerStats(HashMap<UUID, BBPlayerStats> map, CountDownLatch latch) {
-        for (String s : this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().getKeys(false)) {
+        for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
             BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
             for (BBStat stat : BBStat.values()) {
-                stats.setStat(stat, this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().get(s + "." + stat.getConfigKey()));
+                stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()));
             }
             map.put(stats.getUuid(), stats);
         }
@@ -287,9 +287,9 @@ public class PlayerManager {
 
     private synchronized void addPlayerToStatsYML(BBPlayerStats stats) {
         for (BBStat stat : BBStat.values()) {
-            this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").set(stats.getUuid() + "." + stat.getConfigKey(), stats.getStat(stat));
+            this.plugin.getFileManager().getConfig("stats.yml").set(stats.getUuid() + "." + stat.getConfigKey(), stats.getStat(stat));
         }
-        this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").save();
+        this.plugin.getFileManager().getConfig("stats.yml").save();
     }
 
     public void addPlayedToAllPlayers(BBArena arenaInstance) {
@@ -402,8 +402,8 @@ public class PlayerManager {
             case MYSQL:
                 return this.plugin.getMySQLManager().getPlayerStat(stat, player);
             case FLATFILE:
-                if (this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().contains(player.getUniqueId().toString())) {
-                    return (Double) this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().get(player.getUniqueId().toString() + "." + stat.getConfigKey());
+                if (this.plugin.getFileManager().getConfig("stats.yml").get().contains(player.getUniqueId().toString())) {
+                    return (Double) this.plugin.getFileManager().getConfig("stats.yml").get().get(player.getUniqueId().toString() + "." + stat.getConfigKey());
                 }
                 break;
         }
@@ -415,8 +415,8 @@ public class PlayerManager {
             case MYSQL:
                 this.plugin.getMySQLManager().savePlayerStat(stat, bbPlayerStats);
             case FLATFILE:
-                this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().set(bbPlayerStats.getUuid().toString() + "." + stat.getConfigKey(), bbPlayerStats.getStat(stat));
-                this.plugin.getFileManager().getConfig("src/main/resources/stats.yml").save();
+                this.plugin.getFileManager().getConfig("stats.yml").get().set(bbPlayerStats.getUuid().toString() + "." + stat.getConfigKey(), bbPlayerStats.getStat(stat));
+                this.plugin.getFileManager().getConfig("stats.yml").save();
         }
     }
 
@@ -424,10 +424,10 @@ public class PlayerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().contains(p.getUniqueId().toString())) {
+                if (plugin.getFileManager().getConfig("stats.yml").get().contains(p.getUniqueId().toString())) {
                     BBPlayerStats stats = new BBPlayerStats(p.getUniqueId());
                     for (BBStat stat : BBStat.values()) {
-                        stats.setStat(stat, plugin.getFileManager().getConfig("src/main/resources/stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
+                        stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
                     }
                     playerStats.put(p.getUniqueId(), stats);
                     BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from stats.yml!");

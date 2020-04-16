@@ -87,18 +87,18 @@ public class BBLeaderboard {
     }
 
     private void removeFromConfig() {
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(hologram.getLocation()), null);
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").save();
+        plugin.getFileManager().getConfig("/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(hologram.getLocation()), null);
+        plugin.getFileManager().getConfig("/leaderboards.yml").save();
     }
 
     public void teleport(Location loc) {
         Location previousLoc = this.hologram.getLocation();
         this.hologram.teleport(loc);
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(previousLoc), null);
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".location", LocationUtil.getStringFromLocation(hologram.getLocation()));
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", type.name());
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", amountToDisplay);
-        plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").save();
+        plugin.getFileManager().getConfig("/leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(previousLoc), null);
+        plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".location", LocationUtil.getStringFromLocation(hologram.getLocation()));
+        plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".type", type.name());
+        plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + LocationUtil.getStringFromLocationXYZ(loc) + ".player-amount", amountToDisplay);
+        plugin.getFileManager().getConfig("leaderboards.yml").save();
     }
 
     public LeaderboardType getType() {

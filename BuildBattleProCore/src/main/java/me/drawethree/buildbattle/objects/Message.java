@@ -265,7 +265,7 @@ public enum Message {
 
     Message(String path) {
         this.path = path;
-        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("src/main/resources/translates.yml").get().getString(path));
+        this.message = ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString(path));
     }
 
     public String getChatMessage() {
@@ -274,7 +274,7 @@ public enum Message {
 
     public static void reloadMessages() {
         for (Message m : values()) {
-            m.setMessage(ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("src/main/resources/translates.yml").get().getString(m.getPath())));
+            m.setMessage(ChatColor.translateAlternateColorCodes('&', BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getString(m.getPath())));
         }
     }
 

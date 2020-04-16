@@ -71,11 +71,11 @@ public class BBArena implements Spectatable<Player> {
     public BBArena(BuildBattle plugin, String name) {
         this.plugin = plugin;
         this.name = name;
-        this.minPlayers = plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getInt(name + ".min_players");
-        this.gameTime = plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getInt(name + ".gameTime");
-        this.gameMode = BBGameMode.valueOf(plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getString(name + ".mode"));
-        this.teamSize = plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getInt(name + ".teamSize");
-        this.lobbyLocation = LocationUtil.getLocationFromConfig("src/main/resources/arenas.yml", name + ".lobbyLocation");
+        this.minPlayers = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".min_players");
+        this.gameTime = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".gameTime");
+        this.gameMode = BBGameMode.valueOf(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".mode"));
+        this.teamSize = plugin.getFileManager().getConfig("arenas.yml").get().getInt(name + ".teamSize");
+        this.lobbyLocation = LocationUtil.getLocationFromConfig("arenas.yml", name + ".lobbyLocation");
         this.players = new ArrayList<>();
         this.buildPlots = loadArenaPlots();
         this.theme = null;
@@ -122,9 +122,9 @@ public class BBArena implements Spectatable<Player> {
     private List<BBPlot> loadArenaPlots() {
         List<BBPlot> list = new ArrayList<>();
         try {
-            for (String plot : plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getConfigurationSection(name + ".plots").getKeys(false)) {
-                final Location minPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getString(name + ".plots." + plot + ".min"));
-                final Location maxPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().getString(name + ".plots." + plot + ".max"));
+            for (String plot : plugin.getFileManager().getConfig("arenas.yml").get().getConfigurationSection(name + ".plots").getKeys(false)) {
+                final Location minPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".min"));
+                final Location maxPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".max"));
                 list.add(new BBPlot(this.plugin, this, minPoint, maxPoint));
                 plugin.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
             }
@@ -466,24 +466,31 @@ public class BBArena implements Spectatable<Player> {
         if (votingPlots == null) {
             stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
         } else {
-            try {
-                this.currentVotingPlot = votingPlots.get(0);
-            } catch (Exception e) {
-                stopArena(Message.NOT_ENOUGH_PLAYERS.getChatMessage(), false);
-                return;
-            }
-
             votingCountdown = new BukkitRunnable() {
                 int timeLeft = plugin.getSettings().getVotingTime();
                 int index = 0;
+                boolean firstSet = false;
 
                 @Override
                 public void run() {
+
+                    if (!firstSet) {
+                        try {
+                            currentVotingPlot = votingPlots.get(0);
+                            firstSet = true;
+                        } catch (Exception e) {
+                            cancel();
+                            endGame();
+                            return;
+                        }
+                    }
+
                     if (timeLeft == plugin.getSettings().getVotingTime()) {
                         teleportAllPlayersToPlot(currentVotingPlot);
                         updateAllScoreboards(timeLeft, plugin.getSettings().getVotingTime());
                         plugin.getPlayerManager().giveVoteItemsAllPlayers(getArenaInstance());
                     }
+
                     if (timeLeft == 0) {
                         currentVotingPlot.setFinalPoints();
                         try {
@@ -498,12 +505,14 @@ public class BBArena implements Spectatable<Player> {
                     } else if (timeLeft < 6) {
                         plugin.getPlayerManager().playSoundToAllPlayers(getArenaInstance(), CompSound.CLICK);
                     }
+
                     if (currentVotingPlot != null) {
                         plugin.getPlayerManager().setLevelsToAllPlayers(getArenaInstance(), timeLeft);
                         updateAllScoreboards(timeLeft, plugin.getSettings().getVotingTime());
                         if (timeLeft >= 1)
                             plugin.getPlayerManager().sendActionBarToAllPlayers(getArenaInstance(), Message.VOTE_TIME.getMessage().replace("%time%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
                     }
+
                     timeLeft -= 1;
                 }
             }.runTaskTimer(BuildBattle.getInstance(), 100L, 20L);
@@ -692,19 +701,19 @@ public class BBArena implements Spectatable<Player> {
     }
 
     public void saveIntoConfig() {
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".gameTime", gameTime);
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".min_players", minPlayers);
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".mode", gameMode.name());
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".teamSize", teamSize);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".gameTime", gameTime);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".min_players", minPlayers);
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".mode", gameMode.name());
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".teamSize", teamSize);
 
         for (BBPlot plot : buildPlots) {
-            plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
-            plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
+            plugin.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".min", LocationUtil.getStringFromLocation(plot.getMinPoint()));
+            plugin.getFileManager().getConfig("arenas.yml").set(name + ".plots." + buildPlots.indexOf(plot) + ".max", LocationUtil.getStringFromLocation(plot.getMaxPoint()));
         }
 
         plugin.info("§aArena §e" + name + " §asuccessfully saved into config !");
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").save();
+        plugin.getFileManager().getConfig("arenas.yml").save();
     }
 
     public String getTheme() {
@@ -753,15 +762,15 @@ public class BBArena implements Spectatable<Player> {
 
     public void setLobbyLocation(Location lobbyLocation) {
         this.lobbyLocation = lobbyLocation;
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").save();
+        plugin.getFileManager().getConfig("arenas.yml").set(name + ".lobbyLocation", LocationUtil.getStringFromLocation(lobbyLocation));
+        plugin.getFileManager().getConfig("arenas.yml").save();
     }
 
     public void delete(CommandSender sender) {
         stopArena(Message.ARENA_REMOVED.getChatMessage(), true);
 
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").get().set(name, null);
-        plugin.getFileManager().getConfig("src/main/resources/arenas.yml").save();
+        plugin.getFileManager().getConfig("arenas.yml").get().set(name, null);
+        plugin.getFileManager().getConfig("arenas.yml").save();
 
         sender.sendMessage(Message.ARENA_REMOVED.getChatMessage());
     }

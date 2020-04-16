@@ -38,12 +38,12 @@ public class LeaderboardManager {
     public void loadAllLeaderboards() {
         this.selectedLeaderboards = new HashMap<>();
         this.activeLeaderboards = new ArrayList<>();
-        if (this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().getConfigurationSection("leaderboards") != null) {
-            for (String location : this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().getConfigurationSection("leaderboards").getKeys(false)) {
+        if (this.plugin.getFileManager().getConfig("leaderboards.yml").get().getConfigurationSection("leaderboards") != null) {
+            for (String location : this.plugin.getFileManager().getConfig("leaderboards.yml").get().getConfigurationSection("leaderboards").getKeys(false)) {
 
-                final Location loc = LocationUtil.getLocationFromConfig("src/main/resources/leaderboards.yml", "leaderboards." + location + ".location") == null ? LocationUtil.getLocationFromString(location) : LocationUtil.getLocationFromConfig("src/main/resources/leaderboards.yml", "leaderboards." + location + ".location");
-                final LeaderboardType type = LeaderboardType.valueOf(this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().getString("leaderboards." + location + ".type"));
-                final int playersToDisplay = this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().getInt("leaderboards." + location + ".player-amount");
+                final Location loc = LocationUtil.getLocationFromConfig("leaderboards.yml", "leaderboards." + location + ".location") == null ? LocationUtil.getLocationFromString(location) : LocationUtil.getLocationFromConfig("leaderboards.yml", "leaderboards." + location + ".location");
+                final LeaderboardType type = LeaderboardType.valueOf(this.plugin.getFileManager().getConfig("leaderboards.yml").get().getString("leaderboards." + location + ".type"));
+                final int playersToDisplay = this.plugin.getFileManager().getConfig("leaderboards.yml").get().getInt("leaderboards." + location + ".player-amount");
                 this.activeLeaderboards.add(new BBLeaderboard(plugin,loc, type, playersToDisplay));
                 this.plugin.info("§aLeaderboard at location §e" + LocationUtil.getStringFromLocationXYZ(loc) + " §aloaded!");
             }
@@ -149,9 +149,9 @@ public class LeaderboardManager {
 
     private void saveLeaderboardIntoConfig(BBLeaderboard l) {
         final String configPath = LocationUtil.getStringFromLocationXYZ(l.getHologram().getLocation());
-        this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + configPath + ".location", LocationUtil.getStringFromLocation(l.getHologram().getLocation()));
-        this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + configPath + ".type", l.getType().name());
-        this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").get().set("leaderboards." + configPath + ".player-amount", l.getAmountToDisplay());
-        this.plugin.getFileManager().getConfig("src/main/resources/leaderboards.yml").save();
+        this.plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".location", LocationUtil.getStringFromLocation(l.getHologram().getLocation()));
+        this.plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".type", l.getType().name());
+        this.plugin.getFileManager().getConfig("leaderboards.yml").get().set("leaderboards." + configPath + ".player-amount", l.getAmountToDisplay());
+        this.plugin.getFileManager().getConfig("leaderboards.yml").save();
     }
 }

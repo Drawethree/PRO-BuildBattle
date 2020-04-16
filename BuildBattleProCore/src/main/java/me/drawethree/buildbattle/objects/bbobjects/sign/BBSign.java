@@ -38,8 +38,8 @@ public abstract class BBSign implements ConfigLoadable, ConfigSaveable {
     }
 
     public void removeSign(Player p) {
-        this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").get().set("signs." + this.type.getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
-        this.getParent().getFileManager().getConfig("src/main/resources/signs.yml").save();
+        this.getParent().getFileManager().getConfig("signs.yml").get().set("signs." + this.type.getConfigPath() + "." + LocationUtil.getStringFromLocationXYZ(getLocation()), null);
+        this.getParent().getFileManager().getConfig("signs.yml").save();
 
         this.blockBehind.setType(CompMaterial.AIR.getMaterial());
         if (p != null) {

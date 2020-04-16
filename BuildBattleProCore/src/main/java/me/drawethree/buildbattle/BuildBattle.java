@@ -2,7 +2,6 @@ package me.drawethree.buildbattle;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import lombok.Getter;
 import me.drawethree.api.BuildBattleProAPI;
 import me.drawethree.api.BuildBattleProAPIImpl;
@@ -19,7 +18,6 @@ import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStatsLoader;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.buildbattle.utils.FancyMessage;
 import me.drawethree.buildbattle.utils.MetricsLite;
-import me.drawethree.buildbattle.utils.compatbridge.MinecraftVersion;
 import me.drawethree.headsapi.HeadInventory;
 import me.drawethree.spectateapi.SpectatorManager;
 import org.bukkit.Bukkit;
@@ -47,14 +45,12 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     private OptionsManager optionsManager;
     private PartyManager partyManager;
     private PlayerManager playerManager;
-    private ReportManager reportManager;
     private RewardManager rewardManager;
     private SuperVoteManager superVoteManager;
     private VotingManager votingManager;
     private SpectatorManager spectatorManager;
     private SignManager signManager;
     private BBSettings settings;
-    private WorldEditPlugin worldEdit;
     private MetricsLite metrics;
     private HeadInventory headInventory;
 
@@ -147,7 +143,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
 
     private void hook() {
         BBHook.attemptHooks(this);
-        this.loadWorldEdit();
         this.metrics = new MetricsLite(this);
     }
 
@@ -204,15 +199,15 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void loadAllConfigs() {
-        this.fileManager.getConfig("src/main/resources/config.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/arenas.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/heads.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/leaderboards.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/translates.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/signs.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/stats.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/themes.yml").copyDefaults(true).save();
-        this.fileManager.getConfig("src/main/resources/reports.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("config.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("arenas.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("heads.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("leaderboards.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("translates.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("signs.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("stats.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("themes.yml").copyDefaults(true).save();
+        this.fileManager.getConfig("reports.yml").copyDefaults(true).save();
 
         this.removeUnusedPathsFromConfigs();
     }
@@ -226,7 +221,7 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
     }
 
     private void removeUnusedPathsFromConfigs() {
-        this.fileManager.getConfig("src/main/resources/config.yml")
+        this.fileManager.getConfig("config.yml")
                 .set("arena.restriced_blocks", null)
                 .set("arena.themes", null)
                 .set("arena.blacklisted_themes", null)
@@ -256,22 +251,6 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         //Do not forget to close MySQL connection !
         if (this.mySQLDatabase != null) {
             this.mySQLDatabase.close();
-        }
-    }
-
-    private void loadWorldEdit() {
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
-            this.warning("WorldEdit is not supported for versions 1.13 and above. Report features will be disabled !");
-            return;
-        }
-        this.worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-
-        if (this.worldEdit == null) {
-            this.warning("WorldEdit dependency not found ! Report features will be disabled !");
-        } else {
-            this.info("Successfully hooked into WorldEdit !");
-            this.reportManager = new ReportManager(this);
-            this.reportManager.loadAllReports();
         }
     }
 
