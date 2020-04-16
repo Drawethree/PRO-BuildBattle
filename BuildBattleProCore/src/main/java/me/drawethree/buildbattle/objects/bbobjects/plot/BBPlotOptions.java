@@ -9,6 +9,7 @@ import me.drawethree.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawethree.buildbattle.utils.compatbridge.model.CompSound;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,12 +24,12 @@ public class BBPlotOptions {
     private WeatherType currentWeather;
     private BBPlotTime currentTime;
     private PlotBiome currentBiome;
-    private CompMaterial currentFloorMaterial;
+    private Material currentFloorMaterial;
 
     public BBPlotOptions(BBPlot plot) {
         this.plot = plot;
         this.currentFloorItem = ItemUtil.create(BuildBattle.getInstance().getSettings().getDefaultFloorMaterial(), 1, Message.GUI_OPTIONS_CHANGE_FLOOR_ITEM_DISPLAYNAME.getMessage(), ItemUtil.colorizeLore(BuildBattle.getInstance().getFileManager().getConfig("translates.yml").get().getStringList("gui.options.items.change_floor_item.lore")), null, null);
-        this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
+        this.currentFloorMaterial = currentFloorItem.getType();
         this.currentWeather = WeatherType.CLEAR;
         this.currentTime = BBPlotTime.NOON;
         this.currentBiome = PlotBiome.FOREST;
@@ -49,9 +50,9 @@ public class BBPlotOptions {
                 }
             }
 
-            this.currentFloorMaterial = CompMaterial.fromMaterial(currentFloorItem.getType());
+            this.currentFloorMaterial = currentFloorItem.getType();
             this.currentFloorItem = ItemUtil.create(currentFloorMaterial, 1, this.currentFloorItem.getItemMeta().getDisplayName(), this.currentFloorItem.getItemMeta().getLore(), null, null);
-            plot.changeFloor(currentFloorMaterial);
+            plot.changeFloor(currentFloorItem);
             if(changer != null) {
                 changer.sendMessage(Message.FLOOR_CHANGED.getChatMessage());
                 changer.playSound(changer.getLocation(), CompSound.NOTE_PLING.getSound(), 1, 2.0F);
@@ -83,7 +84,7 @@ public class BBPlotOptions {
     private boolean isItemValidForChange(ItemStack currentFloorItem) {
         return !(CompMaterial.isLongGrass(currentFloorItem.getType())
                 || CompMaterial.isDoublePlant(currentFloorItem.getType())
-                || CompMaterial.isFlower(currentFloorItem.getType())
+                /*|| CompMaterial.isFlower(currentFloorItem.getType())*/
                 || CompMaterial.isCarpet(currentFloorItem.getType())
                 || CompMaterial.isSapling(currentFloorItem.getType())
                 || CompMaterial.isWoodButton(currentFloorItem.getType())

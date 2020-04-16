@@ -615,7 +615,7 @@ public class BBSettings {
                     continue;
                 }
 
-                this.restricedBlocks.add(mat.toMaterial());
+                this.restricedBlocks.add(mat.getMaterial());
             }
 
             this.plugin.info("Restricted blocks loaded !");

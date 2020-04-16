@@ -11,6 +11,7 @@ import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawethree.buildbattle.utils.compatbridge.model.CompMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -72,6 +73,21 @@ public class ItemUtil {
      */
     public static ItemStack create(CompMaterial material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels) {
         ItemStack item = material.toItem(amount);
+        ItemMeta meta = item.getItemMeta();
+        if (displayName != null) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        }
+        meta.setLore(colorizeLore(lore));
+        if (enchantments != null) {
+            for (int i = 0; i < enchantments.length; i++)
+                meta.addEnchant(ench(enchantments[i]), levels[i], true);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack create(Material material, int amount, String displayName, List<String> lore, String[] enchantments, int[] levels) {
+        ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (displayName != null) {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));

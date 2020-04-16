@@ -47,15 +47,13 @@ public final class MinecraftVersion {
                     if (ch == '.')
                         found++;
 
-                //Valid.checkBoolean(found == 1, "Minecraft Version checker malfunction. Could not detect your server version. Detected: " + numericVersion + " Current: " + curr);
-
                 current = V.parse(Integer.parseInt(numericVersion.split("\\.")[1]));
 
             } else
                 current = V.v1_3_AND_BELOW;
 
         } catch (final Throwable t) {
-            //Common.error(t, "Error detecting your Minecraft version. Check your server compatibility.");
+            t.printStackTrace();
         }
     }
 
@@ -173,9 +171,9 @@ public final class MinecraftVersion {
         /**
          * Attempts to get the version from number
          *
+         * @throws RuntimeException if number not found
          * @param number
          * @return
-         * @throws RuntimeException if number not found
          */
         protected static V parse(int number) {
             for (final V v : values())
@@ -183,7 +181,6 @@ public final class MinecraftVersion {
                     return v;
 
             return null;
-            //throw new FoException("Invalid version number: " + number);
         }
     }
 }

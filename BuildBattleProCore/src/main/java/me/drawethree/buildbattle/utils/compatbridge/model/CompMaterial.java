@@ -1,7 +1,5 @@
 package me.drawethree.buildbattle.utils.compatbridge.model;
 
-
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import me.drawethree.buildbattle.utils.compatbridge.MinecraftVersion;
 import org.bukkit.Material;
@@ -11,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Heavily inspired by a library made by Hex_27.
@@ -47,7 +44,7 @@ public enum CompMaterial {
     ATTACHED_PUMPKIN_STEM("PUMPKIN_STEM", 7),
     AZURE_BLUET("RED_ROSE", 3),
     BAKED_POTATO("BAKED_POTATO"),
-    BARRIER("BARRIER"),
+    BARRIER("BARRIER", "STONE", 0),
     BAT_SPAWN_EGG("MONSTER_EGG", 65),
     BEACON("BEACON"),
     BEDROCK("BEDROCK"),
@@ -290,7 +287,7 @@ public enum CompMaterial {
     ENDER_CHEST("ENDER_CHEST"),
     ENDER_EYE("EYE_OF_ENDER"),
     ENDER_PEARL("ENDER_PEARL"),
-    END_CRYSTAL("END_CRYSTAL"),
+    END_CRYSTAL("END_CRYSTAL", "EYE_OF_ENDER", 0),
     END_GATEWAY("END_GATEWAY"),
     END_PORTAL("ENDER_PORTAL"),
     END_PORTAL_FRAME("ENDER_PORTAL_FRAME"),
@@ -479,7 +476,7 @@ public enum CompMaterial {
     LIME_CONCRETE_POWDER("CONCRETE_POWDER", 5),
     LIME_DYE("INK_SACK", 10),
     LIME_GLAZED_TERRACOTTA("LIME_GLAZED_TERRACOTTA"),
-    LIME_SHULKER_BOX("LIME_SHULKER_BOX"),
+    LIME_SHULKER_BOX("LIME_STAINED_GLASS", "STAINED_GLASS", 5),
     LIME_STAINED_GLASS("STAINED_GLASS", 5),
     LIME_STAINED_GLASS_PANE("STAINED_GLASS_PANE", 5),
     LIME_TERRACOTTA("STAINED_CLAY", 5),
@@ -730,7 +727,7 @@ public enum CompMaterial {
     SHEARS("SHEARS"),
     SHEEP_SPAWN_EGG("MONSTER_EGG", 91),
     SHIELD("SHIELD"),
-    SHULKER_BOX("PURPLE_SHULKER_BOX"),
+    SHULKER_BOX("PURPLE_SHULKER_BOX", "BARRIER", 0),
     SHULKER_SHELL("SHULKER_SHELL"),
     SHULKER_SPAWN_EGG("MONSTER_EGG", 69),
     SIGN("SIGN"),
@@ -989,11 +986,18 @@ public enum CompMaterial {
     private final String alternativeName;
 
     /**
+     * Is this material available in its native state for the server version being used?
+     * If not, we try to supplement it with a compatible version instead, defaulting back to STONE.
+     */
+    @Getter
+    private boolean materialAvailable = true;
+
+    /**
      * Construct new legacy material
      *
      * @param legacyName
      */
-    private CompMaterial(String legacyName) {
+    private CompMaterial(final String legacyName) {
         this(legacyName, null, 0);
     }
 
@@ -1003,7 +1007,7 @@ public enum CompMaterial {
      * @param legacyName
      * @param data
      */
-    private CompMaterial(String legacyName, int data) {
+    private CompMaterial(final String legacyName, final int data) {
         this(legacyName, null, data);
     }
 
@@ -1014,158 +1018,11 @@ public enum CompMaterial {
      * @param alternativeName alternative name or null if none
      * @param data
      */
-    private CompMaterial(String legacyName, String alternativeName, int data) {
+    private CompMaterial(final String legacyName, final String alternativeName, final int data) {
         this.legacyName = legacyName;
         this.alternativeName = alternativeName;
         this.data = data;
         this.material = findName();
-    }
-
-    /**
-     * Return true if the given material is leaves (any variation)
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isLeaves(Material mat) {
-        return mat.toString().endsWith("_LEAVES") || nameEquals(mat, "LEAVES", "LEAVES_2");
-    }
-
-    /**
-     * Return true for all kinds of wood pressure plates
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isWoodPressurePlate(Material mat) {
-        return nameEquals(mat, "WOOD_PLATE", "ACACIA_PRESSURE_PLATE", "BIRCH_PRESSURE_PLATE", "DARK_OAK_PRESSURE_PLATE",
-                "JUNGLE_PRESSURE_PLATE", "OAK_PRESSURE_PLATE", "SPRUCE_PRESSURE_PLATE");
-    }
-
-    /**
-     * Returns true if the given material is log (any variation).
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isLog(Material mat) {
-        return nameEquals(mat, "LOG", "LOG_2") || mat.toString().endsWith("_LOG");
-    }
-
-    /**
-     * Construct an {@link ItemStack} from this material (with corresponding data
-     * value if necessary).
-     *
-     * @return the itemstack
-     */
-    public final ItemStack toItem() {
-        return toItem(1);
-    }
-
-    // Utility method for evaluating matches.
-    private static final boolean nameEquals(Material mat, String... names) {
-        final String matName = mat.toString();
-
-        for (final String name : names)
-            if (matName.equals(name))
-                return true;
-
-        return false;
-    }
-
-    /**
-     * Attempts to convert an {@link EntityType} into a valid {@link CompMaterial}
-     * representing a spawnable Monster Egg.
-     * <p>
-     * In case the entity given is not a valid entity or does not have an egg, we
-     * return Sheep Monster Egg instead.
-     *
-     * @param type
-     * @return the corresponding egg, or Sheep Monster Egg if does not exist
-     */
-    public static CompMaterial makeMonsterEgg(EntityType type) {
-        if (!COMPATIBLE)
-            return null;
-
-        String name = type.toString() + "_SPAWN_EGG";
-
-        // Special cases
-        if (type == EntityType.PIG_ZOMBIE)
-            name = "ZOMBIE_PIGMAN_SPAWN_EGG";
-        else if (type == EntityType.MUSHROOM_COW)
-            name = "MOOSHROOM_SPAWN_EGG";
-
-        // Parse normally, backwards compatible
-        final CompMaterial mat = fromString(name);
-
-        // Return the egg or sheep egg if does not exist
-        return null;
-        //return Common.getOrDefault(mat, CompMaterial.SHEEP_SPAWN_EGG);
-    }
-
-    /**
-     * Reverts back the 1.13+ spawn egg material to {@link EntityType}
-     *
-     * @param monsterEgg the monster egg
-     * @return the egg, or null if does not exist in the current MC version
-     */
-    public static EntityType makeEntityType(CompMaterial monsterEgg) {
-        //Valid.checkBoolean(monsterEgg.toString().endsWith("_SPAWN_EGG"), "Material " + monsterEgg + " is not a valid monster egg! (Must end with _SPAWN_EGG)");
-
-        final String name = monsterEgg.toString().replace("_SPAWN_EGG", "");
-
-        // Special cases
-        if (name == "ZOMBIE_PIGMAN_SPAWN_EGG")
-            return EntityType.PIG_ZOMBIE;
-
-        else if (name == "MOOSHROOM_SPAWN_EGG")
-            return EntityType.MUSHROOM_COW;
-
-        else
-            // Parse normally, backwards compatible
-            try {
-                return EntityType.valueOf(name);
-            } catch (final IllegalArgumentException ex) {
-                // Does not exist for the current MC version
-            }
-
-        return null;
-    }
-
-    /**
-     * Return a {@link CompMaterial} from the given block, also comparing the data value
-     *
-     * @param block
-     * @return
-     */
-    public static final CompMaterial fromBlock(Block block) {
-        try {
-            return CompMaterial.valueOf(block.getType().toString());
-
-        } catch (final IllegalArgumentException e) {
-            for (final CompMaterial compMat : CompMaterial.values())
-                if (compMat.legacyName.equals(block.getType().toString()) && compMat.getData() == block.getData())
-                    return compMat;
-        }
-        return null;
-    }
-
-    /**
-     * Creates {@link CompMaterial} class from a given {@link Material}.
-     *
-     * @param mat
-     * @return
-     */
-    public static final CompMaterial fromMaterial(Material mat) {
-        try {
-            return CompMaterial.valueOf(mat.toString());
-
-        } catch (final IllegalArgumentException e) {
-            for (final CompMaterial compMat : CompMaterial.values())
-                if (compMat.legacyName.equals(mat.toString()))
-                    return compMat;
-        }
-        return null;
     }
 
     /**
@@ -1174,7 +1031,7 @@ public enum CompMaterial {
      * @param type
      * @return
      */
-    public static final boolean isDamageable(CompMaterial type) {
+    public static final boolean isDamageable(final CompMaterial type) {
         switch (type.toString()) {
             case "HELMET":
                 return true;
@@ -1215,7 +1072,7 @@ public enum CompMaterial {
      * @param block
      * @return
      */
-    public static final boolean isAir(Block block) {
+    public static final boolean isAir(final Block block) {
         return block == null || isAir(block.getType());
     }
 
@@ -1225,8 +1082,18 @@ public enum CompMaterial {
      * @param material
      * @return
      */
-    public static final boolean isAir(Material material) {
+    public static final boolean isAir(final Material material) {
         return material == null || nameEquals(material, "AIR", "CAVE_AIR", "VOID_AIR");
+    }
+
+    /**
+     * Construct an {@link ItemStack} from this material (with corresponding data
+     * value if necessary).
+     *
+     * @return the itemstack
+     */
+    public final ItemStack toItem() {
+        return toItem(1);
     }
 
     /**
@@ -1235,7 +1102,7 @@ public enum CompMaterial {
      * @param mat
      * @return
      */
-    public static final boolean isHorseArmor(Material mat) {
+    public static final boolean isHorseArmor(final Material mat) {
         return nameEquals(mat, "BARDING", "HORSE_ARMOR");
     }
 
@@ -1245,22 +1112,18 @@ public enum CompMaterial {
      * @param mat
      * @return
      */
-    public static final boolean isCarpet(Material mat) {
+    public static final boolean isCarpet(final Material mat) {
         return nameContains(mat, "CARPET");
     }
 
     /**
-     * See {@link #fromString(String)}, with the addition that
-     * this method throws an error if the string could not be parsed
+     * Return true if the given material is leaves (any variation)
      *
-     * @param key
+     * @param mat
      * @return
      */
-    public static CompMaterial fromStringStrict(String key) {
-        final CompMaterial material = fromString(key);
-
-        //Valid.checkNotNull(material, "Invalid material '" + key + "'! For valid names, see: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html (Note that names change across MC versions!)");
-        return material;
+    public static final boolean isLeaves(final Material mat) {
+        return mat.toString().endsWith("_LEAVES") || nameEquals(mat, "LEAVES", "LEAVES_2");
     }
 
     /**
@@ -1270,7 +1133,7 @@ public enum CompMaterial {
      * @param mat
      * @return
      */
-    public static final boolean isHardClay(Material mat) {
+    public static final boolean isHardClay(final Material mat) {
         return nameContains(mat, "STAINED_CLAY", "HARD_CLAY", "TERRACOTTA");
     }
 
@@ -1280,7 +1143,7 @@ public enum CompMaterial {
      * @param mat
      * @return
      */
-    public static final boolean isLeash(Material mat) {
+    public static final boolean isLeash(final Material mat) {
         return nameEquals(mat, "LEASH", "LEAD");
     }
 
@@ -1290,8 +1153,309 @@ public enum CompMaterial {
      * @param mat
      * @return
      */
-    public static final boolean isHeavyPressurePlate(Material mat) {
+    public static final boolean isHeavyPressurePlate(final Material mat) {
         return nameContains(mat, "IRON_PLATE", "GOLD_PLATE", "WEIGHTED_PRESSURE_PLATE");
+    }
+
+    /**
+     * Return true for all kinds of wood pressure plates
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isWoodPressurePlate(final Material mat) {
+        return nameEquals(mat, "WOOD_PLATE", "ACACIA_PRESSURE_PLATE", "BIRCH_PRESSURE_PLATE", "DARK_OAK_PRESSURE_PLATE",
+                "JUNGLE_PRESSURE_PLATE", "OAK_PRESSURE_PLATE", "SPRUCE_PRESSURE_PLATE");
+    }
+
+    /**
+     * Returns true if the given material is a firework.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isFirework(final Material mat) {
+        return nameContains(mat, "FIREWORK");
+    }
+
+    /**
+     * Returns true if the given material is log (any variation).
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isLog(final Material mat) {
+        return nameEquals(mat, "LOG", "LOG_2") || mat.toString().endsWith("_LOG");
+    }
+
+    /**
+     * Returns true if the given material is a bloat (that's right) (any variation).
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isBoat(final Material mat) {
+        return nameContains(mat, "BOAT");
+    }
+
+    /**
+     * Returns true if the given material is a wood button (any variation).
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isWoodButton(final Material mat) {
+        final String n = mat.toString();
+
+        return n.endsWith("_BUTTON") && !n.equals("STONE_BUTTON");
+    }
+
+    /**
+     * Returns true if the given material is a redstone lamp (any state).
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isRedstoneLamp(final Material mat) {
+        return nameContains(mat, "REDSTONE_LAMP");
+    }
+
+    /**
+     * Returns true if the given material is a monster egg.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isMonsterEgg(final Material mat) {
+        return nameContains(mat, "MONSTER_EGG", "_SPAWN_EGG");
+    }
+
+    /**
+     * Returns true if the given material is a tree sapling (not potted).
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isSapling(final Material mat) {
+        return nameContains(mat, "SAPLING") && !mat.toString().startsWith("POTTED");
+    }
+
+    /**
+     * Returns true if the given material is a wall sign (any variation).
+     *
+     * @param mat the material
+     * @return
+     */
+    public static final boolean isWallSign(final Material mat) {
+        return nameContains(mat, "WALL_SIGN");
+    }
+
+    /**
+     * Returns true if the given material is a dead shrub or a grass.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isLongGrass(final Material mat) {
+        return nameEquals(mat, "LONG_GRASS", "TALL_GRASS", "FERN", "DEAD_BUSH") && !mat.toString().startsWith("POTTED");
+    }
+
+    /**
+     * Returns true if the given material is normally 2 blocks tall when placed.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isDoublePlant(final Material mat) {
+        return nameEquals(mat, "DOUBLE_PLANT", "SUNFLOWER", "LILAC", "TALL_GRASS", "LARGE_FERN", "ROSE_BUSH", "PEONY", "TALL_SEAGRASS");
+    }
+
+    /**
+     * Returns true if the given material is a skull.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isSkull(final CompMaterial mat) {
+        return isSkull(mat.getMaterial());
+    }
+
+    /**
+     * Returns true if the given material is a skull.
+     *
+     * @param mat
+     * @return
+     */
+    public static final boolean isSkull(final Material mat) {
+        final String name = mat.toString();
+
+        return (name.endsWith("_HEAD") || name.endsWith("_SKULL")) && !name.contains("WALL");
+    }
+
+    /**
+     * Returns true if the given material is a trap door (any variation).
+     *
+     * @param mat
+     * @return
+     */
+    public static boolean isTrapDoor(final Material mat) {
+        final String name = mat.toString();
+
+        return name.contains("TRAP_DOOR") || name.contains("TRAPDOOR");
+    }
+
+    // Utility method for evaluating matches.
+    private static final boolean nameContains(final Material mat, final String... names) {
+        final String matName = mat.toString();
+
+        for (final String name : names)
+            if (matName.contains(name))
+                return true;
+
+        return false;
+    }
+
+    // Utility method for evaluating matches.
+    private static final boolean nameEquals(final Material mat, final String... names) {
+        final String matName = mat.toString();
+
+        for (final String name : names)
+            if (matName.equals(name))
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Create a wool from the given data type and amount.
+     *
+     * @param color
+     * @param amount
+     * @return
+     */
+    public static ItemStack makeWool(final byte color, final int amount) {
+        return makeWool(CompColor.fromWoolData(color), amount);
+    }
+
+    /**
+     * Create a wool from dye of certain amount.
+     *
+     * @param color
+     * @param amount
+     * @return
+     */
+    public static ItemStack makeWool(final CompColor color, final int amount) {
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
+            return new ItemStack(Material.valueOf(color.getDye() + "_WOOL"), amount);
+
+        else
+            return new ItemStack(Material.valueOf("WOOL"), amount, color.getDye().getWoolData());
+    }
+
+    /**
+     * Attempts to convert an {@link EntityType} into a valid {@link CompMaterial}
+     * representing a spawnable Monster Egg.
+     * <p>
+     * In case the entity given is not a valid entity or does not have an egg, we
+     * return Sheep Monster Egg instead.
+     *
+     * @param type
+     * @return the corresponding egg, or Sheep Monster Egg if does not exist
+     */
+    public static CompMaterial makeMonsterEgg(final EntityType type) {
+        if (!COMPATIBLE)
+            return null;
+
+        String name = type.toString() + "_SPAWN_EGG";
+
+        // Special cases
+        if (type == EntityType.PIG_ZOMBIE)
+            name = "ZOMBIE_PIGMAN_SPAWN_EGG";
+        else if (type == EntityType.MUSHROOM_COW)
+            name = "MOOSHROOM_SPAWN_EGG";
+
+        // Parse normally, backwards compatible
+        final CompMaterial mat = fromString(name);
+
+        // Return the egg or sheep egg if does not exist
+        return mat == null ? CompMaterial.SHEEP_SPAWN_EGG : mat;
+    }
+
+    /**
+     * Reverts back the 1.13+ spawn egg material to {@link EntityType}
+     *
+     * @param monsterEgg the monster egg
+     * @return the egg, or null if does not exist in the current MC version
+     */
+    public static EntityType makeEntityType(final CompMaterial monsterEgg) {
+
+        final String name = monsterEgg.toString().replace("_SPAWN_EGG", "");
+
+        // Special cases
+        if (name == "ZOMBIE_PIGMAN_SPAWN_EGG")
+            return EntityType.PIG_ZOMBIE;
+
+        else if (name == "MOOSHROOM_SPAWN_EGG")
+            return EntityType.MUSHROOM_COW;
+
+        else
+            // Parse normally, backwards compatible
+            try {
+                return EntityType.valueOf(name);
+            } catch (final IllegalArgumentException ex) {
+                // Does not exist for the current MC version
+            }
+
+        return null;
+    }
+
+    /**
+     * Return a {@link CompMaterial} from the given block, also comparing the data value
+     *
+     * @param block
+     * @return
+     */
+    public static final CompMaterial fromBlock(final Block block) {
+        try {
+            return CompMaterial.valueOf(block.getType().toString());
+
+        } catch (final IllegalArgumentException e) {
+            for (final CompMaterial compMat : CompMaterial.values())
+                if (compMat.legacyName.equals(block.getType().toString()) && compMat.getData() == block.getData())
+                    return compMat;
+        }
+        return null;
+    }
+
+    /**
+     * Creates {@link CompMaterial} class from a given {@link Material}.
+     *
+     * @param mat
+     * @return
+     */
+    public static final CompMaterial fromMaterial(final Material mat) {
+        try {
+            return CompMaterial.valueOf(mat.toString());
+
+        } catch (final IllegalArgumentException e) {
+            for (final CompMaterial compMat : CompMaterial.values())
+                if (compMat.legacyName.equals(mat.toString()))
+                    return compMat;
+        }
+        return null;
+    }
+
+    /**
+     * See {@link #fromString(String)}, with the addition that
+     * this method throws an error if the string could not be parsed
+     *
+     * @param key
+     * @return
+     */
+    public static CompMaterial fromStringStrict(final String key) {
+        final CompMaterial material = fromString(key);
+
+        return material;
     }
 
     /**
@@ -1306,23 +1470,13 @@ public enum CompMaterial {
      * @deprecated special usage only
      */
     @Deprecated
-    public static CompMaterial fromStringCompat(String name) {
+    public static CompMaterial fromStringCompat(final String name) {
         final CompMaterial lookup = CompMaterial.fromString(name);
 
-        if (lookup == null && SoftMaterials.MATERIALS.contains(name))
+        if (lookup == null)
             return null;
 
         return CompMaterial.fromStringStrict(name);
-    }
-
-    /**
-     * Returns true if the given material is a firework.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isFirework(Material mat) {
-        return nameContains(mat, "FIREWORK");
     }
 
     /**
@@ -1353,134 +1507,13 @@ public enum CompMaterial {
     }
 
     /**
-     * Returns true if the given material is a wood button (any variation).
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isWoodButton(Material mat) {
-        final String n = mat.toString();
-
-        return n.endsWith("_BUTTON") && !n.equals("STONE_BUTTON");
-    }
-
-    /**
-     * Returns true if the given material is a redstone lamp (any state).
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isRedstoneLamp(Material mat) {
-        return nameContains(mat, "REDSTONE_LAMP");
-    }
-
-    /**
-     * Returns true if the given material is a monster egg.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isMonsterEgg(Material mat) {
-        return nameContains(mat, "MONSTER_EGG", "_SPAWN_EGG");
-    }
-
-    /**
-     * Returns true if the given material is a tree sapling (not potted).
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isSapling(Material mat) {
-        return nameContains(mat, "SAPLING") && !mat.toString().startsWith("POTTED");
-    }
-
-    /**
-     * Returns true if the given material is a wall sign (any variation).
-     *
-     * @param mat the material
-     * @return
-     */
-    public static final boolean isWallSign(Material mat) {
-        return nameContains(mat, "WALL_SIGN");
-    }
-
-    /**
-     * Returns true if the given material is a dead shrub or a grass.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isLongGrass(Material mat) {
-        return nameEquals(mat, "LONG_GRASS", "TALL_GRASS", "FERN", "DEAD_BUSH") && !mat.toString().startsWith("POTTED");
-    }
-
-    /**
-     * Returns true if the given material is normally 2 blocks tall when placed.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isDoublePlant(Material mat) {
-        return nameEquals(mat, "DOUBLE_PLANT", "SUNFLOWER", "LILAC", "TALL_GRASS", "LARGE_FERN", "ROSE_BUSH", "PEONY", "TALL_SEAGRASS");
-    }
-
-    /**
-     * Returns true if the given material is a skull.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isSkull(CompMaterial mat) {
-        return isSkull(mat.getMaterial());
-    }
-
-    /**
-     * Returns true if the given material is a skull.
-     *
-     * @param mat
-     * @return
-     */
-    public static final boolean isSkull(Material mat) {
-        final String name = mat.toString();
-
-        return (name.endsWith("_HEAD") || name.endsWith("_SKULL")) && !name.contains("WALL");
-    }
-
-    /**
-     * Returns true if the given material is a trap door (any variation).
-     *
-     * @param mat
-     * @return
-     */
-    public static boolean isTrapDoor(Material mat) {
-        final String name = mat.toString();
-
-        return name.contains("TRAP_DOOR") || name.contains("TRAPDOOR");
-    }
-
-    // Utility method for evaluating matches.
-    private static final boolean nameContains(Material mat, String... names) {
-        final String matName = mat.toString();
-
-        for (final String name : names)
-            if (matName.contains(name))
-                return true;
-
-        return false;
-    }
-
-    public static final boolean isFlower(Material mat) {
-        return nameEquals(mat, "DANDELION", "POPPY", "BLUE_ORCHID", "ALLIUM", "AZURE_BLUET", "CORNFLOWER", "OXEYE_DAISY", "LILY_OF_THE_VALLEY", "WITHER_ROSE") || nameContains(mat, "TULIP", "MUSHROOM", "FLOWER");
-    }
-
-    /**
      * Constructs the {@link CompMaterial} class with a given name and a data value.
      *
      * @param name
      * @param data
      * @return
      */
-    public static CompMaterial fromLegacy(String name, int data) {
+    public static CompMaterial fromLegacy(String name, final int data) {
         // try to resolve common pitfalls and emulate the material enum writing style
         name = name.replace(" ", "_").toUpperCase();
 
@@ -1521,13 +1554,14 @@ public enum CompMaterial {
      * @param id
      * @return
      */
-    public static Material fromId(int id) {
+    public static Material fromId(final int id) {
         for (final Material mat : Material.values())
             if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
                 if (mat.toString().startsWith("LEGACY_") && mat.getId() == id)
                     return mat;
             } else if (mat.getId() == id)
                 return mat;
+
         return null;
     }
 
@@ -1539,10 +1573,11 @@ public enum CompMaterial {
             if (legacy != null)
                 try {
                     return Material.valueOf(legacy);
+
                 } catch (final IllegalArgumentException ex) {
+                    materialAvailable = false;
                 }
-        return Material.STONE;
-        //throw new FoException("[REPORT] CompMaterial could not parse " + this + ". Tried: " + String.join(", ", names));
+        return null;
     }
 
     /**
@@ -1550,7 +1585,7 @@ public enum CompMaterial {
      *
      * @param player
      */
-    public final void give(Player player) {
+    public final void give(final Player player) {
         give(player, 1);
     }
 
@@ -1560,7 +1595,7 @@ public enum CompMaterial {
      * @param player
      * @param amount
      */
-    public final void give(Player player, int amount) {
+    public final void give(final Player player, final int amount) {
         player.getInventory().addItem(toItem(amount));
     }
 
@@ -1571,7 +1606,7 @@ public enum CompMaterial {
      * @param amount the amount
      * @return the itemstack
      */
-    public final ItemStack toItem(int amount) {
+    public final ItemStack toItem(final int amount) {
         final Material mat = toMaterial();
 
         return MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) ? new ItemStack(mat, amount) : new ItemStack(mat, amount, (byte) data);
@@ -1582,12 +1617,12 @@ public enum CompMaterial {
      *
      * @return the material
      */
-    public final Material toMaterial() {
+    private final Material toMaterial() {
         final Material mat = Material.matchMaterial(toString());
         final Material altMat = alternativeName != null ? Material.matchMaterial(alternativeName) : null;
         final Material legacyMat = legacyName != null ? Material.matchMaterial(legacyName) : null;
 
-        return mat != null ? mat : (altMat != null ? altMat : legacyMat);
+        return mat != null ? mat : altMat != null ? altMat : legacyMat;
     }
 
     /**
@@ -1597,7 +1632,7 @@ public enum CompMaterial {
      *
      * @return
      */
-    public final boolean is(Material mat) {
+    public final boolean is(final Material mat) {
         return material == mat;
     }
 
@@ -1608,16 +1643,37 @@ public enum CompMaterial {
      * @param comp the itemstack
      * @return -see above-
      */
-    public final boolean is(ItemStack comp) {
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
-            return comp.getType() == toMaterial();
+    public final boolean is(final ItemStack comp) {
+        return is(comp.getType(), comp.getData().getData());
+    }
 
-        if (comp.getType() == toMaterial() && comp.getData().getData() == data)
+    /**
+     * Evaluates whether the given block equals this material
+     *
+     * @param block
+     * @return
+     */
+    public final boolean is(final Block block) {
+        return block == null ? false : is(block.getType(), block.getData());
+    }
+
+    /**
+     * Evaluates whether the given type/data equals this material
+     *
+     * @param type
+     * @param data
+     * @return
+     */
+    public final boolean is(Material type, int data) {
+        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
+            return type == toMaterial();
+
+        if (type == toMaterial() && data == this.data)
             return true;
 
-        final CompMaterial compMat = fromMaterial(comp.getType());
+        final CompMaterial compMat = fromMaterial(type);
 
-        if (isDamageable(compMat) && toMaterial() == comp.getType())
+        if (isDamageable(compMat) && toMaterial() == type)
             return true;
 
         return false;
@@ -1631,92 +1687,4 @@ public enum CompMaterial {
     public final boolean isDamageable() {
         return isDamageable(this);
     }
-}
-
-/**
- * A special class for some of our plugins that by default include
- * materials in their config files that do not exist in older MC versions.
- *
- * For these materials, we simply return null and do not add them to settings
- * instead of throwing an error.
- *
- * @deprecated special usage only, limited
- */
-@Deprecated
-class SoftMaterials {
-
-    final static HashSet<String> MATERIALS = new HashSet<>(Sets.newHashSet(
-            "SKULL",
-            "ANVIL",
-            "TRAPPED_CHEST",
-            "GOLD_PLATE",
-            "IRON_PLATE",
-            "REDSTONE_COMPARATOR_OFF",
-            "REDSTONE_COMPARATOR_ON",
-            "DAYLIGHT_DETECTOR",
-            "REDSTONE_BLOCK",
-            "QUARTZ_ORE",
-            "HOPPER",
-            "QUARTZ_BLOCK",
-            "QUARTZ_STAIRS",
-            "ACTIVATOR_RAIL",
-            "DROPPER",
-            "STAINED_CLAY",
-            "STAINED_GLASS_PANE",
-            "LEAVES_2",
-            "LOG_2",
-            "ACACIA_STAIRS",
-            "DARK_OAK_STAIRS",
-            "SLIME_BLOCK",
-            "BARRIER",
-            "IRON_TRAPDOOR",
-            "PRISMARINE",
-            "SEA_LANTERN",
-            "HAY_BLOCK",
-            "CARPET",
-            "HARD_CLAY",
-            "COAL_BLOCK",
-            "PACKED_ICE",
-            "DOUBLE_PLANT",
-            "STANDING_BANNER",
-            "WALL_BANNER",
-            "DAYLIGHT_DETECTOR_INVERTED",
-            "RED_SANDSTONE",
-            "RED_SANDSTONE_STAIRS",
-            "DOUBLE_STONE_SLAB2",
-            "STONE_SLAB2",
-            "SPRUCE_FENCE_GATE",
-            "BIRCH_FENCE_GATE",
-            "JUNGLE_FENCE_GATE",
-            "DARK_OAK_FENCE_GATE",
-            "ACACIA_FENCE_GATE",
-            "SPRUCE_FENCE",
-            "BIRCH_FENCE",
-            "JUNGLE_FENCE",
-            "DARK_OAK_FENCE",
-            "ACACIA_FENCE",
-            "SPRUCE_DOOR",
-            "BIRCH_DOOR",
-            "JUNGLE_DOOR",
-            "ACACIA_DOOR",
-            "DARK_OAK_DOOR",
-            "END_ROD",
-            "CHORUS_PLANT",
-            "CHORUS_FLOWER",
-            "PURPUR_BLOCK",
-            "PURPUR_PILLAR",
-            "PURPUR_STAIRS",
-            "PURPUR_DOUBLE_SLAB",
-            "PURPUR_SLAB",
-            "END_BRICKS",
-            "GRASS_PATH",
-            "END_GATEWAY",
-            "FROSTED_ICE",
-            "MAGMA",
-            "NETHER_WART_BLOCK",
-            "RED_NETHER_BRICK",
-            "BONE_BLOCK",
-            "OBSERVER",
-            "PURPLE_SHULKER_BOX"
-    ));
 }

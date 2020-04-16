@@ -181,7 +181,7 @@ public enum CompSound {
     FIREWORK_LAUNCH("FIREWORK_LAUNCH", "ENTITY_FIREWORK_LAUNCH", "ENTITY_FIREWORK_ROCKET_LAUNCH"),
     FIREWORK_TWINKLE("FIREWORK_TWINKLE", "ENTITY_FIREWORK_TWINKLE", "ENTITY_FIREWORK_ROCKET_TWINKLE"),
     FIREWORK_TWINKLE2("FIREWORK_TWINKLE2", "ENTITY_FIREWORK_TWINKLE_FAR", "ENTITY_FIREWORK_ROCKET_TWINKLE_FAR"),
-    SUCCESSFUL_HIT("SUCCESSFUL_HIT", "ENTITY_PLAYER_ATTACK_STRONG"),
+    SUCCESSFUL_HIT("SUCCESSFUL_HIT", "ENTITY_ARROW_HIT_PLAYER"),
     HORSE_ANGRY("HORSE_ANGRY", "ENTITY_HORSE_ANGRY"),
     HORSE_ARMOR("HORSE_ARMOR", "ENTITY_HORSE_ARMOR"),
     HORSE_BREATHE("HORSE_BREATHE", "ENTITY_HORSE_BREATHE"),
@@ -213,8 +213,7 @@ public enum CompSound {
 
     // New sounds
     BLOCK_DISPENSER_LAUNCH("LEVEL_UP", "DISPENSER_LAUNCH", "BLOCK_DISPENSER_LAUNCH"),
-    ENTITY_ITEMFRAME_BREAK("STEP_WOOL", "BLOCK_CLOTH_STEP", "BLOCK_WOOL_STEP", "ENTITY_ITEMFRAME_BREAK")
-    ;
+    ENTITY_ITEMFRAME_BREAK("STEP_WOOL", "BLOCK_CLOTH_STEP", "BLOCK_WOOL_STEP", "ENTITY_ITEMFRAME_BREAK");
 
     private String[] versionDependentNames;
     private org.bukkit.Sound cached = null;
@@ -224,6 +223,15 @@ public enum CompSound {
 
         // Assume most servers use the latest version so reverse for performance
         ArrayUtils.reverse(this.versionDependentNames);
+    }
+
+    /**
+     * Plays a sound for the given player with 1F volume and 1F pitch
+     *
+     * @param player
+     */
+    public final void play(Player player) {
+        play(player, 1F, 1F);
     }
 
     /**
@@ -239,6 +247,15 @@ public enum CompSound {
         } catch (final Throwable t) {
             // Fail-through
         }
+    }
+
+    /**
+     * Plays a sound at the given location with 1F volume and 1F pitch
+     *
+     * @param loc
+     */
+    public final void play(Location loc) {
+        play(loc, 1F, 1F);
     }
 
     /**
@@ -263,7 +280,8 @@ public enum CompSound {
      * @return corresponding {@link org.bukkit.Sound}
      */
     public final Sound getSound() {
-        if (cached != null) return cached;
+        if (cached != null)
+            return cached;
 
         for (final String name : versionDependentNames)
             try {

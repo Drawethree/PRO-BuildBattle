@@ -11,10 +11,7 @@ import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.buildbattle.utils.compatbridge.MinecraftVersion;
 import me.drawethree.buildbattle.utils.compatbridge.model.CompMaterial;
 import me.drawethree.buildbattle.utils.compatbridge.model.CompatBridge;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -88,7 +85,7 @@ public class BBPlot implements Comparable<BBPlot> {
         this.options = new BBPlotOptions(this);
         this.options.setCurrentBiome(null, PlotBiome.PLAINS, false);
         this.team = null;
-        this.changeFloor(plugin.getSettings().getDefaultFloorMaterial());
+        this.changeFloor(new ItemStack(plugin.getSettings().getDefaultFloorMaterial().getMaterial()));
     }
 
     private void removeAllBlocks() {
@@ -208,10 +205,11 @@ public class BBPlot implements Comparable<BBPlot> {
                 '}';
     }
 
-    public void changeFloor(CompMaterial material) {
+    public void changeFloor(ItemStack item) {
 
-        if (material == CompMaterial.WATER_BUCKET) material = CompMaterial.WATER;
-        if (material == CompMaterial.LAVA_BUCKET) material = CompMaterial.LAVA;
+        Material material = item.getType();
+        if (material == Material.WATER_BUCKET) material = Material.WATER;
+        if (material == Material.LAVA_BUCKET) material = Material.LAVA;
 
         final int minX = Math.min(minPoint.getBlockX(), maxPoint.getBlockX());
         final int maxX = Math.max(minPoint.getBlockX(), maxPoint.getBlockX());
@@ -221,17 +219,13 @@ public class BBPlot implements Comparable<BBPlot> {
 
         for (int x = minX; x <= maxX; x += 1) {
             for (int z = minZ; z <= maxZ; z += 1) {
-                if(MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
-                   new Location(getWorld(), x,minY , z).getBlock().setType(material.getMaterial());
+                if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
+                    new Location(getWorld(), x, minY, z).getBlock().setType(material);
                 } else {
-                    CompatBridge.setTypeAndData(new Location(getWorld(), x, minY, z).getBlock(), material, (byte) material.getData());
+                    CompatBridge.setTypeAndData(new Location(getWorld(), x, minY, z).getBlock(), material, item.getData().getData());
                 }
             }
         }
-    }
-
-    public void changeFloor(ItemStack item) {
-        changeFloor(CompMaterial.fromMaterial(item.getType()));
     }
 
     public boolean isInPlotRange(Location location, int added) {
