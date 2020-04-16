@@ -845,7 +845,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onWaterFlowEvent(final BlockFromToEvent e) {
         final BBPlot plot = this.plugin.getArenaManager().getBBPlotFromLocation(e.getBlock().getLocation());
-        if (plot != null && plot.isLocationInPlot(e.getToBlock().getLocation())) {
+        if (plot != null && !plot.isLocationInPlot(e.getToBlock().getLocation())) {
             e.setCancelled(true);
         }
     }
