@@ -31,7 +31,6 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                 Player p = (Player) sender;
                 if (args.length == 1) {
                     BBArena arena = this.plugin.getArenaManager().getArena(args[0]);
-                    //Selection sel = BuildBattle.getWorldEdit().getSelection(p);
                     if (arena != null) {
                         if (this.plugin.getArenaManager().hasSelectionReady(p)) {
                             Location l1 = this.plugin.getArenaManager().getPlayerBBPos().get(p)[0];
@@ -51,18 +50,6 @@ public class BBAddPlotSubCommand extends BBSubCommand {
                             p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
                             LocationUtil.showCreatedPlot(minPoint, maxPoint, p, 5);
                             return true;
-                            // WORLD EDIT NOT WORKING
-                       /*if (sel != null) {
-                            BBPlot newPlot = new BBPlot(arena, sel.getMinimumPoint(), sel.getMaximumPoint());
-                            newPlot.addIntoArenaPlots();
-                            arena.saveIntoConfig();
-                            OptionsManager.getInstance().refreshArenaItem(arena);
-                            p.sendMessage("§e§lBuildBattle Setup §8| §aPlot for arena §e" + arena.getName() + " §aadded !");
-                            LocationUtil.showCreatedPlot(sel, p, 5);
-                        } else {
-                            p.sendMessage(Message.NO_SELECTION.getChatMessage().replace("%arena%", args[1]));
-                        }
-                        */
                         } else {
                             int i = this.plugin.getArenaManager().getMissingSelection(p);
                             switch (i) {
