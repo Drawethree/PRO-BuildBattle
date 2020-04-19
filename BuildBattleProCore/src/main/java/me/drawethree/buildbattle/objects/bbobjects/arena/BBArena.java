@@ -126,8 +126,8 @@ public class BBArena implements Spectatable<Player> {
                 final Location minPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".min"));
                 final Location maxPoint = LocationUtil.getLocationFromString(plugin.getFileManager().getConfig("arenas.yml").get().getString(name + ".plots." + plot + ".max"));
                 list.add(new BBPlot(this.plugin, this, minPoint, maxPoint));
-                plugin.info("§aPlot §e" + plot + " §afor arena §e" + name + " §aloaded !");
             }
+            plugin.info("§aLoaded §e" + list.size() + " plots §afor arena §e" + name);
         } catch (Exception e) {
             plugin.warning("§cLooks like arena §e" + name + " §c have no plots ! Please set them.");
         }
