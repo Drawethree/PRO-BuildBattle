@@ -583,9 +583,9 @@ public class BBSettings {
             for (String s : this.plugin.getFileManager().getConfig("themes.yml").get().getStringList("blacklisted-themes")) {
                 this.restricedThemes.add(s);
             }
-            this.plugin.info("Loaded " + soloThemes.size() + " Solo Themes !");
-            this.plugin.info("Loaded " + teamThemes.size() + " Team Themes !");
-            this.plugin.info("Loaded " + restricedThemes.size() + " Restriced Themes !");
+            this.plugin.info("Loaded §e" + soloThemes.size() + " Solo Themes !");
+            this.plugin.info("Loaded §e" + teamThemes.size() + " Team Themes !");
+            this.plugin.info("Loaded §e" + restricedThemes.size() + " Restriced Themes !");
         } catch (Exception e) {
             this.plugin.severe("An exception occurred while trying loading themes from themes.yml !");
             e.printStackTrace();
