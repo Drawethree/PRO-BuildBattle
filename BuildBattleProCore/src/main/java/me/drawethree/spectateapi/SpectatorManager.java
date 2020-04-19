@@ -255,20 +255,22 @@ public class SpectatorManager implements Listener {
         }
 
         public void restorePlayerData() {
-            this.getPlayer().getInventory().clear();
-            this.getPlayer().resetPlayerWeather();
-            this.getPlayer().resetPlayerTime();
-            this.getPlayer().getActivePotionEffects().forEach(e -> getPlayer().removePotionEffect(e.getType()));
-            this.getPlayer().setMaxHealth(20);
-            this.getPlayer().setHealth(getPlayer().getMaxHealth());
-            this.getPlayer().setFoodLevel(20);
-            this.getPlayer().getInventory().setArmorContents(this.armor);
-            this.getPlayer().getInventory().setContents(this.contents);
-            this.getPlayer().setGameMode(this.gameMode);
-            this.getPlayer().setLevel(this.level);
-            this.getPlayer().setExp(this.exp);
-            this.getPlayer().setAllowFlight(this.allowFlight);
-            this.getPlayer().teleport(this.location);
+            Player p = this.getPlayer();
+
+            p.getInventory().clear();
+            p.resetPlayerWeather();
+            p.resetPlayerTime();
+            p.getActivePotionEffects().forEach(e -> p.removePotionEffect(e.getType()));
+            p.setMaxHealth(20);
+            p.setHealth(p.getMaxHealth());
+            p.setFoodLevel(20);
+            p.getInventory().setArmorContents(this.armor);
+            p.getInventory().setContents(this.contents);
+            p.setGameMode(this.gameMode);
+            p.setLevel(this.level);
+            p.setExp(this.exp);
+            p.setAllowFlight(this.allowFlight);
+            p.teleport(this.location);
         }
     }
 
