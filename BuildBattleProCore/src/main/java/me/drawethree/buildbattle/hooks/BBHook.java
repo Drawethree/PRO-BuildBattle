@@ -37,8 +37,8 @@ public abstract class BBHook {
         return hooks.get(pluginName);
     }
 
-    private String pluginName;
-    private boolean enabled;
+    protected String pluginName;
+    protected boolean enabled;
 
     public BBHook(String pluginName) {
         this.pluginName = pluginName;
@@ -46,7 +46,8 @@ public abstract class BBHook {
 
     public void hook(BuildBattle buildBattle) {
         if(Bukkit.getPluginManager().isPluginEnabled(this.pluginName)) {
-            BuildBattle.getInstance().info("§aSuccessfully hooked into §e" + this.pluginName + " §a!");
+            String version = Bukkit.getPluginManager().getPlugin(this.pluginName).getDescription().getVersion();
+            BuildBattle.getInstance().info("§aSuccessfully hooked into §e" + this.pluginName + " §aversion §e" + version);
             this.enabled = true;
             this.runHookAction(buildBattle);
         }
