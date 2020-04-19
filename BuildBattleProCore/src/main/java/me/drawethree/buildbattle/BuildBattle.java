@@ -99,8 +99,8 @@ public final class BuildBattle extends JavaPlugin implements PluginMessageListen
         this.arenaManager.loadArenas();
         this.signManager.loadSigns();
 
-        this.headInventory = new HeadInventory(this);
         this.hook();
+        this.headInventory = new HeadInventory(this);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             BBPlayerStatsLoader.load(p);
