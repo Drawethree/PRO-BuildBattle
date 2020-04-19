@@ -33,18 +33,18 @@ public class MySQLDatabase {
 
     private void connect() {
         if (!this.parent.isEnabled()) {
-            this.parent.warning("Cannot maintain MySQL connection when plugin is disabled!");
+            this.parent.warning("Cannot open MySQL connection when plugin is disabled!");
             return;
         }
 
-        Bukkit.getConsoleSender().sendMessage(parent.getSettings().getPrefix() + ChatColor.GREEN + "Attemping to connect to MySQL database...");
+        Bukkit.getConsoleSender().sendMessage(parent.getSettings().getPrefix() + ChatColor.GREEN + "Attemping to open MySQL connection...");
 
         try {
             openConnection();
             createTables();
-            parent.info("MySQL Database Connected !");
+            parent.info("MySQL Connection Success!");
         } catch (Exception e) {
-            parent.severe("MySQL Database could not be connected ! Check your config.yml !");
+            parent.severe("MySQL Database could not be connected! Check your config.yml!");
             e.printStackTrace();
         }
     }
