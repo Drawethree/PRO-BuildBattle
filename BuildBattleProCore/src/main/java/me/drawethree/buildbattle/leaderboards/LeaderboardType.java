@@ -11,9 +11,9 @@ public enum LeaderboardType {
     BLOCKS_PLACED("%blocks_placed%", Message.LEADERBOARDS_BLOCKS_PLACED_TITLE.getMessage(), Message.LEADERBOARDS_BLOCKS_PLACED_FORMAT.getMessage()),
     PARTICLES_PLACED("%particles_placed%", Message.LEADERBOARDS_PARTICLES_PLACED_TITLE.getMessage(), Message.LEADERBOARDS_PARTICLES_PLACED_FORMAT.getMessage());
 
-    String placeholder;
-    String title;
-    String lineFormat;
+    private String placeholder;
+    private String title;
+    private String lineFormat;
 
     LeaderboardType(String s, String title, String lineFormat) {
         this.placeholder = s;

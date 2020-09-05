@@ -6,7 +6,7 @@
 
     <groupId>me.drawethree</groupId>
     <artifactId>BuildBattlePro</artifactId>
-    <version>6.4.2-BETA</version>
+    <version>6.4.4-BETA</version>
     <packaging>pom</packaging>
 
     <name>buildbattlepro</name>

@@ -17,7 +17,7 @@ public class SuperVoteManager {
     public boolean giveSuperVote(OfflinePlayer player, int amount) {
         BBPlayerStats pStats = this.plugin.getPlayerManager().getPlayerStats(player);
         if (pStats != null) {
-            pStats.setStat(BBStat.SUPER_VOTES, (int) pStats.getStat(BBStat.SUPER_VOTES) + amount);
+            pStats.setStat(BBStat.SUPER_VOTES, (int) pStats.getStat(BBStat.SUPER_VOTES) + amount, true);
             return true;
         } else {
             return false;
@@ -31,7 +31,7 @@ public class SuperVoteManager {
             if (currentAmount - amount < 0) {
                 amount = currentAmount;
             }
-            pStats.setStat(BBStat.SUPER_VOTES, (int) pStats.getStat(BBStat.SUPER_VOTES) - amount);
+            pStats.setStat(BBStat.SUPER_VOTES, (int) pStats.getStat(BBStat.SUPER_VOTES) - amount, true);
             return true;
         } else {
             return false;

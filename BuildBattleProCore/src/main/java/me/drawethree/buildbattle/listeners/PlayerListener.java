@@ -79,6 +79,19 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onWorldChange(final PlayerChangedWorldEvent e) {
+        if (this.plugin.getSettings().getMainLobbyLocation() != null) {
+            if (e.getPlayer().getLocation().getWorld().equals(this.plugin.getSettings().getMainLobbyLocation().getWorld())) {
+                if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
+                    plugin.getPlayerManager().showMainLobbyScoreboard(e.getPlayer());
+                }
+            } else {
+                e.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
+        }
+    }
+
+    @EventHandler
     public void onJoin(final PlayerJoinEvent e) {
         final Player p = e.getPlayer();
 
@@ -108,9 +121,9 @@ public class PlayerListener implements Listener {
                 this.plugin.getPlayerManager().teleportToMainLobby(p);
 
             }, 1L);
-        }
-        if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
-            plugin.getPlayerManager().showMainLobbyScoreboard(p);
+            if (plugin.getSettings().isMainLobbyScoreboardEnabled()) {
+                plugin.getPlayerManager().showMainLobbyScoreboard(p);
+            }
         }
     }
 
@@ -708,7 +721,7 @@ public class PlayerListener implements Listener {
                         if (BBParticle.getBBParticle(e.getItemInHand()) == null) {
                             final BBPlayerStats stats = this.plugin.getPlayerManager().getPlayerStats(p);
                             if (stats != null) {
-                                stats.setStat(BBStat.BLOCKS_PLACED, (Integer) stats.getStat(BBStat.BLOCKS_PLACED) + 1);
+                                stats.setStat(BBStat.BLOCKS_PLACED, (Integer) stats.getStat(BBStat.BLOCKS_PLACED) + 1, true);
                             }
                         } else {
                             e.setCancelled(true);
@@ -749,7 +762,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-			BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
+            BBArena arena = this.plugin.getArenaManager().getArena(e.getLine(1));
 
             if (arena != null) {
                 if (this.plugin.getSignManager().createSign(new BBArenaJoinSign(this.plugin, arena, e.getBlock().getLocation()))) {
@@ -760,33 +773,33 @@ public class PlayerListener implements Listener {
                     p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
                 }
                 return;
-			} else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
-				BBGameMode type = null;
-				if (e.getLine(2).equalsIgnoreCase("team")) {
-					type = BBGameMode.TEAM;
-				} else if (e.getLine(2).equalsIgnoreCase("solo")) {
-					type = BBGameMode.SOLO;
-				}
+            } else if (e.getLine(1).equalsIgnoreCase("autojoin")) {
+                BBGameMode type = null;
+                if (e.getLine(2).equalsIgnoreCase("team")) {
+                    type = BBGameMode.TEAM;
+                } else if (e.getLine(2).equalsIgnoreCase("solo")) {
+                    type = BBGameMode.SOLO;
+                }
 
-				if (this.plugin.getSignManager().createSign(new BBAutoJoinSign(this.plugin, type, e.getBlock().getLocation()))) {
-					p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
-				} else {
-					p.sendMessage(this.plugin.getSettings().getPrefix() + "§cSomething went wrong. Please contact developer.");
-					e.setCancelled(true);
-					e.getBlock().breakNaturally();
-				}
-			} else if (e.getLine(1).equalsIgnoreCase("spectate")) {
-				arena = this.plugin.getArenaManager().getArena(e.getLine(2));
+                if (this.plugin.getSignManager().createSign(new BBAutoJoinSign(this.plugin, type, e.getBlock().getLocation()))) {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aAuto-Join sign successfully created!");
+                } else {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cSomething went wrong. Please contact developer.");
+                    e.setCancelled(true);
+                    e.getBlock().breakNaturally();
+                }
+            } else if (e.getLine(1).equalsIgnoreCase("spectate")) {
+                arena = this.plugin.getArenaManager().getArena(e.getLine(2));
 
-				if (arena != null && this.plugin.getSignManager().createSign(new BBArenaSpectateSign(this.plugin, arena, e.getBlock().getLocation()))) {
-					p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSpectate sign for arena §e" + arena.getName() + " §asuccessfully created!");
-				} else {
-					e.setCancelled(true);
-					e.getBlock().breakNaturally();
-					p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
-					return;
-				}
-			}
+                if (arena != null && this.plugin.getSignManager().createSign(new BBArenaSpectateSign(this.plugin, arena, e.getBlock().getLocation()))) {
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§aSpectate sign for arena §e" + arena.getName() + " §asuccessfully created!");
+                } else {
+                    e.setCancelled(true);
+                    e.getBlock().breakNaturally();
+                    p.sendMessage(this.plugin.getSettings().getPrefix() + "§cPlease specify valid arena!");
+                    return;
+                }
+            }
         }
     }
 
@@ -820,7 +833,7 @@ public class PlayerListener implements Listener {
                 final BBSign bbSign = this.plugin.getSignManager().getSignAtLocation(s.getLocation());
                 if (bbSign != null) {
                     if (p.hasPermission("buildbattlepro.create")) {
-                        this.plugin.getSignManager().removeSign(p,bbSign);
+                        this.plugin.getSignManager().removeSign(p, bbSign);
                     } else {
                         e.setCancelled(true);
                     }

@@ -86,7 +86,7 @@ public class MySQLManager {
                     if (set.next()) {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
                         for (BBStat stat : BBStat.values()) {
-                            stats.setStat(stat, set.getObject(stat.getSQLKey()));
+                            stats.setStat(stat, set.getObject(stat.getSQLKey()), false);
                         }
                         database.getParent().getPlayerManager().getPlayerStats().put(stats.getUuid(), stats);
                         BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from MySQLDatabase!");
@@ -159,7 +159,7 @@ public class MySQLManager {
                         BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
 
                         for (BBStat stat : BBStat.values()) {
-                            stats.setStat(stat, set.getObject(stat.getSQLKey()));
+                            stats.setStat(stat, set.getObject(stat.getSQLKey()), false);
                         }
 
                         map.put(stats.getUuid(), stats);
@@ -193,5 +193,21 @@ public class MySQLManager {
             }
         }
         return 0.0;
+    }
+
+    public List<BBPlayerStats> loadTopStatistics(BBStat stat, int amountToDisplay) {
+        List<BBPlayerStats> returnList = new ArrayList<>();
+        ResultSet set = database.query("SELECT UUID," + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData ORDER BY ? DESC LIMIT ?", stat.getSQLKey(), amountToDisplay);
+        while (true) {
+            try {
+                if (!set.next()) break;
+                BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
+                stats.setStat(stat, set.getInt(stat.getSQLKey()), false);
+                returnList.add(stats);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return returnList;
     }
 }

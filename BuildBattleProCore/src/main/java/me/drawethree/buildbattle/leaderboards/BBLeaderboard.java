@@ -6,14 +6,12 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.hooks.BBHook;
 import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawethree.buildbattle.objects.bbobjects.BBStat;
-import me.drawethree.buildbattle.objects.bbobjects.BBStatIntegerComparator;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 public class BBLeaderboard {
 
@@ -30,7 +28,7 @@ public class BBLeaderboard {
         this.hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', this.type.getTitle()));
     }
 
-    public void update(ArrayList<BBPlayerStats> loadedStats) {
+    public void update(List<BBPlayerStats> loadedStats) {
 
         if (!BBHook.getHook("HolographicDisplays") || this.hologram == null || this.hologram.isDeleted()) {
             return;
@@ -44,7 +42,7 @@ public class BBLeaderboard {
                 hologram.clearLines();
                 hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
 
-                switch (type) {
+                /*switch (type) {
                     case WINS:
                     case PLAYED:
                     case BLOCKS_PLACED:
@@ -53,7 +51,7 @@ public class BBLeaderboard {
                         break;
                     default:
                         return;
-                }
+                }*/
 
                 for (int i = 0, position = 0; ; i++) {
 

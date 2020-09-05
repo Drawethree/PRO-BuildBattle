@@ -1,6 +1,7 @@
 package me.drawethree.buildbattle.hooks;
 
 import me.drawethree.buildbattle.BuildBattle;
+import me.drawethree.buildbattle.hooks.papi.BuildBattleProExpansion;
 
 public class BBHookPlaceholderAPI extends BBHook {
 
@@ -10,6 +11,6 @@ public class BBHookPlaceholderAPI extends BBHook {
 
     @Override
     protected void runHookAction(BuildBattle plugin) {
-        //We are no longer registering placeholders locally. Extension was created.
+        new BuildBattleProExpansion(plugin).register();
     }
 }

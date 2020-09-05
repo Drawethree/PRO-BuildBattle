@@ -5,7 +5,7 @@
     <parent>
         <artifactId>BuildBattlePro</artifactId>
         <groupId>me.drawethree</groupId>
-        <version>6.4.2-BETA</version>
+        <version>6.4.4-BETA</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -25,12 +25,12 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.1-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>me.drawethree</groupId>
             <artifactId>BuildBattlePro</artifactId>
-            <version>6.4.2-BETA</version>
+            <version>6.4.4-BETA</version>
         </dependency>
     </dependencies>
 

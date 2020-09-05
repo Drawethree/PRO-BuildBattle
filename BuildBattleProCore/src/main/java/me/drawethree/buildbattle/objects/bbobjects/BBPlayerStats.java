@@ -28,9 +28,9 @@ public class BBPlayerStats {
         this.stats = new HashMap<>();
     }
 
-    public void setStat(BBStat stat, Object value) {
+    public void setStat(BBStat stat, Object value, boolean save) {
         this.stats.put(stat, value);
-        if (BuildBattle.getInstance().getSettings().isAsyncSavePlayerData()) {
+        if (save && BuildBattle.getInstance().getSettings().isAsyncSavePlayerData()) {
             BuildBattle.getInstance().getPlayerManager().savePlayerStat(this, stat);
         }
     }

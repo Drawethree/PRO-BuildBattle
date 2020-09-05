@@ -265,7 +265,7 @@ public class BBPlot implements Comparable<BBPlot> {
         if (particles.size() != plugin.getSettings().getMaxParticlesPerPlayer()) {
             BBPlayerStats stats = plugin.getPlayerManager().getPlayerStats(player);
             if (stats != null) {
-                stats.setStat(BBStat.PARTICLES_PLACED, (Integer) stats.getStat(BBStat.PARTICLES_PLACED) + 1);
+                stats.setStat(BBStat.PARTICLES_PLACED, (Integer) stats.getStat(BBStat.PARTICLES_PLACED) + 1, true);
             }
             player.sendMessage(Message.PARTICLE_PLACED.getChatMessage());
             particle.start();

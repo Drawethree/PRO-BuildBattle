@@ -5,6 +5,7 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.leaderboards.BBLeaderboard;
 import me.drawethree.buildbattle.leaderboards.LeaderboardType;
 import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
+import me.drawethree.buildbattle.objects.bbobjects.BBStat;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -15,8 +16,6 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 public class LeaderboardManager {
 
@@ -78,42 +77,24 @@ public class LeaderboardManager {
 
             @Override
             public void run() {
-                HashMap<UUID, BBPlayerStats> loadedData = new HashMap<>();
-                CountDownLatch latch = new CountDownLatch(1);
+                for (BBLeaderboard l : activeLeaderboards) {
+                    List<BBPlayerStats> loadedStats = null;
 
-                synchronized (this) {
                     switch (plugin.getSettings().getStatsType()) {
                         case FLATFILE:
-                            BuildBattle.getInstance().debug("Loading data from stats.yml");
-                            plugin.getPlayerManager().loadAllPlayerStats(loadedData, latch);
+                            BuildBattle.getInstance().debug("Loading " + BBStat.map(l.getType()).getConfigKey() + " from stats.yml");
+                            loadedStats = plugin.getPlayerManager().loadTopStatistics(BBStat.map(l.getType()), l.getAmountToDisplay());
                             break;
                         case MYSQL:
-                            BuildBattle.getInstance().debug("Loading data from SQL");
-                            plugin.getMySQLManager().loadAllPlayerStats(loadedData, latch);
+                            BuildBattle.getInstance().debug("Loading " + BBStat.map(l.getType()).getSQLKey() + " from SQL database");
+                            loadedStats = plugin.getMySQLManager().loadTopStatistics(BBStat.map(l.getType()), l.getAmountToDisplay());
                             break;
                     }
-                }
 
-                try {
-                    BuildBattle.getInstance().debug("Waiting for load to complete...");
-                    latch.await();
-                } catch (InterruptedException e) {
-                    BuildBattle.getInstance().debug("§cLoading data was interrupted!");
-                    e.printStackTrace();
-                }
-
-                //Data is loaded, now sync it with online data.
-                loadedData.putAll(plugin.getPlayerManager().getPlayerStats());
-
-                BuildBattle.getInstance().debug("Done!");
-                BuildBattle.getInstance().debug("Loaded " + loadedData.values().size() + " players!");
-
-                for (BBLeaderboard l : activeLeaderboards) {
-                    l.update(new ArrayList<>(loadedData.values()));
+                    l.update(loadedStats);
                 }
 
                 BuildBattle.getInstance().debug("Leaderboards Refreshed!");
-
                 if(sender != null) {
                     sender.sendMessage(plugin.getSettings().getPrefix() + " §aLeaderboards refreshed !");
                 }

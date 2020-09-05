@@ -6,10 +6,7 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.PlayerData;
 import me.drawethree.buildbattle.objects.Votes;
-import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
-import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStatsLoader;
-import me.drawethree.buildbattle.objects.bbobjects.BBStat;
-import me.drawethree.buildbattle.objects.bbobjects.BBTeam;
+import me.drawethree.buildbattle.objects.bbobjects.*;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import me.drawethree.buildbattle.objects.bbobjects.plot.BBPlot;
 import me.drawethree.buildbattle.objects.bbobjects.scoreboards.BBMainLobbyScoreboard;
@@ -25,8 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 @Getter
@@ -49,7 +45,7 @@ public class PlayerManager {
     }
 
     public BBPlayerStats getPlayerStats(Player p) {
-        if(playerStats.get(p.getUniqueId()) == null) {
+        if (playerStats.get(p.getUniqueId()) == null) {
             //Try to look in cache
             return cachedStats.get(p.getUniqueId());
         } else {
@@ -75,7 +71,7 @@ public class PlayerManager {
         for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
             BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
             for (BBStat stat : BBStat.values()) {
-                stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()));
+                stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()), false);
             }
             map.put(stats.getUuid(), stats);
         }
@@ -296,7 +292,7 @@ public class PlayerManager {
         for (Player p : arenaInstance.getPlayers()) {
             BBPlayerStats stats = this.plugin.getPlayerManager().getPlayerStats(p);
             if (stats != null) {
-                stats.setStat(BBStat.PLAYED, (Integer) (stats.getStat(BBStat.PLAYED)) + 1);
+                stats.setStat(BBStat.PLAYED, (Integer) (stats.getStat(BBStat.PLAYED)) + 1, true);
             }
         }
     }
@@ -306,7 +302,7 @@ public class PlayerManager {
             for (Player p : arena.getWinner().getTeam().getPlayers()) {
                 BBPlayerStats stats = getPlayerStats(p);
                 if (stats != null) {
-                    stats.setStat(BBStat.WINS, (Integer) (stats.getStat(BBStat.WINS)) + 1);
+                    stats.setStat(BBStat.WINS, (Integer) (stats.getStat(BBStat.WINS)) + 1, true);
                 }
             }
         }
@@ -319,7 +315,7 @@ public class PlayerManager {
                 if (stats != null) {
                     int oldPoints = (int) stats.getStat(BBStat.MOST_POINTS);
                     if (plot.getVotePoints() > oldPoints) {
-                        stats.setStat(BBStat.MOST_POINTS, plot.getVotePoints());
+                        stats.setStat(BBStat.MOST_POINTS, plot.getVotePoints(), true);
                         if (this.plugin.getSettings().isAnnounceNewMostPoints()) {
                             sendMostPointsAnnounce(p, oldPoints, (Integer) stats.getStat(BBStat.MOST_POINTS));
                         }
@@ -427,12 +423,24 @@ public class PlayerManager {
                 if (plugin.getFileManager().getConfig("stats.yml").get().contains(p.getUniqueId().toString())) {
                     BBPlayerStats stats = new BBPlayerStats(p.getUniqueId());
                     for (BBStat stat : BBStat.values()) {
-                        stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()));
+                        stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()), false);
                     }
                     playerStats.put(p.getUniqueId(), stats);
                     BuildBattle.getInstance().debug("Data for player " + p.getName() + " loaded from stats.yml!");
                 }
             }
         }.runTaskAsynchronously(plugin);
+    }
+
+    public List<BBPlayerStats> loadTopStatistics(BBStat stat, int amountToDisplay) {
+        ArrayList<BBPlayerStats> loadedStats = new ArrayList<>();
+        for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
+            BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
+            stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()), false);
+            loadedStats.add(stats);
+        }
+        Collections.sort(loadedStats, new BBStatIntegerComparator(stat));
+        Collections.reverse(loadedStats);
+        return loadedStats.subList(0, amountToDisplay - 1);
     }
 }

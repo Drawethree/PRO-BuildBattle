@@ -1369,9 +1369,7 @@ public enum CompMaterial {
         String name = type.toString() + "_SPAWN_EGG";
 
         // Special cases
-        if (type == EntityType.PIG_ZOMBIE)
-            name = "ZOMBIE_PIGMAN_SPAWN_EGG";
-        else if (type == EntityType.MUSHROOM_COW)
+        if (type == EntityType.MUSHROOM_COW)
             name = "MOOSHROOM_SPAWN_EGG";
 
         // Parse normally, backwards compatible
@@ -1392,10 +1390,7 @@ public enum CompMaterial {
         final String name = monsterEgg.toString().replace("_SPAWN_EGG", "");
 
         // Special cases
-        if (name == "ZOMBIE_PIGMAN_SPAWN_EGG")
-            return EntityType.PIG_ZOMBIE;
-
-        else if (name == "MOOSHROOM_SPAWN_EGG")
+        if (name == "MOOSHROOM_SPAWN_EGG")
             return EntityType.MUSHROOM_COW;
 
         else
