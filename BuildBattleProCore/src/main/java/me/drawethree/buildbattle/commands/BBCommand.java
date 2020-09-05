@@ -13,6 +13,7 @@ import me.drawethree.buildbattle.commands.subcommands.npc.BBAddNPCSubCommand;
 import me.drawethree.buildbattle.commands.subcommands.npc.BBDelNPCSubCommand;
 import me.drawethree.buildbattle.commands.subcommands.stats.BBExportStatsSubCommand;
 import me.drawethree.buildbattle.commands.subcommands.stats.BBStatsSubCommand;
+import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.utils.FancyMessage;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -94,17 +95,17 @@ public class BBCommand extends BukkitCommand {
 
     private boolean commandUsage(CommandSender p) {
         if (p.hasPermission("buildbattlepro.create")) {
-            sendCommands(p, true, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Admin Commands");
+            sendCommands(p, true, Message.command_help_title_admin.getMessage());
         }
         if (p.hasPermission("buildbattlepro.player")) {
-            sendCommands(p, false, "§6✪ §e§lBuildBattlePro §6✪ §8- §6Player Commands");
+            sendCommands(p, false, Message.command_help_title_player.getMessage());
         }
         return true;
     }
 
     private void sendCommands(CommandSender p, boolean adminOnly, String title) {
         FancyMessage.sendCenteredMessage(p, title);
-        FancyMessage.sendCenteredMessage(p, "§b[] §8- §7Optional argument §b<> §8- §7Required argument");
+        FancyMessage.sendCenteredMessage(p, Message.command_help_arguments.getMessage());
         for (BBSubCommand subCommand : this.subCommands.values()) {
             if (subCommand.isAdminCommand() == adminOnly) {
                 p.sendMessage("§e/" + getName() + subCommand.getDescription());

@@ -258,7 +258,10 @@ public enum Message {
     NOT_SPECTATING("messages.not_spectating"),
     BLOCK_RESTRICTED("messages.block_restricted"),
     ARENA_NO_LOBBY("messages.arena_no_lobby"),
-    THEME_CHANGED("messages.theme_changed");
+    THEME_CHANGED("messages.theme_changed"),
+    command_help_title_admin("messages.command_help_title_admin"),
+    command_help_title_player("messages.command_help_title_player"),
+    command_help_arguments("messages.command_help_arguments");
 
     private String message;
     private String path;

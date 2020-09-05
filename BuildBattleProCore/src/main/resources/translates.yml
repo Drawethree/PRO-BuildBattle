@@ -122,6 +122,9 @@ messages:
   not_spectating: "&cYou are not spectating this arena!"
   arena_no_lobby: "&cThis arena does not have lobby set up!"
   block_restricted: "&cThis block is forbidden!"
+  command_help_title_admin: "&6✪ &e&lBuildBattlePro &6✪ &8- &6Admin Commands"
+  command_help_title_player: "&6✪ &e&lBuildBattlePro &6✪ &8- &6Player Commands"
+  command_help_arguments: "&b[] &8- &7Optional argument &b<> &8- &7Required argument"
 ordinals:
   st: "st"
   nd: "nd"
