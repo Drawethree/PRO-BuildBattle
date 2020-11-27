@@ -4,8 +4,6 @@ import lombok.Getter;
 import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.leaderboards.BBLeaderboard;
 import me.drawethree.buildbattle.leaderboards.LeaderboardType;
-import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
-import me.drawethree.buildbattle.objects.bbobjects.BBStat;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;

@@ -166,11 +166,5 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/MVdWPlaceholderAPI.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>me.drawethree</groupId>
-            <artifactId>BuildBattleProAPI</artifactId>
-            <version>6.4.2-BETA</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>

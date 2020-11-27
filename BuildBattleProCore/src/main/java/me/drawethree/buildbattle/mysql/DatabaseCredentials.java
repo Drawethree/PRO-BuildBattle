@@ -8,5 +8,4 @@ import lombok.Getter;
 public class DatabaseCredentials {
 	private final String host, databaseName, userName, password;
 	private final int port;
-
 }

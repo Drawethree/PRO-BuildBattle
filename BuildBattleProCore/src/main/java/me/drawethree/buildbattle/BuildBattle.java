@@ -8,7 +8,6 @@ import me.drawethree.api.BuildBattleProAPIImpl;
 import me.drawethree.buildbattle.commands.BBCommand;
 import me.drawethree.buildbattle.commands.SetThemeCommand;
 import me.drawethree.buildbattle.hooks.BBHook;
-import me.drawethree.buildbattle.listeners.PlayerListener;
 import me.drawethree.buildbattle.listeners.ServerListener;
 import me.drawethree.buildbattle.managers.*;
 import me.drawethree.buildbattle.mysql.MySQLDatabase;
