@@ -19,7 +19,11 @@ public class BBVaultHook extends BBHook {
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
         }
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
-        this.econ = rsp.getProvider();
+        try {
+            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+            this.econ = rsp.getProvider();
+        } catch (Exception e) {
+            plugin.warning("No economy implementation for Vault provided!");
+        }
     }
 }
