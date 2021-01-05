@@ -647,6 +647,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onIgnite(final BlockIgniteEvent e) {
+
+        final Player p = e.getPlayer();
+        final BBArena pArena = this.plugin.getPlayerManager().getPlayerArena(p);
+
+        if (pArena == null) {
+            return;
+        }
+
         for (BBArena a : this.plugin.getArenaManager().getArenas().values()) {
             if (a.getLobbyLocation() != null) {
                 if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {

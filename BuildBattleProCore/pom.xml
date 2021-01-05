@@ -4,15 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>me.drawethree</groupId>
-        <version>6.4.4-BETA</version>
-        <artifactId>BuildBattlePro</artifactId>
-    </parent>
+    <groupId>me.drawethree</groupId>
+    <version>6.4.5</version>
+    <artifactId>BuildBattlePro</artifactId>
 
     <packaging>jar</packaging>
-
-    <artifactId>buildbattlepro-core</artifactId>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
