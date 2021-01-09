@@ -4,6 +4,7 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.ArrayList;
@@ -26,5 +27,10 @@ public class ServerListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        event.setCancelled(true);
     }
 }

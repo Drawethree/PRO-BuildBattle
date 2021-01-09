@@ -127,7 +127,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         Inventory clickedInventory = e.getClickedInventory();
@@ -587,9 +587,13 @@ public class PlayerListener implements Listener {
                     if (arenaSign != null) {
                         e.setCancelled(true);
                         arenaSign.handleClick(p, e.getAction());
+                        return;
                     }
                 }
             }
+
+            // Try spectate mode menu click
+            this.plugin.getSpectatorManager().onPlayerInterract(e);
         }
     }
 
