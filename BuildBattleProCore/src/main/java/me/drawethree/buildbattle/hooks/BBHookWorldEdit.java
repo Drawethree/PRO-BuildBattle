@@ -24,13 +24,23 @@ public class BBHookWorldEdit extends BBHook {
     public void hook(BuildBattle buildBattle) {
         if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
             String version = Bukkit.getPluginManager().getPlugin(pluginName).getDescription().getVersion();
+            String fullName = Bukkit.getPluginManager().getPlugin(pluginName).getDescription().getFullName();
 
-            if (version.startsWith("7")) {
+            boolean compatible = false;
+            String minVersion = "7";
+
+            if (fullName.contains("FastAsyncWorldEdit") && (version.startsWith("1.15") || version.startsWith("1.16"))) {
+                compatible = true;
+                minVersion = "1.15";
+            } else if (version.startsWith("7"))
+                compatible = true;
+
+            if (compatible) {
                 BuildBattle.getInstance().info("§aSuccessfully hooked into §e" + this.pluginName + " §aversion §e" + version);
                 this.enabled = true;
                 this.runHookAction(buildBattle);
             } else {
-                BuildBattle.getInstance().warning("§cThis version of WorldGuard is not supported!(§e" + version + "§c). Please use version §e7.0.0 §cand above.");
+                BuildBattle.getInstance().warning("§cThis version of " + fullName + " is not supported!(§e" + version + "§c). Please use version §e" + minVersion + " §cand above.");
             }
         }
     }

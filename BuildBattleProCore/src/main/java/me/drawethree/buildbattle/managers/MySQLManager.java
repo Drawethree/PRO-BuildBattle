@@ -197,7 +197,7 @@ public class MySQLManager {
 
     public List<BBPlayerStats> loadTopStatistics(BBStat stat, int amountToDisplay) {
         List<BBPlayerStats> returnList = new ArrayList<>();
-        ResultSet set = database.query("SELECT UUID," + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData ORDER BY ? DESC LIMIT ?", stat.getSQLKey(), amountToDisplay);
+        ResultSet set = database.query("SELECT UUID," + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData ORDER BY " + stat.getSQLKey() + " DESC LIMIT ?", amountToDisplay);
         while (true) {
             try {
                 if (!set.next()) break;

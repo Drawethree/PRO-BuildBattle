@@ -6,11 +6,13 @@ import me.drawethree.buildbattle.BuildBattle;
 import me.drawethree.buildbattle.hooks.BBHook;
 import me.drawethree.buildbattle.objects.bbobjects.BBPlayerStats;
 import me.drawethree.buildbattle.objects.bbobjects.BBStat;
+import me.drawethree.buildbattle.objects.bbobjects.BBStatIntegerComparator;
 import me.drawethree.buildbattle.utils.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BBLeaderboard {
@@ -42,16 +44,17 @@ public class BBLeaderboard {
                 hologram.clearLines();
                 hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', getType().getTitle()));
 
-                /*switch (type) {
-                    case WINS:
-                    case PLAYED:
-                    case BLOCKS_PLACED:
-                    case PARTICLES_PLACED:
-                        Collections.sort(loadedStats, new BBStatIntegerComparator(BBStat.valueOf(type.name())).reversed());
-                        break;
-                    default:
-                        return;
-                }*/
+//                switch (type) {
+//                    case WINS:
+//                    case PLAYED:
+//                    case BLOCKS_PLACED:
+//                    case PARTICLES_PLACED:
+//                        loadedStats.sort(new BBStatIntegerComparator(BBStat.valueOf(type.name())).reversed());
+//                        break;
+//                    default:
+//                        return;
+//                }
+                loadedStats.sort(new BBStatIntegerComparator(BBStat.valueOf(type.name())).reversed());
 
                 for (int i = 0, position = 0; ; i++) {
 

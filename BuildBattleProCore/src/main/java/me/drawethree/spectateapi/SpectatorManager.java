@@ -92,7 +92,7 @@ public class SpectatorManager implements Listener {
         this.handleEvent(e, p);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerInterract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (this.spectators.containsKey(p) && e.getItem() != null) {
@@ -160,11 +160,12 @@ public class SpectatorManager implements Listener {
 
         this.playerData.put(p, new SpectatePlayerData(p));
 
-        this.runPlayerSpectateCommands(p);
+        //this.runPlayerSpectateCommands(p);
 
         this.spectators.put(p, target);
 
-        target.spectate(p);
+        p.sendMessage("§aTeleportuji...");
+        Bukkit.getScheduler().runTaskLater(plugin, () -> target.spectate(p), 10);
     }
 
     private void runPlayerSpectateCommands(Player p) {
