@@ -32,7 +32,7 @@ public class BBExportStatsSubCommand extends BBSubCommand {
                     sender.sendMessage(plugin.getSettings().getPrefix() + " §7§oStarting exporting players stats from stats.yml into MySQL Database database...");
                     int playersTransfered = 0;
                     for (String s : plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
-                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
+                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s), plugin.getFileManager().getConfig("stats.yml").get().getString(s + ".username"));
 
                         for(BBStat stat : BBStat.values()) {
                             stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()), false);

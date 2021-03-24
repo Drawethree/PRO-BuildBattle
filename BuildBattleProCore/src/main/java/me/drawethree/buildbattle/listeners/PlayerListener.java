@@ -6,6 +6,7 @@ import me.drawethree.buildbattle.hooks.BBHookWorldEdit;
 import me.drawethree.buildbattle.objects.GUIItem;
 import me.drawethree.buildbattle.objects.Message;
 import me.drawethree.buildbattle.objects.PlotBiome;
+import me.drawethree.buildbattle.objects.StatsType;
 import me.drawethree.buildbattle.objects.Votes;
 import me.drawethree.buildbattle.objects.bbobjects.*;
 import me.drawethree.buildbattle.objects.bbobjects.arena.BBArena;
@@ -40,6 +41,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -651,21 +653,47 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onIgnite(final BlockIgniteEvent e) {
+    	
+    	// cancel all ignition if using bungeecord
+        if (plugin.getSettings().isUseBungeecord()) {
+        	e.setCancelled(true);
+        	return;
+        }
 
+        /* DEBUG
+        System.out.println(e.getPlayer());
+        System.out.println(e.getIgnitingBlock());
+        System.out.println(e.getCause());
+        System.out.println(e.getIgnitingEntity());
+        */
+        
         final Player p = e.getPlayer();
         final BBArena pArena = this.plugin.getPlayerManager().getPlayerArena(p);
 
-        if (pArena == null) {
-            return;
-        }
-
-        for (BBArena a : this.plugin.getArenaManager().getArenas().values()) {
-            if (a.getLobbyLocation() != null) {
-                if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
-                    e.setCancelled(true);
+        if (pArena != null) {
+            for (BBArena a : this.plugin.getArenaManager().getArenas().values()) {
+                if (a.getLobbyLocation() != null) {
+                    if (e.getBlock().getWorld().equals(a.getLobbyLocation().getWorld())) {
+                        e.setCancelled(true);
+                        return;
+                    }
                 }
             }
         }
+        
+        if (e.getIgnitingBlock() == null) {
+        	return;
+        }
+        Location l = e.getIgnitingBlock().getLocation();
+        for (BBArena a : this.plugin.getArenaManager().getArenas().values()) {
+            for (BBPlot plot : a.getBuildPlots()) {
+            	if (plot.isLocationInPlot(l)) {
+            		e.setCancelled(true);
+            		return;
+            	}
+            }
+        }
+
     }
 
 

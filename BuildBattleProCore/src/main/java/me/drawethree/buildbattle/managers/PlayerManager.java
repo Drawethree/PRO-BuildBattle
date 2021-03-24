@@ -69,7 +69,7 @@ public class PlayerManager {
 
     public synchronized void loadAllPlayerStats(HashMap<UUID, BBPlayerStats> map, CountDownLatch latch) {
         for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
-            BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
+            BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s), this.plugin.getFileManager().getConfig("stats.yml").get().getString(s + ".username"));
             for (BBStat stat : BBStat.values()) {
                 stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()), false);
             }
@@ -262,7 +262,7 @@ public class PlayerManager {
 
     public boolean createPlayerStatsIfNotExists(Player p) {
         if (getPlayerStats(p) == null) {
-            BBPlayerStats stats = new BBPlayerStats(p.getUniqueId(), 0, 0, 0, 0, 0, 0);
+            BBPlayerStats stats = new BBPlayerStats(p.getUniqueId(), p.getName(), 0, 0, 0, 0, 0, 0);
             playerStats.put(p.getUniqueId(), stats);
 
             if (this.plugin.getSettings().isAsyncSavePlayerData()) {
@@ -282,6 +282,7 @@ public class PlayerManager {
     }
 
     private synchronized void addPlayerToStatsYML(BBPlayerStats stats) {
+        this.plugin.getFileManager().getConfig("stats.yml").set(stats.getUuid() + ".username", stats.getUsername());
         for (BBStat stat : BBStat.values()) {
             this.plugin.getFileManager().getConfig("stats.yml").set(stats.getUuid() + "." + stat.getConfigKey(), stats.getStat(stat));
         }
@@ -421,7 +422,7 @@ public class PlayerManager {
             @Override
             public void run() {
                 if (plugin.getFileManager().getConfig("stats.yml").get().contains(p.getUniqueId().toString())) {
-                    BBPlayerStats stats = new BBPlayerStats(p.getUniqueId());
+                    BBPlayerStats stats = new BBPlayerStats(p.getUniqueId(), p.getName());
                     for (BBStat stat : BBStat.values()) {
                         stats.setStat(stat, plugin.getFileManager().getConfig("stats.yml").get().get(p.getUniqueId().toString() + "." + stat.getConfigKey()), false);
                     }
@@ -435,7 +436,7 @@ public class PlayerManager {
     public List<BBPlayerStats> loadTopStatistics(BBStat stat, int amountToDisplay) {
         ArrayList<BBPlayerStats> loadedStats = new ArrayList<>();
         for (String s : this.plugin.getFileManager().getConfig("stats.yml").get().getKeys(false)) {
-            BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s));
+            BBPlayerStats stats = new BBPlayerStats(UUID.fromString(s), this.plugin.getFileManager().getConfig("stats.yml").get().getString(s + ".username"));
             stats.setStat(stat, this.plugin.getFileManager().getConfig("stats.yml").get().get(s + "." + stat.getConfigKey()), false);
             loadedStats.add(stats);
         }

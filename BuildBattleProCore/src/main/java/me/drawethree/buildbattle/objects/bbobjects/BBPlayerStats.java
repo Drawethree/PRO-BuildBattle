@@ -10,10 +10,12 @@ import java.util.UUID;
 public class BBPlayerStats {
 
     private UUID uuid;
+    private String username;
     private HashMap<BBStat, Object> stats;
 
-    public BBPlayerStats(UUID uuid, int wins, int played, int mostPoints, int blocksPlaced, int particlesPlaced, int superVotes) {
+    public BBPlayerStats(UUID uuid, String username, int wins, int played, int mostPoints, int blocksPlaced, int particlesPlaced, int superVotes) {
         this.uuid = uuid;
+        this.username = username;
         this.stats = new HashMap<>();
         this.stats.put(BBStat.WINS, wins);
         this.stats.put(BBStat.PLAYED, played);
@@ -23,8 +25,9 @@ public class BBPlayerStats {
         this.stats.put(BBStat.SUPER_VOTES, superVotes);
     }
 
-    public BBPlayerStats(UUID uuid) {
+    public BBPlayerStats(UUID uuid, String username) {
         this.uuid = uuid;
+        this.username = username == null ? "" : username;
         this.stats = new HashMap<>();
     }
 
@@ -45,6 +48,14 @@ public class BBPlayerStats {
 
     public UUID getUuid() {
         return this.uuid;
+    }
+    
+    public String getUsername() {
+    	return this.username;
+    }
+    
+    public void setUsername(String username) {
+    	this.username = username;
     }
 
     @Override
