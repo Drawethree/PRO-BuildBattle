@@ -63,14 +63,14 @@ public class MySQLManager {
         try (ResultSet set = database.query("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID=?", uuid.toString())) {
             return set.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
         return false;
     }
 
     public void addPlayerToTable(BBPlayerStats ps) {
         if (!isUUIDInTable(ps.getUuid())) {
-            database.execute("INSERT INTO BuildBattlePro_PlayerData(UUID,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES(?,?,?,?,?,?,?)", ps.getUuid().toString(), ps.getStat(BBStat.PLAYED), ps.getStat(BBStat.WINS), ps.getStat(BBStat.MOST_POINTS), ps.getStat(BBStat.BLOCKS_PLACED), ps.getStat(BBStat.PARTICLES_PLACED), ps.getStat(BBStat.SUPER_VOTES));
+            database.execute("INSERT INTO BuildBattlePro_PlayerData(UUID,Username,Played,Wins,MostPoints,BlocksPlaced,ParticlesPlaced,SuperVotes) VALUES(?,?,?,?,?,?,?,?)", ps.getUuid().toString(), ps.getUsername(), ps.getStat(BBStat.PLAYED), ps.getStat(BBStat.WINS), ps.getStat(BBStat.MOST_POINTS), ps.getStat(BBStat.BLOCKS_PLACED), ps.getStat(BBStat.PARTICLES_PLACED), ps.getStat(BBStat.SUPER_VOTES));
             database.getParent().debug("Player stats created!");
         } else {
             this.savePlayerStats(ps);
@@ -84,7 +84,15 @@ public class MySQLManager {
             public void run() {
                 try (ResultSet set = database.query("SELECT * FROM BuildBattlePro_PlayerData WHERE UUID=?", p.getUniqueId().toString())) {
                     if (set.next()) {
-                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
+                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")), set.getString("Username"));
+                        
+                        // add the player's Username to the database if null
+                        if (set.getString("Username") == null) {
+                        	database.getParent().debug(p.getName() + "'s username not found on database. Adding it now.");
+                        	addPlayerUsernameToTable(p);
+                        	stats.setUsername(p.getName());
+                        }
+                        
                         for (BBStat stat : BBStat.values()) {
                             stats.setStat(stat, set.getObject(stat.getSQLKey()), false);
                         }
@@ -96,6 +104,10 @@ public class MySQLManager {
                 }
             }
         }.runTaskAsynchronously(database.getParent());
+    }
+    
+    private void addPlayerUsernameToTable(Player p) {
+    	database.execute("UPDATE BuildBattlePro_PlayerData SET Username=? WHERE UUID=?", p.getName(), p.getUniqueId().toString());
     }
 
     public void loadAllReports(ReportManager manager) {
@@ -156,7 +168,7 @@ public class MySQLManager {
             public void run() {
                 try (ResultSet set = database.query("SELECT * FROM BuildBattlePro_PlayerData")) {
                     while (set.next()) {
-                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
+                        BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")), set.getString("Username"));
 
                         for (BBStat stat : BBStat.values()) {
                             stats.setStat(stat, set.getObject(stat.getSQLKey()), false);
@@ -197,11 +209,11 @@ public class MySQLManager {
 
     public List<BBPlayerStats> loadTopStatistics(BBStat stat, int amountToDisplay) {
         List<BBPlayerStats> returnList = new ArrayList<>();
-        ResultSet set = database.query("SELECT UUID," + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData ORDER BY " + stat.getSQLKey() + " DESC LIMIT ?", amountToDisplay);
+        ResultSet set = database.query("SELECT UUID,Username," + stat.getSQLKey() + " FROM BuildBattlePro_PlayerData ORDER BY " + stat.getSQLKey() + " DESC LIMIT ?", amountToDisplay);
         while (true) {
             try {
                 if (!set.next()) break;
-                BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")));
+                BBPlayerStats stats = new BBPlayerStats(UUID.fromString(set.getString("UUID")), set.getString("Username"));
                 stats.setStat(stat, set.getInt(stat.getSQLKey()), false);
                 returnList.add(stats);
             } catch (SQLException e) {

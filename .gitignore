@@ -4,3 +4,12 @@ target
 test
 .DS_Store
 dependency-reduced-pom.xml
+*.prefs
+BuildBattleProAPI/.classpath
+BuildBattleProCore/.classpath
+BuildBattleProCore/.project
+BuildBattleProCore/pom.xml
+BuildBattleProAPI/.project
+BuildBattleProAPI/pom.xml
+BuildBattleProAPI/pom.xml
+BuildBattleProAPI/pom.xml

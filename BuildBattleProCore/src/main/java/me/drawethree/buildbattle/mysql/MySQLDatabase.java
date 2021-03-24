@@ -42,6 +42,7 @@ public class MySQLDatabase {
         try {
             openConnection();
             createTables();
+            isUsernameInTableCheck();
             parent.info("MySQL Connection Success!");
         } catch (Exception e) {
             parent.severe("MySQL Database could not be connected! Check your config.yml!");
@@ -76,9 +77,22 @@ public class MySQLDatabase {
         return null;
 
     }
+    
+    private void isUsernameInTableCheck() {
+        try (ResultSet set = query("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =? AND TABLE_NAME =? AND COLUMN_NAME =?", this.credentials.getDatabaseName(), "BuildBattlePro_PlayerData", "Username")) {
+        	if (set.next()) {
+               // parent.info("MySQL column 'Username' already exists!");
+            } else {
+                parent.info("MySQL column 'Username' not found! Adding it to database now.");
+            	execute("ALTER TABLE BuildBattlePro_PlayerData ADD COLUMN Username VARCHAR(16) AFTER UUID;");
+            }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+    }
 
     private void createTables() {
-        execute("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL, primary key (UUID))");
+        execute("CREATE TABLE IF NOT EXISTS BuildBattlePro_PlayerData(UUID varchar(36) NOT NULL, Username varchar(16), Played int NOT NULL, Wins int NOT NULL, MostPoints int NOT NULL, BlocksPlaced int NOT NULL, ParticlesPlaced int NOT NULL, SuperVotes int NOT NULL, primary key (UUID))");
         execute("CREATE TABLE IF NOT EXISTS BuildBattlePro_ReportedBuilds(ID int NOT NULL AUTO_INCREMENT, ReportedPlayers text NOT NULL, ReportedBy varchar(36) NOT NULL, Date date NOT NULL, SchematicName text NOT NULL, Status varchar(30) NOT NULL, primary key (ID))");
         this.approveChanges();
     }
